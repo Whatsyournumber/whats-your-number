@@ -339,8 +339,8 @@ export function ExpenseLog() {
               </Button>
             ) : (
               <>
-                <div className="mt-4 flex items-center justify-between gap-4">
-                  <div className="min-w-0">
+                <div className="mt-5 flex flex-wrap items-center gap-4 sm:grid sm:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] sm:items-center sm:gap-7">
+                  <div className="order-1 min-w-0 flex-1">
                     <p className="numeric text-4xl font-semibold leading-none sm:text-5xl">{fmt(spent)}</p>
                     <div className="mt-3 flex items-center gap-1.5 text-muted-foreground">
                       <span className="text-xl sm:text-2xl">{t("de", "of")}</span>
@@ -355,7 +355,8 @@ export function ExpenseLog() {
                       <Pencil className="h-3.5 w-3.5 opacity-50" />
                     </div>
                   </div>
-                  <div className="relative h-28 w-28 shrink-0 sm:h-32 sm:w-32">
+
+                  <div className="relative order-2 h-28 w-28 shrink-0 sm:order-3 sm:h-32 sm:w-32">
                     <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                       <circle cx="60" cy="60" r="52" className="stroke-muted" strokeWidth="12" fill="none" />
                       <circle
@@ -379,26 +380,28 @@ export function ExpenseLog() {
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="mt-6 grid grid-cols-3 divide-x divide-border/60 border-t border-border/60 pt-5">
-                  <div className="pr-3">
-                    <p className={cn("numeric text-xl font-semibold sm:text-2xl", remaining < 0 ? "text-negative" : "text-positive")}>
-                      {fmt(Math.abs(remaining))}
-                    </p>
-                    <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-                      {remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}
-                    </p>
-                  </div>
-                  <div className="px-3">
-                    <p className="numeric text-xl font-semibold text-positive sm:text-2xl">{daysLeft}</p>
-                    <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{t("días en el mes", "days in the month")}</p>
-                  </div>
-                  <div className="pl-3">
-                    <p className="numeric text-xl font-semibold text-positive sm:text-2xl">{fmt(perDay)}/{t("día", "day")}</p>
-                    <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-                      {t("para mantener el plan", "to stay on plan")}
-                    </p>
+                  <div className="order-3 grid w-full grid-cols-3 gap-3 border-t border-border/60 pt-4 sm:order-2 sm:w-auto sm:gap-5 sm:border-l sm:border-t-0 sm:pl-7 sm:pt-0 lg:gap-8">
+                    <div className="min-w-0">
+                      <p className={cn("numeric text-2xl font-semibold leading-none sm:text-3xl", remaining < 0 ? "text-negative" : "text-positive")}>
+                        {fmt(Math.abs(remaining))}
+                      </p>
+                      <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">
+                        {remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}
+                      </p>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="numeric text-2xl font-semibold leading-none text-positive sm:text-3xl">{daysLeft}</p>
+                      <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">{t("días en el mes", "days in the month")}</p>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="numeric text-2xl font-semibold leading-none text-positive sm:text-3xl">
+                        {fmt(perDay)}/{t("día", "day")}
+                      </p>
+                      <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">
+                        {t("para mantener el plan", "to stay on plan")}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </>
