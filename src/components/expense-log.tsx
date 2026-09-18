@@ -429,7 +429,7 @@ export function ExpenseLog() {
               )}
             </div>
 
-            <div className="mt-3 flex items-center justify-between gap-4">
+            <div className="mt-2.5 flex items-center justify-between gap-4">
               <div className="min-w-0">
                 <p className="numeric text-3xl font-bold leading-none tracking-tight sm:text-4xl">
                   {fmt(spent)}
@@ -493,13 +493,13 @@ export function ExpenseLog() {
                 >
                   {fmt(Math.abs(remaining))}
                 </p>
-                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-xs">
+                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-[13px]">
                   {remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}
                 </p>
               </div>
               <div className="min-w-0">
                 <p className="numeric truncate text-lg font-bold text-positive sm:text-2xl">{daysLeft}</p>
-                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-xs">
+                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-[13px]">
                   {t("días quedan", "days left")}
                 </p>
               </div>
@@ -507,7 +507,7 @@ export function ExpenseLog() {
                 <p className="numeric truncate text-lg font-bold text-positive sm:text-2xl">
                   {fmt(perDay)}/{t("día", "day")}
                 </p>
-                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-xs">
+                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-[13px]">
                   {t("para el plan", "to stay on plan")}
                 </p>
               </div>
