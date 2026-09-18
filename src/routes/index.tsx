@@ -772,7 +772,7 @@ export function Landing() {
               loading="lazy"
               width={1092}
               height={1250}
-              className="h-full w-full scale-[1.02] object-cover object-[50%_46%] opacity-100 brightness-[1.18] contrast-[1.02] saturate-[1.02] md:object-[50%_50%]"
+              className="h-full w-full scale-[1.06] object-cover object-[50%_30%] opacity-100 brightness-[1.18] contrast-[1.02] saturate-[1.02] md:scale-[1.02] md:object-[50%_50%]"
             />
           </div>
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-6% via-transparent via-30% to-background/20 md:bg-gradient-to-r md:from-background md:from-20% md:via-background/60 md:via-48% md:to-transparent md:to-78%" />
@@ -780,6 +780,8 @@ export function Landing() {
           <div className="pointer-events-none absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-background to-transparent md:h-16" />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-background to-transparent md:h-16" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent md:w-12" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background to-transparent md:hidden" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent md:hidden" />
 
 
           <motion.div
