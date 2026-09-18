@@ -473,7 +473,7 @@ export function ExpenseLog() {
                 <p className="numeric mt-4 whitespace-nowrap text-3xl font-bold sm:text-4xl md:mt-auto md:pt-5 lg:text-5xl">{fmt(spent)}</p>
               </div>
 
-              <div className="relative h-28 w-28 shrink-0 justify-self-center sm:h-36 sm:w-36 lg:h-40 lg:w-40">
+              <div className="relative h-28 w-28 shrink-0 self-center justify-self-center sm:h-36 sm:w-36 lg:h-40 lg:w-40">
                   <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                     <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
                     <circle
