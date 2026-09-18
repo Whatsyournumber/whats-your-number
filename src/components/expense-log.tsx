@@ -470,29 +470,30 @@ export function ExpenseLog() {
 
       <div className="space-y-3">
           <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
-             <div className="grid gap-5 md:grid-cols-2 md:items-end lg:grid-cols-[1.25fr_1fr_auto_0.9fr]">
-               <div className="grid grid-cols-1 gap-y-2 md:col-span-2 md:grid-cols-2 md:gap-x-5 md:gap-y-0 lg:col-span-2 lg:gap-x-6">
-                <div className="flex min-w-0 items-center gap-3 md:col-start-1 md:row-start-1">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-positive/10 lg:h-12 lg:w-12">
-                    <Wallet className="h-4 w-4 text-positive lg:h-5 lg:w-5" />
-                  </span>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="text-base font-semibold lg:text-lg">{t("Gasto objetivo mensual", "Monthly spending target")}</p>
-                      {period === "month" && (
-                        <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} className="shrink-0 text-muted-foreground transition-colors hover:text-foreground">
-                          <Pencil className="h-4 w-4" />
-                        </button>
-                      )}
-                    </div>
-                    <p className="mt-1 text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
-                  </div>
-                </div>
-                <p className="numeric whitespace-nowrap text-3xl font-bold sm:text-4xl md:col-start-1 md:row-start-2 md:pt-2 lg:text-5xl">{fmt(periodTarget)}</p>
+            <div className="flex min-w-0 items-center gap-3">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-positive/10 sm:h-11 sm:w-11">
+                <Wallet className="h-4 w-4 text-positive sm:h-5 sm:w-5" />
+              </span>
+              <h3 className="min-w-0 whitespace-nowrap text-lg font-semibold sm:text-xl lg:text-2xl">
+                {t("Gasto objetivo mensual", "Monthly spending target")}
+              </h3>
+              {period === "month" && (
+                <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} className="shrink-0 text-muted-foreground transition-colors hover:text-foreground">
+                  <Pencil className="h-4 w-4" />
+                </button>
+              )}
+            </div>
 
-                <p className="text-sm text-muted-foreground md:col-start-2 md:row-start-1 md:flex md:items-end md:border-l md:border-border/60 md:pl-5">{t("Gasto del período", "Period spending")}</p>
-                <p className="numeric whitespace-nowrap text-3xl font-bold sm:text-4xl md:col-start-2 md:row-start-2 md:border-l md:border-border/60 md:pl-5 md:pt-2 lg:text-5xl">{fmt(spent)}</p>
+            <div className="mt-4 grid gap-4 sm:mt-5 sm:gap-5 md:grid-cols-2 md:items-center lg:grid-cols-[1.25fr_1fr_auto_0.9fr]">
+              <div className="min-w-0">
+                <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
+                <p className="numeric mt-1 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(periodTarget)}</p>
               </div>
+              <div className="min-w-0 md:border-l md:border-border/60 md:pl-5">
+                <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
+                <p className="numeric mt-1 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
+              </div>
+
 
               <div className="relative h-24 w-24 shrink-0 self-center justify-self-center sm:h-28 sm:w-28 lg:h-28 lg:w-28">
                   <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
