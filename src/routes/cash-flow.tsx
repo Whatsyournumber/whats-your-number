@@ -14,6 +14,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { useAuth } from "@/hooks/use-auth";
 import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
+import { useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { sameMerchant, useTransactions, type Tx } from "@/hooks/use-transactions";
@@ -70,6 +71,7 @@ function CashFlow() {
   const { transactions, hasData } = useTransactions();
   const { rules } = useCategories();
   const fixed = useFixedExpenses();
+  const { holdings } = useHoldings();
   const { lines: budgetLines } = useSpendBudgets();
   const [ruleOpen, setRuleOpen] = useState(false);
   const [categoryBuckets, setCategoryBuckets] = useState<Record<string, MoneyBucket>>({});
@@ -256,7 +258,9 @@ function CashFlow() {
   const fixedSavingsAmount = fixedSavings.reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
   const fixedWantsAmount = fixedWants.reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
   const fixedNeedsAmount = fixedNeeds.reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
-  const retirementFundAmount = Math.max(0, Number(profile.retirement_monthly_contribution) || 0);
+  const retirementFundAmount = holdings
+    .filter((holding) => holding.kind === "retirement")
+    .reduce((sum, holding) => sum + Math.max(0, Number(holding.monthly_contribution) || 0), 0);
   const retirementFundBucket = bucketFor(RETIREMENT_FUND_CATEGORY);
   const retirementFundNeeds = retirementFundBucket === "needs" ? retirementFundAmount : 0;
   const retirementFundWants = retirementFundBucket === "wants" ? retirementFundAmount : 0;

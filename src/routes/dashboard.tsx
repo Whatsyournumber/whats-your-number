@@ -274,7 +274,9 @@ function Dashboard() {
     let needs = fixed.items.filter((item) => bucketFor(item.name) === "needs").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
     let wants = fixed.items.filter((item) => bucketFor(item.name) === "wants").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
     let savings = fixed.items.filter((item) => bucketFor(item.name) === "savings").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
-    const retirementFund = Math.max(0, Number(profile.retirement_monthly_contribution) || 0);
+    const retirementFund = holdings
+      .filter((holding) => holding.kind === "retirement")
+      .reduce((sum, holding) => sum + Math.max(0, Number(holding.monthly_contribution) || 0), 0);
     const retirementFundBucket = bucketFor("Fondo de retiro");
     if (retirementFundBucket === "needs") needs += retirementFund;
     else if (retirementFundBucket === "wants") wants += retirementFund;
@@ -294,7 +296,7 @@ function Dashboard() {
       expenses: needs + wants,
       savings: savings + Math.max(0, totalIncome - needs - wants - savings),
     };
-  }, [activeKey, budgetLines, d.cashFlow.buckets, d.income, fixed.items, moneyBuckets, profile.retirement_monthly_contribution, rules, transactions]);
+  }, [activeKey, budgetLines, d.cashFlow.buckets, d.income, fixed.items, holdings, moneyBuckets, rules, transactions]);
   const monthlySavings = monthlyDistribution.savings;
   const monthlyExpenses = monthlyDistribution.expenses;
   const spendPlanUsed = hasSpendTarget && spendTarget > 0
