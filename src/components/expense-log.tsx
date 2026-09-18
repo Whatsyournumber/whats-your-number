@@ -511,9 +511,15 @@ export function ExpenseLog() {
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{t("del plan", "of plan")}</p>
                   </div>
+                </div>
               </div>
 
-              <div className="flex min-w-0 items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-3 md:w-full md:self-center">
+              <div className="flex min-w-0 flex-col gap-5 md:border-l md:border-border/60 md:pl-6 lg:pl-8">
+                <div className="min-w-0">
+                  <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
+                  <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
+                </div>
+                <div className="flex min-w-0 items-center gap-3 self-start rounded-xl border border-border bg-muted/20 p-3 sm:p-4 md:w-full">
                   <span
                     className={cn(
                       "grid h-9 w-9 shrink-0 place-items-center rounded-lg",
