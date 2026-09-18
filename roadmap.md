@@ -25,4 +25,5 @@
 - [x] Landing: integrar la foto de pareja con degradado continuo, sin corte vertical
 - [x] Landing: mostrar la pareja completa, reducir el mensaje y eliminar bordes de la sección
 - [x] Landing: eliminar el corte visible entre la foto de pareja y el fondo
+- [x] Landing: difuminar la foto de pareja arriba y abajo y darle mayor presencia
 
