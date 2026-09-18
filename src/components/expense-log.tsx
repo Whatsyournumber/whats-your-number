@@ -304,6 +304,87 @@ export function ExpenseLog() {
         </span>
       </div>
       <div className="space-y-3">
+          <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+            <div className="flex items-center gap-2.5">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-positive/15">
+                <Wallet className="h-4 w-4 text-positive" />
+              </span>
+              <h3 className="text-base font-semibold">{t("Gastos vs plan", "Spending vs plan")}</h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 shrink-0 text-muted-foreground"
+                onClick={() => setPlanOpen(true)}
+                aria-label={rows.length ? t("Editar plan", "Edit plan") : t("Plan de gastos", "Spending plan")}
+              >
+                {rows.length ? <Pencil className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+              </Button>
+            </div>
+
+            {target <= 0 ? (
+              <Button className="mt-4" onClick={() => setPlanOpen(true)}>
+                <Plus className="mr-1.5 h-4 w-4" />
+                {t("Crear tu plan de gastos", "Create your spending plan")}
+              </Button>
+            ) : (
+              <>
+                <div className="mt-4 flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="numeric text-4xl font-semibold leading-none sm:text-5xl">{fmt(spent)}</p>
+                    <p className="numeric mt-2 text-lg text-muted-foreground sm:text-xl">
+                      {t("de", "of")} {fmt(target)}
+                    </p>
+                  </div>
+                  <div className="relative h-28 w-28 shrink-0 sm:h-32 sm:w-32">
+                    <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
+                      <circle cx="60" cy="60" r="52" className="stroke-muted" strokeWidth="12" fill="none" />
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="52"
+                        className={cn(spent > target ? "stroke-negative" : "stroke-positive")}
+                        strokeWidth="12"
+                        strokeLinecap="round"
+                        fill="none"
+                        strokeDasharray={2 * Math.PI * 52}
+                        strokeDashoffset={(2 * Math.PI * 52) * (1 - Math.min(1, pct / 100))}
+                      />
+                    </svg>
+                    <div className="absolute inset-0 grid place-items-center text-center">
+                      <div>
+                        <p className={cn("numeric text-xl font-semibold sm:text-2xl", spent > target && "text-negative")}>
+                          {pct.toFixed(0)}%
+                        </p>
+                        <p className="text-[0.625rem] text-muted-foreground sm:text-xs">{t("del plan", "of plan")}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 grid grid-cols-3 divide-x divide-border/60 border-t border-border/60 pt-5">
+                  <div className="pr-3">
+                    <p className={cn("numeric text-xl font-semibold sm:text-2xl", remaining < 0 ? "text-negative" : "text-positive")}>
+                      {fmt(Math.abs(remaining))}
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                      {remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}
+                    </p>
+                  </div>
+                  <div className="px-3">
+                    <p className="numeric text-xl font-semibold text-positive sm:text-2xl">{daysLeft}</p>
+                    <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{t("días en el mes", "days in the month")}</p>
+                  </div>
+                  <div className="pl-3">
+                    <p className="numeric text-xl font-semibold text-positive sm:text-2xl">{fmt(perDay)}/{t("día", "day")}</p>
+                    <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                      {t("para mantener el plan", "to stay on plan")}
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
           <div className="rounded-2xl border border-border bg-card p-4">
             <p className="mb-3 text-sm font-medium">{t("Agrega un gasto", "Add an expense")}</p>
             <div className="grid grid-cols-3 gap-2">
