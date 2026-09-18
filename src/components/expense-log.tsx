@@ -102,9 +102,29 @@ export function ExpenseLog() {
     return map;
   }, [monthTx, categories.rules]);
 
+  /** Plan del onboarding: las categorías y montos que la persona declaró al registrarse. */
+  const onboardingLines = useMemo(
+    () =>
+      SPEND_PLAN_FIELDS.filter((f) => (Number(profile[f.key]) || 0) > 0).map((f) => ({
+        id: f.budgetId,
+        amount: Number(profile[f.key]) || 0,
+      })),
+    [profile],
+  );
+
+  // Si la cuenta todavía no tiene plan guardado, se copia el del onboarding
+  // para que Registro de gastos y Análisis de gastos muestren el mismo objetivo.
+  useEffect(() => {
+    if (!budgets.loaded || budgets.hasBudget || onboardingLines.length === 0) return;
+    budgets.save(onboardingLines);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [budgets.loaded, budgets.hasBudget, onboardingLines]);
+
+  const planLines = budgets.hasBudget ? budgets.lines : onboardingLines;
+
   const customLines = useMemo(
     () =>
-      budgets.lines
+      planLines
         .filter((l) => l.id.startsWith("custom:"))
         .map((l) => ({
           id: l.id,
