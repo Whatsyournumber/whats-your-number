@@ -6,6 +6,7 @@ import {
   Crosshair,
   FileText,
   Globe,
+  HeartHandshake,
   Home,
   LineChart,
   Lock,
@@ -24,6 +25,7 @@ import {
 
 import expensesTrackerPhoneAsset from "@/assets/expenses-tracker-phone.png.asset.json";
 import heroManLaptopAsset from "@/assets/hero-man-laptop.jpg.asset.json";
+import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
 
 
 import { useLiveCount, formatCount } from "@/components/live-count";
@@ -807,6 +809,45 @@ export function Landing() {
             "Clear answers on how to calculate your number, protect your data, and use WhatsYournumber as a family.",
           )}
         />
+
+        <section className="relative mt-24 min-h-[520px] overflow-hidden rounded-lg border border-border md:mt-32 md:min-h-[500px]">
+          <img
+            src={ctaLifestyle}
+            alt={t("Pareja organizando sus finanzas", "Couple organizing their finances")}
+            loading="lazy"
+            width={1092}
+            height={1250}
+            className="absolute inset-0 h-full w-full object-cover object-[58%_35%] md:left-[42%] md:w-[58%] md:object-center"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/75 to-background/10 md:bg-gradient-to-r md:from-background md:via-background/95 md:to-background/10" />
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45 }}
+            className="relative z-10 flex min-h-[520px] max-w-2xl flex-col justify-end p-7 sm:p-10 md:min-h-[500px] md:justify-center md:p-12 lg:p-14"
+          >
+            <HeartHandshake className="mb-7 h-10 w-10 text-primary" />
+            <h2 className="font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+              {t("Construyan su futuro juntos.", "Build your future together.")}{" "}
+              <span className="text-primary">
+                {t("Cada decisión los acerca a su número.", "Every decision brings you closer to your number.")}
+              </span>
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+              {t(
+                "Con WhatsYourNumber pueden organizar ingresos, gastos, patrimonio y metas en pareja, sin perder de vista los objetivos de cada uno.",
+                "With WhatsYourNumber, you can organize income, spending, net worth and goals as a couple without losing sight of your individual plans.",
+              )}
+            </p>
+            <Button asChild size="lg" className="mt-8 w-fit gap-2 rounded-full px-7">
+              <Link to="/auth" search={{ mode: "signup" }}>
+                {t("Crear nuestro plan", "Create our plan")} <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </motion.div>
+        </section>
 
         <section className="surface mt-10 md:mt-14 flex flex-wrap items-center gap-6 p-8">
           <div className="flex items-center gap-3">
