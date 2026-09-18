@@ -99,8 +99,10 @@ export function ExpenseLog() {
   const plan = budgets.hasBudget
     ? budgets.total
     : SPEND_PLAN_FIELDS.reduce((s, f) => s + (Number(profile[f.key]) || 0), 0);
-  const pct = plan > 0 ? (spent / plan) * 100 : 0;
-  const remaining = plan - spent;
+  const target = hasTarget && savedTarget > 0 ? savedTarget : plan;
+  const pct = target > 0 ? (spent / target) * 100 : 0;
+  const boundaryPct = spent > 0 ? Math.min(100, (target / spent) * 100) : 0;
+  const remaining = target - spent;
   const perDay = remaining > 0 ? remaining / daysLeft : 0;
 
   const byCategory = useMemo(() => {
