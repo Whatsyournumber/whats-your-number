@@ -98,31 +98,32 @@ export function ExpenseLog() {
     [categories.rules],
   );
 
-  const monthTx = useMemo(
+  const periodTx = useMemo(
     () =>
       transactions
         .filter((x) => x.amount < 0 && x.tx_date)
         .filter((x) => {
           const d = parseISO(x.tx_date!);
-          return d >= monthStart && d <= monthEnd;
+          return d >= periodStart && d <= monthEnd;
         })
         .sort((a, b) => (a.tx_date! < b.tx_date! ? 1 : -1)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [transactions, monthStart.getTime(), monthEnd.getTime()],
+    [transactions, periodStart.getTime(), monthEnd.getTime()],
   );
 
-  const variableSpend = monthTx.reduce((s, x) => s + Math.abs(x.amount), 0);
-  const spent = variableSpend + fixed.total;
+  const variableSpend = periodTx.reduce((s, x) => s + Math.abs(x.amount), 0);
+  const spent = variableSpend + fixed.total * periodFactor;
   const onboardingTotal = SPEND_PLAN_FIELDS.reduce((s, f) => s + (Number(profile[f.key]) || 0), 0);
   const plan = budgets.hasBudget ? budgets.total : onboardingTotal;
   const target = hasTarget && savedTarget > 0 ? savedTarget : plan > 0 ? plan : onboardingTotal;
-  const pct = target > 0 ? (spent / target) * 100 : 0;
-  const remaining = target - spent;
+  const periodTarget = target * periodFactor;
+  const pct = periodTarget > 0 ? (spent / periodTarget) * 100 : 0;
+  const remaining = periodTarget - spent;
   const perDay = remaining > 0 ? remaining / daysLeft : 0;
 
   const byCategory = useMemo(() => {
     const map = new Map<string, number>();
-    for (const x of monthTx) {
+    for (const x of periodTx) {
       const k = categorizeTx(x as Tx, categories.rules);
       map.set(k, (map.get(k) ?? 0) + Math.abs(x.amount));
     }
