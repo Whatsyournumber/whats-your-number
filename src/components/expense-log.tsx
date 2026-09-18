@@ -997,6 +997,10 @@ export function ExpenseLog() {
                       const activeReal = active === null ? 0 : daily[active] ?? 0;
                       const activeDiff = activeReal - linearDay;
                       const tipLeft = active === null ? 50 : ((left + (active + 0.5) * step) / W) * 100;
+                      // Borde superior de la barra activa: el tooltip se pega justo arriba de ella.
+                      const activeBarTop = active === null ? 0 : yOf(Math.max(daily[active] ?? 0, 0));
+                      // Si la barra llega muy arriba, el tooltip entra debajo del borde para no salirse.
+                      const tipBelow = activeBarTop < top + H * 0.2;
                       return (
                         <>
                         <svg
