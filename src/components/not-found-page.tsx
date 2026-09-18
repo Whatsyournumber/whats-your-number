@@ -21,18 +21,22 @@ const SOCIALS = [
   { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/company/107005182/" },
 ];
 
-/** Cielo estrellado determinista: mismo render en servidor y cliente. */
+/**
+ * Cielo estrellado determinista. Las cifras se redondean a 2 decimales para que
+ * servidor y cliente generen exactamente el mismo string y no haya mismatch de hidratación.
+ */
 const STARS = Array.from({ length: 28 }, (_, i) => {
+  const round2 = (x: number) => Number(x.toFixed(2));
   const frac = (x: number) => x - Math.floor(x);
   const a = frac(Math.sin(i * 12.9898) * 43758.5453);
   const b = frac(Math.sin(i * 78.233) * 12345.6789);
   const c = frac(Math.sin(i * 39.425) * 24634.6345);
   return {
-    top: 3 + a * 84,
-    left: 2 + b * 96,
-    size: 1.5 + c * 2.5,
-    delay: a * 6,
-    duration: 3.2 + b * 4.5,
+    top: round2(3 + a * 84),
+    left: round2(2 + b * 96),
+    size: round2(1.5 + c * 2.5),
+    delay: round2(a * 6),
+    duration: round2(3.2 + b * 4.5),
   };
 });
 
