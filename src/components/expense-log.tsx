@@ -614,6 +614,187 @@ export function ExpenseLog() {
             </button>
           ))}
 
+          {(target > 0 || monthVariable > 0) && (
+            <div className="grid gap-4 xl:grid-cols-[1fr_320px]">
+              <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
+                <h3 className="text-base font-semibold">
+                  {t("Gasto diario vs. presupuesto esperado", "Daily spend vs. expected budget")}
+                </h3>
+                <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                    {t("Gasto real", "Actual spend")}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-4 border-t-2 border-dotted border-muted-foreground" />
+                    {t("Presupuesto esperado", "Expected budget")}
+                  </span>
+                </div>
+                <div className="mt-4 flex flex-col gap-4 sm:flex-row">
+                  <div className="min-w-0 flex-1">
+                    {(() => {
+                      const W = 560;
+                      const H = 190;
+                      const left = 38;
+                      const top = 16;
+                      const plotW = W - left - 8;
+                      const plotH = H - top - 22;
+                      const maxDaily = Math.max(...daily, 0);
+                      const yMax = Math.max(target, maxDaily, 1) * 1.1;
+                      const step = plotW / daysInMonth;
+                      const barW = step * 0.62;
+                      const yOf = (v: number) => top + plotH - (v / yMax) * plotH;
+                      const yTicks = [0, 0.5, 1].map((f) => yMax * f);
+                      const xTicks = [...new Set([1, 5, 10, 15, 20, 25, daysInMonth])].filter((d) => d <= daysInMonth);
+                      const expectedPts = Array.from({ length: daysInMonth }, (_, i) => {
+                        const x = left + (i + 0.5) * step;
+                        const y = yOf((target * (i + 1)) / daysInMonth);
+                        return { x, y };
+                      });
+                      return (
+                        <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img">
+                          {yTicks.map((v) => (
+                            <g key={v}>
+                              <line x1={left} x2={W - 8} y1={yOf(v)} y2={yOf(v)} className="stroke-border" strokeWidth="1" />
+                              <text x={left - 6} y={yOf(v) + 3} textAnchor="end" className="fill-muted-foreground text-[9px]">
+                                {v === 0 ? `${currencySymbol}0` : `${currencySymbol}${Math.round(v)}`}
+                              </text>
+                            </g>
+                          ))}
+                          {target > 0 && (
+                            <>
+                              <polyline
+                                points={expectedPts.map((p) => `${p.x},${p.y}`).join(" ")}
+                                fill="none"
+                                className="stroke-muted-foreground"
+                                strokeWidth="1.5"
+                                strokeDasharray="1 5"
+                                strokeLinecap="round"
+                              />
+                              {expectedPts.map((p, i) =>
+                                (i + 1) % 5 === 0 || i === daysInMonth - 1 ? (
+                                  <circle key={i} cx={p.x} cy={p.y} r="2" className="fill-muted-foreground" />
+                                ) : null,
+                              )}
+                            </>
+                          )}
+                          {daily.map((v, i) => {
+                            if (v <= 0) return null;
+                            const x = left + (i + 0.19) * step;
+                            const y = yOf(v);
+                            const isToday = i + 1 === todayDay;
+                            return (
+                              <rect
+                                key={i}
+                                x={x}
+                                y={y}
+                                width={barW}
+                                height={top + plotH - y}
+                                rx="2"
+                                className={isToday ? "fill-emerald-300" : i + 1 <= todayDay ? "fill-emerald-500/80" : "fill-muted-foreground/25"}
+                              />
+                            );
+                          })}
+                          <line
+                            x1={left + (todayDay - 0.5) * step}
+                            x2={left + (todayDay - 0.5) * step}
+                            y1={top}
+                            y2={top + plotH}
+                            className="stroke-emerald-400"
+                            strokeWidth="1.5"
+                          />
+                          <text
+                            x={left + (todayDay - 0.5) * step}
+                            y={top - 4}
+                            textAnchor="middle"
+                            className="fill-foreground text-[9px] font-medium"
+                          >
+                            {t("Hoy", "Today")}
+                          </text>
+                          {xTicks.map((d) => (
+                            <text
+                              key={d}
+                              x={left + (d - 0.5) * step}
+                              y={H - 6}
+                              textAnchor="middle"
+                              className="fill-muted-foreground text-[9px]"
+                            >
+                              {d}
+                            </text>
+                          ))}
+                        </svg>
+                      );
+                    })()}
+                  </div>
+                  <div className="flex shrink-0 flex-col justify-center border-t border-border/60 pt-4 sm:w-44 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
+                    <p className="text-xs text-muted-foreground">{t("Proyección de fin de mes", "Month-end projection")}</p>
+                    <p className="numeric mt-1 text-2xl font-semibold sm:text-3xl">{fmt(projection)}</p>
+                    {target > 0 && (
+                      <p className={cn("mt-2 text-sm", projDiff >= 0 ? "text-positive" : "text-negative")}>
+                        {projDiff >= 0
+                          ? t(`${fmt(projDiff)} por debajo de tu presupuesto`, `${fmt(projDiff)} under your budget`)
+                          : t(`${fmt(Math.abs(projDiff))} por encima de tu presupuesto`, `${fmt(Math.abs(projDiff))} over your budget`)}
+                      </p>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-4 w-fit border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10 hover:text-emerald-200"
+                      onClick={() => navigate({ to: "/gastos" })}
+                    >
+                      {t("Ver más", "See more")}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="text-base font-semibold">{t("Próximos pagos", "Upcoming payments")}</h3>
+                  <button
+                    type="button"
+                    onClick={() => setRecOpen(true)}
+                    className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    aria-label={t("Añadir gasto recurrente", "Add recurring expense")}
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+                {upcoming.length === 0 ? (
+                  <p className="mt-4 text-sm text-muted-foreground">
+                    {t("Añade gastos recurrentes para verlos aquí.", "Add recurring expenses to see them here.")}
+                  </p>
+                ) : (
+                  <ul className="mt-4 space-y-3.5">
+                    {upcoming.map((i, idx) => {
+                      const emoji = i.name.match(/^\p{Extended_Pictographic}+/u)?.[0];
+                      const colors = [
+                        "bg-emerald-500/15 text-emerald-300",
+                        "bg-sky-500/15 text-sky-300",
+                        "bg-violet-500/15 text-violet-300",
+                        "bg-amber-500/15 text-amber-300",
+                        "bg-rose-500/15 text-rose-300",
+                      ];
+                      return (
+                        <li key={i.id} className="flex items-center gap-3">
+                          <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full text-base", colors[idx % colors.length])}>
+                            {emoji ?? <Repeat className="h-4 w-4" />}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm leading-5">{emoji ? i.name.slice(emoji.length).trim() : i.name}</p>
+                            <p className="text-[0.6875rem] leading-4 text-muted-foreground">
+                              {format(i.next, "d MMM", { locale })}
+                            </p>
+                          </div>
+                          <span className="numeric shrink-0 text-sm font-semibold">{fmt(i.amount)}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            </div>
+          )}
 
           {rows.length > 0 && (
             <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
