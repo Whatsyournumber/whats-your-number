@@ -467,7 +467,7 @@ export function ExpenseLog() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="h-11 w-full shrink-0 px-5 sm:w-auto">
+            <Button className="hidden h-11 shrink-0 px-5 sm:flex sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               {t("Añadir gasto", "Add expense")}
             </Button>
