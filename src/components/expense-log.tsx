@@ -56,6 +56,7 @@ export function ExpenseLog() {
   const locale = lang === "es" ? es : enUS;
   const { user } = useAuth();
   const { profile } = useProfile();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { transactions } = useTransactions();
   const fixed = useFixedExpenses();
