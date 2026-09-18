@@ -312,24 +312,6 @@ export function Landing() {
       highlight: t("cuánto vales", "how much you're worth"),
     },
     {
-      icon: RouteIcon,
-      title: t("Tu Plan de Vida", "Your Life Plan"),
-      desc: t(
-        "Simula las decisiones más importantes de tu vida —comprar, emprender, casarte, mudarte— y ve cómo impactan tu patrimonio y retiro.",
-        "Simulate life's biggest decisions —buying, starting a business, marrying, moving— and see how they impact your wealth and retirement.",
-      ),
-      highlight: t("Simula las decisiones", "Simulate the decisions"),
-    },
-    {
-      icon: Globe,
-      title: t("Tu Próxima Ciudad", "Your Next City"),
-      desc: t(
-        "Comparador de costo de vida con más de 150 ciudades: salarios, impuestos, clima y seguridad. Encuentra dónde tu dinero rinde más.",
-        "Cost of living comparison across 150+ cities: salaries, taxes, climate and safety. Find where your money goes further.",
-      ),
-      highlight: t("tu dinero rinde más", "your money goes further"),
-    },
-    {
       icon: Bot,
       title: t("Tu Copiloto Financiero IA", "Your AI Financial Copilot"),
       desc: t(
