@@ -490,7 +490,7 @@ export function ExpenseLog() {
                   <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
                   <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(periodTarget)}</p>
                 </div>
-                <div className="relative h-28 w-28 shrink-0 self-start sm:h-32 sm:w-32 lg:h-36 lg:w-36">
+                <div className="relative h-28 w-28 shrink-0 self-center sm:h-32 sm:w-32 lg:h-36 lg:w-36">
                   <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                     <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
                     <circle
