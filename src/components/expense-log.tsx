@@ -518,7 +518,7 @@ export function ExpenseLog() {
                   </div>
               </div>
 
-              <div className="flex min-w-0 items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-3">
+              <div className="flex min-w-0 items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-3 md:w-full md:self-center">
                   <span
                     className={cn(
                       "grid h-9 w-9 shrink-0 place-items-center rounded-lg",
