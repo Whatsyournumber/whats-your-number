@@ -772,10 +772,10 @@ export function Landing() {
               loading="lazy"
               width={1092}
               height={1250}
-              className="h-full w-full scale-[1.22] object-cover object-[50%_38%] opacity-100 brightness-[1.28] contrast-[1.04] saturate-[1.05] md:scale-[1.02] md:object-[50%_50%]"
+              className="h-full w-full scale-[1.14] object-cover object-[50%_30%] opacity-100 brightness-[1.3] contrast-[1.04] saturate-[1.06] md:scale-[1.02] md:object-[50%_50%]"
             />
           </div>
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 from-2% via-transparent via-26% to-transparent md:bg-gradient-to-r md:from-background md:from-20% md:via-background/60 md:via-48% md:to-transparent md:to-78%" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-8% via-background/70 via-38% to-transparent to-62% md:bg-gradient-to-r md:from-background md:from-20% md:via-background/60 md:via-48% md:to-transparent md:to-78%" />
           <div className="pointer-events-none absolute inset-y-0 left-[34%] hidden w-[22%] bg-gradient-to-r from-background via-background/55 to-transparent md:block" />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-background to-transparent md:h-16" />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-background to-transparent md:h-16" />
