@@ -609,8 +609,8 @@ export function ExpenseLog() {
              <div className="mt-3 hidden items-center gap-6 lg:flex">
                <div className="min-w-0 shrink-0">
                  <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
-                 <div className="mt-3 inline-flex min-w-0 items-baseline gap-1.5 rounded-xl border border-border bg-muted/20 px-4 py-2 transition-colors focus-within:border-positive/60">
-                   <span className="numeric text-2xl font-semibold text-muted-foreground">{currencySymbol}</span>
+                 <div className="mt-2 inline-flex min-w-0 items-baseline gap-1.5 rounded-xl border border-border bg-muted/20 px-3 py-1.5 transition-colors focus-within:border-positive/60">
+                   <span className="numeric text-xl font-semibold text-muted-foreground">{currencySymbol}</span>
                    <NumberInput
                      value={target}
                      onChange={(v) => applyTarget(v)}
