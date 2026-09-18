@@ -590,7 +590,7 @@ export function ExpenseLog() {
                       onChange={(v) => setTarget(Math.round(v || 0))}
                       min={0}
                       format
-                      aria-label={t("Gasto objetivo mensual", "Monthly spending target")}
+                      ariaLabel={t("Gasto objetivo mensual", "Monthly spending target")}
                       className="numeric w-28 border-0 bg-transparent px-0 py-0 text-3xl font-bold shadow-none transition-none focus-visible:ring-0 sm:w-32 sm:text-4xl lg:text-5xl"
                     />
                   </div>
