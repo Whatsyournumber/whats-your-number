@@ -62,7 +62,25 @@ export function ExpenseLog() {
   const categories = useCategories();
 
   const [planOpen, setPlanOpen] = useState(false);
+  const [recOpen, setRecOpen] = useState(false);
+  const [recName, setRecName] = useState("");
+  const [recAmount, setRecAmount] = useState(0);
   const { target: savedTarget, setTarget, hasTarget } = useSpendTarget();
+
+  const onSaveRecurring = () => {
+    const name = recName.trim();
+    if (!name || recAmount <= 0) {
+      toast.error(t("Escribe nombre y monto mayor que cero", "Enter a name and an amount above zero"));
+      return;
+    }
+    fixed.add(name, Math.round(recAmount));
+    toast.success(t("Gasto recurrente guardado", "Recurring expense saved"), {
+      description: `${name} · ${fmt(recAmount)}/${t("mes", "mo")}`,
+    });
+    setRecOpen(false);
+    setRecName("");
+    setRecAmount(0);
+  };
 
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
