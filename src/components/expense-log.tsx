@@ -487,27 +487,27 @@ export function ExpenseLog() {
               <div className="min-w-0">
                 <p
                   className={cn(
-                    "numeric truncate text-xl font-bold sm:text-3xl",
+                    "numeric truncate text-base font-bold sm:text-xl",
                     remaining < 0 ? "text-negative" : "text-positive",
                   )}
                 >
                   {fmt(Math.abs(remaining))}
                 </p>
-                <p className="mt-1 truncate text-xs text-muted-foreground sm:text-sm">
+                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-xs">
                   {remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}
                 </p>
               </div>
               <div className="min-w-0">
-                <p className="numeric truncate text-xl font-bold text-positive sm:text-3xl">{daysLeft}</p>
-                <p className="mt-1 truncate text-xs text-muted-foreground sm:text-sm">
+                <p className="numeric truncate text-base font-bold text-positive sm:text-xl">{daysLeft}</p>
+                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-xs">
                   {t("días quedan", "days left")}
                 </p>
               </div>
               <div className="min-w-0">
-                <p className="numeric truncate text-xl font-bold text-positive sm:text-3xl">
+                <p className="numeric truncate text-base font-bold text-positive sm:text-xl">
                   {fmt(perDay)}/{t("día", "day")}
                 </p>
-                <p className="mt-1 truncate text-xs text-muted-foreground sm:text-sm">
+                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-xs">
                   {t("para el plan", "to stay on plan")}
                 </p>
               </div>
