@@ -1270,7 +1270,7 @@ function Gastos() {
               })}
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-3">
-              <Button size="sm" variant="outline" className="gap-2" onClick={fixed.add}>
+              <Button size="sm" variant="outline" className="gap-2" onClick={() => fixed.add()}>
                 <Plus className="h-4 w-4" /> {t("Añadir gasto fijo", "Add fixed expense")}
               </Button>
             </div>
