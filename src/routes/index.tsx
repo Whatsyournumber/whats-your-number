@@ -835,7 +835,7 @@ export function Landing() {
             <HeartHandshake className="mb-5 h-8 w-8 text-primary" />
             <h2 className="font-display text-2xl font-semibold leading-tight tracking-tight sm:text-3xl lg:text-4xl">
               {t("Cada decisión te acerca ", "Every decision brings you closer ")}
-              <span className="text-primary">{t("—o te aleja—", "—or pushes you further away—")}</span>
+              <span className="text-primary">{t("o te aleja", "or pushes you further away")}</span>
               {t(" de tu Número de Vida Libre.", " from your Freedom Number.")}
             </h2>
             <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground sm:text-base">
