@@ -75,7 +75,29 @@ export function ExpenseLog() {
   const [recName, setRecName] = useState("");
   const [recAmount, setRecAmount] = useState(0);
   const [recDay, setRecDay] = useState(1);
+  const [recEditId, setRecEditId] = useState<string | null>(null);
+  const [editTx, setEditTx] = useState<Tx | null>(null);
+  const [editMerchant, setEditMerchant] = useState("");
+  const [editAmount, setEditAmount] = useState(0);
+  const [editDate, setEditDate] = useState("");
+  const [editCategory, setEditCategory] = useState("");
   const { target: savedTarget, setTarget, hasTarget } = useSpendTarget();
+
+  const openNewRecurring = () => {
+    setRecEditId(null);
+    setRecName("");
+    setRecAmount(0);
+    setRecDay(1);
+    setRecOpen(true);
+  };
+
+  const openEditRecurring = (item: { id: string; name: string; amount: number; dayOfMonth?: number }) => {
+    setRecEditId(item.id);
+    setRecName(item.name);
+    setRecAmount(item.amount);
+    setRecDay(item.dayOfMonth ?? 1);
+    setRecOpen(true);
+  };
 
   const onSaveRecurring = () => {
     const name = recName.trim();
@@ -83,14 +105,80 @@ export function ExpenseLog() {
       toast.error(t("Escribe nombre y monto mayor que cero", "Enter a name and an amount above zero"));
       return;
     }
-    fixed.add(name, Math.round(recAmount), recDay);
-    toast.success(t("Gasto recurrente guardado", "Recurring expense saved"), {
-      description: `${name} · ${fmt(recAmount)}/${t("mes", "mo")} · ${t("día", "day")} ${recDay}`,
-    });
+    if (recEditId) {
+      fixed.update(recEditId, { name, amount: Math.round(recAmount), dayOfMonth: recDay });
+      toast.success(t("Gasto recurrente actualizado", "Recurring expense updated"));
+    } else {
+      fixed.add(name, Math.round(recAmount), recDay);
+      toast.success(t("Gasto recurrente guardado", "Recurring expense saved"), {
+        description: `${name} · ${fmt(recAmount)}/${t("mes", "mo")} · ${t("día", "day")} ${recDay}`,
+      });
+    }
     setRecOpen(false);
+    setRecEditId(null);
     setRecName("");
     setRecAmount(0);
     setRecDay(1);
+  };
+
+  const onDeleteRecurring = () => {
+    if (!recEditId) return;
+    fixed.remove(recEditId);
+    toast.success(t("Gasto recurrente eliminado", "Recurring expense deleted"));
+    setRecOpen(false);
+    setRecEditId(null);
+  };
+
+  const openEditTx = (x: Tx) => {
+    setEditTx(x);
+    setEditMerchant(x.merchant ?? "");
+    setEditAmount(Math.abs(x.amount));
+    setEditDate(x.tx_date ?? format(new Date(), "yyyy-MM-dd"));
+    setEditCategory(categorizeTx(x, categories.rules));
+  };
+
+  const onSaveEditTx = async () => {
+    if (!editTx) return;
+    if (!editAmount || editAmount <= 0) {
+      toast.error(t("Escribe un monto mayor que cero", "Enter an amount greater than zero"));
+      return;
+    }
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from("imported_transactions")
+        .update({
+          merchant: editMerchant.trim() || translateCategory(editCategory, lang),
+          amount: -Math.abs(editAmount),
+          tx_date: editDate,
+          category: editCategory,
+        })
+        .eq("id", editTx.id);
+      if (error) throw new Error(error.message);
+      await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      toast.success(t("Gasto actualizado", "Expense updated"));
+      setEditTx(null);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onDeleteEditTx = async () => {
+    if (!editTx) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase.from("imported_transactions").delete().eq("id", editTx.id);
+      if (error) throw new Error(error.message);
+      await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      toast.success(t("Gasto eliminado", "Expense deleted"));
+      setEditTx(null);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error));
+    } finally {
+      setSaving(false);
+    }
   };
 
   const currency = profile.currency || "EUR";
