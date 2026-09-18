@@ -10,9 +10,7 @@
 - [x] Nombre en inglés "Expense Tracker" (menú lateral, encabezado y título de la pestaña)
 - [x] Tablet: centrar títulos y alinear anillo con la caja de estado
 - [x] Desktop: tarjeta más compacta, objetivo en caja editable, caja de estado más pequeña, anillo más a la derecha
-
 - [x] Registro de gastos: tooltip del gráfico diario más simple (una sola línea)
-
 - [x] Registro de gastos: gráfica diaria más alta y números de eje legibles y acordes a los gastos reales
 - [x] Registro de gastos: barras que llenan el gráfico y números de eje acordes al gasto real diario
 - [x] Popup del plan: quitar la fila de palabras clave (chips, input y botón +)
@@ -29,4 +27,4 @@
 - [x] Landing: quitar la línea verde derecha y mostrar mejor la pareja y la laptop
 - [x] Landing: difuminar los cuatro bordes de la foto y eliminar por completo la línea verde derecha
 - [x] Landing: ampliar el difuminado central para eliminar el corte entre fondo y foto
-
+- [x] Landing: actualizar título y subtítulo de la sección final (Número de Vida Libre)
