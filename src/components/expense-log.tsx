@@ -203,6 +203,9 @@ export function ExpenseLog() {
   // Periodo de la vista: hoy, última semana o mes completo. El objetivo y los
   // gastos fijos se prorratean para que la comparación siga siendo justa.
   const [period, setPeriod] = useState<"day" | "week" | "month">("month");
+  // Día de la columna del gráfico diario que el usuario está mirando (hover o toque).
+  const [hoverDay, setHoverDay] = useState<number | null>(null);
+
   const daysInMonth = monthEnd.getDate();
   const periodDays = period === "day" ? 1 : period === "week" ? 7 : daysInMonth;
   const periodFactor = periodDays / daysInMonth;
@@ -962,8 +965,13 @@ export function ExpenseLog() {
                     <span className="w-4 border-t-2 border-dotted border-muted-foreground" />
                     {t("Presupuesto esperado", "Expected budget")}
                   </span>
+                  <span className="ml-auto hidden text-[11px] text-muted-foreground/70 sm:block">
+                    {t("Pasa el cursor", "Hover a day")}
+                  </span>
+
                 </div>
-                <div className="mt-4 min-w-0">
+
+                <div className="relative mt-4 min-w-0">
                     {(() => {
                       const W = 560;
                       const H = 190;
@@ -983,8 +991,20 @@ export function ExpenseLog() {
                         const y = yOf((target * (i + 1)) / daysInMonth);
                         return { x, y };
                       });
+                      // Ritmo lineal: el plan del mes repartido igual entre todos los días.
+                      const linearDay = daysInMonth > 0 ? target / daysInMonth : 0;
+                      const active = hoverDay !== null && hoverDay >= 0 && hoverDay < daysInMonth ? hoverDay : null;
+                      const activeReal = active === null ? 0 : daily[active] ?? 0;
+                      const activeDiff = activeReal - linearDay;
+                      const tipLeft = active === null ? 50 : ((left + (active + 0.5) * step) / W) * 100;
                       return (
-                        <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img">
+                        <>
+                        <svg
+                          viewBox={`0 0 ${W} ${H}`}
+                          className="w-full"
+                          role="img"
+                          onMouseLeave={() => setHoverDay(null)}
+                        >
                           {yTicks.map((v) => (
                             <g key={v}>
                               <line x1={left} x2={W - 8} y1={yOf(v)} y2={yOf(v)} className="stroke-border" strokeWidth="1" />
@@ -1010,11 +1030,21 @@ export function ExpenseLog() {
                               )}
                             </>
                           )}
+                          {active !== null && (
+                            <rect
+                              x={left + active * step}
+                              y={top}
+                              width={step}
+                              height={plotH}
+                              className="fill-foreground/5"
+                            />
+                          )}
                           {daily.map((v, i) => {
                             if (v <= 0) return null;
                             const x = left + (i + 0.19) * step;
                             const y = yOf(v);
                             const isToday = i + 1 === todayDay;
+                            const isActive = i === active;
                             return (
                               <rect
                                 key={i}
@@ -1023,7 +1053,15 @@ export function ExpenseLog() {
                                 width={barW}
                                 height={top + plotH - y}
                                 rx="2"
-                                className={isToday ? "fill-emerald-300" : i + 1 <= todayDay ? "fill-emerald-500/80" : "fill-muted-foreground/25"}
+                                className={cn(
+                                  isActive
+                                    ? "fill-emerald-300"
+                                    : isToday
+                                      ? "fill-emerald-300"
+                                      : i + 1 <= todayDay
+                                        ? "fill-emerald-500/80"
+                                        : "fill-muted-foreground/25",
+                                )}
                               />
                             );
                           })}
@@ -1054,10 +1092,48 @@ export function ExpenseLog() {
                               {d}
                             </text>
                           ))}
+                          {/* Columnas sensibles: todo el alto del día, también si no hubo gasto. */}
+                          {Array.from({ length: daysInMonth }, (_, i) => (
+                            <rect
+                              key={`hit-${i}`}
+                              x={left + i * step}
+                              y={top}
+                              width={step}
+                              height={plotH}
+                              fill="transparent"
+                              onMouseEnter={() => setHoverDay(i)}
+                              onTouchStart={() => setHoverDay(i)}
+                            />
+                          ))}
                         </svg>
+                        {active !== null && (
+                          <div
+                            className="pointer-events-none absolute top-1 z-20 -translate-x-1/2 whitespace-nowrap rounded-lg border border-border bg-card/95 px-2.5 py-1.5 text-[11px] shadow-lg backdrop-blur-sm"
+                            style={{ left: `${Math.min(84, Math.max(18, tipLeft))}%` }}
+
+                          >
+                            <span className="numeric font-medium text-muted-foreground">
+                              {format(new Date(now.getFullYear(), now.getMonth(), active + 1), "d MMM", { locale })}
+                            </span>
+                            <span
+                              className={cn(
+                                "numeric ml-2 font-semibold",
+                                activeDiff > 0 ? "text-negative" : "text-positive",
+                              )}
+                            >
+                              {fmt(activeReal)}
+                            </span>
+                            <span className="numeric ml-2 text-muted-foreground">
+                              {t("de", "of")} {fmt(linearDay)}
+                            </span>
+                          </div>
+                        )}
+
+                        </>
                       );
                     })()}
                   </div>
+
               </div>
 
               <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
