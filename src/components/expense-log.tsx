@@ -1053,7 +1053,8 @@ export function ExpenseLog() {
                           {daily.map((v, i) => {
                             if (v <= 0) return null;
                             const x = left + (i + 0.19) * step;
-                            const y = yOf(v);
+                            // Altura mínima para que gastos pequeños también se vean.
+                            const y = Math.min(yOf(v), top + plotH - 4);
                             const isToday = i + 1 === todayDay;
                             const isActive = i === active;
                             return (
