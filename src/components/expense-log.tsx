@@ -549,9 +549,13 @@ export function ExpenseLog() {
               {recording ? <Square className="mr-2 h-4 w-4 text-negative" /> : <Mic className="mr-2 h-4 w-4 text-positive" />}
               {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
+            <DropdownMenuItem onSelect={() => camRef.current?.click()}>
               <Camera className="mr-2 h-4 w-4 text-positive" />
-              {t("Foto de recibo", "Receipt photo")}
+              {t("Tomar foto", "Take photo")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
+              <ImageIcon className="mr-2 h-4 w-4 text-positive" />
+              {t("Subir foto o captura", "Upload photo or screenshot")}
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={openNewRecurring}>
               <Repeat className="mr-2 h-4 w-4 text-positive" />
@@ -600,9 +604,13 @@ export function ExpenseLog() {
               {recording ? <Square className="mr-2 h-4 w-4 text-negative" /> : <Mic className="mr-2 h-4 w-4 text-positive" />}
               {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
+            <DropdownMenuItem onSelect={() => camRef.current?.click()}>
               <Camera className="mr-2 h-4 w-4 text-positive" />
-              {t("Foto de recibo", "Receipt photo")}
+              {t("Tomar foto", "Take photo")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
+              <ImageIcon className="mr-2 h-4 w-4 text-positive" />
+              {t("Subir foto o captura", "Upload photo or screenshot")}
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={openNewRecurring}>
               <Repeat className="mr-2 h-4 w-4 text-positive" />
@@ -879,8 +887,21 @@ export function ExpenseLog() {
 
 
 
+          {/* Galería / archivos del teléfono (incluye capturas de pantalla) */}
           <input
             ref={fileRef}
+            type="file"
+            accept="image/*,application/pdf"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              e.target.value = "";
+              if (file) void send("receipt", file);
+            }}
+          />
+          {/* Cámara directa */}
+          <input
+            ref={camRef}
             type="file"
             accept="image/*"
             capture="environment"
