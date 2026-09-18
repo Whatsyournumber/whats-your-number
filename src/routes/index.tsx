@@ -289,8 +289,8 @@ export function Landing() {
       icon: PieChart,
       title: t("Tracking de tus gastos diarios", "Daily expense tracking"),
       desc: t(
-        "Registra tus gastos día a día por voz, foto o manualmente, compáralos con tu presupuesto y deja que la IA encuentre oportunidades para ahorrar más y acercarte a tu Número de Vida Libre.",
-        "Track your daily expenses by voice, photo, or manually, compare them with your budget, and let AI find opportunities to save more and move closer to your Financial Freedom Number.",
+        "Registra tus gastos día a día por voz, foto o manualmente, compáralos con tu presupuesto y deja que la IA encuentre oportunidades para ahorrar más y acercarte a tu Número de libertad.",
+        "Track your daily expenses by voice, photo, or manually, compare them with your budget, and let AI find opportunities to save more and move closer to your Freedom Number.",
       ),
       highlight: t("oportunidades para ahorrar más", "opportunities to save more"),
     },
