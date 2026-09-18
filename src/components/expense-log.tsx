@@ -491,7 +491,7 @@ export function ExpenseLog() {
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <p className={cn("numeric text-3xl font-bold leading-none sm:text-4xl", pct > 100 ? "text-negative" : "text-positive")}>
+                    <p className={cn("numeric text-2xl font-bold leading-none sm:text-3xl lg:text-4xl", pct > 100 ? "text-negative" : "text-positive")}>
                       {pct.toFixed(0)}%
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{t("del plan", "of plan")}</p>
