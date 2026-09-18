@@ -320,7 +320,7 @@ function CashFlow() {
 
   const editableCategories = useMemo(() => {
     const names = new Set<string>();
-    if (Number(profile.retirement_monthly_contribution) > 0) names.add(RETIREMENT_FUND_CATEGORY);
+    if (retirementFundAmount > 0) names.add(RETIREMENT_FUND_CATEGORY);
     for (const item of fixed.items) if (Number(item.amount) > 0) names.add(cleanCategoryName(item.name));
     for (const tx of monthTx) {
       if (tx.amount >= 0 || matchesFixed(tx as Tx)) continue;
@@ -330,7 +330,7 @@ function CashFlow() {
       names.add(custom ?? categorizeTxWithTravel(tx as Tx, rules, travelDays));
     }
     return [...names].filter(Boolean).sort((a, b) => a.localeCompare(b, lang));
-  }, [fixed.items, monthTx, matchesFixed, customWants, rules, travelDays, lang, profile.retirement_monthly_contribution]);
+  }, [fixed.items, monthTx, matchesFixed, customWants, rules, travelDays, lang, retirementFundAmount]);
 
 
   const cash = profile.assets_cash + profile.assets_bank;
