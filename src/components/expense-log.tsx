@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { endOfMonth, format, parseISO, startOfMonth } from "date-fns";
+import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Square, Wallet } from "lucide-react";
+import { Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 import { BudgetDialog } from "@/components/budget-dialog";
@@ -81,8 +81,17 @@ export function ExpenseLog() {
   const now = new Date();
   const monthStart = startOfMonth(now);
   const monthEnd = endOfMonth(now);
-  const monthLabel = format(now, "LLLL", { locale });
-  const daysLeft = Math.max(1, monthEnd.getDate() - now.getDate() + 1);
+
+  // Periodo de la vista: hoy, última semana o mes completo. El objetivo y los
+  // gastos fijos se prorratean para que la comparación siga siendo justa.
+  const [period, setPeriod] = useState<"day" | "week" | "month">("month");
+  const daysInMonth = monthEnd.getDate();
+  const periodDays = period === "day" ? 1 : period === "week" ? 7 : daysInMonth;
+  const periodFactor = periodDays / daysInMonth;
+  const periodStart =
+    period === "day" ? startOfDay(now) : period === "week" ? startOfDay(subDays(now, 6)) : monthStart;
+  const elapsedDays = Math.min(periodDays, differenceInCalendarDays(now, periodStart) + 1);
+  const daysLeft = Math.max(1, periodDays - elapsedDays + 1);
 
   const categoryNames = useMemo(
     () => [...new Set([...BASE_CATEGORIES, ...categories.rules.map((r) => r.name)])],
