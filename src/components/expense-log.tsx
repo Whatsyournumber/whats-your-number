@@ -133,7 +133,7 @@ export function ExpenseLog() {
             .filter((k) => k.length > 2),
         }))
         .filter((l) => l.aliases.length > 0),
-    [budgets.lines],
+    [planLines],
   );
 
   const rows = useMemo(() => {
@@ -154,7 +154,7 @@ export function ExpenseLog() {
       const id = match(item.name);
       if (id) actual.set(id, (actual.get(id) ?? 0) + amount);
     }
-    return budgets.lines
+    return planLines
       .filter((l) => l.amount > 0)
       .map((l) => {
         const cat = findBudgetCategory(l.id);
@@ -169,7 +169,7 @@ export function ExpenseLog() {
         };
       })
       .sort((a, b) => b.pct - a.pct);
-  }, [budgets.lines, byCategory, fixed.items, customLines, t]);
+  }, [planLines, byCategory, fixed.items, customLines, t]);
 
   const alerts = rows.filter((r) => r.pct >= 80).slice(0, 2);
 
