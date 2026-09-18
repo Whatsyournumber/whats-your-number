@@ -455,9 +455,14 @@ export function ExpenseLog() {
 
           {rows.length > 0 && (
             <div className="rounded-2xl border border-border bg-card p-4">
-              <p className="mb-3 text-sm font-medium">{t("Gastos por categoría", "Spending by category")}</p>
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <p className="text-sm font-medium">{t("Gastos por categoría", "Spending by category")}</p>
+                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => setPlanOpen(true)}>
+                  {t("Editar plan", "Edit plan")}
+                </Button>
+              </div>
               <div className="space-y-3">
-                {rows.slice(0, 6).map((r) => (
+                {rows.map((r) => (
                   <div key={r.id} className="flex items-center gap-3">
                     <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/5 text-base">
                       {r.emoji}
