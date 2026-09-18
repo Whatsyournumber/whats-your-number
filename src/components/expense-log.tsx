@@ -449,8 +449,7 @@ export function ExpenseLog() {
                     <NumberInput
                       value={target}
                       onChange={(value) => setTarget(Math.max(0, Math.round(value)))}
-                      format={(value) => money(Math.round(value), currency).replace(currencySymbol, "").trim()}
-                      aria-label={t("Objetivo mensual", "Monthly target")}
+                      format
                       className="numeric h-auto min-w-0 flex-1 border-0 bg-transparent p-0 text-2xl font-semibold shadow-none focus-visible:ring-0"
                     />
                   ) : (
