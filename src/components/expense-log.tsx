@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Wallet } from "lucide-react";
+import { CalendarDays, Camera, ChevronRight, Gauge, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Target, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 import { BudgetDialog } from "@/components/budget-dialog";
@@ -369,27 +369,34 @@ export function ExpenseLog() {
   };
 
   return (
-    <section className="space-y-3">
-      <div className="flex flex-wrap items-end justify-between gap-2">
-        <div>
+    <section className="space-y-4">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
+        <div className="min-w-0">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
             {t("Registro de gastos", "Expense log")}
           </h2>
-          <p className="text-sm text-muted-foreground">
-            {t("Anota cada gasto y mantente dentro de tu plan.", "Log every expense and stay within your plan.")}
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("Controla tus gastos del día a día y mantente dentro de tu plan.", "Track your daily expenses and stay within your plan.")}
           </p>
         </div>
-        <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-          {format(now, "LLLL yyyy", { locale })}
-        </span>
+        <ManualExpenseDialog
+          categories={categoryNames}
+          onAddCategory={(name) => categories.add(name)}
+          trigger={
+            <Button className="h-11 shrink-0 px-3 sm:px-5">
+              <Plus className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">{t("Añadir gasto", "Add expense")}</span>
+            </Button>
+          }
+        />
       </div>
 
-      <div className="flex w-full rounded-full border border-border bg-card p-1 sm:inline-flex sm:w-auto">
+      <div className="flex w-full rounded-lg border border-border bg-card p-1 sm:w-80">
         {(
           [
-            { id: "day", es: "Hoy", en: "Today" },
-            { id: "week", es: "Semana", en: "Week" },
             { id: "month", es: "Mes", en: "Month" },
+            { id: "week", es: "Semana", en: "Week" },
+            { id: "day", es: "Hoy", en: "Today" },
           ] as const
         ).map((p) => (
           <button
@@ -397,7 +404,7 @@ export function ExpenseLog() {
             type="button"
             onClick={() => setPeriod(p.id)}
             className={cn(
-              "flex-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors sm:flex-none sm:px-4",
+              "flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
               period === p.id ? "bg-positive text-background" : "text-muted-foreground hover:text-foreground",
             )}
           >
@@ -408,108 +415,60 @@ export function ExpenseLog() {
 
 
       <div className="space-y-3">
-          <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
-            <div className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-positive/15">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <div className="min-w-0 rounded-xl border border-border bg-card p-4 sm:p-5">
+              <span className="grid h-9 w-9 place-items-center rounded-lg bg-positive/10">
                 <Wallet className="h-4 w-4 text-positive" />
               </span>
-              <h3 className="text-base font-semibold">{t("Gastos vs plan", "Spending vs plan")}</h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 shrink-0 text-muted-foreground"
-                onClick={() => setPlanOpen(true)}
-                aria-label={rows.length ? t("Editar plan", "Edit plan") : t("Plan de gastos", "Spending plan")}
-              >
-                {rows.length ? <Pencil className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
-              </Button>
+              <p className="mt-4 text-xs text-muted-foreground sm:text-sm">{t("Gasto del periodo", "Period spending")}</p>
+              <p className="numeric mt-1 text-xl font-semibold sm:text-2xl">{fmt(spent)}</p>
+              <div className="mt-1 flex min-w-0 items-center gap-1 text-xs text-muted-foreground sm:text-sm">
+                <span>{t("de", "of")}</span>
+                {period === "month" && target > 0 ? (
+                  <>
+                    <NumberInput
+                      value={target}
+                      onChange={(v) => setTarget(Math.max(0, Math.round(v)))}
+                      format
+                      aria-label={t("Objetivo mensual", "Monthly goal")}
+                      className="h-auto w-16 border-none bg-transparent p-0 text-xs shadow-none focus-visible:ring-0 sm:w-20 sm:text-sm"
+                    />
+                    <span className="numeric">{currencySymbol}</span>
+                    <Pencil className="h-3 w-3 shrink-0" />
+                  </>
+                ) : (
+                  <span className="numeric">{fmt(periodTarget)}</span>
+                )}
+              </div>
             </div>
 
-            {target <= 0 ? (
-              <Button className="mt-4" onClick={() => setPlanOpen(true)}>
-                <Plus className="mr-1.5 h-4 w-4" />
-                {t("Crear tu plan de gastos", "Create your spending plan")}
-              </Button>
-            ) : (
-              <>
-                <div className="mt-5 flex flex-wrap items-center gap-4 lg:grid lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-7">
-                  <div className="order-1 min-w-0 flex-1">
-                    <p className="numeric text-3xl font-semibold leading-none sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
-                    <div className="mt-3 flex items-center gap-1.5 text-muted-foreground">
-                      <span className="text-lg sm:text-xl lg:text-2xl">{t("de", "of")}</span>
-                      {period === "month" ? (
-                        <>
-                          <NumberInput
-                            value={target}
-                            onChange={(v) => setTarget(Math.max(0, Math.round(v)))}
-                            format
-                            aria-label={t("Objetivo mensual", "Monthly goal")}
-                            className="h-auto w-24 border-none bg-transparent p-0 text-lg shadow-none focus-visible:ring-0 sm:w-28 sm:text-xl lg:w-32 lg:text-2xl"
-                          />
-                          <span className="numeric text-lg sm:text-xl lg:text-2xl">{currencySymbol}</span>
-                          <Pencil className="h-3.5 w-3.5 opacity-50" />
-                        </>
-                      ) : (
-                        <span className="numeric text-lg sm:text-xl lg:text-2xl">{fmt(periodTarget)}</span>
-                      )}
-                    </div>
-                  </div>
+            <div className="min-w-0 rounded-xl border border-border bg-card p-4 sm:p-5">
+              <span className="grid h-9 w-9 place-items-center rounded-lg bg-positive/10">
+                <Target className="h-4 w-4 text-positive" />
+              </span>
+              <p className="mt-4 text-xs text-muted-foreground sm:text-sm">{remaining < 0 ? t("Exceso", "Over plan") : t("Te quedan", "Remaining")}</p>
+              <p className={cn("numeric mt-1 text-xl font-semibold sm:text-2xl", remaining < 0 ? "text-negative" : "text-foreground")}>
+                {fmt(Math.abs(remaining))}
+              </p>
+            </div>
 
-                  <div className="relative order-2 h-24 w-24 shrink-0 sm:h-28 sm:w-28 lg:order-3 lg:h-32 lg:w-32">
-                    <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
-                      <circle cx="60" cy="60" r="52" className="stroke-muted" strokeWidth="12" fill="none" />
-                      <circle
-                        cx="60"
-                        cy="60"
-                        r="52"
-                        className={cn(spent > target ? "stroke-negative" : "stroke-positive")}
-                        strokeWidth="12"
-                        strokeLinecap="round"
-                        fill="none"
-                        strokeDasharray={2 * Math.PI * 52}
-                        strokeDashoffset={(2 * Math.PI * 52) * (1 - Math.min(1, pct / 100))}
-                      />
-                    </svg>
-                    <div className="absolute inset-0 grid place-items-center text-center">
-                      <div>
-                        <p className={cn("numeric text-lg font-semibold sm:text-xl lg:text-2xl", spent > target && "text-negative")}>
-                          {pct.toFixed(0)}%
-                        </p>
-                        <p className="text-[0.625rem] text-muted-foreground sm:text-xs">{t("del plan", "of plan")}</p>
-                      </div>
-                    </div>
-                  </div>
+            <div className="min-w-0 rounded-xl border border-border bg-card p-4 sm:p-5">
+              <span className="grid h-9 w-9 place-items-center rounded-lg bg-positive/10">
+                <CalendarDays className="h-4 w-4 text-positive" />
+              </span>
+              <p className="mt-4 text-xs text-muted-foreground sm:text-sm">{t("Días restantes", "Days remaining")}</p>
+              <p className="numeric mt-1 text-xl font-semibold sm:text-2xl">{daysLeft}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{format(now, "LLLL yyyy", { locale })}</p>
+            </div>
 
-                  <div className="order-3 grid w-full grid-cols-3 gap-2 border-t border-border/60 pt-4 sm:gap-4 lg:order-2 lg:w-auto lg:gap-6 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0">
-                    <div className="min-w-0">
-                      <p className={cn("numeric text-lg font-semibold leading-none sm:text-2xl lg:text-3xl", remaining < 0 ? "text-negative" : "text-positive")}>
-                        {fmt(Math.abs(remaining))}
-                      </p>
-                      <p className="mt-1.5 text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs lg:text-sm">
-                        {remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}
-                      </p>
-                    </div>
-                    <div className="min-w-0">
-                      <p className="numeric text-lg font-semibold leading-none text-positive sm:text-2xl lg:text-3xl">{daysLeft}</p>
-                      <p className="mt-1.5 text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs lg:text-sm">
-                        <span className="lg:hidden">{t("días quedan", "days left")}</span>
-                        <span className="hidden lg:inline">{t("días en el mes", "days in the month")}</span>
-                      </p>
-                    </div>
-                    <div className="min-w-0">
-                      <p className="numeric text-lg font-semibold leading-none text-positive sm:text-2xl lg:text-3xl">
-                        {fmt(perDay)}/{t("día", "day")}
-                      </p>
-                      <p className="mt-1.5 text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs lg:text-sm">
-                        <span className="lg:hidden">{t("para el plan", "on plan")}</span>
-                        <span className="hidden lg:inline">{t("para mantener el plan", "to stay on plan")}</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-              </>
-            )}
+            <div className="min-w-0 rounded-xl border border-border bg-card p-4 sm:p-5">
+              <span className="grid h-9 w-9 place-items-center rounded-lg bg-positive/10">
+                <Gauge className="h-4 w-4 text-positive" />
+              </span>
+              <p className="mt-4 text-xs text-muted-foreground sm:text-sm">{t("Para mantener el plan", "To stay on plan")}</p>
+              <p className="numeric mt-1 text-xl font-semibold sm:text-2xl">{fmt(perDay)}/{t("día", "day")}</p>
+              <p className={cn("mt-1 text-xs", pct > 100 ? "text-negative" : "text-positive")}>{pct.toFixed(0)}% {t("del plan", "of plan")}</p>
+            </div>
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-4">
