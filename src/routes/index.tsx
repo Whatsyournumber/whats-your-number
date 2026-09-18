@@ -47,9 +47,8 @@ function HighlightDesc({ desc, highlight }: { desc: string; highlight?: string }
   return (
     <>
       {desc.slice(0, idx)}
-      <span className="relative">
+      <span className="bg-[image:linear-gradient(to_right,color-mix(in_oklab,var(--color-primary)_25%,transparent),color-mix(in_oklab,var(--color-primary)_85%,transparent),color-mix(in_oklab,var(--color-primary)_25%,transparent))] bg-[length:100%_2px] bg-[position:0_100%] bg-no-repeat pb-[3px] [-webkit-box-decoration-break:clone] [box-decoration-break:clone]">
         {highlight}
-        <span className="absolute -bottom-1 left-0 h-[2px] w-full rounded-full bg-gradient-to-r from-primary/20 via-primary/60 to-primary/20" />
       </span>
       {desc.slice(idx + highlight.length)}
     </>
