@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Wallet } from "lucide-react";
+import { ArrowDown, ArrowUp, CalendarDays, Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 import { BudgetDialog } from "@/components/budget-dialog";
@@ -414,57 +414,34 @@ export function ExpenseLog() {
 
 
       <div className="space-y-3">
-          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-              <div className="min-w-0 flex-1">
+          <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+            <div className="grid gap-6 md:grid-cols-[1.15fr_1fr_auto] md:items-center lg:grid-cols-[1.2fr_1fr_auto_0.9fr]">
+              <div className="min-w-0">
                 <div className="flex items-center gap-3">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-positive/10">
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-positive/10">
                     <Wallet className="h-5 w-5 text-positive" />
                   </span>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="text-base font-semibold sm:text-lg">
-                        {t("Gasto objetivo mensual", "Monthly spending target")}
-                      </p>
+                      <p className="text-base font-semibold sm:text-lg">{t("Gasto objetivo mensual", "Monthly spending target")}</p>
                       {period === "month" && (
-                        <button
-                          type="button"
-                          onClick={() => setPlanOpen(true)}
-                          aria-label={t("Editar el plan", "Edit plan")}
-                          className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
-                        >
+                        <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} className="shrink-0 text-muted-foreground transition-colors hover:text-foreground">
                           <Pencil className="h-4 w-4" />
                         </button>
                       )}
                     </div>
-                    <p className="mt-0.5 text-sm text-muted-foreground">
-                      {t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}
-                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
                   </div>
                 </div>
-
-                <div className="mt-4 flex h-14 w-full items-center rounded-xl border border-border bg-background/20 px-4 sm:max-w-xl">
-                  <span className="mr-3 text-lg font-semibold text-muted-foreground">{currencySymbol}</span>
-                  {period === "month" ? (
-                    <NumberInput
-                      value={target}
-                      onChange={(value) => setTarget(Math.max(0, Math.round(value)))}
-                      format
-                      className="numeric h-auto min-w-0 flex-1 border-0 bg-transparent p-0 text-2xl font-semibold shadow-none focus-visible:ring-0"
-                    />
-                  ) : (
-                    <p className="numeric text-2xl font-semibold">{fmt(periodTarget)}</p>
-                  )}
-                </div>
-
-                <div className="mt-3 flex items-baseline gap-2 text-sm text-muted-foreground">
-                  <span>{t("Gasto del periodo", "Period spending")}</span>
-                  <span className="numeric text-xl font-bold text-foreground">{fmt(spent)}</span>
-                </div>
+                <p className="numeric mt-5 whitespace-nowrap text-4xl font-bold sm:pl-9 sm:text-5xl">{fmt(periodTarget)}</p>
               </div>
 
-              <div className="flex w-36 shrink-0 flex-col items-center sm:w-48">
-                <div className="relative h-32 w-32 sm:h-40 sm:w-40">
+              <div className="min-w-0 border-border md:border-l md:pl-8">
+                <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
+                <p className="numeric mt-2 whitespace-nowrap text-4xl font-bold sm:text-5xl">{fmt(spent)}</p>
+              </div>
+
+              <div className="relative h-36 w-36 shrink-0 justify-self-center sm:h-40 sm:w-40">
                   <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                     <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
                     <circle
@@ -480,33 +457,27 @@ export function ExpenseLog() {
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <p
-                      className={cn(
-                        "numeric text-3xl font-bold leading-none sm:text-4xl",
-                        pct > 100 ? "text-negative" : "text-positive",
-                      )}
-                    >
+                    <p className={cn("numeric text-3xl font-bold leading-none sm:text-4xl", pct > 100 ? "text-negative" : "text-positive")}>
                       {pct.toFixed(0)}%
                     </p>
-                    <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-                      {t("del plan", "of plan")}
-                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{t("del plan", "of plan")}</p>
                   </div>
-                </div>
-                <div className="mt-2 flex w-full items-start gap-2">
+              </div>
+
+              <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/20 p-4 md:col-span-3 lg:col-span-1">
                   <span
                     className={cn(
-                      "mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full",
+                      "grid h-9 w-9 shrink-0 place-items-center rounded-lg",
                       isOnPace ? "bg-positive/15 text-positive" : "bg-negative/15 text-negative",
                     )}
                   >
                     {isOnPace ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
                   </span>
                   <div className="min-w-0">
-                    <p className={cn("text-sm font-semibold", isOnPace ? "text-positive" : "text-negative")}> 
+                    <p className={cn("text-sm font-semibold", isOnPace ? "text-positive" : "text-negative")}>
                       {isOnPace ? t("Vas bien", "On track") : t("Vas por encima", "Above pace")}
                     </p>
-                    <p className="mt-0.5 text-xs leading-snug text-muted-foreground">
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                       {isOnPace
                         ? t(
                             `Estás ${Math.round(paceDifference)}% por debajo del ritmo esperado`,
@@ -518,38 +489,32 @@ export function ExpenseLog() {
                           )}
                     </p>
                   </div>
-                </div>
               </div>
             </div>
 
-            <div className="mt-2 grid grid-cols-3 gap-2 border-t border-border/60 pt-2 sm:mt-2.5 sm:gap-4 sm:pt-2.5">
-              <div className="min-w-0">
-                <p
-                  style={{ letterSpacing: "-0.01em" }}
-                  className={cn(
-                    "numeric truncate text-xl font-bold sm:text-[1.75rem]",
-                    remaining < 0 ? "text-negative" : "text-positive",
-                  )}
-                >
-                  {fmt(Math.abs(remaining))}
-                </p>
-                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-[13px]">
-                  {remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}
-                </p>
+            <div className="mt-5 grid grid-cols-1 gap-4 border-t border-border/60 pt-5 sm:grid-cols-3 sm:gap-0">
+              <div className="flex min-w-0 items-center gap-4 sm:px-3">
+                <span className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-full", remaining < 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
+                  <Wallet className="h-5 w-5" />
+                </span>
+                <div className="min-w-0">
+                  <p className={cn("numeric text-2xl font-bold sm:text-3xl", remaining < 0 ? "text-negative" : "text-positive")}>{fmt(Math.abs(remaining))}</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">{remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}</p>
+                </div>
               </div>
-              <div className="min-w-0">
-                <p style={{ letterSpacing: "-0.01em" }} className="numeric truncate text-xl font-bold text-positive sm:text-[1.75rem]">{daysLeft}</p>
-                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-[13px]">
-                  {t("días quedan", "days left")}
-                </p>
+              <div className="flex min-w-0 items-center gap-4 sm:border-l sm:border-border sm:px-8">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><CalendarDays className="h-5 w-5" /></span>
+                <div>
+                  <p className="numeric text-2xl font-bold text-positive sm:text-3xl">{daysLeft}</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">{t("días quedan", "days left")}</p>
+                </div>
               </div>
-              <div className="min-w-0">
-                <p style={{ letterSpacing: "-0.01em" }} className="numeric truncate text-xl font-bold text-positive sm:text-[1.75rem]">
-                  {fmt(perDay)}/{t("día", "day")}
-                </p>
-                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-[13px]">
-                  {t("para el plan", "to stay on plan")}
-                </p>
+              <div className="flex min-w-0 items-center gap-4 sm:border-l sm:border-border sm:px-8">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><TrendingUp className="h-5 w-5" /></span>
+                <div className="min-w-0">
+                  <p className="numeric whitespace-nowrap text-2xl font-bold text-positive sm:text-3xl">{fmt(perDay)}/{t("día", "day")}</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">{t("para el plan", "to stay on plan")}</p>
+                </div>
               </div>
             </div>
           </div>
