@@ -36,7 +36,7 @@ export async function transcribeExpenseAudio(apiKey: string, base64: string, mim
   const audioType = mimeType.startsWith("video/") ? "audio/webm" : mimeType || "audio/webm";
   const form = new FormData();
   form.append("model", "google/gemini-3.5-transcribe");
-  form.append("file", new Blob([bytes], { type: audioType }), `nota.${extFor(audioType)}`);
+  form.append("file", new Blob([bytes as unknown as BlobPart], { type: audioType }), `nota.${extFor(audioType)}`);
 
   const response = await fetch(`${GATEWAY}/audio/transcriptions`, {
     method: "POST",
