@@ -449,7 +449,7 @@ export function ExpenseLog() {
           <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
              <div className="grid gap-6 md:grid-cols-[1.15fr_1fr_auto] lg:grid-cols-[1.2fr_1fr_auto_0.9fr]">
                <div className="flex min-w-0 flex-col">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 md:mt-auto">
                   <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-positive/10">
                     <Wallet className="h-5 w-5 text-positive" />
                   </span>
@@ -465,12 +465,12 @@ export function ExpenseLog() {
                     <p className="mt-1 text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
                   </div>
                 </div>
-                <p className="numeric mt-4 whitespace-nowrap text-3xl font-bold sm:text-4xl md:mt-auto md:pl-9 md:pt-5 lg:text-5xl">{fmt(periodTarget)}</p>
+                <p className="numeric mt-3 whitespace-nowrap text-3xl font-bold sm:text-4xl md:pl-9 lg:text-5xl">{fmt(periodTarget)}</p>
               </div>
 
               <div className="flex min-w-0 flex-col border-border md:border-l md:pl-8">
-                <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
-                <p className="numeric mt-4 whitespace-nowrap text-3xl font-bold sm:text-4xl md:mt-auto md:pt-5 lg:text-5xl">{fmt(spent)}</p>
+                <p className="text-sm text-muted-foreground md:mt-auto">{t("Gasto del período", "Period spending")}</p>
+                <p className="numeric mt-3 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
               </div>
 
               <div className="relative h-28 w-28 shrink-0 self-center justify-self-center sm:h-36 sm:w-36 lg:h-40 lg:w-40">
