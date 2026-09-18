@@ -215,11 +215,18 @@ function CashFlow() {
 
   const hasReal = hasData && monthTx.length > 0;
 
+  const fixedSavings = fixed.items.filter((item) =>
+    /ahorro|inver|saving|invest|broker|etf|fondo|bolsa|crypto|cripto/i.test(item.name),
+  );
+  const fixedSavingsAmount = fixedSavings.reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
+  const fixedNeeds = fixed.items.filter((item) => !fixedSavings.some((saving) => saving.id === item.id));
+  const fixedNeedsAmount = fixedNeeds.reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
+
   // Cuando hay movimientos, toda la distribución sale exclusivamente del mes corriente.
   // No se suman presupuestos, metas ni gastos fijos estimados del perfil.
-  const fixedAmount = hasReal ? fixed.total + spend.needs : d.cashFlow.buckets[0]!.amount;
+  const fixedAmount = hasReal ? fixedNeedsAmount + spend.needs : d.cashFlow.buckets[0]!.amount;
   const lifestyleAmount = hasReal ? spend.wants : d.cashFlow.buckets[1]!.amount;
-  const investAmount = hasReal ? spend.investments : d.cashFlow.buckets[2]!.amount;
+  const investAmount = hasReal ? fixedSavingsAmount + spend.investments : d.cashFlow.buckets[2]!.amount;
 
   const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount - investAmount);
 
@@ -238,7 +245,7 @@ function CashFlow() {
 
   const needsBreakdown = hasReal
     ? [
-        ...fixed.items
+        ...fixedNeeds
           .filter((item) => Number(item.amount) > 0)
           .map((item) => ({ label: item.name.replace(/^\p{Extended_Pictographic}\s*/u, ""), amount: Number(item.amount) })),
         ...[...spend.needsBy.entries()]
@@ -254,6 +261,9 @@ function CashFlow() {
 
   const saveBreakdown = hasReal
     ? [
+        ...fixedSavings
+          .filter((item) => Number(item.amount) > 0)
+          .map((item) => ({ label: item.name.replace(/^\p{Extended_Pictographic}\s*/u, ""), amount: Number(item.amount) })),
         ...[...spend.investmentsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
         { label: t("Flujo libre del mes", "Free flow this month"), amount: freeAmount },
       ].sort((a, b) => b.amount - a.amount)
