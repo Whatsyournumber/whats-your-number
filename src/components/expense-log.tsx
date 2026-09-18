@@ -399,13 +399,47 @@ export function ExpenseLog() {
 
   return (
     <section className="space-y-4">
-      <div className="min-w-0">
-        <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
-          {t("Registro de gastos", "Expense log")}
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {t("Controla tus gastos del día a día y mantente dentro de tu plan.", "Track your daily expenses and stay within your plan.")}
-        </p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
+            {t("Registro de gastos", "Expense log")}
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground sm:hidden">
+            {t("Controla tus gastos del día a día", "Track your daily expenses")}
+          </p>
+          <p className="mt-1 hidden text-sm text-muted-foreground sm:block">
+            {t("Controla tus gastos del día a día y mantente dentro de tu plan.", "Track your daily expenses and stay within your plan.")}
+          </p>
+        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              aria-label={t("Añadir gasto", "Add expense")}
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-positive text-background sm:hidden"
+            >
+              <Plus className="h-5 w-5" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuItem onSelect={() => setManualOpen(true)}>
+              <PencilLine className="mr-2 h-4 w-4 text-positive" />
+              {t("Manual", "Manual")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => (recording ? stopRecording() : startRecording())}>
+              {recording ? <Square className="mr-2 h-4 w-4 text-negative" /> : <Mic className="mr-2 h-4 w-4 text-positive" />}
+              {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
+              <Camera className="mr-2 h-4 w-4 text-positive" />
+              {t("Foto de recibo", "Receipt photo")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setRecOpen(true)}>
+              <Repeat className="mr-2 h-4 w-4 text-positive" />
+              {t("Recurrente", "Recurring")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
