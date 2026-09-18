@@ -418,24 +418,19 @@ export function ExpenseLog() {
               </span>
               <p className="mt-4 text-xs text-muted-foreground sm:text-sm">{t("Gasto del periodo", "Period spending")}</p>
               <p className="numeric mt-1 text-xl font-semibold sm:text-2xl">{fmt(spent)}</p>
-              <div className="mt-1 flex min-w-0 items-center gap-1 text-xs text-muted-foreground sm:text-sm">
-                <span>{t("de", "of")}</span>
-                {period === "month" && target > 0 ? (
-                  <>
-                    <NumberInput
-                      value={target}
-                      onChange={(v) => setTarget(Math.max(0, Math.round(v)))}
-                      format
-                      aria-label={t("Objetivo mensual", "Monthly goal")}
-                      className="h-auto w-16 border-none bg-transparent p-0 text-xs shadow-none focus-visible:ring-0 sm:w-20 sm:text-sm"
-                    />
-                    <span className="numeric">{currencySymbol}</span>
-                    <Pencil className="h-3 w-3 shrink-0" />
-                  </>
-                ) : (
-                  <span className="numeric">{fmt(periodTarget)}</span>
-                )}
-              </div>
+              <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                {t("de", "of")} <span className="numeric">{fmt(periodTarget)}</span>
+              </p>
+              {period === "month" && (
+                <button
+                  type="button"
+                  onClick={() => setPlanOpen(true)}
+                  className="mt-3 flex items-center gap-1.5 text-xs font-medium text-positive transition-colors hover:text-positive/80 sm:text-sm"
+                >
+                  <Pencil className="h-3.5 w-3.5 shrink-0" />
+                  {t("Editar el plan", "Edit plan")}
+                </button>
+              )}
             </div>
 
             <div className="min-w-0 rounded-xl border border-border bg-card p-4 sm:p-5">
