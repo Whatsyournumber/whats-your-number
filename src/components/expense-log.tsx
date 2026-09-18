@@ -132,7 +132,15 @@ export function ExpenseLog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [budgets.loaded, budgets.hasBudget, onboardingLines]);
 
-  const planLines: BudgetLine[] = budgets.hasBudget ? budgets.lines : onboardingLines;
+  // Se muestran siempre las categorías del onboarding; el plan guardado tiene prioridad en el importe.
+  const planLines: BudgetLine[] = useMemo(() => {
+    const merged = new Map<string, BudgetLine>();
+    for (const l of onboardingLines) merged.set(l.id, l);
+    for (const l of budgets.lines) {
+      if (l.amount > 0) merged.set(l.id, l);
+    }
+    return [...merged.values()].filter((l) => l.amount > 0);
+  }, [onboardingLines, budgets.lines]);
 
   const customLines = useMemo(
     () =>
