@@ -21,6 +21,7 @@ import {
   ChevronRight,
   X,
   UserRound,
+  ReceiptText,
 } from "lucide-react";
 
 
@@ -63,6 +64,7 @@ export function AppSidebar() {
   const { avatarUrl: googleAvatar } = useProfileAvatar();
   const primary = [
     { title: t("Dashboard", "Dashboard"), url: "/dashboard", icon: LayoutDashboard },
+    { title: t("Registro de gastos", "Expense log"), url: "/registro-gastos", icon: ReceiptText },
     { title: t("Análisis de Gastos", "Spending Analysis"), url: "/gastos", icon: PieChart },
     { title: t("Distribución del dinero", "Money Distribution"), url: "/cash-flow", icon: Waves },
     { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home },
