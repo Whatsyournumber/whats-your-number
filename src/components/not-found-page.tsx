@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
@@ -7,7 +6,6 @@ import {
   Instagram,
   LayoutDashboard,
   Linkedin,
-  Mail,
   Tag,
 } from "lucide-react";
 import { motion } from "motion/react";
@@ -44,18 +42,6 @@ export function NotFoundPage() {
   const t = useT();
   const { lang } = useLanguage();
   const { user } = useAuth();
-  const [reportHref, setReportHref] = useState("mailto:hello@whatsyour-number.com");
-
-  // Al escribir el correo ya incluimos la dirección exacta que falló.
-  useEffect(() => {
-    const url = window.location.href;
-    const subject = encodeURIComponent(t("Página no encontrada (404)", "Page not found (404)"));
-    const body = encodeURIComponent(
-      `${t("Intentaba abrir", "I was trying to open")}: ${url}\n\n${t("Me pasó esto", "What happened")}: `,
-    );
-    setReportHref(`mailto:hello@whatsyour-number.com?subject=${subject}&body=${body}`);
-  }, [t]);
-
   const homeHref = lang === "en" ? "/en" : "/";
   const blogHref = lang === "en" ? "/en/blog" : "/blog";
   const demoHref =
@@ -199,14 +185,6 @@ export function NotFoundPage() {
                 <Icon className="h-4 w-4" />
               </a>
             ))}
-            <a
-              href={reportHref}
-              aria-label={t("Escribir al equipo", "Write to the team")}
-              title={t("Escribir al equipo", "Write to the team")}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-elevated text-muted-foreground ring-1 ring-border transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary hover:text-primary-foreground hover:ring-primary"
-            >
-              <Mail className="h-4 w-4" />
-            </a>
           </div>
         </motion.div>
       </main>
