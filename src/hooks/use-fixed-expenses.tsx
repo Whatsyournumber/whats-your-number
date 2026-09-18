@@ -267,21 +267,26 @@ export function convertStoredFixedExpenses(from: string, to: string) {
 
 const TARGET_KEY = "whatsyournumber:spend-target";
 
-/** Gasto mensual objetivo (target), guardado por cuenta en el navegador. */
+/** Gasto mensual objetivo (target). Se guarda en la cuenta (nube) para que
+ *  todos los dispositivos vean la misma cifra; el navegador solo es caché. */
 export function useSpendTarget() {
   const { user } = useAuth();
-  const storageKey = useMemo(() => `${TARGET_KEY}:${user?.id ?? "anon"}`, [user?.id]);
+  const userId = user?.id ?? null;
+  const storageKey = useMemo(() => `${TARGET_KEY}:${userId ?? "anon"}`, [userId]);
   const [target, setTarget] = useState(0);
   const [hasTarget, setHasTarget] = useState(false);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Cada cuenta usa su propia clave. Si todavía existe el valor legado sin
-  // cuenta, la primera sesión activa lo reclama una sola vez y lo elimina.
+  // Cada cuenta usa su propia clave local como caché. Si todavía existe el
+  // valor legado sin cuenta, la primera sesión activa lo reclama una sola vez.
   useEffect(() => {
+    let cancelled = false;
     setTarget(0);
     setHasTarget(false);
+    let local = 0;
     try {
       let raw = window.localStorage.getItem(storageKey);
-      if (raw === null && user?.id) {
+      if (raw === null && userId) {
         const legacy = window.localStorage.getItem(TARGET_KEY);
         if (legacy !== null && Number.isFinite(Number(legacy)) && Number(legacy) > 0) {
           window.localStorage.setItem(storageKey, legacy);
@@ -290,13 +295,55 @@ export function useSpendTarget() {
         }
       }
       if (raw !== null && Number.isFinite(Number(raw)) && Number(raw) > 0) {
-        setTarget(Number(raw));
+        local = Number(raw);
+        setTarget(local);
         setHasTarget(true);
       }
     } catch {
       /* ignore */
     }
-  }, [storageKey, user?.id]);
+
+    if (!userId) return;
+
+    void (async () => {
+      const { data, error } = await supabase
+        .from("spend_plans")
+        .select("target")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (cancelled || error) return;
+      const remote = Number(data?.target) || 0;
+      if (remote > 0) {
+        // La nube manda: mismo objetivo en todos los dispositivos.
+        setTarget(remote);
+        setHasTarget(true);
+        try {
+          window.localStorage.setItem(storageKey, String(remote));
+        } catch {
+          /* ignore */
+        }
+      } else if (local > 0) {
+        // Primera vez con sincronización: subimos el objetivo de este dispositivo.
+        void supabase
+          .from("spend_plans")
+          .upsert({ user_id: userId, target: local }, { onConflict: "user_id" })
+          .then(({ error: upErr }) => {
+            if (upErr) console.error("spend_plans target seed", upErr.message);
+          });
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [storageKey, userId]);
+
+  useEffect(
+    () => () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+    },
+    [],
+  );
 
   const update = useCallback(
     (v: number) => {
@@ -307,8 +354,18 @@ export function useSpendTarget() {
       } catch {
         /* ignore */
       }
+      if (!userId) return;
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      saveTimer.current = setTimeout(() => {
+        void supabase
+          .from("spend_plans")
+          .upsert({ user_id: userId, target: v }, { onConflict: "user_id" })
+          .then(({ error }) => {
+            if (error) console.error("spend_plans target upsert", error.message);
+          });
+      }, 400);
     },
-    [storageKey],
+    [storageKey, userId],
   );
 
   return { target, setTarget: update, hasTarget };
