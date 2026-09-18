@@ -470,7 +470,7 @@ export function ExpenseLog() {
 
       <div className="space-y-3">
           <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
-             <div className="grid gap-5 md:grid-cols-[1.15fr_1fr_auto] md:items-center lg:grid-cols-[1.2fr_1fr_auto_0.9fr]">
+             <div className="grid gap-5 md:grid-cols-[1.15fr_1fr_auto] md:items-end lg:grid-cols-[1.25fr_1fr_auto_0.9fr]">
                <div className="flex min-w-0 flex-col">
                 <div className="flex items-center gap-3">
                   <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-positive/10">
@@ -496,7 +496,7 @@ export function ExpenseLog() {
                 <p className="numeric mt-3 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
               </div>
 
-              <div className="relative h-24 w-24 shrink-0 self-center justify-self-center sm:h-28 sm:w-28 lg:h-32 lg:w-32">
+              <div className="relative h-24 w-24 shrink-0 self-center justify-self-center sm:h-28 sm:w-28 lg:h-28 lg:w-28">
                   <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                     <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
                     <circle
