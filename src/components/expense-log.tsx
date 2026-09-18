@@ -411,8 +411,8 @@ export function ExpenseLog() {
 
 
       <div className="space-y-3">
-          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
-            <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
+          <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
+            <div className="grid gap-5 sm:grid-cols-[1.15fr_1fr] sm:items-center">
               <div className="min-w-0">
                 <div className="flex items-center gap-2.5">
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-positive/10">
@@ -422,7 +422,7 @@ export function ExpenseLog() {
                     {t("Gasto del periodo", "Period spending")}
                   </p>
                 </div>
-                <p className="numeric mt-3 text-3xl font-semibold sm:text-4xl">{fmt(spent)}</p>
+                <p className="numeric mt-4 text-3xl font-semibold sm:text-4xl">{fmt(spent)}</p>
                 <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
                   {t("de", "of")} <span className="numeric">{fmt(periodTarget)}</span>
                 </p>
@@ -438,50 +438,37 @@ export function ExpenseLog() {
                 )}
               </div>
 
-              <div className="flex items-center justify-between gap-4 border-t border-border/60 pt-4 sm:justify-end sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
-                <div className="min-w-0">
-                  <p className={cn("text-sm font-semibold", pct > 100 ? "text-negative" : "text-positive")}>
+              <div className="flex items-center justify-between gap-4 border-t border-border/60 pt-4 sm:flex-col sm:items-end sm:justify-center sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
+                <div className="min-w-0 text-left sm:text-right">
+                  <p
+                    className={cn(
+                      "numeric text-4xl font-semibold leading-none sm:text-5xl",
+                      pct > 100 ? "text-negative" : "text-positive",
+                    )}
+                  >
+                    {pct.toFixed(0)}%
+                  </p>
+                  <p
+                    className={cn(
+                      "mt-2 text-sm font-medium sm:text-base",
+                      pct > 100 ? "text-negative" : "text-positive",
+                    )}
+                  >
                     {pct > 100 ? t("Sobre el plan", "Over plan") : t("Vas bien", "On track")}
                   </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {pct > 100
-                      ? t(`${pct.toFixed(0)}% del objetivo`, `${pct.toFixed(0)}% of target`)
-                      : t(`${Math.max(0, 100 - pct).toFixed(0)}% por debajo del ritmo esperado`, `${Math.max(0, 100 - pct).toFixed(0)}% below the expected pace`)}
-                  </p>
-                  <p className="mt-3 flex items-center gap-1.5 text-[0.6875rem] uppercase tracking-wide text-muted-foreground">
+                  <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground sm:justify-end">
                     <Gauge className="h-3 w-3 shrink-0 opacity-70" />
                     {t("Para mantener el plan", "To stay on plan")}
+                    <span className="numeric font-semibold text-foreground">
+                      {fmt(perDay)}/{t("día", "day")}
+                    </span>
                   </p>
-                  <p className="numeric mt-0.5 text-xl font-semibold sm:text-2xl">
-                    {fmt(perDay)}/{t("día", "day")}
-                  </p>
-                </div>
-                <div className="relative h-24 w-24 shrink-0 sm:h-28 sm:w-28">
-                  <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90" role="img">
-                    <circle cx="60" cy="60" r="48" className="stroke-muted" strokeWidth="12" fill="none" />
-                    <circle
-                      cx="60"
-                      cy="60"
-                      r="48"
-                      className={cn(pct > 100 ? "stroke-negative" : "stroke-positive")}
-                      strokeWidth="12"
-                      strokeLinecap="round"
-                      fill="none"
-                      strokeDasharray={2 * Math.PI * 48}
-                      strokeDashoffset={(2 * Math.PI * 48) * (1 - Math.min(1, pct / 100))}
-                    />
-                  </svg>
-                  <div className="absolute inset-0 grid place-items-center text-center">
-                    <div>
-                      <p className={cn("numeric text-xl font-semibold", pct > 100 && "text-negative")}>{pct.toFixed(0)}%</p>
-                      <p className="text-[0.6875rem] text-muted-foreground">{t("del plan", "of plan")}</p>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
 
           </div>
+
 
           <div className="rounded-2xl border border-border bg-card p-4">
             <p className="mb-3 text-sm font-medium">{t("Agrega un gasto", "Add an expense")}</p>
