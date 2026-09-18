@@ -447,8 +447,8 @@ export function ExpenseLog() {
 
       <div className="space-y-3">
           <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
-            <div className="grid gap-6 md:grid-cols-[1.15fr_1fr_auto] md:items-center lg:grid-cols-[1.2fr_1fr_auto_0.9fr]">
-              <div className="min-w-0">
+             <div className="grid gap-6 md:grid-cols-[1.15fr_1fr_auto] lg:grid-cols-[1.2fr_1fr_auto_0.9fr]">
+               <div className="flex min-w-0 flex-col">
                 <div className="flex items-center gap-3">
                   <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-positive/10">
                     <Wallet className="h-5 w-5 text-positive" />
