@@ -462,96 +462,65 @@ export function ExpenseLog() {
                 )}
               </div>
 
-
-              {target > 0 && (
-                <div className="mt-4 grid grid-cols-3 gap-3 border-t border-border/60 pt-3 text-center sm:text-left">
-                  <div>
-                    <p className={cn("text-base font-semibold", remaining >= 0 ? "text-positive" : "text-negative")}>
-                      {fmt(Math.abs(remaining))}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {remaining >= 0 ? t("Te quedan", "Left") : t("Excedido", "Over")}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-base font-semibold">{daysLeft}</p>
-                    <p className="text-[11px] text-muted-foreground">{t("días en el mes", "days left")}</p>
-                  </div>
-                  <div>
-                    <p className="text-base font-semibold text-positive">{fmt(perDay)}/{t("día", "day")}</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {t("para mantener el plan", "to stay on plan")}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-          {rows.length > 0 && (
-            <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
-              <Collapsible open={rowsOpen} onOpenChange={setRowsOpen}>
-                <CollapsibleTrigger
-                  className="flex w-full items-center justify-between gap-2 py-1 text-left"
-                  aria-label={t("Mostrar u ocultar plan por categoría", "Show or hide category plan")}
+              {rows.length > 0 && (
+                <Collapsible
+                  open={rowsOpen}
+                  onOpenChange={setRowsOpen}
+                  className="mt-5 border-t border-border/60 pt-4"
                 >
-                  <div className="flex min-w-0 items-center gap-1.5">
-                    <p className="whitespace-nowrap text-[0.625rem] font-medium uppercase tracking-[0.08em] text-muted-foreground sm:text-xs sm:tracking-[0.14em]">
-                      <span className="sm:hidden">{t("Gasto real vs objetivo", "Actual vs target")}</span>
-                      <span className="hidden sm:inline">{t("Gasto real vs objetivo por categoría", "Actual vs target by category")}</span>
-                    </p>
-                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
-                  </div>
-                  <div className="flex shrink-0 items-center gap-1">
-                    <p className="whitespace-nowrap text-[0.625rem] text-muted-foreground sm:hidden">
-                      {alerts.filter((a) => a.pct >= 100).length > 0 && (
-                        <span className="text-negative">
-                          {alerts.filter((a) => a.pct >= 100).length} {t("excedidas", "over")}
-                        </span>
-                      )}
-                    </p>
+                  <CollapsibleTrigger
+                    className="flex w-full items-center justify-between gap-2 py-1 text-left"
+                    aria-label={t("Mostrar u ocultar plan por categoría", "Show or hide category plan")}
+                  >
+                    <div className="flex min-w-0 items-center gap-1.5">
+                      <p className="whitespace-nowrap text-[0.625rem] font-medium uppercase tracking-[0.08em] text-muted-foreground sm:text-xs sm:tracking-[0.14em]">
+                        <span className="sm:hidden">{t("Gasto real vs objetivo", "Actual vs target")}</span>
+                        <span className="hidden sm:inline">{t("Gasto real vs objetivo por categoría", "Actual vs target by category")}</span>
+                      </p>
+                      <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+                    </div>
                     <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         setPlanOpen(true);
                       }}
-                      className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                       aria-label={t("Editar plan de gastos", "Edit spending plan")}
                     >
                       <Pencil className="h-3.5 w-3.5" />
                     </button>
-                  </div>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                    {rows.map((r) => (
-                      <div key={r.id} className="rounded-xl border border-border/50 px-3 py-2">
-                        <div className="flex items-baseline justify-between gap-2">
-                          <span className="min-w-0 flex-1 truncate text-[0.6875rem] leading-4">
-                            {r.emoji} {r.name}
-                          </span>
-                          <span
-                            className={cn(
-                              "numeric shrink-0 text-[0.6875rem] leading-4",
-                              r.actual > r.planned ? "text-negative" : "text-positive",
-                            )}
-                          >
-                            {fmt(r.actual)} / {fmt(r.planned)}
-                          </span>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      {rows.map((r) => (
+                        <div key={r.id} className="rounded-xl border border-border/50 bg-background/40 px-3.5 py-3">
+                          <div className="flex items-baseline justify-between gap-2">
+                            <span className="min-w-0 flex-1 truncate text-xs leading-4 sm:text-sm">
+                              {r.emoji} {r.name}
+                            </span>
+                            <span
+                              className={cn(
+                                "numeric shrink-0 text-xs leading-4 sm:text-sm",
+                                r.actual > r.planned ? "text-negative" : "text-positive",
+                              )}
+                            >
+                              {fmt(r.actual)} / {fmt(r.planned)}
+                            </span>
+                          </div>
+                          <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-muted">
+                            <div
+                              className={cn("h-full rounded-full", r.actual > r.planned ? "bg-negative" : "bg-positive")}
+                              style={{ width: `${Math.min(100, r.pct)}%` }}
+                            />
+                          </div>
                         </div>
-                        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                          <div
-                            className={cn("h-full rounded-full", r.actual > r.planned ? "bg-negative" : "bg-positive")}
-                            style={{ width: `${Math.min(100, r.pct)}%` }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
             </div>
-          )}
 
           {alerts.map((a) => (
             <div
