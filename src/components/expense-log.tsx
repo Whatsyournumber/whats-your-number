@@ -963,7 +963,7 @@ export function ExpenseLog() {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span className="w-4 border-t-2 border-dotted border-muted-foreground" />
-                    {t("Presupuesto esperado", "Expected budget")}
+                    {t("Ritmo del plan", "Plan pace")}
                   </span>
                   <span className="ml-auto hidden text-[11px] text-muted-foreground/70 sm:block">
                     {t("Pasa el cursor", "Hover a day")}
