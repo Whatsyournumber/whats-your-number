@@ -2,12 +2,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { endOfMonth, format, parseISO, startOfMonth } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { AlertTriangle, Camera, ChevronDown, Loader2, Mic, Pencil, PencilLine, Plus, Square } from "lucide-react";
+import { Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Square, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
-import targetIcon from "@/assets/target-icon-v2.png.asset.json";
 import { BudgetDialog } from "@/components/budget-dialog";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -64,7 +62,6 @@ export function ExpenseLog() {
   const categories = useCategories();
 
   const [planOpen, setPlanOpen] = useState(false);
-  const [rowsOpen, setRowsOpen] = useState(true);
   const { target: savedTarget, setTarget, hasTarget } = useSpendTarget();
 
   const currency = profile.currency || "EUR";
@@ -100,7 +97,6 @@ export function ExpenseLog() {
   const plan = budgets.hasBudget ? budgets.total : onboardingTotal;
   const target = hasTarget && savedTarget > 0 ? savedTarget : plan > 0 ? plan : onboardingTotal;
   const pct = target > 0 ? (spent / target) * 100 : 0;
-  const boundaryPct = spent > 0 ? Math.min(100, (target / spent) * 100) : 0;
   const remaining = target - spent;
   const perDay = remaining > 0 ? remaining / daysLeft : 0;
 
