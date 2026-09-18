@@ -653,7 +653,7 @@ export function ExpenseLog() {
 
               <div
                 className={cn(
-                   "flex w-[280px] flex-none items-center gap-3 self-center rounded-xl border p-4 text-left",
+                   "flex w-[252px] flex-none items-center gap-3 self-center rounded-xl border p-3.5 text-left",
                    isOnPace ? "border-positive/30 bg-positive/10" : "border-negative/30 bg-negative/10",
                  )}
                >
