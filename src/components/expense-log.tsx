@@ -1,10 +1,11 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { endOfMonth, format, parseISO, startOfMonth } from "date-fns";
 import { enUS, es } from "date-fns/locale";
 import { AlertTriangle, Camera, Loader2, Mic, PencilLine, Square } from "lucide-react";
 import { toast } from "sonner";
 
+import { BudgetDialog } from "@/components/budget-dialog";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,7 +32,7 @@ import { BASE_CATEGORIES, categorizeTx } from "@/lib/categorize";
 import { captureExpense } from "@/lib/expense-capture.functions";
 import { translateCategory } from "@/lib/i18n-data";
 import { saveExpense } from "@/lib/manual-expense";
-import { money } from "@/lib/onboarding";
+import { SPEND_PLAN_FIELDS, money } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
 type Draft = { merchant: string; amount: number; date: string; category: string };
@@ -88,7 +89,9 @@ export function ExpenseLog() {
 
   const variableSpend = monthTx.reduce((s, x) => s + Math.abs(x.amount), 0);
   const spent = variableSpend + fixed.total;
-  const plan = budgets.total;
+  const plan = budgets.hasBudget
+    ? budgets.total
+    : SPEND_PLAN_FIELDS.reduce((s, f) => s + (Number(profile[f.key]) || 0), 0);
   const pct = plan > 0 ? (spent / plan) * 100 : 0;
   const remaining = plan - spent;
   const perDay = remaining > 0 ? remaining / daysLeft : 0;
