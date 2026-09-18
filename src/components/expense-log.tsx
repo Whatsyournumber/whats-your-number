@@ -25,7 +25,7 @@ import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
-import { useSpendBudgets } from "@/hooks/use-spend-budgets";
+import { useSpendBudgets, type BudgetLine } from "@/hooks/use-spend-budgets";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
 import { BUDGET_CATEGORIES, findBudgetCategory } from "@/lib/budget-categories";
 import { BASE_CATEGORIES, categorizeTx } from "@/lib/categorize";
@@ -108,7 +108,7 @@ export function ExpenseLog() {
   }, [monthTx, categories.rules]);
 
   /** Plan del onboarding: las categorías y montos que la persona declaró al registrarse. */
-  const onboardingLines = useMemo(
+  const onboardingLines = useMemo<BudgetLine[]>(
     () =>
       SPEND_PLAN_FIELDS.filter((f) => (Number(profile[f.key]) || 0) > 0).map((f) => ({
         id: f.budgetId,
@@ -125,7 +125,7 @@ export function ExpenseLog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [budgets.loaded, budgets.hasBudget, onboardingLines]);
 
-  const planLines = budgets.hasBudget ? budgets.lines : onboardingLines;
+  const planLines: BudgetLine[] = budgets.hasBudget ? budgets.lines : onboardingLines;
 
   const customLines = useMemo(
     () =>
