@@ -9,9 +9,10 @@ import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useCategories } from "@/hooks/use-categories";
+import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
-import { useTransactions, type Tx } from "@/hooks/use-transactions";
+import { sameMerchant, useTransactions, type Tx } from "@/hooks/use-transactions";
 import { buildTravelDays, categorizeTxWithTravel } from "@/lib/categorize";
 import { money } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
@@ -56,6 +57,7 @@ function CashFlow() {
   const d = buildDataset(profile);
   const { transactions, hasData } = useTransactions();
   const { rules } = useCategories();
+  const fixed = useFixedExpenses();
   const { lines: budgetLines } = useSpendBudgets();
 
   const months = useMemo(() => {
@@ -155,6 +157,18 @@ function CashFlow() {
   );
 
   const travelDays = useMemo(() => buildTravelDays(monthTx as Tx[], rules), [monthTx, rules]);
+  const matchesFixed = useMemo(() => {
+    const rows = fixed.items
+      .filter((item) => Number(item.amount) > 0)
+      .map((item) => ({ amount: Math.abs(Number(item.amount)).toFixed(2), name: item.name }));
+    return (tx: Tx) => {
+      const amount = Math.abs(Number(tx.amount)).toFixed(2);
+      return rows.some(
+        (row) => row.amount === amount && (sameMerchant(row.name, tx.merchant) || sameMerchant(row.name, tx.description)),
+      );
+    };
+  }, [fixed.items]);
+
   const spend = useMemo(() => {
     let wants = 0;
     let needs = 0;
@@ -169,6 +183,9 @@ function CashFlow() {
     };
     for (const tx of monthTx) {
       if (tx.amount >= 0) continue;
+      // Los gastos fijos guardados se añaden por separado para conservar su
+      // monto mensual y evitar duplicarlos cuando también aparecen en el EEFF.
+      if (matchesFixed(tx as Tx)) continue;
       const v = Math.abs(tx.amount);
       const custom = matchCustom(tx.merchant ?? "");
       if (custom) {
@@ -194,13 +211,13 @@ function CashFlow() {
       }
     }
     return { wants, needs, investments, total: wants + needs, needsBy, wantsBy, investmentsBy };
-  }, [monthTx, rules, travelDays, customWants]);
+  }, [monthTx, rules, travelDays, customWants, matchesFixed]);
 
   const hasReal = hasData && monthTx.length > 0;
 
   // Cuando hay movimientos, toda la distribución sale exclusivamente del mes corriente.
   // No se suman presupuestos, metas ni gastos fijos estimados del perfil.
-  const fixedAmount = hasReal ? spend.needs : d.cashFlow.buckets[0]!.amount;
+  const fixedAmount = hasReal ? fixed.total + spend.needs : d.cashFlow.buckets[0]!.amount;
   const lifestyleAmount = hasReal ? spend.wants : d.cashFlow.buckets[1]!.amount;
   const investAmount = hasReal ? spend.investments : d.cashFlow.buckets[2]!.amount;
 
@@ -220,8 +237,13 @@ function CashFlow() {
 
 
   const needsBreakdown = hasReal
-    ? [...spend.needsBy.entries()]
-        .map(([label, amount]) => ({ label: translateCategory(label, lang), amount }))
+    ? [
+        ...fixed.items
+          .filter((item) => Number(item.amount) > 0)
+          .map((item) => ({ label: item.name.replace(/^\p{Extended_Pictographic}\s*/u, ""), amount: Number(item.amount) })),
+        ...[...spend.needsBy.entries()]
+          .map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
+      ]
         .sort((a, b) => b.amount - a.amount)
     : [];
   const wantsBreakdown = hasReal
