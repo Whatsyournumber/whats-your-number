@@ -10,3 +10,5 @@
 - [x] Nombre en inglés "Expense Tracker" (menú lateral, encabezado y título de la pestaña)
 - [x] Tablet: centrar títulos y alinear anillo con la caja de estado
 - [x] Desktop: tarjeta más compacta, objetivo en caja editable, caja de estado más pequeña, anillo más a la derecha
+
+- [ ] Registro de gastos: tooltip del gráfico diario más simple (menos líneas)
