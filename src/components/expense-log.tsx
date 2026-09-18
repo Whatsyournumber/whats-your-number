@@ -629,13 +629,13 @@ export function ExpenseLog() {
 
         <div className="rounded-2xl border border-border bg-card p-4">
           <p className="mb-3 text-sm font-medium">{t("Últimos gastos", "Latest expenses")}</p>
-          {monthTx.length === 0 ? (
+          {periodTx.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              {t("Aún no registras gastos este mes.", "No expenses logged this month yet.")}
+              {t("Aún no registras gastos en este periodo.", "No expenses logged in this period yet.")}
             </p>
           ) : (
             <ul className="divide-y divide-border/60">
-              {monthTx.slice(0, 6).map((x) => (
+              {periodTx.slice(0, 6).map((x) => (
                 <li key={x.id} className="flex items-center gap-3 py-2.5">
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{x.merchant}</p>
@@ -700,6 +700,34 @@ export function ExpenseLog() {
               {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {t("Guardar gasto", "Save expense")}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={recOpen} onOpenChange={setRecOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("Gasto recurrente", "Recurring expense")}</DialogTitle>
+            <DialogDescription>
+              {t("Se repite cada mes y cuenta en tu plan.", "It repeats every month and counts toward your plan.")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3">
+            <div className="grid gap-1.5">
+              <Label>{t("Nombre", "Name")}</Label>
+              <Input
+                value={recName}
+                onChange={(e) => setRecName(e.target.value)}
+                placeholder={t("Netflix, gimnasio, alquiler", "Netflix, gym, rent")}
+              />
+            </div>
+            <div className="grid gap-1.5">
+              <Label>{`${t("Monto mensual", "Monthly amount")} (${currency})`}</Label>
+              <NumberInput value={recAmount} onChange={(v) => setRecAmount(v || 0)} min={0} format />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={onSaveRecurring}>{t("Guardar", "Save")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
