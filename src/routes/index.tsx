@@ -23,7 +23,7 @@ import {
 
 
 import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
-import heroManLaptopAsset from "@/assets/hero-man-laptop.jpg.asset.json";
+import { HeroPhone } from "@/components/hero-phone";
 
 
 import { useLiveCount, formatCount } from "@/components/live-count";
