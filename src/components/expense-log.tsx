@@ -484,18 +484,13 @@ export function ExpenseLog() {
               )}
             </div>
 
-            <div className="mt-3 grid gap-5 sm:mt-4 md:grid-cols-2 lg:grid-cols-[1.25fr_1fr_auto_1fr] lg:items-center lg:gap-6">
-              <div className="min-w-0">
-                <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
-                <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(periodTarget)}</p>
-              </div>
-              <div className="min-w-0 md:border-l md:border-border/60 md:pl-5 lg:pl-6">
-                <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
-                <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
-              </div>
-
-
-              <div className="relative h-24 w-24 shrink-0 self-center justify-self-center md:justify-self-start lg:h-32 lg:w-32 lg:justify-self-center">
+            <div className="mt-4 grid gap-6 sm:mt-5 md:grid-cols-2 md:gap-x-8">
+              <div className="flex min-w-0 flex-col gap-5">
+                <div className="min-w-0">
+                  <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
+                  <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(periodTarget)}</p>
+                </div>
+                <div className="relative h-28 w-28 shrink-0 self-center sm:h-32 sm:w-32 lg:h-36 lg:w-36">
                   <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                     <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
                     <circle
@@ -516,9 +511,15 @@ export function ExpenseLog() {
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{t("del plan", "of plan")}</p>
                   </div>
+                </div>
               </div>
 
-              <div className="flex min-w-0 items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-3 md:w-full md:self-center">
+              <div className="flex min-w-0 flex-col gap-5 md:border-l md:border-border/60 md:pl-6 lg:pl-8">
+                <div className="min-w-0">
+                  <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
+                  <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
+                </div>
+                <div className="flex min-w-0 items-center gap-3 self-start rounded-xl border border-border bg-muted/20 p-3 sm:p-4 md:w-full">
                   <span
                     className={cn(
                       "grid h-9 w-9 shrink-0 place-items-center rounded-lg",
@@ -543,6 +544,7 @@ export function ExpenseLog() {
                           )}
                     </p>
                   </div>
+                </div>
               </div>
             </div>
 
