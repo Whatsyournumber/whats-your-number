@@ -22,7 +22,7 @@ import {
 
 
 
-import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
+import expensesTrackerPhoneAsset from "@/assets/expenses-tracker-phone.png.asset.json";
 import heroManLaptopAsset from "@/assets/hero-man-laptop.jpg.asset.json";
 
 
@@ -690,11 +690,11 @@ export function Landing() {
               className="surface glow relative overflow-hidden"
             >
               <img
-                src={ctaLifestyle}
-                alt={t("finanzas personales para familias", "personal finance for families")}
+                src={expensesTrackerPhoneAsset.url}
+                alt={t("Registro de gastos en WhatsYourNumber", "WhatsYourNumber expense tracker")}
                 loading="lazy"
-                width={1092}
-                height={1250}
+                width={696}
+                height={1090}
                 className="h-full min-h-[420px] w-full object-cover object-center"
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
