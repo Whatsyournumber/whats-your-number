@@ -37,6 +37,7 @@ import { toast } from "sonner";
 import { planCategories } from "@/lib/category-ai.functions";
 import { CategoryChat } from "@/components/category-chat";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
+import { ExpenseLog } from "@/components/expense-log";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { useCategories } from "@/hooks/use-categories";
 import { useCategoryRules } from "@/hooks/use-category-rules";
@@ -771,6 +772,7 @@ function Gastos() {
 
   return (
     <PageShell>
+      <ExpenseLog />
       <PageHeader
         eyebrow={t("Análisis de gastos", "Spending analysis")}
         title={t("¿En qué se fue mi dinero?", "Where did my money go?")}
