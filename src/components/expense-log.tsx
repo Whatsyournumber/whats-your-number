@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
 import { CalendarDays, Camera, ChevronRight, Gauge, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Target, Wallet } from "lucide-react";
@@ -56,7 +55,6 @@ export function ExpenseLog() {
   const locale = lang === "es" ? es : enUS;
   const { user } = useAuth();
   const { profile } = useProfile();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { transactions } = useTransactions();
   const fixed = useFixedExpenses();
@@ -160,8 +158,6 @@ export function ExpenseLog() {
 
   const todayDay = now.getDate();
   const monthVariable = daily.reduce((s, v) => s + v, 0);
-  const projection = todayDay > 0 ? (monthVariable / todayDay) * daysInMonth + fixed.total : fixed.total;
-  const projDiff = target - projection;
 
   // Próximos pagos recurrentes ordenados por la fecha en que caen.
   const upcoming = useMemo(() => {
