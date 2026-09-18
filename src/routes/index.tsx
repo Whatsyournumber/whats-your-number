@@ -676,7 +676,7 @@ export function Landing() {
                 src={lang === "en" ? expensesTrackerPhoneCleanEn : expensesTrackerPhoneClean}
                 alt={t("Registro de gastos en WhatsYourNumber", "WhatsYourNumber expense tracker")}
                 loading="lazy"
-                className="h-auto max-h-[620px] w-auto max-w-full object-contain drop-shadow-[0_24px_60px_rgba(0,0,0,0.45)]"
+                className="h-auto max-h-[700px] w-auto max-w-full object-contain drop-shadow-[0_24px_60px_rgba(0,0,0,0.45)]"
               />
             </motion.div>
 
