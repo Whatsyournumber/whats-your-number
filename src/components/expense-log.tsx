@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, CalendarDays, Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowUp, CalendarDays, Camera, ChevronRight, Image as ImageIcon, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { BudgetDialog } from "@/components/budget-dialog";
@@ -423,6 +423,7 @@ export function ExpenseLog() {
   const [recording, setRecording] = useState(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const camRef = useRef<HTMLInputElement | null>(null);
 
   const openDraft = (parsed: { merchant: string; amount: number; date: string | null; category: string }) => {
     const valid = parsed.date && /^\d{4}-\d{2}-\d{2}$/.test(parsed.date);
@@ -549,9 +550,13 @@ export function ExpenseLog() {
               {recording ? <Square className="mr-2 h-4 w-4 text-negative" /> : <Mic className="mr-2 h-4 w-4 text-positive" />}
               {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
+            <DropdownMenuItem onSelect={() => camRef.current?.click()}>
               <Camera className="mr-2 h-4 w-4 text-positive" />
-              {t("Foto de recibo", "Receipt photo")}
+              {t("Tomar foto", "Take photo")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
+              <ImageIcon className="mr-2 h-4 w-4 text-positive" />
+              {t("Subir foto o captura", "Upload photo or screenshot")}
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={openNewRecurring}>
               <Repeat className="mr-2 h-4 w-4 text-positive" />
@@ -600,9 +605,13 @@ export function ExpenseLog() {
               {recording ? <Square className="mr-2 h-4 w-4 text-negative" /> : <Mic className="mr-2 h-4 w-4 text-positive" />}
               {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
+            <DropdownMenuItem onSelect={() => camRef.current?.click()}>
               <Camera className="mr-2 h-4 w-4 text-positive" />
-              {t("Foto de recibo", "Receipt photo")}
+              {t("Tomar foto", "Take photo")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
+              <ImageIcon className="mr-2 h-4 w-4 text-positive" />
+              {t("Subir foto o captura", "Upload photo or screenshot")}
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={openNewRecurring}>
               <Repeat className="mr-2 h-4 w-4 text-positive" />
@@ -879,8 +888,21 @@ export function ExpenseLog() {
 
 
 
+          {/* Galería / archivos del teléfono (incluye capturas de pantalla) */}
           <input
             ref={fileRef}
+            type="file"
+            accept="image/*,application/pdf"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              e.target.value = "";
+              if (file) void send("receipt", file);
+            }}
+          />
+          {/* Cámara directa */}
+          <input
+            ref={camRef}
             type="file"
             accept="image/*"
             capture="environment"
