@@ -165,14 +165,16 @@ export function ManualExpenseDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger ?? (
-          <Button size="sm" variant="ghost" className="gap-2">
-            <PencilLine className="h-4 w-4" />
-            {t("Cargar manualmente", "Add manually")}
-          </Button>
-        )}
-      </DialogTrigger>
+      {openProp === undefined && (
+        <DialogTrigger asChild>
+          {trigger ?? (
+            <Button size="sm" variant="ghost" className="gap-2">
+              <PencilLine className="h-4 w-4" />
+              {t("Cargar manualmente", "Add manually")}
+            </Button>
+          )}
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{t("Cargar gasto manualmente", "Add expense manually")}</DialogTitle>
