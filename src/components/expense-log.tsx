@@ -980,7 +980,7 @@ export function ExpenseLog() {
                       const plotW = W - left - 8;
                       const plotH = H - top - 28;
                       const maxDaily = Math.max(...daily, 0);
-                      const todayIdx = Math.min(today.getDate(), daysInMonth);
+                      const todayIdx = Math.min(todayDay, daysInMonth);
                       const expectedSoFar = target * (todayIdx / daysInMonth);
                       // Escala acorde a los gastos reales: cubre el mayor gasto diario y el ritmo esperado hasta hoy.
                       const yMax = Math.max(maxDaily, expectedSoFar, 1) * 1.12;
