@@ -588,3 +588,82 @@ input[type="number"] {
 .truncate {
   text-overflow: clip;
 }
+
+/* ==== 404: el faro te guía de vuelta ==== */
+
+.wyn-beam {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  width: 210vmax;
+  height: 210vmax;
+  pointer-events: none;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    color-mix(in oklab, var(--primary) 34%, transparent) 7deg,
+    color-mix(in oklab, var(--primary) 10%, transparent) 17deg,
+    transparent 28deg,
+    transparent 160deg,
+    color-mix(in oklab, var(--primary) 34%, transparent) 167deg,
+    color-mix(in oklab, var(--primary) 10%, transparent) 177deg,
+    transparent 188deg,
+    transparent 360deg
+  );
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0 6%, rgb(0 0 0 / 0.35) 26%, transparent 52%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 0 6%, rgb(0 0 0 / 0.35) 26%, transparent 52%);
+  animation: wyn-beam-rotate 26s linear infinite;
+  will-change: transform;
+}
+
+@keyframes wyn-beam-rotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.wyn-star {
+  position: absolute;
+  border-radius: 9999px;
+  background: color-mix(in oklab, var(--foreground) 55%, var(--primary));
+  animation: wyn-twinkle 4s ease-in-out infinite;
+}
+
+@keyframes wyn-twinkle {
+  0%,
+  100% {
+    opacity: 0.12;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.2);
+  }
+}
+
+.wyn-halo {
+  animation: wyn-halo 4.5s ease-in-out infinite;
+}
+
+@keyframes wyn-halo {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wyn-beam,
+  .wyn-star,
+  .wyn-halo {
+    animation: none !important;
+  }
+}
