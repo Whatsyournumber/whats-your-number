@@ -16,6 +16,7 @@ export function NumberInput({
   autoFocus,
   onKeyDown,
   style,
+  ariaLabel,
 }: {
   value: number;
   onChange: (v: number) => void;
