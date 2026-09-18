@@ -606,7 +606,7 @@ export function ExpenseLog() {
               </div>
             </div>
 
-             <div className="mt-4 hidden items-center gap-8 lg:flex">
+             <div className="mt-3 hidden items-center gap-6 lg:flex">
                <div className="min-w-0 shrink-0">
                  <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
                  <div className="mt-3 inline-flex min-w-0 items-baseline gap-1.5 rounded-xl border border-border bg-muted/20 px-4 py-2 transition-colors focus-within:border-positive/60">
