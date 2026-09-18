@@ -579,7 +579,79 @@ export function ExpenseLog() {
               </div>
             </div>
 
-            <div className="mt-4 hidden gap-8 sm:mt-5 md:grid md:grid-cols-2">
+            <div className="mt-4 hidden items-center gap-10 lg:flex">
+              <div className="min-w-0 shrink-0">
+                <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
+                <div className="mt-2 inline-flex min-w-0 items-baseline gap-1 rounded-xl border border-border bg-muted/20 px-3 py-1.5 transition-colors focus-within:border-positive/60">
+                  <span className="numeric text-2xl font-semibold text-muted-foreground">{currencySymbol}</span>
+                  <NumberInput
+                    value={target}
+                    onChange={(v) => setTarget(Math.round(v || 0))}
+                    min={0}
+                    format
+                    ariaLabel={t("Gasto objetivo mensual", "Monthly spending target")}
+                    className="numeric w-32 border-0 bg-transparent px-0 py-0 text-5xl font-bold shadow-none transition-none focus-visible:ring-0"
+                  />
+                </div>
+              </div>
+
+              <div className="min-w-0 shrink-0 border-l border-border/60 pl-10">
+                <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
+                <p className="numeric mt-1.5 whitespace-nowrap text-5xl font-bold">{fmt(spent)}</p>
+              </div>
+
+              <div className="relative h-40 w-40 shrink-0">
+                <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
+                  <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="50"
+                    fill="none"
+                    strokeWidth="9"
+                    strokeLinecap="round"
+                    strokeDasharray={2 * Math.PI * 50}
+                    strokeDashoffset={2 * Math.PI * 50 * (1 - Math.min(pct, 100) / 100)}
+                    className={pct > 100 ? "stroke-negative" : "stroke-positive"}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <p className={cn("numeric text-4xl font-bold leading-none", pct > 100 ? "text-negative" : "text-positive")}>
+                    {pct.toFixed(0)}%
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">{t("del plan", "of plan")}</p>
+                </div>
+              </div>
+
+              <div className="flex min-w-0 flex-1 items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-4 text-left">
+                <span
+                  className={cn(
+                    "grid h-9 w-9 shrink-0 place-items-center rounded-lg",
+                    isOnPace ? "bg-positive/15 text-positive" : "bg-negative/15 text-negative",
+                  )}
+                >
+                  {isOnPace ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
+                </span>
+                <div className="min-w-0">
+                  <p className={cn("text-sm font-semibold", isOnPace ? "text-positive" : "text-negative")}>
+                    {isOnPace ? t("Vas bien", "On track") : t("Vas por encima", "Above pace")}
+                  </p>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    {isOnPace
+                      ? t(
+                          `Estás ${Math.round(paceDifference)}% por debajo del ritmo esperado`,
+                          `You're ${Math.round(paceDifference)}% below the expected pace`,
+                        )
+                      : t(
+                          `Estás ${Math.round(paceDifference)}% por encima del ritmo esperado`,
+                          `You're ${Math.round(paceDifference)}% above the expected pace`,
+                        )}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 hidden gap-8 sm:mt-5 md:grid md:grid-cols-2 lg:hidden">
               <div className="flex min-w-0 flex-col gap-5">
                 <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
