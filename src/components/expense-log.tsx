@@ -492,28 +492,28 @@ export function ExpenseLog() {
               </div>
             </div>
 
-            <div className="mt-5 grid grid-cols-1 gap-4 border-t border-border/60 pt-5 sm:grid-cols-3 sm:gap-0">
-              <div className="flex min-w-0 items-center gap-4 sm:px-3">
-                <span className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-full", remaining < 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
-                  <Wallet className="h-5 w-5" />
+            <div className="mt-4 grid grid-cols-1 gap-3 border-t border-border/60 pt-4 sm:grid-cols-3 sm:gap-0">
+              <div className="flex min-w-0 items-center gap-2.5 sm:px-2">
+                <span className={cn("grid h-8 w-8 shrink-0 place-items-center rounded-full", remaining < 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
+                  <Wallet className="h-4 w-4" />
                 </span>
                 <div className="min-w-0">
-                  <p className={cn("numeric text-2xl font-bold sm:text-3xl", remaining < 0 ? "text-negative" : "text-positive")}>{fmt(Math.abs(remaining))}</p>
-                  <p className="mt-0.5 text-sm text-muted-foreground">{remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}</p>
+                  <p className={cn("numeric text-lg font-bold leading-tight sm:text-xl", remaining < 0 ? "text-negative" : "text-positive")}>{fmt(Math.abs(remaining))}</p>
+                  <p className="text-xs text-muted-foreground">{remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}</p>
                 </div>
               </div>
-              <div className="flex min-w-0 items-center gap-4 sm:border-l sm:border-border sm:px-8">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><CalendarDays className="h-5 w-5" /></span>
+              <div className="flex min-w-0 items-center gap-2.5 sm:border-l sm:border-border sm:px-4">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><CalendarDays className="h-4 w-4" /></span>
                 <div>
-                  <p className="numeric text-2xl font-bold text-positive sm:text-3xl">{daysLeft}</p>
-                  <p className="mt-0.5 text-sm text-muted-foreground">{t("días quedan", "days left")}</p>
+                  <p className="numeric text-lg font-bold leading-tight text-positive sm:text-xl">{daysLeft}</p>
+                  <p className="text-xs text-muted-foreground">{t("días quedan", "days left")}</p>
                 </div>
               </div>
-              <div className="flex min-w-0 items-center gap-4 sm:border-l sm:border-border sm:px-8">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><TrendingUp className="h-5 w-5" /></span>
+              <div className="flex min-w-0 items-center gap-2.5 sm:border-l sm:border-border sm:px-4">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><TrendingUp className="h-4 w-4" /></span>
                 <div className="min-w-0">
-                  <p className="numeric whitespace-nowrap text-2xl font-bold text-positive sm:text-3xl">{fmt(perDay)}/{t("día", "day")}</p>
-                  <p className="mt-0.5 text-sm text-muted-foreground">{t("para el plan", "to stay on plan")}</p>
+                  <p className="numeric whitespace-nowrap text-lg font-bold leading-tight text-positive sm:text-xl">{fmt(perDay)}/{t("día", "day")}</p>
+                  <p className="text-xs text-muted-foreground">{t("para el plan", "to stay on plan")}</p>
                 </div>
               </div>
             </div>
