@@ -1,41 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback } from "react";
 import { BASE_CATEGORIES, type CategoryRule } from "@/lib/categorize";
-import { useAuth } from "@/hooks/use-auth";
+import { useSyncedSetting } from "@/hooks/use-synced-setting";
 
 export type CustomCategory = { id: string; name: string; keywords: string };
 
 const KEY = "whatsyournumber:custom-categories";
+const EMPTY: CustomCategory[] = [];
 
-/** Categorías personalizadas del usuario (nombre + palabras clave), guardadas por cuenta en el navegador. */
+/** Categorías personalizadas del usuario (nombre + palabras clave), guardadas en su cuenta. */
 export function useCategories() {
-  const { user } = useAuth();
-  const storageKey = useMemo(() => (user?.id ? `${KEY}:${user.id}` : `${KEY}:anon`), [user?.id]);
-  const [items, setItems] = useState<CustomCategory[]>([]);
-
-  useEffect(() => {
-    setItems([]);
-    try {
-      const raw = window.localStorage.getItem(storageKey);
-      if (raw) {
-        const parsed = JSON.parse(raw) as CustomCategory[];
-        if (Array.isArray(parsed)) setItems(parsed);
-      }
-    } catch {
-      /* ignore */
-    }
-  }, [storageKey]);
-
-  const persist = useCallback(
-    (next: CustomCategory[]) => {
-      setItems(next);
-      try {
-        window.localStorage.setItem(storageKey, JSON.stringify(next));
-      } catch {
-        /* ignore */
-      }
-    },
-    [storageKey],
-  );
+  const { value: items, save: persist } = useSyncedSetting<CustomCategory[]>(KEY, EMPTY);
 
   const add = useCallback(
     (name = "Nueva categoría", keywords = "") => {

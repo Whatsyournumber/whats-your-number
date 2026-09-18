@@ -1,37 +1,21 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { sameMerchant } from "@/hooks/use-transactions";
+import { useSyncedSetting } from "@/hooks/use-synced-setting";
 
 export type LearnedRule = { id: string; match: string; category: string; createdAt: string };
 
 const KEY = "whatsyournumber:learned-rules";
+const EMPTY: LearnedRule[] = [];
 
 /**
  * Reglas aprendidas: cuando el usuario mueve un movimiento a otra categoría en Gastos,
  * se guarda "comercio → categoría" y se aplica automáticamente la próxima vez.
+ * Se sincroniza con la cuenta para que sea igual en móvil, tablet y ordenador.
  */
 export function useCategoryRules() {
-  const [rules, setRules] = useState<LearnedRule[]>([]);
-
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as LearnedRule[];
-        if (Array.isArray(parsed)) setRules(parsed);
-      }
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
-  const persist = useCallback((next: LearnedRule[]) => {
-    setRules(next);
-    try {
-      window.localStorage.setItem(KEY, JSON.stringify(next));
-    } catch {
-      /* ignore */
-    }
-  }, []);
+  const { value: rules, save: persist } = useSyncedSetting<LearnedRule[]>(KEY, EMPTY, {
+    legacyKeys: [KEY],
+  });
 
   const learn = useCallback(
     (match: string | null | undefined, category: string) => {
@@ -47,7 +31,9 @@ export function useCategoryRules() {
 
   const resolve = useCallback(
     (merchant: string | null | undefined, description?: string | null) => {
-      const hit = rules.find((r) => sameMerchant(r.match, merchant) || (description && sameMerchant(r.match, description)));
+      const hit = rules.find(
+        (r) => sameMerchant(r.match, merchant) || (description && sameMerchant(r.match, description)),
+      );
       return hit?.category ?? null;
     },
     [rules],
