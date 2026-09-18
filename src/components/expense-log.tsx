@@ -224,6 +224,33 @@ export function ExpenseLog() {
     return [...merged.values()].filter((l) => l.amount > 0);
   }, [onboardingLines, budgets.lines]);
 
+  /**
+   * Al editar el objetivo mensual se reparte el nuevo total entre las categorías
+   * del plan de forma proporcional, para que el popup muestre el mismo importe.
+   */
+  const applyTarget = (value: number) => {
+    const safeTotal = Math.max(0, Math.round(value || 0));
+    setTarget(safeTotal);
+    const base = planLines;
+    if (!base.length) return;
+    const currentTotal = base.reduce((s, l) => s + (Number.isFinite(l.amount) ? l.amount : 0), 0);
+    if (currentTotal <= 0) {
+      budgets.save(base.map((l, i) => ({ ...l, amount: i === 0 ? safeTotal : 0 })));
+      return;
+    }
+    let assigned = 0;
+    const next = base.map((line, index) => {
+      const amount =
+        index === base.length - 1
+          ? Math.max(0, safeTotal - assigned)
+          : Math.round((Math.max(0, line.amount) / currentTotal) * safeTotal);
+      assigned += amount;
+      return { ...line, amount };
+    });
+    budgets.save(next);
+  };
+
+
   const customLines = useMemo(
     () =>
       planLines
