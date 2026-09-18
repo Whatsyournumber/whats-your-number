@@ -975,12 +975,15 @@ export function ExpenseLog() {
                     {(() => {
                       const W = 560;
                       const H = 232;
-                      const left = 44;
+                      const left = 64;
                       const top = 20;
                       const plotW = W - left - 8;
                       const plotH = H - top - 28;
                       const maxDaily = Math.max(...daily, 0);
-                      const yMax = Math.max(target, maxDaily, 1) * 1.06;
+                      const todayIdx = Math.min(today.getDate(), daysInMonth);
+                      const expectedSoFar = target * (todayIdx / daysInMonth);
+                      // Escala acorde a los gastos reales: cubre el mayor gasto diario y el ritmo esperado hasta hoy.
+                      const yMax = Math.max(maxDaily, expectedSoFar, 1) * 1.12;
                       const step = plotW / daysInMonth;
                       const barW = step * 0.62;
                       const yOf = (v: number) => top + plotH - (v / yMax) * plotH;
