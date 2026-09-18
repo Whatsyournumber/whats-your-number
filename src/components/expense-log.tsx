@@ -429,7 +429,7 @@ export function ExpenseLog() {
               )}
             </div>
 
-            <div className="mt-2.5 flex items-center justify-between gap-4">
+            <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-3 sm:flex-nowrap">
               <div className="min-w-0">
                 <p className="numeric text-3xl font-bold leading-none tracking-tight sm:text-4xl">
                   {fmt(spent)}
@@ -452,7 +452,7 @@ export function ExpenseLog() {
                 </div>
               </div>
 
-              <div className="relative h-20 w-20 shrink-0 sm:h-24 sm:w-24">
+              <div className="relative order-2 ml-auto h-16 w-16 shrink-0 sm:order-3 sm:ml-0 sm:h-20 sm:w-20">
                 <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                   <circle cx="60" cy="60" r="52" fill="none" strokeWidth="10" className="stroke-border/30" />
                   <circle
@@ -470,47 +470,45 @@ export function ExpenseLog() {
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <p
                     className={cn(
-                      "numeric text-base font-bold leading-none sm:text-lg",
+                      "numeric text-sm font-bold leading-none sm:text-base",
                       pct > 100 ? "text-negative" : "text-positive",
                     )}
                   >
                     {pct.toFixed(0)}%
                   </p>
-                  <p className="mt-0.5 text-[10px] text-muted-foreground sm:text-xs">
-                    {t("del plan", "of plan")}
-                  </p>
+                  <p className="mt-0.5 text-[10px] text-muted-foreground">{t("del plan", "of plan")}</p>
                 </div>
               </div>
-            </div>
 
-            <div className="mt-2 grid grid-cols-3 gap-2 border-t border-border/60 pt-2 sm:mt-2.5 sm:gap-4 sm:pt-2.5">
-              <div className="min-w-0">
-                <p
-                  style={{ letterSpacing: "-0.01em" }}
-                  className={cn(
-                    "numeric truncate text-xl font-bold sm:text-[1.75rem]",
-                    remaining < 0 ? "text-negative" : "text-positive",
-                  )}
-                >
-                  {fmt(Math.abs(remaining))}
-                </p>
-                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-[13px]">
-                  {remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}
-                </p>
-              </div>
-              <div className="min-w-0">
-                <p style={{ letterSpacing: "-0.01em" }} className="numeric truncate text-xl font-bold text-positive sm:text-[1.75rem]">{daysLeft}</p>
-                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-[13px]">
-                  {t("días quedan", "days left")}
-                </p>
-              </div>
-              <div className="min-w-0">
-                <p style={{ letterSpacing: "-0.01em" }} className="numeric truncate text-xl font-bold text-positive sm:text-[1.75rem]">
-                  {fmt(perDay)}/{t("día", "day")}
-                </p>
-                <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-[13px]">
-                  {t("para el plan", "to stay on plan")}
-                </p>
+              <div className="order-3 grid w-full min-w-0 grid-cols-3 gap-3 border-t border-border/60 pt-2.5 sm:order-2 sm:w-auto sm:flex-1 sm:gap-4 sm:border-t-0 sm:border-l sm:border-border/60 sm:pl-4 sm:pt-0 lg:gap-6">
+                <div className="min-w-0">
+                  <p
+                    style={{ letterSpacing: "-0.01em" }}
+                    className={cn(
+                      "numeric truncate text-lg font-bold sm:text-xl",
+                      remaining < 0 ? "text-negative" : "text-positive",
+                    )}
+                  >
+                    {fmt(Math.abs(remaining))}
+                  </p>
+                  <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                    {remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}
+                  </p>
+                </div>
+                <div className="min-w-0">
+                  <p style={{ letterSpacing: "-0.01em" }} className="numeric truncate text-lg font-bold text-positive sm:text-xl">{daysLeft}</p>
+                  <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                    {t("días quedan", "days left")}
+                  </p>
+                </div>
+                <div className="min-w-0">
+                  <p style={{ letterSpacing: "-0.01em" }} className="numeric truncate text-lg font-bold text-positive sm:text-xl">
+                    {fmt(perDay)}/{t("día", "day")}
+                  </p>
+                  <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                    {t("para el plan", "to stay on plan")}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
