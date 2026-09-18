@@ -4,3 +4,4 @@
 - [x] Alinear "Limita tus gastos mensuales" con "Gasto del período" y subir los números grandes
 - [ ] Alertas de presupuesto cerrables con una X (recordar por cuenta cuáles se cerraron)
 - Alinear tarjeta registro-gastos: centrar columnas, mismo ancho visual izquierda/derecha
+- [hecho] Mobile registro-gastos: subtítulo corto + botón redondo + verificado

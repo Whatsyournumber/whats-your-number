@@ -399,13 +399,47 @@ export function ExpenseLog() {
 
   return (
     <section className="space-y-4">
-      <div className="min-w-0">
-        <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
-          {t("Registro de gastos", "Expense log")}
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {t("Controla tus gastos del día a día y mantente dentro de tu plan.", "Track your daily expenses and stay within your plan.")}
-        </p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
+            {t("Registro de gastos", "Expense log")}
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground sm:hidden">
+            {t("Controla tus gastos del día a día", "Track your daily expenses")}
+          </p>
+          <p className="mt-1 hidden text-sm text-muted-foreground sm:block">
+            {t("Controla tus gastos del día a día y mantente dentro de tu plan.", "Track your daily expenses and stay within your plan.")}
+          </p>
+        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              aria-label={t("Añadir gasto", "Add expense")}
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-positive text-background sm:hidden"
+            >
+              <Plus className="h-5 w-5" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuItem onSelect={() => setManualOpen(true)}>
+              <PencilLine className="mr-2 h-4 w-4 text-positive" />
+              {t("Manual", "Manual")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => (recording ? stopRecording() : startRecording())}>
+              {recording ? <Square className="mr-2 h-4 w-4 text-negative" /> : <Mic className="mr-2 h-4 w-4 text-positive" />}
+              {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
+              <Camera className="mr-2 h-4 w-4 text-positive" />
+              {t("Foto de recibo", "Receipt photo")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setRecOpen(true)}>
+              <Repeat className="mr-2 h-4 w-4 text-positive" />
+              {t("Recurrente", "Recurring")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -433,7 +467,7 @@ export function ExpenseLog() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="h-11 w-full shrink-0 px-5 sm:w-auto">
+            <Button className="hidden h-11 shrink-0 px-5 sm:flex sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               {t("Añadir gasto", "Add expense")}
             </Button>
@@ -485,7 +519,7 @@ export function ExpenseLog() {
             </div>
 
             <div className="mt-4 grid gap-6 sm:mt-5 md:grid-cols-2 md:gap-x-8">
-              <div className="flex min-w-0 flex-col gap-5">
+              <div className="flex min-w-0 flex-col items-center gap-5 text-center">
                 <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
                   <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(periodTarget)}</p>
@@ -514,12 +548,12 @@ export function ExpenseLog() {
                 </div>
               </div>
 
-              <div className="flex min-w-0 flex-col gap-5 md:border-l md:border-border/60 md:pl-6 lg:pl-8">
+              <div className="flex min-w-0 flex-col items-center gap-5 text-center md:border-l md:border-border/60 md:pl-6 lg:pl-8">
                 <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
                   <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
                 </div>
-                <div className="flex min-w-0 items-center gap-3 self-start rounded-xl border border-border bg-muted/20 p-3 sm:p-4 md:w-full">
+                <div className="flex min-w-0 items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-3 text-left sm:p-4 md:w-full">
                   <span
                     className={cn(
                       "grid h-9 w-9 shrink-0 place-items-center rounded-lg",
