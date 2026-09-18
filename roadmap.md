@@ -19,4 +19,5 @@
 - [x] Registro de gastos: "Tomar foto" abre la cámara y "Foto o captura" sube imagen del teléfono
 - [x] Menú móvil: "Foto o captura" / "Photo or screenshot" en una sola línea
 - [x] Landing: sustituir solo la foto inferior de la pareja por la imagen del teléfono de Registro de gastos
+- [x] Landing: reducir el teléfono inferior y quitar el título superpuesto "¿Cuál es tu número?"
 
