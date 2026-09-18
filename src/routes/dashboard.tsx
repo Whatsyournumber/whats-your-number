@@ -241,7 +241,7 @@ function Dashboard() {
       setMoneyBuckets({});
     }
   }, [profileUserId]);
-  const monthlySavings = useMemo(() => {
+  const monthlyDistribution = useMemo(() => {
     const clean = (name: string) => name.replace(/^\p{Extended_Pictographic}\s*/u, "").trim();
     const isWant = (name: string) =>
       /viaje|restaur|delivery|ocio|salida|night|deporte|gym|gimnasio|compra|ropa|tecnolog|app|suscrip|hobb|lifestyle|belleza|regalo|mascota|entreten|pet|stay|whatsyournumber|marketing/i.test(name);
@@ -251,7 +251,10 @@ function Dashboard() {
     if (!monthTransactions.length) {
       const fallbackInvest = d.cashFlow.buckets[2]?.amount ?? 0;
       const fallbackFree = Math.max(0, d.income - d.cashFlow.buckets.reduce((sum, bucket) => sum + bucket.amount, 0));
-      return fallbackInvest + fallbackFree;
+      return {
+        expenses: d.cashFlow.buckets[0]!.amount + d.cashFlow.buckets[1]!.amount,
+        savings: fallbackInvest + fallbackFree,
+      };
     }
     const statementIncome = monthTransactions.filter((tx) => tx.amount > 0).reduce((sum, tx) => sum + tx.amount, 0);
     const totalIncome = statementIncome > 0 ? statementIncome : d.income;
@@ -282,10 +285,15 @@ function Dashboard() {
       else if (bucket === "wants") wants += amount;
       else if (bucket === "savings" || (moneyBuckets[clean(category)] === undefined && isSaving(`${category} ${tx.merchant ?? ""}`))) savings += amount;
     }
-    return savings + Math.max(0, totalIncome - needs - wants - savings);
+    return {
+      expenses: needs + wants,
+      savings: savings + Math.max(0, totalIncome - needs - wants - savings),
+    };
   }, [activeKey, budgetLines, d.cashFlow.buckets, d.income, fixed.items, moneyBuckets, rules, transactions]);
+  const monthlySavings = monthlyDistribution.savings;
+  const monthlyExpenses = monthlyDistribution.expenses;
   const spendPlanUsed = hasSpendTarget && spendTarget > 0
-    ? Math.round((current.expenses / spendTarget) * 100)
+    ? Math.round((monthlyExpenses / spendTarget) * 100)
     : 0;
   // El plan se supera cuando el gasto real pasa del objetivo del mes.
   const spendPlanOver = spendPlanUsed > 100;
@@ -695,7 +703,7 @@ function Dashboard() {
         <Link to="/gastos" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Gastos", "Expenses")}
-            value={fmt(current.expenses)}
+            value={fmt(monthlyExpenses)}
             {...(spendPlanHint ? { hint: spendPlanHint } : {})}
             inverse
             icon={TrendingUp}
