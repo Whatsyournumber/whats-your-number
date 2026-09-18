@@ -834,15 +834,14 @@ export function Landing() {
           >
             <HeartHandshake className="mb-5 h-8 w-8 text-primary" />
             <h2 className="font-display text-2xl font-semibold leading-tight tracking-tight sm:text-3xl lg:text-4xl">
-              {t("Construyan su futuro juntos.", "Build your future together.")}{" "}
-              <span className="text-primary">
-                {t("Cada decisión los acerca a su número.", "Every decision brings you closer to your number.")}
-              </span>
+              {t("Cada decisión te acerca ", "Every decision brings you closer ")}
+              <span className="text-primary">{t("—o te aleja—", "—or pushes you further away—")}</span>
+              {t(" de tu Número de Vida Libre.", " from your Freedom Number.")}
             </h2>
             <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground sm:text-base">
               {t(
-                "Con WhatsYourNumber pueden organizar ingresos, gastos, patrimonio y metas en pareja, sin perder de vista los objetivos de cada uno.",
-                "With WhatsYourNumber, you can organize income, spending, net worth and goals as a couple without losing sight of your individual plans.",
+                "Organiza tus gastos día a día, mantente dentro de tu presupuesto e invierte mejor para acercarte cada vez más a la vida que quieres.",
+                "Organize your spending day to day, stay within your budget and invest better to get closer and closer to the life you want.",
               )}
             </p>
             <Button asChild className="mt-7 w-fit gap-2 rounded-full px-6">
