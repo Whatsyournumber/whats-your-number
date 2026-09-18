@@ -43,6 +43,7 @@ const MONTH_LABELS_ES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago",
 const MONTH_LABELS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 type MoneyBucket = "needs" | "savings" | "wants" | "excluded";
 const MONEY_RULE_KEY = "whatsyournumber:money-rule-categories";
+const SAVINGS_FUND_CATEGORY = "Fondo de ahorro";
 
 function cleanCategoryName(name: string) {
   return name.replace(/^\p{Extended_Pictographic}\s*/u, "").trim();
@@ -255,12 +256,17 @@ function CashFlow() {
   const fixedSavingsAmount = fixedSavings.reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
   const fixedWantsAmount = fixedWants.reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
   const fixedNeedsAmount = fixedNeeds.reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
+  const savingsFundAmount = Math.max(0, Number(profile.monthly_savings) || 0);
+  const savingsFundBucket = bucketFor(SAVINGS_FUND_CATEGORY);
+  const savingsFundNeeds = savingsFundBucket === "needs" ? savingsFundAmount : 0;
+  const savingsFundWants = savingsFundBucket === "wants" ? savingsFundAmount : 0;
+  const savingsFundSavings = savingsFundBucket === "savings" ? savingsFundAmount : 0;
 
   // Cuando hay movimientos, toda la distribución sale exclusivamente del mes corriente.
   // No se suman presupuestos, metas ni gastos fijos estimados del perfil.
-  const fixedAmount = hasReal ? fixedNeedsAmount + spend.needs : d.cashFlow.buckets[0]!.amount;
-  const lifestyleAmount = hasReal ? fixedWantsAmount + spend.wants : d.cashFlow.buckets[1]!.amount;
-  const investAmount = hasReal ? fixedSavingsAmount + spend.investments : d.cashFlow.buckets[2]!.amount;
+  const fixedAmount = hasReal ? fixedNeedsAmount + savingsFundNeeds + spend.needs : d.cashFlow.buckets[0]!.amount;
+  const lifestyleAmount = hasReal ? fixedWantsAmount + savingsFundWants + spend.wants : d.cashFlow.buckets[1]!.amount;
+  const investAmount = hasReal ? fixedSavingsAmount + savingsFundSavings + spend.investments : d.cashFlow.buckets[2]!.amount;
 
   const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount - investAmount);
 
@@ -300,6 +306,7 @@ function CashFlow() {
         ...fixedSavings
           .filter((item) => Number(item.amount) > 0)
           .map((item) => ({ label: cleanCategoryName(item.name), amount: Number(item.amount) })),
+        ...(savingsFundSavings > 0 ? [{ label: t("Fondo de ahorro", "Savings fund"), amount: savingsFundSavings }] : []),
         ...[...spend.investmentsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
         { label: t("Flujo libre del mes", "Free flow this month"), amount: freeAmount },
       ].sort((a, b) => b.amount - a.amount)
@@ -307,6 +314,7 @@ function CashFlow() {
 
   const editableCategories = useMemo(() => {
     const names = new Set<string>();
+    if (Number(profile.monthly_savings) > 0) names.add(SAVINGS_FUND_CATEGORY);
     for (const item of fixed.items) if (Number(item.amount) > 0) names.add(cleanCategoryName(item.name));
     for (const tx of monthTx) {
       if (tx.amount >= 0 || matchesFixed(tx as Tx)) continue;
@@ -316,7 +324,7 @@ function CashFlow() {
       names.add(custom ?? categorizeTxWithTravel(tx as Tx, rules, travelDays));
     }
     return [...names].filter(Boolean).sort((a, b) => a.localeCompare(b, lang));
-  }, [fixed.items, monthTx, matchesFixed, customWants, rules, travelDays, lang]);
+  }, [fixed.items, monthTx, matchesFixed, customWants, rules, travelDays, lang, profile.monthly_savings]);
 
 
   const cash = profile.assets_cash + profile.assets_bank;
@@ -541,7 +549,9 @@ function CashFlow() {
           <div className="divide-y divide-border">
             {editableCategories.map((category) => (
               <div key={category} className="flex items-center justify-between gap-4 py-3">
-                <span className="min-w-0 text-sm font-medium">{translateCategory(category, lang)}</span>
+                <span className="min-w-0 text-sm font-medium">
+                  {category === SAVINGS_FUND_CATEGORY ? t("Fondo de ahorro", "Savings fund") : translateCategory(category, lang)}
+                </span>
                 <Select value={bucketFor(category)} onValueChange={(value) => setCategoryBucket(category, value as MoneyBucket)}>
                   <SelectTrigger className="w-[190px] shrink-0">
                     <SelectValue />

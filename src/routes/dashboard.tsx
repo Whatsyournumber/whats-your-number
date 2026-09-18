@@ -274,6 +274,11 @@ function Dashboard() {
     let needs = fixed.items.filter((item) => bucketFor(item.name) === "needs").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
     let wants = fixed.items.filter((item) => bucketFor(item.name) === "wants").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
     let savings = fixed.items.filter((item) => bucketFor(item.name) === "savings").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
+    const savingsFund = Math.max(0, Number(profile.monthly_savings) || 0);
+    const savingsFundBucket = bucketFor("Fondo de ahorro");
+    if (savingsFundBucket === "needs") needs += savingsFund;
+    else if (savingsFundBucket === "wants") wants += savingsFund;
+    else if (savingsFundBucket === "savings") savings += savingsFund;
     for (const tx of monthTransactions) {
       if (tx.amount >= 0 || isFixedTransaction(tx as Tx)) continue;
       const merchant = (tx.merchant ?? "").trim().toLowerCase();
@@ -289,7 +294,7 @@ function Dashboard() {
       expenses: needs + wants,
       savings: savings + Math.max(0, totalIncome - needs - wants - savings),
     };
-  }, [activeKey, budgetLines, d.cashFlow.buckets, d.income, fixed.items, moneyBuckets, rules, transactions]);
+  }, [activeKey, budgetLines, d.cashFlow.buckets, d.income, fixed.items, moneyBuckets, profile.monthly_savings, rules, transactions]);
   const monthlySavings = monthlyDistribution.savings;
   const monthlyExpenses = monthlyDistribution.expenses;
   const spendPlanUsed = hasSpendTarget && spendTarget > 0
