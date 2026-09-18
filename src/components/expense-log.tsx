@@ -411,26 +411,26 @@ export function ExpenseLog() {
 
 
       <div className="space-y-3">
-          <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
-            <div className="grid gap-5 sm:grid-cols-[1.15fr_1fr] sm:items-center">
+          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-6">
               <div className="min-w-0">
                 <div className="flex items-center gap-2.5">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-positive/10">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-positive/10">
                     <Wallet className="h-4 w-4 text-positive" />
                   </span>
                   <p className="min-w-0 text-xs text-muted-foreground sm:text-sm">
                     {t("Gasto del periodo", "Period spending")}
                   </p>
                 </div>
-                <p className="numeric mt-4 text-3xl font-semibold sm:text-4xl">{fmt(spent)}</p>
-                <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                <p className="numeric mt-2 text-3xl font-semibold leading-tight sm:text-4xl">{fmt(spent)}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">
                   {t("de", "of")} <span className="numeric">{fmt(periodTarget)}</span>
                 </p>
                 {period === "month" && (
                   <button
                     type="button"
                     onClick={() => setPlanOpen(true)}
-                    className="mt-3 flex items-center gap-1.5 text-xs font-medium text-positive transition-colors hover:text-positive/80 sm:text-sm"
+                    className="mt-2 flex items-center gap-1.5 text-xs font-medium text-positive transition-colors hover:text-positive/80 sm:text-sm"
                   >
                     <Pencil className="h-3.5 w-3.5 shrink-0" />
                     {t("Editar el plan", "Edit plan")}
@@ -438,36 +438,38 @@ export function ExpenseLog() {
                 )}
               </div>
 
-              <div className="flex items-center justify-between gap-4 border-t border-border/60 pt-4 sm:flex-col sm:items-end sm:justify-center sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
-                <div className="min-w-0 text-left sm:text-right">
-                  <p
-                    className={cn(
-                      "numeric text-4xl font-semibold leading-none sm:text-5xl",
-                      pct > 100 ? "text-negative" : "text-positive",
-                    )}
-                  >
-                    {pct.toFixed(0)}%
-                  </p>
-                  <p
-                    className={cn(
-                      "mt-2 text-sm font-medium sm:text-base",
-                      pct > 100 ? "text-negative" : "text-positive",
-                    )}
-                  >
-                    {pct > 100 ? t("Sobre el plan", "Over plan") : t("Vas bien", "On track")}
-                  </p>
-                  <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground sm:justify-end">
-                    <Gauge className="h-3 w-3 shrink-0 opacity-70" />
-                    {t("Para mantener el plan", "To stay on plan")}
-                    <span className="numeric font-semibold text-foreground">
-                      {fmt(perDay)}/{t("día", "day")}
-                    </span>
-                  </p>
-                </div>
+              <div className="mt-3 flex items-center justify-between gap-4 border-t border-border/60 pt-3 sm:mt-0 sm:block sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0 sm:text-center">
+                <p
+                  className={cn(
+                    "numeric text-3xl font-semibold leading-none sm:text-4xl",
+                    pct > 100 ? "text-negative" : "text-positive",
+                  )}
+                >
+                  {pct.toFixed(0)}%
+                </p>
+                <p
+                  className={cn(
+                    "text-sm font-medium",
+                    pct > 100 ? "text-negative" : "text-positive",
+                  )}
+                >
+                  {pct > 100 ? t("Sobre el plan", "Over plan") : t("Vas bien", "On track")}
+                </p>
+              </div>
+
+              <div className="mt-3 flex items-center justify-between gap-4 border-t border-border/60 pt-3 sm:mt-0 sm:block sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0 sm:text-right">
+                <p className="flex items-center gap-1.5 text-xs text-muted-foreground sm:justify-end">
+                  <Gauge className="h-3 w-3 shrink-0 opacity-70" />
+                  {t("Para mantener el plan", "To stay on plan")}
+                </p>
+                <p className="numeric text-lg font-semibold leading-tight sm:text-2xl">
+                  {fmt(perDay)}/{t("día", "day")}
+                </p>
               </div>
             </div>
 
           </div>
+
 
 
           <div className="rounded-2xl border border-border bg-card p-4">
