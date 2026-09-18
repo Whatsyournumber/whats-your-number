@@ -1025,21 +1025,26 @@ export function ExpenseLog() {
                               </text>
                             </g>
                           ))}
-                          {target > 0 && (
+                          {linearDay > 0 && (
                             <>
-                              <polyline
-                                points={expectedPts.map((p) => `${p.x},${p.y}`).join(" ")}
-                                fill="none"
+                              <line
+                                x1={left}
+                                x2={W - 8}
+                                y1={yOf(Math.min(linearDay, yMax))}
+                                y2={yOf(Math.min(linearDay, yMax))}
                                 className="stroke-muted-foreground"
                                 strokeWidth="1.5"
                                 strokeDasharray="1 5"
                                 strokeLinecap="round"
                               />
-                              {expectedPts.map((p, i) =>
-                                (i + 1) % 5 === 0 || i === daysInMonth - 1 ? (
-                                  <circle key={i} cx={p.x} cy={p.y} r="2" className="fill-muted-foreground" />
-                                ) : null,
-                              )}
+                              <text
+                                x={W - 10}
+                                y={yOf(Math.min(linearDay, yMax)) - 7}
+                                textAnchor="end"
+                                className="fill-muted-foreground text-[10px]"
+                              >
+                                {axis(linearDay)}
+                              </text>
                             </>
                           )}
                           {active !== null && (
