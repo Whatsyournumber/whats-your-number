@@ -12,6 +12,8 @@ export type BudgetLine = {
   keywords?: string[];
   /** Grupo elegido al crear una categoría personalizada. */
   group?: BudgetGroup;
+  /** Día del mes en que se cobra (solo gastos fijos): alimenta Próximos pagos. */
+  dueDay?: number;
 };
 
 const KEY = "whatsyournumber:spend-budgets";
