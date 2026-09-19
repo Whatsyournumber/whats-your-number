@@ -12,7 +12,7 @@ export type BudgetCategory = {
 };
 
 export const BUDGET_CATEGORIES: BudgetCategory[] = [
-  { id: "housing", emoji: "🏠", es: "Vivienda", en: "Housing", group: "essentials", aliases: ["vivienda", "housing", "alquiler", "hipoteca", "renta", "condominio"] },
+  { id: "housing", emoji: "🏠", es: "Vivienda", en: "Housing", group: "essentials", aliases: ["vivienda", "housing", "alquiler", "hipoteca", "renta", "condominio", "mantenimiento vivienda", "mantenimiento hogar", "home maintenance", "community fee", "cuota comunidad"] },
   { id: "utilities", emoji: "💡", es: "Servicios", en: "Utilities", group: "essentials", aliases: ["servicios", "utilities"] },
   { id: "groceries", emoji: "🛒", es: "Supermercado", en: "Groceries", group: "lifestyle", aliases: ["mercado", "supermercado", "groceries"] },
   { id: "transport", emoji: "🚗", es: "Transporte", en: "Transport", group: "lifestyle", aliases: ["transporte", "transport", "coche", "car"] },
