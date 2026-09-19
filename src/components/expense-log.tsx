@@ -134,15 +134,44 @@ export function ExpenseLog() {
 
   const onSaveRecurring = () => {
     const name = recName.trim();
+    const amount = Math.round(recAmount);
     if (!name || recAmount <= 0) {
       toast.error(t("Escribe nombre y monto mayor que cero", "Enter a name and an amount above zero"));
       return;
     }
     if (recEditId) {
-      fixed.update(recEditId, { name, amount: Math.round(recAmount), dayOfMonth: recDay });
+      fixed.update(recEditId, { name, amount, dayOfMonth: recDay });
+      const planId = `custom:fixed:${recEditId}`;
+      const existing = budgets.lines.find((line) => line.id === planId);
+      const previousAmount = existing?.amount ?? 0;
+      const nextLine: BudgetLine = {
+        ...existing,
+        id: planId,
+        label: name,
+        emoji: "🔁",
+        keywords: [name],
+        group: "essentials",
+        amount,
+        dueDay: recDay,
+      };
+      budgets.save([...budgets.lines.filter((line) => line.id !== planId), nextLine]);
+      if (hasTarget) setTarget(Math.max(0, savedTarget - previousAmount + amount));
       toast.success(t("Gasto recurrente actualizado", "Recurring expense updated"));
     } else {
-      fixed.add(name, Math.round(recAmount), recDay);
+      const fixedId = fixed.add(name, amount, recDay);
+      budgets.save([
+        ...budgets.lines,
+        {
+          id: `custom:fixed:${fixedId}`,
+          label: name,
+          emoji: "🔁",
+          keywords: [name],
+          group: "essentials",
+          amount,
+          dueDay: recDay,
+        },
+      ]);
+      if (hasTarget) setTarget(savedTarget + amount);
       toast.success(t("Gasto recurrente guardado", "Recurring expense saved"), {
         description: `${name} · ${fmt(recAmount)}/${t("mes", "mo")} · ${t("día", "day")} ${recDay}`,
       });
@@ -156,7 +185,13 @@ export function ExpenseLog() {
 
   const onDeleteRecurring = () => {
     if (!recEditId) return;
+    const planId = `custom:fixed:${recEditId}`;
+    const planLine = budgets.lines.find((line) => line.id === planId);
     fixed.remove(recEditId);
+    if (planLine) {
+      budgets.save(budgets.lines.filter((line) => line.id !== planId));
+      if (hasTarget) setTarget(Math.max(0, savedTarget - planLine.amount));
+    }
     toast.success(t("Gasto recurrente eliminado", "Recurring expense deleted"));
     setRecOpen(false);
     setRecEditId(null);
