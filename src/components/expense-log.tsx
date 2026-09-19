@@ -1395,7 +1395,7 @@ export function ExpenseLog() {
                     className={cn(
                       "flex scroll-mt-24 items-center gap-3 rounded-lg transition-all duration-500",
                       flashRow === r.id &&
-                        (r.actual > r.planned
+                        (r.planned > 0 && r.actual > r.planned
                           ? "bg-negative/10 ring-1 ring-negative/40"
                           : "bg-positive/10 ring-1 ring-positive/40"),
                     )}
@@ -1404,7 +1404,7 @@ export function ExpenseLog() {
                     <span
                       className={cn(
                         "grid h-9 w-9 shrink-0 place-items-center rounded-full text-base sm:h-10 sm:w-10",
-                        r.actual > r.planned ? "bg-negative/20" : "bg-positive/15",
+                        r.planned > 0 && r.actual > r.planned ? "bg-negative/20" : "bg-positive/15",
                       )}
                     >
                       {r.emoji}
