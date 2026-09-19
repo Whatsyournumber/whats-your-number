@@ -212,17 +212,20 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                              title={t("Día del mes en que se cobra", "Day of month it is charged")}
                            >
                              <CalendarDays className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                             <Input
-                               type="number"
-                               min={1}
-                               max={31}
-                               inputMode="numeric"
-                               value={l.dueDay ?? ""}
-                               placeholder="—"
-                               onChange={(e) => setDueDay(l.id, e.target.value)}
-                               aria-label={t("Día del mes en que se cobra", "Day of month it is charged")}
-                               className="h-7 w-9 border-0 bg-transparent p-0 text-center text-sm"
-                             />
+                              <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                                {t("día", "day")}
+                              </span>
+                              <Input
+                                type="number"
+                                min={1}
+                                max={31}
+                                inputMode="numeric"
+                                value={l.dueDay ?? ""}
+                                placeholder="—"
+                                onChange={(e) => setDueDay(l.id, e.target.value)}
+                                aria-label={t("Día del mes en que se cobra", "Day of month it is charged")}
+                                className="h-7 w-9 border-0 bg-transparent p-0 text-center text-sm"
+                              />
                            </div>
                          ) : null}
                          <NumberInput
