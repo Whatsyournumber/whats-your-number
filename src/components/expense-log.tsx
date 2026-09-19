@@ -1437,7 +1437,7 @@ export function ExpenseLog() {
                           <span className="numeric shrink-0 text-sm font-semibold">{fmt(i.amount)}</span>
                           <button
                             type="button"
-                            onClick={() => openEditRecurring(i)}
+                            onClick={() => (i.planId ? setPlanOpen(true) : openEditRecurring(i))}
                             className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                             aria-label={t("Editar gasto recurrente", "Edit recurring expense")}
                           >
