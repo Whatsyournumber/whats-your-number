@@ -774,25 +774,22 @@ export function ExpenseLog() {
             </div>
 
              <div className="mt-3 hidden items-center gap-6 lg:flex">
-               <div className="min-w-0 shrink-0">
-                 <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
-                 <div className="mt-2 inline-flex min-w-0 items-baseline gap-1.5 rounded-xl border border-border bg-muted/20 px-3 py-1.5 transition-colors focus-within:border-positive/60">
+               <div className="grid min-w-0 shrink-0 grid-cols-2 items-baseline gap-x-9 gap-y-2">
+                 <p className="text-sm text-muted-foreground">{t("Gasto objetivo", "Spending target")}</p>
+                 <p className="text-sm text-muted-foreground">{t("Gastado a la fecha", "Spent to date")}</p>
+                 <div className="inline-flex min-w-0 items-baseline gap-1.5 rounded-xl border border-border bg-muted/20 px-3 py-1.5 transition-colors focus-within:border-positive/60">
                    <span className="numeric text-xl font-semibold text-muted-foreground">{currencySymbol}</span>
                    <NumberInput
                      value={target}
                      onChange={(v) => applyTarget(v)}
                      min={0}
                      format
-                     ariaLabel={t("Gasto objetivo mensual", "Monthly spending target")}
+                     ariaLabel={t("Gasto objetivo", "Spending target")}
                      placeholder="0"
                      className="numeric h-auto w-32 border-0 bg-transparent px-0 py-0 text-3xl font-bold shadow-none transition-none placeholder:text-foreground focus-visible:ring-0 md:text-3xl"
                    />
                  </div>
-               </div>
-
-               <div className="min-w-0 shrink-0 border-l border-border/60 pl-6">
-                 <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
-                 <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold">{fmt(spent)}</p>
+                 <p className="numeric whitespace-nowrap text-3xl font-bold">{fmt(spent)}</p>
                </div>
 
                <div className="relative ml-auto h-36 w-36 shrink-0">
