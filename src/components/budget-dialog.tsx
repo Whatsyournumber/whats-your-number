@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
 import { useLanguage, useT } from "@/hooks/use-language";
 import type { BudgetLine } from "@/hooks/use-spend-budgets";
-import { BUDGET_CATEGORIES, DEFAULT_BUDGET_IDS, GROUP_LABELS, findBudgetCategory, type BudgetGroup } from "@/lib/budget-categories";
+import { DEFAULT_BUDGET_IDS, GROUP_LABELS, findBudgetCategory, type BudgetGroup } from "@/lib/budget-categories";
 
 
 type Props = {
@@ -114,11 +114,6 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
     setEditingName("");
   };
 
-
-  const addCategory = (id: string) => {
-    setDraft((d) => [...d, { id, amount: 0 }]);
-    setAdding(false);
-  };
 
   const addCustom = () => {
     const name = customName.trim();
