@@ -272,7 +272,8 @@ export function ExpenseLog() {
   const paceDifference = Math.abs(pct - expectedPacePct);
   const isOnPace = pct <= expectedPacePct;
   const remaining = periodTarget - spent;
-  const perDay = remaining > 0 ? remaining / daysLeft : 0;
+  // Gasto diario del plan: objetivo del periodo repartido entre sus días (mes: objetivo / 30).
+  const perDay = periodDays > 0 ? periodTarget / periodDays : 0;
 
   // Gasto real por día del mes actual (para el gráfico diario).
   const daily = useMemo(() => {
