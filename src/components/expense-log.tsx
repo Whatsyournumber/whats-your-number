@@ -103,7 +103,6 @@ export function ExpenseLog() {
   const categories = useCategories();
 
   const [planOpen, setPlanOpen] = useState(false);
-  const [fixedCategoriesOpen, setFixedCategoriesOpen] = useState(false);
   const [recOpen, setRecOpen] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
   const [recName, setRecName] = useState("");
@@ -1456,7 +1455,7 @@ export function ExpenseLog() {
 
               <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
                 <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-base font-semibold">{t("Próximos pagos", "Upcoming payments")}</h3>
+                  <h3 className="text-base font-semibold">{t("Gastos fijos (Próximos pagos)", "Fixed expenses (Upcoming payments)")}</h3>
                   <button
                     type="button"
                     onClick={openNewRecurring}
@@ -1689,7 +1688,7 @@ export function ExpenseLog() {
                           ))}
                         </ul>
                       )}
-                      </li>}
+                      </li>
                     </Fragment>
                   );
                 })}
