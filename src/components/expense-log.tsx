@@ -810,7 +810,7 @@ export function ExpenseLog() {
                       )}
                 </p>
               </div>
-            </div>
+            </button>
 
              <div className="mt-3 hidden items-center gap-6 lg:flex">
                 <div className="grid min-w-0 shrink-0 grid-cols-[auto_auto_auto] items-baseline gap-x-6 gap-y-2">
