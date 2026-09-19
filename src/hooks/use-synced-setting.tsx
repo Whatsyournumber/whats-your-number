@@ -120,7 +120,10 @@ export function useSyncedSetting<T>(
       timer.current = setTimeout(() => {
         void supabase
           .from("user_settings")
-          .upsert({ user_id: userId, key, value: { v: next } }, { onConflict: "user_id,key" })
+          .upsert(
+            { user_id: userId, key, value: { v: next } as unknown as Json },
+            { onConflict: "user_id,key" },
+          )
           .then(({ error }) => {
             if (error) console.error("user_settings upsert", error.message);
           });
