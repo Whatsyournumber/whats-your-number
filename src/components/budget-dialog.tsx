@@ -178,8 +178,8 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                   {t(GROUP_LABELS[g].es, GROUP_LABELS[g].en)}
                 </p>
                 {groupLines.map((l) => (
-                  <div key={l.id} className="rounded-xl border border-border/50 px-3 py-2">
-                    <div className="flex items-center gap-3">
+                  <div key={l.id} className="rounded-xl border border-border/50 px-2 py-2 sm:px-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
                       {editingId === l.id ? (
                         <Input
                           autoFocus
@@ -205,13 +205,35 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                           <Pencil className="h-4 w-4" />
                         </button>
                       ) : null}
-                       <div className="flex shrink-0 flex-col items-end">
+                       <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+                         {g === "essentials" ? (
+                           <div
+                             className="flex h-9 items-center gap-1 rounded-md border border-border/60 bg-card/40 px-1.5 sm:gap-1.5 sm:px-2"
+                             title={t("Día del mes en que se cobra", "Day of month it is charged")}
+                           >
+                             <CalendarDays className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                             <span className="hidden text-[10px] uppercase tracking-wide text-muted-foreground sm:inline">
+                               {t("día", "day")}
+                             </span>
+                             <Input
+                               type="number"
+                               min={1}
+                               max={31}
+                               inputMode="numeric"
+                               value={l.dueDay ?? ""}
+                               placeholder="—"
+                               onChange={(e) => setDueDay(l.id, e.target.value)}
+                               aria-label={t("Día del mes en que se cobra", "Day of month it is charged")}
+                               className="h-7 w-8 border-0 bg-transparent p-0 text-center text-sm sm:w-9"
+                             />
+                           </div>
+                         ) : null}
                          <NumberInput
                            value={l.amount}
                            onChange={(v) => setAmount(l.id, v)}
                            format
                            ariaLabel={t("Monto objetivo mensual", "Monthly target amount")}
-                           className="h-9 w-28 text-sm"
+                           className="h-9 w-20 text-sm sm:w-28"
                          />
                        </div>
                       <button
@@ -223,25 +245,6 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
-                    {g === "essentials" ? (
-                      <div className="mt-2 flex items-center gap-2">
-                        <CalendarDays className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground">
-                          {t("Se paga el día", "Charged on day")}
-                        </span>
-                        <Input
-                          type="number"
-                          min={1}
-                          max={31}
-                          inputMode="numeric"
-                          value={l.dueDay ?? ""}
-                          placeholder="—"
-                          onChange={(e) => setDueDay(l.id, e.target.value)}
-                          aria-label={t("Día del mes en que se cobra", "Day of month it is charged")}
-                          className="h-8 w-16 text-center text-xs"
-                        />
-                      </div>
-                    ) : null}
                   </div>
                 ))}
               </div>
