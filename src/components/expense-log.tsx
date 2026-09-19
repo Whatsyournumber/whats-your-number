@@ -261,8 +261,26 @@ export function ExpenseLog() {
     [transactions, periodStart.getTime(), monthEnd.getTime()],
   );
 
-  const variableSpend = periodTx.reduce((s, x) => s + Math.abs(x.amount), 0);
-  const spent = variableSpend + fixed.total * periodFactor;
+  // El ahorro y la inversión no son gastos: se apartan para que las categorías,
+  // el total gastado y los próximos pagos muestren solo gasto real.
+  const isSavingsName = (name: string) => {
+    const n = name.toLowerCase();
+    return ["ahorro", "inversi", "savings", "investment", "fondo indexado"].some((h) => n.includes(h));
+  };
+  const expenseTx = useMemo(
+    () => periodTx.filter((x) => !isSavingsName(`${x.merchant} ${x.description ?? ""}`)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [periodTx],
+  );
+  const expenseFixedItems = useMemo(
+    () => fixed.items.filter((i) => !isSavingsName(i.name)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [fixed.items],
+  );
+  const expenseFixedTotal = expenseFixedItems.reduce((s, i) => s + (Number(i.amount) || 0), 0);
+
+  const variableSpend = expenseTx.reduce((s, x) => s + Math.abs(x.amount), 0);
+  const spent = variableSpend + expenseFixedTotal * periodFactor;
   const onboardingTotal = SPEND_PLAN_FIELDS.reduce((s, f) => s + (Number(profile[f.key]) || 0), 0);
   const plan = budgets.hasBudget ? budgets.total : onboardingTotal;
   const target = hasTarget && savedTarget > 0 ? savedTarget : plan > 0 ? plan : onboardingTotal;
