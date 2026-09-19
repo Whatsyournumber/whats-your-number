@@ -756,7 +756,7 @@ export function ExpenseLog() {
 
   return (
     <section className="space-y-4">
-      <div className="sticky top-0 z-40 -mx-1 flex items-start justify-between gap-3 border-b border-border/60 bg-background/95 px-1 py-3 backdrop-blur-md sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-none">
+      <div className="sticky top-14 z-30 -mx-4 flex items-center justify-between gap-3 border-b border-border bg-background/95 px-4 py-4 shadow-sm backdrop-blur-xl sm:static sm:mx-0 sm:items-start sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none sm:backdrop-blur-none">
         <div className="min-w-0">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
             {t("Registro de gastos", "Expense Tracker")}
