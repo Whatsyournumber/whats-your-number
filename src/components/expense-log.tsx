@@ -1991,6 +1991,7 @@ export function ExpenseLog() {
       {dragInfo ? (
         <div
           aria-hidden="true"
+          data-drag-pill="true"
           className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-[calc(100%+16px)] select-none"
           style={dragPoint ? { left: dragPoint.x, top: dragPoint.y } : { left: "50%", top: "22%" }}
         >
