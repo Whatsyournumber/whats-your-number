@@ -33,6 +33,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
   const [draft, setDraft] = useState<BudgetLine[]>([]);
   const [adding, setAdding] = useState(false);
   const [customName, setCustomName] = useState("");
+  const [customGroup, setCustomGroup] = useState<Exclude<BudgetGroup, "other">>("lifestyle");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
 
@@ -46,6 +47,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
     setDraft(base);
     setAdding(false);
     setCustomName("");
+    setCustomGroup("lifestyle");
     setEditingId(null);
     setEditingName("");
   }, [open, lines]);
@@ -128,8 +130,12 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
   const addCustom = () => {
     const name = customName.trim();
     if (!name) return;
-    setDraft((d) => [...d, { id: `custom:${name.toLowerCase()}`, amount: 0, label: name, emoji: "📦" }]);
+    setDraft((d) => [
+      ...d,
+      { id: `custom:${name.toLowerCase()}`, amount: 0, label: name, emoji: "📦", group: customGroup },
+    ]);
     setCustomName("");
+    setCustomGroup("lifestyle");
     setAdding(false);
   };
 
@@ -165,7 +171,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
 
         <div className="space-y-4">
           {(["essentials", "lifestyle", "other"] as BudgetGroup[]).map((g) => {
-            const groupLines = draft.filter((l) => (findBudgetCategory(l.id)?.group ?? "other") === g);
+            const groupLines = draft.filter((l) => (findBudgetCategory(l.id)?.group ?? l.group ?? "other") === g);
             if (!groupLines.length) return null;
             return (
               <div key={g} className="space-y-2">
@@ -264,6 +270,24 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
               <Button type="button" size="sm" variant="secondary" onClick={addCustom} disabled={!customName.trim()}>
                 {t("Añadir", "Add")}
               </Button>
+            </div>
+            <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("Tipo de gasto", "Expense type")}>
+              {(["essentials", "lifestyle"] as const).map((group) => {
+                const selected = customGroup === group;
+                return (
+                  <Button
+                    key={group}
+                    type="button"
+                    size="sm"
+                    variant={selected ? "default" : "outline"}
+                    className="h-auto min-h-11 whitespace-normal px-2 py-2 text-xs"
+                    onClick={() => setCustomGroup(group)}
+                    aria-pressed={selected}
+                  >
+                    {t(GROUP_LABELS[group].es, GROUP_LABELS[group].en)}
+                  </Button>
+                );
+              })}
             </div>
           </div>
         ) : (

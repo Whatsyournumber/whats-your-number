@@ -1,10 +1,18 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { DEFAULT_BUDGET_IDS } from "@/lib/budget-categories";
+import { DEFAULT_BUDGET_IDS, type BudgetGroup } from "@/lib/budget-categories";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 
-export type BudgetLine = { id: string; amount: number; label?: string; emoji?: string; keywords?: string[] };
+export type BudgetLine = {
+  id: string;
+  amount: number;
+  label?: string;
+  emoji?: string;
+  keywords?: string[];
+  /** Grupo elegido al crear una categoría personalizada. */
+  group?: BudgetGroup;
+};
 
 const KEY = "whatsyournumber:spend-budgets";
 
