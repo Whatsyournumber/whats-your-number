@@ -1400,6 +1400,69 @@ export function ExpenseLog() {
                   </SelectContent>
                 </Select>
               </div>
+
+              {draft.items.length > 0 && (
+                <div className="grid gap-2 rounded-xl border border-border bg-muted/20 p-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                      {t("Qué compraste", "What you bought")}
+                    </Label>
+                    <button
+                      type="button"
+                      onClick={() => setSplitItems((v) => !v)}
+                      className={cn(
+                        "rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
+                        splitItems
+                          ? "border-positive/60 bg-positive/10 text-positive"
+                          : "border-border text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      {t("Guardar por separado", "Save separately")}
+                    </button>
+                  </div>
+                  <ul className="grid gap-2">
+                    {draft.items.map((item, index) => (
+                      <li key={`${item.name}-${index}`} className="grid gap-1.5 sm:grid-cols-[1fr_auto] sm:items-center">
+                        <div className="flex min-w-0 items-baseline justify-between gap-3">
+                          <span className="min-w-0 flex-1 text-sm text-foreground">{item.name}</span>
+                          <span className="text-sm font-semibold tabular-nums">{fmt(item.amount)}</span>
+                        </div>
+                        <Select
+                          value={item.category}
+                          onValueChange={(v) =>
+                            setDraft({
+                              ...draft,
+                              items: draft.items.map((it, i) => (i === index ? { ...it, category: v } : it)),
+                            })
+                          }
+                        >
+                          <SelectTrigger className="h-8 w-full text-xs sm:w-40">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categoryNames.map((name) => (
+                              <SelectItem key={name} value={name}>
+                                {translateCategory(name, lang)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-xs text-muted-foreground">
+                    {splitItems
+                      ? t(
+                          "Se guardará un gasto por cada producto con su categoría.",
+                          "Each product will be saved as its own expense with its category.",
+                        )
+                      : t(
+                          "Se guarda un solo gasto con el detalle de la compra.",
+                          "It saves one expense with the purchase detail.",
+                        )}
+                  </p>
+                </div>
+              )}
             </div>
           )}
           <DialogFooter>
