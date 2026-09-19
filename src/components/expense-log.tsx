@@ -615,25 +615,25 @@ export function ExpenseLog() {
               <Plus className="h-6 w-6" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-72 p-2">
-            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => setManualOpen(true)}>
-              <PencilLine className="mr-2 h-5 w-5 text-positive" />
+          <DropdownMenuContent align="end" className="w-80 p-2">
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setManualOpen(true)}>
+              <PencilLine className="mr-2.5 h-6 w-6 text-positive" />
               {t("Manual", "Manual")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => (recording ? stopRecording() : startRecording())}>
-              {recording ? <Square className="mr-2 h-5 w-5 text-negative" /> : <Mic className="mr-2 h-5 w-5 text-positive" />}
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => (recording ? stopRecording() : startRecording())}>
+              {recording ? <Square className="mr-2.5 h-6 w-6 text-negative" /> : <Mic className="mr-2.5 h-6 w-6 text-positive" />}
               {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => camRef.current?.click()}>
-              <Camera className="mr-2 h-5 w-5 text-positive" />
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => camRef.current?.click()}>
+              <Camera className="mr-2.5 h-6 w-6 text-positive" />
               {t("Tomar foto", "Take photo")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => fileRef.current?.click()}>
-              <Upload className="mr-2 h-5 w-5 text-positive" />
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => fileRef.current?.click()}>
+              <Upload className="mr-2.5 h-6 w-6 text-positive" />
               {t("Sube foto o captura", "Upload photo or screenshot")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={openNewRecurring}>
-              <Repeat className="mr-2 h-5 w-5 text-positive" />
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={openNewRecurring}>
+              <Repeat className="mr-2.5 h-6 w-6 text-positive" />
               {t("Recurrente", "Recurring")}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -670,25 +670,25 @@ export function ExpenseLog() {
               {t("Añadir gasto", "Add expense")}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-72 p-2">
-            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => setManualOpen(true)}>
-              <PencilLine className="mr-2 h-5 w-5 text-positive" />
+          <DropdownMenuContent align="end" className="w-80 p-2">
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setManualOpen(true)}>
+              <PencilLine className="mr-2.5 h-6 w-6 text-positive" />
               {t("Manual", "Manual")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => (recording ? stopRecording() : startRecording())}>
-              {recording ? <Square className="mr-2 h-5 w-5 text-negative" /> : <Mic className="mr-2 h-5 w-5 text-positive" />}
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => (recording ? stopRecording() : startRecording())}>
+              {recording ? <Square className="mr-2.5 h-6 w-6 text-negative" /> : <Mic className="mr-2.5 h-6 w-6 text-positive" />}
               {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => camRef.current?.click()}>
-              <Camera className="mr-2 h-5 w-5 text-positive" />
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => camRef.current?.click()}>
+              <Camera className="mr-2.5 h-6 w-6 text-positive" />
               {t("Tomar foto", "Take photo")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => fileRef.current?.click()}>
-              <Upload className="mr-2 h-5 w-5 text-positive" />
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => fileRef.current?.click()}>
+              <Upload className="mr-2.5 h-6 w-6 text-positive" />
               {t("Sube foto o captura", "Upload photo or screenshot")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={openNewRecurring}>
-              <Repeat className="mr-2 h-5 w-5 text-positive" />
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={openNewRecurring}>
+              <Repeat className="mr-2.5 h-6 w-6 text-positive" />
               {t("Recurrente", "Recurring")}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -739,6 +739,13 @@ export function ExpenseLog() {
                 <p className="numeric whitespace-nowrap text-4xl font-bold">{fmt(spent)}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {t("de", "of")} {fmt(periodTarget)}
+                </p>
+                <p className="mt-0.5 text-xs text-muted-foreground/80">
+                  {period === "week"
+                    ? t("Gasto objetivo semanal", "Weekly spending target")
+                    : period === "day"
+                      ? t("Gasto objetivo de hoy", "Today's spending target")
+                      : t("Gasto objetivo mensual", "Monthly spending target")}
                 </p>
               </div>
               <div className="relative h-28 w-28 shrink-0">
