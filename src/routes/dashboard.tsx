@@ -864,7 +864,7 @@ function Dashboard() {
         </Panel>
       </div>
 
-      <TopCitiesPanel profile={profile} netWorth={liveNetWorth} monthlySavings={d.savings} fmt={fmt} />
+      <TopCitiesPanel profile={profile} netWorth={liveNetWorth} monthlySavings={d.savings} fmt={fmt} currency={d.currency} />
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Panel

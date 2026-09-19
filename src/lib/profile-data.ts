@@ -14,6 +14,7 @@ import {
   totalExpenses,
   type NorthPlan,
 } from "@/lib/onboarding";
+import { convertAmount } from "@/lib/fx";
 
 export type DerivedMonth = {
   month: string;
@@ -129,10 +130,11 @@ export function buildDataset(p: Profile): Dataset {
   // Presupuesto real de la ciudad donde quieres vivir y camino hasta tu número allí.
   const cityFilters = suggestedFilters(p);
   const liveCity = p.city ? lifestyleCities.find((c) => c.name.toLowerCase() === p.city.toLowerCase()) ?? null : null;
+  // El catálogo lifestyle está en USD y el curado en EUR: ambos se pasan a la moneda del perfil.
   const cityMonthly = liveCity
-    ? monthlyCost(liveCity, cityFilters.stage, cityFilters.comfort)
+    ? Math.round(convertAmount(monthlyCost(liveCity, cityFilters.stage, cityFilters.comfort), "USD", currency))
     : city
-      ? Math.round(city.cost * lifestyleFactor)
+      ? Math.round(convertAmount(city.cost * lifestyleFactor, "EUR", currency))
       : null;
   // Sin ciudad elegida usamos los gastos reales de la persona, nunca un valor fijo.
   const cityMonthlySafe = cityMonthly ?? Math.round(expenses);

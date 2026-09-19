@@ -1,12 +1,15 @@
 import { defaultFilters, type Filters } from "./lifestyle-cities";
 import type { Profile } from "@/hooks/use-profile";
 import { totalIncome } from "./onboarding";
+import { toUsd } from "./fx";
 
 /** Traduce las respuestas del onboarding en filtros sugeridos del simulador. */
 export function suggestedFilters(profile: Profile): Filters {
   const income = totalIncome(profile);
   // Presupuesto realista: lo que quieres vivir al mes, o tu gasto actual estimado.
-  const monthlyTarget = profile.desired_retirement_income || Math.max(1200, income - profile.monthly_savings);
+  const monthlyTargetLocal = profile.desired_retirement_income || Math.max(1, income - profile.monthly_savings);
+  // El dataset de ciudades está en USD: el presupuesto del perfil se convierte antes de comparar.
+  const monthlyTarget = Math.max(1200, toUsd(monthlyTargetLocal, profile.currency || "EUR"));
   const budget = Math.max(1200, Math.min(15000, Math.round(monthlyTarget / 250) * 250));
 
   const married = profile.marital_status === "Casado" || profile.marital_status === "En pareja";

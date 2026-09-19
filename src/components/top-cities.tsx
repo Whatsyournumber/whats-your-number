@@ -9,6 +9,7 @@ import type { Profile } from "@/hooks/use-profile";
 import { suggestedFilters } from "@/lib/city-suggestions";
 import { readMyCities, subscribeMyCities } from "@/lib/my-cities";
 import { rankCities, type CityScore } from "@/lib/lifestyle-cities";
+import { fromUsd } from "@/lib/fx";
 
 /** Top 3 ciudades calculadas con tu perfil: presupuesto mensual y camino a tu meta. */
 export function TopCitiesPanel({
@@ -16,13 +17,17 @@ export function TopCitiesPanel({
   netWorth,
   monthlySavings,
   fmt,
+  currency,
 }: {
   profile: Profile;
   netWorth: number;
   monthlySavings: number;
   fmt: (n: number) => string;
+  currency: string;
 }) {
   const t = useT();
+  // El dataset de ciudades está en USD: se convierte a la moneda del perfil antes de mostrarlo.
+  const fmtCity = (n: number) => fmt(fromUsd(n, currency));
   const filters = useMemo(() => suggestedFilters(profile), [profile]);
   // Ciudades guardadas por ti en el simulador (si las hay, mandan).
   const [mine, setMine] = useState<string[]>([]);
@@ -99,11 +104,11 @@ export function TopCitiesPanel({
               <div className="space-y-2 p-3 text-[11px]">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">{t("Presupuesto mensual", "Monthly budget")}</span>
-                  <span className="numeric font-medium text-foreground">{fmt(r.cost)}</span>
+                  <span className="numeric font-medium text-foreground">{fmtCity(r.cost)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">{t("Tu número allí", "Your number there")}</span>
-                  <span className="numeric font-medium text-foreground">{fmt(target)}</span>
+                  <span className="numeric font-medium text-foreground">{fmtCity(target)}</span>
                 </div>
                 <p className="text-muted-foreground">
                   {years === 0
@@ -118,7 +123,7 @@ export function TopCitiesPanel({
         })}
       </div>
 
-      <CityDetailDialog r={detail} filters={filters} fmt={fmt} onClose={() => setDetail(null)} />
+      <CityDetailDialog r={detail} filters={filters} fmt={fmtCity} onClose={() => setDetail(null)} />
     </Panel>
   );
 }
