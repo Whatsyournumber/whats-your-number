@@ -452,7 +452,7 @@ export function ExpenseLog() {
     setDraft({
       merchant: parsed.merchant || t("Gasto", "Expense"),
       amount: Math.abs(Number(parsed.amount) || 0),
-      date: valid ? parsed.date! : format(now, "yyyy-MM-dd"),
+      date: valid ? (parsed.date ?? format(now, "yyyy-MM-dd")) : format(now, "yyyy-MM-dd"),
       category: categoryNames.includes(parsed.category) ? parsed.category : "Otros",
       items,
       source,
@@ -671,7 +671,7 @@ export function ExpenseLog() {
       />
 
       <Dialog open={busy === "receipt"}>
-        <DialogContent className="max-w-xs text-center" hideClose>
+        <DialogContent className="max-w-xs text-center [&>button]:hidden">
           <div className="flex flex-col items-center py-5">
             <span className="grid h-14 w-14 place-items-center rounded-full bg-positive/10 text-positive">
               <Loader2 className="h-7 w-7 animate-spin" />
