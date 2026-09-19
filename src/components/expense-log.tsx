@@ -1530,7 +1530,23 @@ export function ExpenseLog() {
                               : "bg-positive/10 ring-1 ring-positive/40"),
                         )}
                       >
-                      <div className="flex items-center gap-3">
+                      <div
+                        role={r.items.length > 0 ? "button" : undefined}
+                        tabIndex={r.items.length > 0 ? 0 : undefined}
+                        onClick={() => {
+                          if (r.items.length > 0 && !dragItem) setExpandedCategory(expandedCat ? null : r.id);
+                        }}
+                        onKeyDown={(event) => {
+                          if (r.items.length === 0 || (event.key !== "Enter" && event.key !== " ")) return;
+                          event.preventDefault();
+                          setExpandedCategory(expandedCat ? null : r.id);
+                        }}
+                        className={cn(
+                          "flex items-center gap-3",
+                          r.items.length > 0 && "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                        )}
+                        aria-expanded={r.items.length > 0 ? expandedCat : undefined}
+                      >
                         <span
                           className={cn(
                             "grid h-9 w-9 shrink-0 place-items-center rounded-full text-base sm:h-10 sm:w-10",
@@ -1564,7 +1580,10 @@ export function ExpenseLog() {
                         {r.items.length > 0 && (
                           <button
                             type="button"
-                            onClick={() => setExpandedCategory(expandedCat ? null : r.id)}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setExpandedCategory(expandedCat ? null : r.id);
+                            }}
                             className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                             aria-label={expandedCat ? t("Ocultar gastos", "Hide expenses") : t("Ver gastos", "View expenses")}
                             aria-expanded={expandedCat}
