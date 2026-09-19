@@ -1413,27 +1413,35 @@ export function ExpenseLog() {
                       <div className="min-w-0 lg:w-44 lg:shrink-0">
                         <p className="truncate text-sm leading-5">{r.name}</p>
                         <p className="numeric text-[0.6875rem] leading-4 text-muted-foreground">
-                          {fmt(r.actual)} / {fmt(r.planned)}
+                          {r.planned > 0 ? `${fmt(r.actual)} / ${fmt(r.planned)}` : fmt(r.actual)}
                         </p>
                       </div>
                       <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted lg:mt-0 lg:min-w-0 lg:flex-1">
                         <div
-                          className={cn("h-full rounded-full", r.actual > r.planned ? "bg-negative" : "bg-positive")}
-                          style={{ width: `${Math.min(100, r.pct)}%` }}
+                          className={cn("h-full rounded-full", r.planned > 0 && r.actual > r.planned ? "bg-negative" : "bg-positive")}
+                          style={{ width: `${r.planned > 0 ? Math.min(100, r.pct) : 100}%` }}
                         />
                       </div>
                     </div>
                     <span
                       className={cn(
                         "numeric w-11 shrink-0 text-right text-sm sm:w-12",
-                        r.actual > r.planned ? "text-negative" : "text-foreground",
+                        r.planned > 0 && r.actual > r.planned ? "text-negative" : "text-foreground",
                       )}
                     >
-                      {Math.round(r.pct)}%
+                      {r.planned > 0 ? `${Math.round(r.pct)}%` : "—"}
                     </span>
                   </li>
                 ))}
               </ul>
+              {/* Total: la suma de todas las categorías cuadra con "Gastado a la fecha". */}
+              <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/60 pt-3.5">
+                <p className="text-sm font-semibold">{t("Total", "Total")}</p>
+                <p className="numeric text-sm">
+                  <span className="font-semibold">{fmt(rows.reduce((s, r) => s + r.actual, 0))}</span>
+                  <span className="text-muted-foreground"> / {fmt(rows.reduce((s, r) => s + r.planned, 0))}</span>
+                </p>
+              </div>
             </div>
 
           )}
