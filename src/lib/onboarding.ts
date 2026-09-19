@@ -744,7 +744,7 @@ export type SpendPlanGroup = "essentials" | "lifestyle" | "other";
 /** Secciones del plan de gastos, en el orden en que se muestran. */
 export const SPEND_PLAN_GROUPS: ReadonlyArray<{ id: SpendPlanGroup; es: string; en: string }> = [
   { id: "essentials", es: "Gastos fijos mensuales", en: "Monthly fixed expenses" },
-  { id: "lifestyle", es: "Gastos variables", en: "Variable expenses" },
+  { id: "lifestyle", es: "Gastos variables mensuales", en: "Monthly variable expenses" },
   { id: "other", es: "Otros", en: "Other" },
 ];
 

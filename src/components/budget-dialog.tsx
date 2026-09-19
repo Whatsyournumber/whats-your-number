@@ -22,12 +22,10 @@ type Props = {
   lines: BudgetLine[];
   onSave: (lines: BudgetLine[]) => void;
   fmt: (n: number) => string;
-  /** Importes que vienen de los gastos fijos y no se editan dos veces. */
-  automaticAmounts?: Record<string, number>;
 };
 
 /** Pop-up para definir un objetivo de gasto personalizado por categoría. */
-export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automaticAmounts = {} }: Props) {
+export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) {
   const t = useT();
   const { lang } = useLanguage();
   const [draft, setDraft] = useState<BudgetLine[]>([]);
@@ -194,20 +192,14 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
                           <Pencil className="h-4 w-4" />
                         </button>
                       ) : null}
-                       <div className="flex shrink-0 flex-col items-end gap-0.5">
+                       <div className="flex shrink-0 flex-col items-end">
                          <NumberInput
                            value={l.amount}
                            onChange={(v) => setAmount(l.id, v)}
                            format
-                           disabled={automaticAmounts[l.id] !== undefined}
                            ariaLabel={t("Monto objetivo mensual", "Monthly target amount")}
                            className="h-9 w-28 text-sm"
                          />
-                         {automaticAmounts[l.id] !== undefined ? (
-                           <span className="text-[10px] leading-none text-positive">
-                             {t("Automático", "Automatic")}
-                           </span>
-                         ) : null}
                        </div>
                       <button
                         type="button"
@@ -255,7 +247,9 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
                     onClick={() => setCustomGroup(group)}
                     aria-pressed={selected}
                   >
-                    {group === "essentials" ? t("Gastos fijos", "Fixed expenses") : t("Gastos variables", "Variable expenses")}
+                    {group === "essentials"
+                      ? t("Gastos fijos", "Fixed expenses")
+                      : t("Gastos variables mensuales", "Monthly variable expenses")}
                   </Button>
                 );
               })}
