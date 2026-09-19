@@ -2,7 +2,7 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "rea
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowLeftRight, ArrowUp, CalendarDays, Camera, ChevronDown, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowLeftRight, ArrowUp, CalendarDays, Camera, ChevronDown, ChevronRight, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { BudgetDialog } from "@/components/budget-dialog";
@@ -581,6 +581,8 @@ export function ExpenseLog() {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   // Gasto que se está moviendo a otra categoría desde el desglose.
   const [moveItem, setMoveItem] = useState<{ key: string; label: string; from: string } | null>(null);
+  const [dragItem, setDragItem] = useState<{ key: string; label: string; from: string } | null>(null);
+  const [dragOverCategory, setDragOverCategory] = useState<string | null>(null);
   const [transcript, setTranscript] = useState("");
   const [saving, setSaving] = useState(false);
   const [busy, setBusy] = useState<"voice" | "receipt" | null>(null);
@@ -1507,8 +1509,21 @@ export function ExpenseLog() {
                         ref={(el) => {
                           rowRefs.current[r.id] = el;
                         }}
+                        onDragOver={(event) => {
+                          if (!dragItem || dragItem.from === r.id) return;
+                          event.preventDefault();
+                          setDragOverCategory(r.id);
+                        }}
+                        onDragLeave={() => setDragOverCategory((id) => id === r.id ? null : id)}
+                        onDrop={(event) => {
+                          event.preventDefault();
+                          if (dragItem && dragItem.from !== r.id) moveExpense(dragItem.key, r.id);
+                          setDragItem(null);
+                          setDragOverCategory(null);
+                        }}
                         className={cn(
                           "scroll-mt-24 rounded-lg transition-all duration-500",
+                          dragOverCategory === r.id && "bg-positive/10 ring-1 ring-positive/50",
                           flashRow === r.id &&
                             (r.planned > 0 && r.actual > r.planned
                               ? "bg-negative/10 ring-1 ring-negative/40"
@@ -1561,7 +1576,21 @@ export function ExpenseLog() {
                       {expandedCat && r.items.length > 0 && (
                         <ul className="ml-12 mt-2 divide-y divide-border/40 rounded-lg bg-muted/20 px-3 sm:ml-[3.25rem]">
                           {r.items.slice(0, 12).map((it, i) => (
-                            <li key={`${it.key}-${i}`} className="flex items-center gap-2 py-2">
+                            <li
+                              key={`${it.key}-${i}`}
+                              draggable
+                              onDragStart={(event) => {
+                                setDragItem({ key: it.key, label: it.label, from: r.id });
+                                event.dataTransfer.effectAllowed = "move";
+                                event.dataTransfer.setData("text/plain", it.key);
+                              }}
+                              onDragEnd={() => {
+                                setDragItem(null);
+                                setDragOverCategory(null);
+                              }}
+                              className="flex cursor-grab items-center gap-2 py-2 active:cursor-grabbing"
+                            >
+                              <GripVertical className="hidden h-4 w-4 shrink-0 text-muted-foreground sm:block" aria-hidden="true" />
                               <div className="min-w-0 flex-1">
                                 <p className="truncate text-sm">{it.label}</p>
                                 {it.date && (
