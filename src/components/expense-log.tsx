@@ -888,10 +888,10 @@ export function ExpenseLog() {
                           `Estás ${Math.round(paceDifference)}% por encima del ritmo esperado`,
                           `You're ${Math.round(paceDifference)}% above the expected pace`,
                         )}
-                  </p>
-                </div>
-              </div>
-            </div>
+                   </p>
+                 </div>
+               </button>
+             </div>
 
             <div className="mt-4 hidden gap-8 sm:mt-5 md:grid md:grid-cols-2 lg:hidden">
               <div className="grid min-w-0 grid-rows-[auto_1fr] justify-items-center gap-5 text-center">
