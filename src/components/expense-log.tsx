@@ -405,7 +405,7 @@ export function ExpenseLog() {
       const id = match(item.name);
       if (id) actual.set(id, (actual.get(id) ?? 0) + amount);
     }
-    return planLines
+    const list = planLines
       .filter((l) => l.amount > 0)
       .map((l) => {
         const cat = findBudgetCategory(l.id);
@@ -421,7 +421,22 @@ export function ExpenseLog() {
         };
       })
       .sort((a, b) => b.pct - a.pct);
-  }, [planLines, byCategory, fixed.items, customLines, periodFactor, t]);
+    // Todo lo gastado que no encaja en una categoría del plan se agrupa en
+    // "Otros gastos", para que la suma de la lista cuadre con "Gastado a la fecha".
+    const shown = list.reduce((s, r) => s + r.actual, 0);
+    const leftover = spent - shown;
+    if (leftover > 0.5) {
+      list.push({
+        id: "others",
+        name: t("Otros gastos", "Other spending"),
+        emoji: "🧾",
+        planned: 0,
+        actual: leftover,
+        pct: 0,
+      });
+    }
+    return list;
+  }, [planLines, byCategory, fixed.items, customLines, periodFactor, spent, t]);
 
   const [dismissed, setDismissed] = useState<string[]>([]);
 
