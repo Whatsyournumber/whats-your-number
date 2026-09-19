@@ -466,6 +466,12 @@ export function ExpenseLog() {
     flashTimer.current = window.setTimeout(() => setFlashRow(null), 2400);
   };
 
+  const focusOverspent = () => {
+    const over = rows.filter((r) => r.pct >= 100).sort((a, b) => b.pct - a.pct)[0];
+    if (over) focusCategory(over.id);
+    else categoryCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
 
   const [draft, setDraft] = useState<Draft | null>(null);
   const [expandedTx, setExpandedTx] = useState<string | null>(null);
@@ -771,9 +777,13 @@ export function ExpenseLog() {
                 </div>
               </div>
             </div>
-            <div
+            <button
+              type="button"
+              onClick={focusOverspent}
+              aria-label={t("Ver categorías donde te excediste", "See categories where you overspent")}
               className={cn(
-                "mt-3 flex items-center gap-3 rounded-xl border border-border bg-muted/20 p-3 md:hidden",
+                "mt-3 flex w-full cursor-pointer items-center gap-3 rounded-xl border border-border bg-muted/20 p-3 text-left transition-colors hover:bg-muted/40 md:hidden",
+                !isOnPace && "hover:border-negative/50",
               )}
             >
               <span
@@ -800,7 +810,7 @@ export function ExpenseLog() {
                       )}
                 </p>
               </div>
-            </div>
+            </button>
 
              <div className="mt-3 hidden items-center gap-6 lg:flex">
                 <div className="grid min-w-0 shrink-0 grid-cols-[auto_auto_auto] items-baseline gap-x-6 gap-y-2">
@@ -845,10 +855,15 @@ export function ExpenseLog() {
                 </div>
               </div>
 
-              <div
+              <button
+                type="button"
+                onClick={focusOverspent}
+                aria-label={t("Ver categorías donde te excediste", "See categories where you overspent")}
                 className={cn(
-                   "flex w-[252px] flex-none items-center gap-3 self-center rounded-xl border p-3.5 text-left",
-                   isOnPace ? "border-positive/30 bg-positive/10" : "border-negative/30 bg-negative/10",
+                   "flex w-[252px] flex-none cursor-pointer items-center gap-3 self-center rounded-xl border p-3.5 text-left transition-colors",
+                   isOnPace
+                     ? "border-positive/30 bg-positive/10 hover:bg-positive/15"
+                     : "border-negative/30 bg-negative/10 hover:border-negative/50 hover:bg-negative/15",
                  )}
                >
                  <span
@@ -873,10 +888,10 @@ export function ExpenseLog() {
                           `Estás ${Math.round(paceDifference)}% por encima del ritmo esperado`,
                           `You're ${Math.round(paceDifference)}% above the expected pace`,
                         )}
-                  </p>
-                </div>
-              </div>
-            </div>
+                   </p>
+                 </div>
+               </button>
+             </div>
 
             <div className="mt-4 hidden gap-8 sm:mt-5 md:grid md:grid-cols-2 lg:hidden">
               <div className="grid min-w-0 grid-rows-[auto_1fr] justify-items-center gap-5 text-center">
@@ -923,7 +938,15 @@ export function ExpenseLog() {
                   <p className="text-sm text-muted-foreground">{t("Gastado a la fecha", "Spent to date")}</p>
                   <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl">{fmt(spent)}</p>
                 </div>
-                <div className="flex w-full min-w-0 items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-3 text-left sm:p-4">
+                 <button
+                   type="button"
+                   onClick={focusOverspent}
+                   aria-label={t("Ver categorías donde te excediste", "See categories where you overspent")}
+                   className={cn(
+                     "flex w-full min-w-0 cursor-pointer items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-3 text-left transition-colors hover:bg-muted/40 sm:p-4",
+                     !isOnPace && "hover:border-negative/50",
+                   )}
+                 >
                   <span
                     className={cn(
                       "grid h-9 w-9 shrink-0 place-items-center rounded-lg",
@@ -945,12 +968,12 @@ export function ExpenseLog() {
                         : t(
                             `Estás ${Math.round(paceDifference)}% por encima del ritmo esperado`,
                             `You're ${Math.round(paceDifference)}% above the expected pace`,
-                          )}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+                           )}
+                     </p>
+                   </div>
+                 </button>
+               </div>
+             </div>
 
             <div className="mt-3 grid grid-cols-3 gap-2 border-t border-border/60 pt-3 sm:gap-0">
               <div className="flex min-w-0 flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-2.5 sm:px-2">
