@@ -313,19 +313,20 @@ export function ExpenseLog() {
   const todayDay = now.getDate();
   const monthVariable = daily.reduce((s, v) => s + v, 0);
 
-  // Próximos pagos recurrentes ordenados por la fecha en que caen.
-  const upcoming = useMemo(() => {
+  /** Fecha del próximo cobro a partir del día del mes. */
+  const nextChargeDate = (dayOfMonth?: number) => {
     const base = startOfDay(now);
+    const day = Math.min(Math.max(1, dayOfMonth ?? 1), daysInMonth);
+    let next = new Date(now.getFullYear(), now.getMonth(), day);
+    if (next < base) next = new Date(now.getFullYear(), now.getMonth() + 1, Math.min(day, 28));
+    return next;
+  };
+
+  // Próximos pagos recurrentes ordenados por la fecha en que caen.
+  const fixedUpcoming = useMemo(() => {
     return expenseFixedItems
       .filter((i) => i.amount > 0)
-      .map((i) => {
-        const day = Math.min(Math.max(1, i.dayOfMonth ?? 1), daysInMonth);
-        let next = new Date(now.getFullYear(), now.getMonth(), day);
-        if (next < base) next = new Date(now.getFullYear(), now.getMonth() + 1, Math.min(day, 28));
-        return { ...i, next };
-      })
-      .sort((a, b) => a.next.getTime() - b.next.getTime())
-      .slice(0, 5);
+      .map((i) => ({ ...i, next: nextChargeDate(i.dayOfMonth) }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expenseFixedItems, daysInMonth]);
 
