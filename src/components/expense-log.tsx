@@ -395,16 +395,26 @@ export function ExpenseLog() {
       return BUDGET_CATEGORIES.find((c) => c.aliases.some((a) => n === a || n.includes(a)))?.id ?? null;
     };
     const actual = new Map<string, number>();
-    for (const [name, amount] of byCategory) {
-      const id = match(name);
-      if (id) actual.set(id, (actual.get(id) ?? 0) + amount);
+    // Detalle de gastos por categoría: cada fila se puede abrir para ver en qué se gastó.
+    const detail = new Map<string, { label: string; amount: number; date?: string }[]>();
+    const push = (id: string, label: string, amount: number, date?: string) => {
+      if (amount <= 0) return;
+      actual.set(id, (actual.get(id) ?? 0) + amount);
+      const arr = detail.get(id) ?? [];
+      arr.push({ label, amount, date });
+      detail.set(id, arr);
+    };
+    for (const x of periodTx) {
+      const name = categorizeTx(x as Tx, categories.rules);
+      const id = match(name) ?? "others";
+      push(id, x.merchant || name, Math.abs(x.amount), x.tx_date ?? undefined);
     }
     for (const item of fixed.items) {
       const amount = (Number(item.amount) || 0) * periodFactor;
-      if (amount <= 0) continue;
-      const id = match(item.name);
-      if (id) actual.set(id, (actual.get(id) ?? 0) + amount);
+      const id = match(item.name) ?? "others";
+      push(id, item.name, amount);
     }
+    const sortItems = (id: string) => (detail.get(id) ?? []).sort((a, b) => b.amount - a.amount);
     const list = planLines
       .filter((l) => l.amount > 0)
       .map((l) => {
@@ -418,6 +428,7 @@ export function ExpenseLog() {
           planned,
           actual: spentCat,
           pct: planned > 0 ? (spentCat / planned) * 100 : 0,
+          items: sortItems(l.id),
         };
       })
       .sort((a, b) => b.pct - a.pct);
@@ -433,10 +444,12 @@ export function ExpenseLog() {
         planned: 0,
         actual: leftover,
         pct: 0,
+        items: sortItems("others"),
       });
     }
     return list;
-  }, [planLines, byCategory, fixed.items, customLines, periodFactor, spent, t]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [planLines, periodTx, fixed.items, customLines, periodFactor, spent, t, categories.rules]);
 
   const [dismissed, setDismissed] = useState<string[]>([]);
 
