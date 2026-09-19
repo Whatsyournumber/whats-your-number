@@ -1752,6 +1752,39 @@ export function ExpenseLog() {
         </DialogContent>
       </Dialog>
 
+      <Dialog open={Boolean(moveItem)} onOpenChange={(open) => !open && setMoveItem(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("Cambiar de categoría", "Change category")}</DialogTitle>
+            <DialogDescription>
+              {moveItem
+                ? t(`Mueve "${moveItem.label}" a la categoría correcta.`, `Move "${moveItem.label}" to the right category.`)
+                : ""}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="max-h-[50vh] space-y-1 overflow-y-auto">
+            {rows
+              .filter((r) => r.id !== moveItem?.from)
+              .map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => {
+                    if (moveItem) moveExpense(moveItem.key, r.id);
+                    setMoveItem(null);
+                  }}
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-muted"
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-muted text-base">
+                    {r.emoji}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-sm">{r.name}</span>
+                </button>
+              ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <BudgetDialog
         open={planOpen}
         onOpenChange={setPlanOpen}
