@@ -205,7 +205,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                           <Pencil className="h-4 w-4" />
                         </button>
                       ) : null}
-                       <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+                       <div className="flex shrink-0 items-center gap-1 sm:gap-2">
                          {g === "essentials" ? (
                            <div
                              className="flex h-9 items-center gap-1 rounded-md border border-border/60 bg-card/40 px-1.5 sm:gap-1.5 sm:px-2"
