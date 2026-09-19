@@ -1538,7 +1538,6 @@ export function ExpenseLog() {
                         }}
                         className={cn(
                           "scroll-mt-24 rounded-lg transition-all duration-500",
-                          dragOverCategory === r.id && "bg-positive/10 ring-1 ring-positive/50",
                           flashRow === r.id &&
                             (r.planned > 0 && r.actual > r.planned
                               ? "bg-negative/10 ring-1 ring-negative/40"
