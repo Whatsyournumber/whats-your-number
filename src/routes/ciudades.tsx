@@ -35,6 +35,7 @@ import {
 import { stabilityBadge } from "@/lib/political-stability";
 import { PILLAR_META, pillarWeights, type PillarKey } from "@/lib/north-score";
 import { suggestedFilters, suggestionReasons } from "@/lib/city-suggestions";
+import { fromUsd, toUsd } from "@/lib/fx";
 import { buildDataset } from "@/lib/profile-data";
 import { nomadVisa, nomadFriendly } from "@/lib/nomad-visas";
 import { readMyCities, saveMyCities } from "@/lib/my-cities";
@@ -289,11 +290,13 @@ function LifestyleSimulatorContent() {
   const { profile } = useProfile();
   const d = buildDataset(profile);
   const currency = d.currency;
-  const fmt = (n: number) => money(n, currency);
+  const money0 = (n: number) => money(n, currency);
+  // Todo el dataset de ciudades está en USD: se convierte a la moneda del perfil al mostrarlo.
+  const fmt = (n: number) => money0(fromUsd(n, currency));
 
   const [filters, setFilters] = useState<Filters>({
     ...defaultFilters,
-    budget: Math.max(1000, Math.min(15000, Math.round((d.income || 5000) / 100) * 100)),
+    budget: Math.max(1000, Math.min(15000, Math.round(toUsd(d.income || 5000, currency) / 100) * 100)),
     stage:
       profile.marital_status === "married"
         ? profile.children && profile.children !== "0"

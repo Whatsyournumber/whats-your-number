@@ -104,11 +104,11 @@ export function TopCitiesPanel({
               <div className="space-y-2 p-3 text-[11px]">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">{t("Presupuesto mensual", "Monthly budget")}</span>
-                  <span className="numeric font-medium text-foreground">{fmt(r.cost)}</span>
+                  <span className="numeric font-medium text-foreground">{fmtCity(r.cost)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">{t("Tu número allí", "Your number there")}</span>
-                  <span className="numeric font-medium text-foreground">{fmt(target)}</span>
+                  <span className="numeric font-medium text-foreground">{fmtCity(target)}</span>
                 </div>
                 <p className="text-muted-foreground">
                   {years === 0
@@ -123,7 +123,7 @@ export function TopCitiesPanel({
         })}
       </div>
 
-      <CityDetailDialog r={detail} filters={filters} fmt={fmt} onClose={() => setDetail(null)} />
+      <CityDetailDialog r={detail} filters={filters} fmt={fmtCity} onClose={() => setDetail(null)} />
     </Panel>
   );
 }
