@@ -22,10 +22,12 @@ type Props = {
   lines: BudgetLine[];
   onSave: (lines: BudgetLine[]) => void;
   fmt: (n: number) => string;
+  /** Importes que vienen de los gastos fijos y no se editan dos veces. */
+  automaticAmounts?: Record<string, number>;
 };
 
 /** Pop-up para definir un objetivo de gasto personalizado por categoría. */
-export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) {
+export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automaticAmounts = {} }: Props) {
   const t = useT();
   const { lang } = useLanguage();
   const [draft, setDraft] = useState<BudgetLine[]>([]);
@@ -198,7 +200,21 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                           <Pencil className="h-4 w-4" />
                         </button>
                       ) : null}
-                      <NumberInput value={l.amount} onChange={(v) => setAmount(l.id, v)} format className="h-9 w-28 text-sm" />
+                       <div className="flex shrink-0 flex-col items-end gap-0.5">
+                         <NumberInput
+                           value={l.amount}
+                           onChange={(v) => setAmount(l.id, v)}
+                           format
+                           disabled={automaticAmounts[l.id] !== undefined}
+                           aria-label={t("Monto objetivo mensual", "Monthly target amount")}
+                           className="h-9 w-28 text-sm"
+                         />
+                         {automaticAmounts[l.id] !== undefined ? (
+                           <span className="text-[10px] leading-none text-positive">
+                             {t("Automático", "Automatic")}
+                           </span>
+                         ) : null}
+                       </div>
                       <button
                         type="button"
                         onClick={() => removeLine(l.id)}
