@@ -325,16 +325,7 @@ export function ExpenseLog() {
       .sort((a, b) => a.next.getTime() - b.next.getTime())
       .slice(0, 5);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fixed.items, daysInMonth]);
-
-  const byCategory = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const x of periodTx) {
-      const k = categorizeTx(x as Tx, categories.rules);
-      map.set(k, (map.get(k) ?? 0) + Math.abs(x.amount));
-    }
-    return map;
-  }, [periodTx, categories.rules]);
+  }, [expenseFixedItems, daysInMonth]);
 
   /** Plan del onboarding: las categorías y montos que la persona declaró al registrarse. */
   const onboardingLines = useMemo<BudgetLine[]>(
@@ -467,7 +458,7 @@ export function ExpenseLog() {
     }
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [planLines, periodTx, fixed.items, customLines, periodFactor, spent, t, categories.rules]);
+  }, [planLines, expenseTx, expenseFixedItems, customLines, periodFactor, spent, t, categories.rules]);
 
   const [dismissed, setDismissed] = useState<string[]>([]);
 
