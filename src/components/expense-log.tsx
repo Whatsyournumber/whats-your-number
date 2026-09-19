@@ -103,7 +103,6 @@ export function ExpenseLog() {
   const categories = useCategories();
 
   const [planOpen, setPlanOpen] = useState(false);
-  const [fixedCategoriesOpen, setFixedCategoriesOpen] = useState(false);
   const [recOpen, setRecOpen] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
   const [recName, setRecName] = useState("");
@@ -1456,7 +1455,7 @@ export function ExpenseLog() {
 
               <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
                 <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-base font-semibold">{t("Próximos pagos", "Upcoming payments")}</h3>
+                  <h3 className="text-base font-semibold">{t("Gastos fijos (Próximos pagos)", "Fixed expenses (Upcoming payments)")}</h3>
                   <button
                     type="button"
                     onClick={openNewRecurring}
@@ -1528,34 +1527,19 @@ export function ExpenseLog() {
                 </button>
               </div>
               <ul className="mt-4 space-y-3.5">
-                {[...rows]
-                  .sort((a, b) => {
-                    if (a.group !== b.group) return a.group === "essentials" ? -1 : 1;
-                    return b.pct - a.pct;
-                  })
-                  .map((r, index, groupedRows) => {
-                  const expandedCat = expandedCategory === r.id;
-                  const showGroup = index === 0 || groupedRows[index - 1]?.group !== r.group;
-                  return (
-                    <Fragment key={r.id}>
-                      {showGroup ? r.group === "essentials" ? (
-                        <li>
-                          <button
-                            type="button"
-                            onClick={() => setFixedCategoriesOpen((open) => !open)}
-                            className="flex w-full items-center justify-between py-1 text-left text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground"
-                            aria-expanded={fixedCategoriesOpen}
-                          >
-                            <span>{t("Gastos fijos", "Fixed expenses")}</span>
-                            <ChevronDown className={cn("h-4 w-4 transition-transform", fixedCategoriesOpen && "rotate-180")} />
-                          </button>
-                        </li>
-                      ) : (
-                        <li className={cn("text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground", index > 0 && "pt-3")}>
-                          {t("Gastos variables mensuales", "Monthly variable expenses")}
-                        </li>
-                      ) : null}
-                      {(r.group !== "essentials" || fixedCategoriesOpen) && <li
+                 {[...rows]
+                   .filter((r) => r.group !== "essentials")
+                   .sort((a, b) => b.pct - a.pct)
+                   .map((r, index) => {
+                   const expandedCat = expandedCategory === r.id;
+                   return (
+                     <Fragment key={r.id}>
+                       {index === 0 ? (
+                         <li className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                           {t("Gastos variables mensuales", "Monthly variable expenses")}
+                         </li>
+                       ) : null}
+                       <li
                         ref={(el) => {
                           rowRefs.current[r.id] = el;
                         }}
@@ -1704,7 +1688,7 @@ export function ExpenseLog() {
                           ))}
                         </ul>
                       )}
-                      </li>}
+                      </li>
                     </Fragment>
                   );
                 })}
