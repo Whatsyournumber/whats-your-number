@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, CalendarDays, Camera, ChevronDown, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowLeftRight, ArrowUp, CalendarDays, Camera, ChevronDown, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { BudgetDialog } from "@/components/budget-dialog";
@@ -33,6 +33,7 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets, type BudgetLine } from "@/hooks/use-spend-budgets";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
+import { useSyncedSetting } from "@/hooks/use-synced-setting";
 import { BUDGET_CATEGORIES, findBudgetCategory } from "@/lib/budget-categories";
 import { BASE_CATEGORIES, categorizeTx } from "@/lib/categorize";
 import { captureExpense } from "@/lib/expense-capture.functions";
@@ -54,6 +55,7 @@ type Draft = {
 
 const ALERTS_KEY = "whatsyournumber:expense-alerts";
 const RECEIPT_DETAIL_PREFIX = "wyn-receipt:";
+const EMPTY_OVERRIDES: Record<string, string> = {};
 
 const receiptItemsFrom = (description: string | null | undefined): DraftItem[] => {
   if (!description?.startsWith(RECEIPT_DETAIL_PREFIX)) return [];
@@ -396,6 +398,24 @@ export function ExpenseLog() {
     [planLines],
   );
 
+  /**
+   * Correcciones manuales: gasto (id de movimiento o de gasto fijo) → categoría del plan.
+   * Se guardan en la cuenta, así la corrección vale en móvil, tablet y ordenador.
+   */
+  const { value: catOverrides, save: saveCatOverrides } = useSyncedSetting<Record<string, string>>(
+    "whatsyournumber:expense-category-overrides",
+    EMPTY_OVERRIDES,
+  );
+
+  const moveExpense = (key: string, toId: string) => {
+    saveCatOverrides({ ...catOverrides, [key]: toId });
+    const cat = findBudgetCategory(toId);
+    toast.success(
+      t("Gasto movido de categoría", "Expense moved"),
+      cat ? { description: `${cat.emoji} ${t(cat.es, cat.en)}` } : undefined,
+    );
+  };
+
   const rows = useMemo(() => {
     const match = (name: string) => {
       const n = name.trim().toLowerCase();
@@ -405,23 +425,23 @@ export function ExpenseLog() {
     };
     const actual = new Map<string, number>();
     // Detalle de gastos por categoría: cada fila se puede abrir para ver en qué se gastó.
-    const detail = new Map<string, { label: string; amount: number; date?: string }[]>();
-    const push = (id: string, label: string, amount: number, date?: string) => {
+    const detail = new Map<string, { key: string; label: string; amount: number; date?: string }[]>();
+    const push = (id: string, key: string, label: string, amount: number, date?: string) => {
       if (amount <= 0) return;
       actual.set(id, (actual.get(id) ?? 0) + amount);
       const arr = detail.get(id) ?? [];
-      arr.push(date ? { label, amount, date } : { label, amount });
+      arr.push(date ? { key, label, amount, date } : { key, label, amount });
       detail.set(id, arr);
     };
     for (const x of expenseTx) {
       const name = categorizeTx(x as Tx, categories.rules);
-      const id = match(name) ?? "others";
-      push(id, x.merchant || name, Math.abs(x.amount), x.tx_date ?? undefined);
+      const id = catOverrides[x.id] ?? match(name) ?? "others";
+      push(id, x.id, x.merchant || name, Math.abs(x.amount), x.tx_date ?? undefined);
     }
     for (const item of expenseFixedItems) {
       const amount = (Number(item.amount) || 0) * periodFactor;
-      const id = match(item.name) ?? "others";
-      push(id, item.name, amount);
+      const id = catOverrides[item.id] ?? match(item.name) ?? "others";
+      push(id, item.id, item.name, amount);
     }
     const sortItems = (id: string) => (detail.get(id) ?? []).sort((a, b) => b.amount - a.amount);
     const list = planLines
@@ -458,7 +478,7 @@ export function ExpenseLog() {
     }
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [planLines, expenseTx, expenseFixedItems, customLines, periodFactor, spent, t, categories.rules]);
+  }, [planLines, expenseTx, expenseFixedItems, customLines, periodFactor, spent, t, categories.rules, catOverrides]);
 
   const [dismissed, setDismissed] = useState<string[]>([]);
 
@@ -514,6 +534,8 @@ export function ExpenseLog() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [expandedTx, setExpandedTx] = useState<string | null>(null);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  // Gasto que se está moviendo a otra categoría desde el desglose.
+  const [moveItem, setMoveItem] = useState<{ key: string; label: string; from: string } | null>(null);
   const [transcript, setTranscript] = useState("");
   const [saving, setSaving] = useState(false);
   const [busy, setBusy] = useState<"voice" | "receipt" | null>(null);
@@ -1471,7 +1493,7 @@ export function ExpenseLog() {
                       {expandedCat && r.items.length > 0 && (
                         <ul className="ml-12 mt-2 divide-y divide-border/40 rounded-lg bg-muted/20 px-3 sm:ml-[3.25rem]">
                           {r.items.slice(0, 12).map((it, i) => (
-                            <li key={`${it.label}-${i}`} className="flex items-center gap-3 py-2">
+                            <li key={`${it.key}-${i}`} className="flex items-center gap-2 py-2">
                               <div className="min-w-0 flex-1">
                                 <p className="truncate text-sm">{it.label}</p>
                                 {it.date && (
@@ -1481,6 +1503,14 @@ export function ExpenseLog() {
                                 )}
                               </div>
                               <span className="numeric shrink-0 text-sm font-medium">{fmt(it.amount)}</span>
+                              <button
+                                type="button"
+                                onClick={() => setMoveItem({ key: it.key, label: it.label, from: r.id })}
+                                className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                                aria-label={t("Cambiar de categoría", "Change category")}
+                              >
+                                <ArrowLeftRight className="h-3.5 w-3.5" />
+                              </button>
                             </li>
                           ))}
                         </ul>
@@ -1719,6 +1749,39 @@ export function ExpenseLog() {
               {t("Guardar", "Save")}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={Boolean(moveItem)} onOpenChange={(open) => !open && setMoveItem(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("Cambiar de categoría", "Change category")}</DialogTitle>
+            <DialogDescription>
+              {moveItem
+                ? t(`Mueve "${moveItem.label}" a la categoría correcta.`, `Move "${moveItem.label}" to the right category.`)
+                : ""}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="max-h-[50vh] space-y-1 overflow-y-auto">
+            {rows
+              .filter((r) => r.id !== moveItem?.from)
+              .map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => {
+                    if (moveItem) moveExpense(moveItem.key, r.id);
+                    setMoveItem(null);
+                  }}
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-muted"
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-muted text-base">
+                    {r.emoji}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-sm">{r.name}</span>
+                </button>
+              ))}
+          </div>
         </DialogContent>
       </Dialog>
 
