@@ -588,9 +588,9 @@ export function ExpenseLog() {
             <button
               type="button"
               aria-label={t("Añadir gasto", "Add expense")}
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-positive text-background sm:hidden"
+              className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/20 sm:hidden"
             >
-              <Plus className="h-5 w-5" />
+              <Plus className="h-6 w-6" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-72 p-2">
