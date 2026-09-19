@@ -163,6 +163,12 @@ export function convertAmount(amount: number, from: string | null | undefined, t
   return (amount / rf) * rt;
 }
 
+/** Convierte un monto en USD (base de los datasets de ciudades) a la moneda de visualización. */
+export const fromUsd = (amount: number, to: string | null | undefined) => convertAmount(amount, "USD", to);
+
+/** Convierte un monto de la moneda del perfil a USD (base de los datasets). */
+export const toUsd = (amount: number, from: string | null | undefined) => convertAmount(amount, from, "USD");
+
 /** Todos los códigos ISO soportados, ordenados alfabéticamente. */
 export const SUPPORTED_CURRENCY_CODES = Object.keys(FALLBACK_PER_USD).sort();
 
