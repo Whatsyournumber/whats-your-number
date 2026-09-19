@@ -740,6 +740,13 @@ export function ExpenseLog() {
                 <p className="mt-1 text-sm text-muted-foreground">
                   {t("de", "of")} {fmt(periodTarget)}
                 </p>
+                <p className="mt-0.5 text-xs text-muted-foreground/80">
+                  {period === "week"
+                    ? t("Gasto objetivo semanal", "Weekly spending target")
+                    : period === "day"
+                      ? t("Gasto objetivo de hoy", "Today's spending target")
+                      : t("Gasto objetivo mensual", "Monthly spending target")}
+                </p>
               </div>
               <div className="relative h-28 w-28 shrink-0">
                 <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
