@@ -855,10 +855,15 @@ export function ExpenseLog() {
                 </div>
               </div>
 
-              <div
+              <button
+                type="button"
+                onClick={focusOverspent}
+                aria-label={t("Ver categorías donde te excediste", "See categories where you overspent")}
                 className={cn(
-                   "flex w-[252px] flex-none items-center gap-3 self-center rounded-xl border p-3.5 text-left",
-                   isOnPace ? "border-positive/30 bg-positive/10" : "border-negative/30 bg-negative/10",
+                   "flex w-[252px] flex-none cursor-pointer items-center gap-3 self-center rounded-xl border p-3.5 text-left transition-colors",
+                   isOnPace
+                     ? "border-positive/30 bg-positive/10 hover:bg-positive/15"
+                     : "border-negative/30 bg-negative/10 hover:border-negative/50 hover:bg-negative/15",
                  )}
                >
                  <span
