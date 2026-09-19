@@ -102,6 +102,7 @@ export function ExpenseLog() {
   const categories = useCategories();
 
   const [planOpen, setPlanOpen] = useState(false);
+  const [fixedCategoriesOpen, setFixedCategoriesOpen] = useState(false);
   const [recOpen, setRecOpen] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
   const [recName, setRecName] = useState("");
@@ -1480,14 +1481,24 @@ export function ExpenseLog() {
                   const showGroup = index === 0 || groupedRows[index - 1]?.group !== r.group;
                   return (
                     <Fragment key={r.id}>
-                      {showGroup ? (
+                      {showGroup ? r.group === "essentials" ? (
+                        <li>
+                          <button
+                            type="button"
+                            onClick={() => setFixedCategoriesOpen((open) => !open)}
+                            className="flex w-full items-center justify-between py-1 text-left text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground"
+                            aria-expanded={fixedCategoriesOpen}
+                          >
+                            <span>{t("Gastos fijos", "Fixed expenses")}</span>
+                            <ChevronDown className={cn("h-4 w-4 transition-transform", fixedCategoriesOpen && "rotate-180")} />
+                          </button>
+                        </li>
+                      ) : (
                         <li className={cn("text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground", index > 0 && "pt-3")}>
-                          {r.group === "essentials"
-                            ? t("Gastos fijos", "Fixed expenses")
-                            : t("Gastos variables mensuales", "Monthly variable expenses")}
+                          {t("Gastos variables mensuales", "Monthly variable expenses")}
                         </li>
                       ) : null}
-                      <li
+                      {(r.group !== "essentials" || fixedCategoriesOpen) && <li
                         ref={(el) => {
                           rowRefs.current[r.id] = el;
                         }}
@@ -1567,7 +1578,7 @@ export function ExpenseLog() {
                           ))}
                         </ul>
                       )}
-                      </li>
+                      </li>}
                     </Fragment>
                   );
                 })}
