@@ -84,7 +84,7 @@ export function NotFoundPage({ onRetry }: { onRetry?: () => void } = {}) {
           className="inline-flex items-center gap-2 rounded-full border border-border bg-elevated/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground backdrop-blur sm:text-[11px]"
         >
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-          {t("Página no encontrada", "Page not found")}
+          {onRetry ? t("Algo falló", "Something went wrong") : t("Página no encontrada", "Page not found")}
         </motion.span>
 
         {/* El cero es el faro: él te trae de vuelta. */}
@@ -113,13 +113,20 @@ export function NotFoundPage({ onRetry }: { onRetry?: () => void } = {}) {
           className="mt-5"
         >
           <p className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">
-            {t("Este número no estaba en tu plan.", "This number wasn't in your plan.")}
+            {onRetry
+              ? t("Esta página no cargó.", "This page didn't load.")
+              : t("Este número no estaba en tu plan.", "This number wasn't in your plan.")}
           </p>
           <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-            {t(
-              "El enlace se movió o nunca existió. El faro te lleva de vuelta a lo que sí importa.",
-              "The link moved or never existed. The lighthouse takes you back to what matters.",
-            )}
+            {onRetry
+              ? t(
+                  "Algo falló de nuestro lado. Puedes reintentar o volver al inicio.",
+                  "Something went wrong on our end. You can retry or go back home.",
+                )
+              : t(
+                  "El enlace se movió o nunca existió. El faro te lleva de vuelta a lo que sí importa.",
+                  "The link moved or never existed. The lighthouse takes you back to what matters.",
+                )}
           </p>
         </motion.div>
 
