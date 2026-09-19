@@ -1501,13 +1501,13 @@ export function ExpenseLog() {
 
         <div ref={latestExpensesRef} className="scroll-mt-4 rounded-2xl border border-border bg-card p-4">
           <p className="mb-3 text-sm font-medium">{t("Últimos gastos", "Latest expenses")}</p>
-          {periodTx.length === 0 ? (
+          {expenseTx.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               {t("Aún no registras gastos en este periodo.", "No expenses logged in this period yet.")}
             </p>
           ) : (
             <ul className="divide-y divide-border/60">
-              {periodTx.slice(0, 6).map((x) => {
+              {expenseTx.slice(0, 6).map((x) => {
                 const receiptItems = receiptItemsFrom(x.description);
                 const expanded = expandedTx === x.id;
                 return (
