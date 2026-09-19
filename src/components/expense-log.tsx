@@ -505,6 +505,11 @@ export function ExpenseLog() {
     const shown = list.reduce((s, r) => s + r.actual, 0);
     const leftover = spent - shown;
     if (leftover > 0.5) {
+      const plannedIds = new Set(list.map((r) => r.id));
+      const otherItems = [...detail.entries()]
+        .filter(([id]) => !plannedIds.has(id))
+        .flatMap(([, items]) => items)
+        .sort((a, b) => b.amount - a.amount);
       list.push({
         id: "others",
         name: t("Otros gastos", "Other spending"),
@@ -513,7 +518,7 @@ export function ExpenseLog() {
         planned: 0,
         actual: leftover,
         pct: 0,
-        items: sortItems("others"),
+        items: otherItems,
       });
     }
     return list;
