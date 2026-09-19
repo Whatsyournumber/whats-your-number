@@ -55,6 +55,7 @@ type Draft = {
 
 const ALERTS_KEY = "whatsyournumber:expense-alerts";
 const RECEIPT_DETAIL_PREFIX = "wyn-receipt:";
+const EMPTY_OVERRIDES: Record<string, string> = {};
 
 const receiptItemsFrom = (description: string | null | undefined): DraftItem[] => {
   if (!description?.startsWith(RECEIPT_DETAIL_PREFIX)) return [];
