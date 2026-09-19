@@ -533,7 +533,7 @@ export function ExpenseLog() {
         const planned = l.amount * periodFactor;
         return {
           id: l.id,
-          name: cat ? t(cat.es, cat.en) : (l.label ?? l.id),
+           name: l.label ?? (cat ? t(cat.es, cat.en) : l.id),
           emoji: cat?.emoji ?? l.emoji ?? "📦",
           group: cat?.group === "essentials" || l.group === "essentials" ? "essentials" as const : "lifestyle" as const,
           planned,
