@@ -261,8 +261,26 @@ export function ExpenseLog() {
     [transactions, periodStart.getTime(), monthEnd.getTime()],
   );
 
-  const variableSpend = periodTx.reduce((s, x) => s + Math.abs(x.amount), 0);
-  const spent = variableSpend + fixed.total * periodFactor;
+  // El ahorro y la inversión no son gastos: se apartan para que las categorías,
+  // el total gastado y los próximos pagos muestren solo gasto real.
+  const isSavingsName = (name: string) => {
+    const n = name.toLowerCase();
+    return ["ahorro", "inversi", "savings", "investment", "fondo indexado"].some((h) => n.includes(h));
+  };
+  const expenseTx = useMemo(
+    () => periodTx.filter((x) => !isSavingsName(`${x.merchant} ${x.description ?? ""}`)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [periodTx],
+  );
+  const expenseFixedItems = useMemo(
+    () => fixed.items.filter((i) => !isSavingsName(i.name)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [fixed.items],
+  );
+  const expenseFixedTotal = expenseFixedItems.reduce((s, i) => s + (Number(i.amount) || 0), 0);
+
+  const variableSpend = expenseTx.reduce((s, x) => s + Math.abs(x.amount), 0);
+  const spent = variableSpend + expenseFixedTotal * periodFactor;
   const onboardingTotal = SPEND_PLAN_FIELDS.reduce((s, f) => s + (Number(profile[f.key]) || 0), 0);
   const plan = budgets.hasBudget ? budgets.total : onboardingTotal;
   const target = hasTarget && savedTarget > 0 ? savedTarget : plan > 0 ? plan : onboardingTotal;
@@ -296,7 +314,7 @@ export function ExpenseLog() {
   // Próximos pagos recurrentes ordenados por la fecha en que caen.
   const upcoming = useMemo(() => {
     const base = startOfDay(now);
-    return fixed.items
+    return expenseFixedItems
       .filter((i) => i.amount > 0)
       .map((i) => {
         const day = Math.min(Math.max(1, i.dayOfMonth ?? 1), daysInMonth);
@@ -307,16 +325,7 @@ export function ExpenseLog() {
       .sort((a, b) => a.next.getTime() - b.next.getTime())
       .slice(0, 5);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fixed.items, daysInMonth]);
-
-  const byCategory = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const x of periodTx) {
-      const k = categorizeTx(x as Tx, categories.rules);
-      map.set(k, (map.get(k) ?? 0) + Math.abs(x.amount));
-    }
-    return map;
-  }, [periodTx, categories.rules]);
+  }, [expenseFixedItems, daysInMonth]);
 
   /** Plan del onboarding: las categorías y montos que la persona declaró al registrarse. */
   const onboardingLines = useMemo<BudgetLine[]>(
@@ -404,12 +413,12 @@ export function ExpenseLog() {
       arr.push(date ? { label, amount, date } : { label, amount });
       detail.set(id, arr);
     };
-    for (const x of periodTx) {
+    for (const x of expenseTx) {
       const name = categorizeTx(x as Tx, categories.rules);
       const id = match(name) ?? "others";
       push(id, x.merchant || name, Math.abs(x.amount), x.tx_date ?? undefined);
     }
-    for (const item of fixed.items) {
+    for (const item of expenseFixedItems) {
       const amount = (Number(item.amount) || 0) * periodFactor;
       const id = match(item.name) ?? "others";
       push(id, item.name, amount);
@@ -449,7 +458,7 @@ export function ExpenseLog() {
     }
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [planLines, periodTx, fixed.items, customLines, periodFactor, spent, t, categories.rules]);
+  }, [planLines, expenseTx, expenseFixedItems, customLines, periodFactor, spent, t, categories.rules]);
 
   const [dismissed, setDismissed] = useState<string[]>([]);
 
@@ -1492,13 +1501,13 @@ export function ExpenseLog() {
 
         <div ref={latestExpensesRef} className="scroll-mt-4 rounded-2xl border border-border bg-card p-4">
           <p className="mb-3 text-sm font-medium">{t("Últimos gastos", "Latest expenses")}</p>
-          {periodTx.length === 0 ? (
+          {expenseTx.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               {t("Aún no registras gastos en este periodo.", "No expenses logged in this period yet.")}
             </p>
           ) : (
             <ul className="divide-y divide-border/60">
-              {periodTx.slice(0, 6).map((x) => {
+              {expenseTx.slice(0, 6).map((x) => {
                 const receiptItems = receiptItemsFrom(x.description);
                 const expanded = expandedTx === x.id;
                 return (
