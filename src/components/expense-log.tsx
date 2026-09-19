@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
@@ -421,6 +421,10 @@ export function ExpenseLog() {
       const n = name.trim().toLowerCase();
       const custom = customLines.find((c) => c.aliases.some((a) => n === a || n.includes(a) || a.includes(n)));
       if (custom) return custom.id;
+      if (
+        ["hipoteca", "mortgage", "alquiler", "renta", "rent", "condominio", "community fee", "mantenimiento vivienda", "mantenimiento hogar", "home maintenance", "seguro vivienda", "seguro hogar", "home insurance"]
+          .some((term) => n.includes(term))
+      ) return "housing";
       return BUDGET_CATEGORIES.find((c) => c.aliases.some((a) => n === a || n.includes(a)))?.id ?? null;
     };
     const actual = new Map<string, number>();
@@ -454,6 +458,7 @@ export function ExpenseLog() {
           id: l.id,
           name: cat ? t(cat.es, cat.en) : (l.label ?? l.id),
           emoji: cat?.emoji ?? l.emoji ?? "📦",
+          group: cat?.group === "essentials" || l.group === "essentials" ? "essentials" as const : "lifestyle" as const,
           planned,
           actual: spentCat,
           pct: planned > 0 ? (spentCat / planned) * 100 : 0,
@@ -470,6 +475,7 @@ export function ExpenseLog() {
         id: "others",
         name: t("Otros gastos", "Other spending"),
         emoji: "🧾",
+        group: "lifestyle" as const,
         planned: 0,
         actual: leftover,
         pct: 0,
@@ -1431,22 +1437,35 @@ export function ExpenseLog() {
                 </button>
               </div>
               <ul className="mt-4 space-y-3.5">
-                {rows.map((r) => {
+                {[...rows]
+                  .sort((a, b) => {
+                    if (a.group !== b.group) return a.group === "essentials" ? -1 : 1;
+                    return b.pct - a.pct;
+                  })
+                  .map((r, index, groupedRows) => {
                   const expandedCat = expandedCategory === r.id;
+                  const showGroup = index === 0 || groupedRows[index - 1]?.group !== r.group;
                   return (
-                    <li
-                      key={r.id}
-                      ref={(el) => {
-                        rowRefs.current[r.id] = el;
-                      }}
-                      className={cn(
-                        "scroll-mt-24 rounded-lg transition-all duration-500",
-                        flashRow === r.id &&
-                          (r.planned > 0 && r.actual > r.planned
-                            ? "bg-negative/10 ring-1 ring-negative/40"
-                            : "bg-positive/10 ring-1 ring-positive/40"),
-                      )}
-                    >
+                    <Fragment key={r.id}>
+                      {showGroup ? (
+                        <li className={cn("text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground", index > 0 && "pt-3")}>
+                          {r.group === "essentials"
+                            ? t("Gastos fijos", "Fixed expenses")
+                            : t("Gastos variables mensuales", "Monthly variable expenses")}
+                        </li>
+                      ) : null}
+                      <li
+                        ref={(el) => {
+                          rowRefs.current[r.id] = el;
+                        }}
+                        className={cn(
+                          "scroll-mt-24 rounded-lg transition-all duration-500",
+                          flashRow === r.id &&
+                            (r.planned > 0 && r.actual > r.planned
+                              ? "bg-negative/10 ring-1 ring-negative/40"
+                              : "bg-positive/10 ring-1 ring-positive/40"),
+                        )}
+                      >
                       <div className="flex items-center gap-3">
                         <span
                           className={cn(
@@ -1515,7 +1534,8 @@ export function ExpenseLog() {
                           ))}
                         </ul>
                       )}
-                    </li>
+                      </li>
+                    </Fragment>
                   );
                 })}
               </ul>
