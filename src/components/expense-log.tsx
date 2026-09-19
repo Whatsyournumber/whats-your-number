@@ -1533,7 +1533,6 @@ export function ExpenseLog() {
                           if (keys.length > 0) moveExpenses(keys, r.id);
                           dragItemRef.current = null;
                           setDragItem(null);
-                          setDragOverCategory(null);
                           setSelectedItems([]);
                         }}
                         className={cn(
