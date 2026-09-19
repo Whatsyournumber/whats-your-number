@@ -10,7 +10,19 @@ export const expenseSchema = z.object({
   category: z.string(),
 });
 
+/** Recibo: además del total, el detalle de los productos comprados. */
+export const receiptSchema = expenseSchema.extend({
+  items: z.array(
+    z.object({
+      name: z.string(),
+      amount: z.number(),
+      category: z.string(),
+    }),
+  ),
+});
+
 export type ParsedExpense = z.infer<typeof expenseSchema>;
+export type ParsedReceipt = z.infer<typeof receiptSchema>;
 
 const GATEWAY = "https://ai.gateway.lovable.dev/v1";
 
