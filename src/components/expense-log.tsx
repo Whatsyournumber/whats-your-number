@@ -590,6 +590,7 @@ export function ExpenseLog() {
   const [moveItem, setMoveItem] = useState<{ keys: string[]; label: string; from: string } | null>(null);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [dragItem, setDragItem] = useState<{ keys: string[]; from: string } | null>(null);
+  const dragItemRef = useRef<{ keys: string[]; from: string } | null>(null);
   const [dragOverCategory, setDragOverCategory] = useState<string | null>(null);
   const [transcript, setTranscript] = useState("");
   const [saving, setSaving] = useState(false);
@@ -1518,16 +1519,20 @@ export function ExpenseLog() {
                           rowRefs.current[r.id] = el;
                         }}
                         onDragOver={(event) => {
-                          if (!dragItem || dragItem.from === r.id) return;
+                          const activeDrag = dragItemRef.current ?? dragItem;
+                          if (!activeDrag || (activeDrag.from === r.id && activeDrag.keys.length === 1)) return;
                           event.preventDefault();
+                          event.dataTransfer.dropEffect = "move";
                           setDragOverCategory(r.id);
                         }}
                         onDragLeave={() => setDragOverCategory((id) => id === r.id ? null : id)}
                         onDrop={(event) => {
                           event.preventDefault();
+                          const activeDrag = dragItemRef.current ?? dragItem;
                           const transferredKeys = event.dataTransfer.getData("application/x-wyn-expenses");
-                          const keys = transferredKeys ? transferredKeys.split("\n").filter(Boolean) : dragItem?.keys ?? [];
-                          if (keys.length > 0 && dragItem?.from !== r.id) moveExpenses(keys, r.id);
+                          const keys = transferredKeys ? transferredKeys.split("\n").filter(Boolean) : activeDrag?.keys ?? [];
+                          if (keys.length > 0) moveExpenses(keys, r.id);
+                          dragItemRef.current = null;
                           setDragItem(null);
                           setDragOverCategory(null);
                           setSelectedItems([]);
@@ -1611,12 +1616,15 @@ export function ExpenseLog() {
                               draggable
                               onDragStart={(event) => {
                                 const keys = selectedItems.includes(it.key) ? selectedItems : [it.key];
-                                setDragItem({ keys, from: r.id });
+                                const nextDrag = { keys, from: r.id };
+                                dragItemRef.current = nextDrag;
+                                setDragItem(nextDrag);
                                 event.dataTransfer.effectAllowed = "move";
-                                event.dataTransfer.setData("text/plain", it.key);
+                                event.dataTransfer.setData("text/plain", keys.join("\n"));
                                 event.dataTransfer.setData("application/x-wyn-expenses", keys.join("\n"));
                               }}
                               onDragEnd={() => {
+                                dragItemRef.current = null;
                                 setDragItem(null);
                                 setDragOverCategory(null);
                               }}
