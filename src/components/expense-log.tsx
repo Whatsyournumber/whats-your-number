@@ -1524,7 +1524,6 @@ export function ExpenseLog() {
                           event.dataTransfer.dropEffect = "move";
                           setDragOverCategory(r.id);
                         }}
-                        onDragLeave={() => setDragOverCategory((id) => id === r.id ? null : id)}
                         onDrop={(event) => {
                           event.preventDefault();
                           const activeDrag = dragItemRef.current ?? dragItem;
