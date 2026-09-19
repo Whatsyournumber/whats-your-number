@@ -703,7 +703,7 @@ export function ExpenseLog() {
                 <Wallet className="h-4 w-4 text-positive sm:h-5 sm:w-5" />
               </span>
               <h3 className="min-w-0 whitespace-nowrap text-lg font-semibold sm:text-xl lg:text-2xl">
-                {t("Gasto objetivo mensual", "Monthly spending target")}
+                {t("Tu plan de gasto", "Your spending plan")}
               </h3>
               {period === "month" && (
                 <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} className="shrink-0 text-muted-foreground transition-colors hover:text-foreground">
