@@ -17,6 +17,7 @@ export function NumberInput({
   onKeyDown,
   style,
   ariaLabel,
+  disabled,
 }: {
   value: number;
   onChange: (v: number) => void;
@@ -31,6 +32,7 @@ export function NumberInput({
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   style?: React.CSSProperties;
   ariaLabel?: string;
+  disabled?: boolean;
 }) {
   const pretty = (v: number) =>
     v === 0 ? "" : format ? v.toLocaleString(getWynMoneyLocale(), { useGrouping: "always" as unknown as boolean }) : String(v);
@@ -47,6 +49,7 @@ export function NumberInput({
     <Input
       ref={ref}
       aria-label={ariaLabel}
+      disabled={disabled}
       type={format ? "text" : "number"}
       inputMode="numeric"
       min={min}

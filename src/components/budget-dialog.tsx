@@ -206,7 +206,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
                            onChange={(v) => setAmount(l.id, v)}
                            format
                            disabled={automaticAmounts[l.id] !== undefined}
-                           aria-label={t("Monto objetivo mensual", "Monthly target amount")}
+                           ariaLabel={t("Monto objetivo mensual", "Monthly target amount")}
                            className="h-9 w-28 text-sm"
                          />
                          {automaticAmounts[l.id] !== undefined ? (
