@@ -59,7 +59,7 @@ export const DEFAULT_BUDGET_IDS = [
 
 export const GROUP_LABELS: Record<BudgetGroup, { es: string; en: string }> = {
   essentials: { es: "Gastos fijos mensuales", en: "Monthly fixed expenses" },
-  lifestyle: { es: "Gastos variables", en: "Variable expenses" },
+  lifestyle: { es: "Gastos variables mensuales", en: "Monthly variable expenses" },
   other: { es: "Otros", en: "Other" },
 };
 

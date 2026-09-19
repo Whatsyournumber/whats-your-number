@@ -339,23 +339,6 @@ export function ExpenseLog() {
     [profile],
   );
 
-  /** Los gastos fijos mensuales alimentan automáticamente el objetivo de su categoría. */
-  const automaticFixedAmounts = useMemo(() => {
-    const amounts: Record<string, number> = {};
-    for (const item of expenseFixedItems) {
-      const standard = SPEND_PLAN_FIELDS.find((field) => field.key === item.id);
-      const normalized = item.name.trim().toLowerCase();
-      const categoryId =
-        standard?.budgetId ??
-        BUDGET_CATEGORIES.find((category) =>
-          category.aliases.some((alias) => normalized === alias || normalized.includes(alias)),
-        )?.id;
-      if (!categoryId) continue;
-      amounts[categoryId] = (amounts[categoryId] ?? 0) + (Number(item.amount) || 0);
-    }
-    return amounts;
-  }, [expenseFixedItems]);
-
   // Si la cuenta todavía no tiene plan guardado, se copia el del onboarding
   // para que Registro de gastos y Análisis de gastos muestren el mismo objetivo.
   useEffect(() => {
@@ -371,28 +354,8 @@ export function ExpenseLog() {
     for (const l of budgets.lines) {
       if (l.amount > 0) merged.set(l.id, l);
     }
-    for (const [id, amount] of Object.entries(automaticFixedAmounts)) {
-      const current = merged.get(id);
-      merged.set(id, current ? { ...current, amount } : { id, amount });
-    }
     return [...merged.values()].filter((l) => l.amount > 0);
-  }, [onboardingLines, budgets.lines, automaticFixedAmounts]);
-
-  // Guarda esos objetivos automáticos para que sean iguales en móvil, tablet y ordenador.
-  useEffect(() => {
-    if (!budgets.loaded || Object.keys(automaticFixedAmounts).length === 0) return;
-    const current = new Map(budgets.lines.map((line) => [line.id, line]));
-    let changed = false;
-    for (const [id, amount] of Object.entries(automaticFixedAmounts)) {
-      if (current.get(id)?.amount !== amount) {
-        const previous = current.get(id);
-        current.set(id, previous ? { ...previous, amount } : { id, amount });
-        changed = true;
-      }
-    }
-    if (changed) budgets.save([...current.values()]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [budgets.loaded, budgets.lines, automaticFixedAmounts]);
+  }, [onboardingLines, budgets.lines]);
 
   /**
    * Al editar el objetivo mensual se reparte el nuevo total entre las categorías
@@ -1832,7 +1795,6 @@ export function ExpenseLog() {
           if (totalPlan > 0) setTarget(Math.round(totalPlan));
         }}
         fmt={fmt}
-        automaticAmounts={automaticFixedAmounts}
       />
     </section>
   );
