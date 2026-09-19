@@ -1490,7 +1490,7 @@ export function ExpenseLog() {
                       {expandedCat && r.items.length > 0 && (
                         <ul className="ml-12 mt-2 divide-y divide-border/40 rounded-lg bg-muted/20 px-3 sm:ml-[3.25rem]">
                           {r.items.slice(0, 12).map((it, i) => (
-                            <li key={`${it.label}-${i}`} className="flex items-center gap-3 py-2">
+                            <li key={`${it.key}-${i}`} className="flex items-center gap-2 py-2">
                               <div className="min-w-0 flex-1">
                                 <p className="truncate text-sm">{it.label}</p>
                                 {it.date && (
@@ -1500,6 +1500,14 @@ export function ExpenseLog() {
                                 )}
                               </div>
                               <span className="numeric shrink-0 text-sm font-medium">{fmt(it.amount)}</span>
+                              <button
+                                type="button"
+                                onClick={() => setMoveItem({ key: it.key, label: it.label, from: r.id })}
+                                className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                                aria-label={t("Cambiar de categoría", "Change category")}
+                              >
+                                <ArrowLeftRight className="h-3.5 w-3.5" />
+                              </button>
                             </li>
                           ))}
                         </ul>
