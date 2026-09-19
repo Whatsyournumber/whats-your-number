@@ -178,8 +178,8 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                   {t(GROUP_LABELS[g].es, GROUP_LABELS[g].en)}
                 </p>
                 {groupLines.map((l) => (
-                  <div key={l.id} className="rounded-xl border border-border/50 px-3 py-2">
-                    <div className="flex items-center gap-3">
+                  <div key={l.id} className="rounded-xl border border-border/50 px-2 py-2 sm:px-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
                       {editingId === l.id ? (
                         <Input
                           autoFocus
