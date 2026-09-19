@@ -65,7 +65,13 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
   const setDueDay = (id: string, raw: string) => {
     const n = Math.round(Number(raw));
     const dueDay = Number.isFinite(n) && n >= 1 ? Math.min(31, n) : undefined;
-    setDraft((d) => d.map((l) => (l.id === id ? { ...l, dueDay } : l)));
+    setDraft((d) =>
+      d.map((l) => {
+        if (l.id !== id) return l;
+        const { dueDay: _omit, ...rest } = l;
+        return dueDay === undefined ? rest : { ...rest, dueDay };
+      }),
+    );
   };
 
   const setTotal = (nextTotal: number) => {

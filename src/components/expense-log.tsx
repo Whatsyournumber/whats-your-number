@@ -448,7 +448,7 @@ export function ExpenseLog() {
         planId: l.id,
         name: `${cat?.emoji ?? l.emoji ?? "📦"} ${cat ? t(cat.es, cat.en) : (l.label ?? l.id)}`,
         amount: l.amount,
-        dayOfMonth: l.dueDay,
+        dayOfMonth: l.dueDay ?? 1,
         next: nextChargeDate(l.dueDay),
       };
     });
