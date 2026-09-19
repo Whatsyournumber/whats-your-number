@@ -64,9 +64,9 @@ const receiptItemsFrom = (description: string | null | undefined): DraftItem[] =
       .map((item) => {
         if (!item || typeof item !== "object") return null;
         const row = item as Record<string, unknown>;
-        const name = typeof row.name === "string" ? row.name.trim() : "";
-        const amount = Math.abs(Number(row.amount) || 0);
-        const category = typeof row.category === "string" ? row.category : "Otros";
+        const name = typeof row["name"] === "string" ? row["name"].trim() : "";
+        const amount = Math.abs(Number(row["amount"]) || 0);
+        const category = typeof row["category"] === "string" ? row["category"] : "Otros";
         return name && amount > 0 ? { name, amount, category } : null;
       })
       .filter((item): item is DraftItem => item !== null);
