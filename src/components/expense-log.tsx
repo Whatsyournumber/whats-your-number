@@ -405,7 +405,7 @@ export function ExpenseLog() {
       const id = match(item.name);
       if (id) actual.set(id, (actual.get(id) ?? 0) + amount);
     }
-    return planLines
+    const list = planLines
       .filter((l) => l.amount > 0)
       .map((l) => {
         const cat = findBudgetCategory(l.id);
@@ -421,7 +421,22 @@ export function ExpenseLog() {
         };
       })
       .sort((a, b) => b.pct - a.pct);
-  }, [planLines, byCategory, fixed.items, customLines, periodFactor, t]);
+    // Todo lo gastado que no encaja en una categoría del plan se agrupa en
+    // "Otros gastos", para que la suma de la lista cuadre con "Gastado a la fecha".
+    const shown = list.reduce((s, r) => s + r.actual, 0);
+    const leftover = spent - shown;
+    if (leftover > 0.5) {
+      list.push({
+        id: "others",
+        name: t("Otros gastos", "Other spending"),
+        emoji: "🧾",
+        planned: 0,
+        actual: leftover,
+        pct: 0,
+      });
+    }
+    return list;
+  }, [planLines, byCategory, fixed.items, customLines, periodFactor, spent, t]);
 
   const [dismissed, setDismissed] = useState<string[]>([]);
 
@@ -1380,7 +1395,7 @@ export function ExpenseLog() {
                     className={cn(
                       "flex scroll-mt-24 items-center gap-3 rounded-lg transition-all duration-500",
                       flashRow === r.id &&
-                        (r.actual > r.planned
+                        (r.planned > 0 && r.actual > r.planned
                           ? "bg-negative/10 ring-1 ring-negative/40"
                           : "bg-positive/10 ring-1 ring-positive/40"),
                     )}
@@ -1389,7 +1404,7 @@ export function ExpenseLog() {
                     <span
                       className={cn(
                         "grid h-9 w-9 shrink-0 place-items-center rounded-full text-base sm:h-10 sm:w-10",
-                        r.actual > r.planned ? "bg-negative/20" : "bg-positive/15",
+                        r.planned > 0 && r.actual > r.planned ? "bg-negative/20" : "bg-positive/15",
                       )}
                     >
                       {r.emoji}
@@ -1398,27 +1413,35 @@ export function ExpenseLog() {
                       <div className="min-w-0 lg:w-44 lg:shrink-0">
                         <p className="truncate text-sm leading-5">{r.name}</p>
                         <p className="numeric text-[0.6875rem] leading-4 text-muted-foreground">
-                          {fmt(r.actual)} / {fmt(r.planned)}
+                          {r.planned > 0 ? `${fmt(r.actual)} / ${fmt(r.planned)}` : fmt(r.actual)}
                         </p>
                       </div>
                       <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted lg:mt-0 lg:min-w-0 lg:flex-1">
                         <div
-                          className={cn("h-full rounded-full", r.actual > r.planned ? "bg-negative" : "bg-positive")}
-                          style={{ width: `${Math.min(100, r.pct)}%` }}
+                          className={cn("h-full rounded-full", r.planned > 0 && r.actual > r.planned ? "bg-negative" : "bg-positive")}
+                          style={{ width: `${r.planned > 0 ? Math.min(100, r.pct) : 100}%` }}
                         />
                       </div>
                     </div>
                     <span
                       className={cn(
                         "numeric w-11 shrink-0 text-right text-sm sm:w-12",
-                        r.actual > r.planned ? "text-negative" : "text-foreground",
+                        r.planned > 0 && r.actual > r.planned ? "text-negative" : "text-foreground",
                       )}
                     >
-                      {Math.round(r.pct)}%
+                      {r.planned > 0 ? `${Math.round(r.pct)}%` : "—"}
                     </span>
                   </li>
                 ))}
               </ul>
+              {/* Total: la suma de todas las categorías cuadra con "Gastado a la fecha". */}
+              <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/60 pt-3.5">
+                <p className="text-sm font-semibold">{t("Total", "Total")}</p>
+                <p className="numeric text-sm">
+                  <span className="font-semibold">{fmt(rows.reduce((s, r) => s + r.actual, 0))}</span>
+                  <span className="text-muted-foreground"> / {fmt(rows.reduce((s, r) => s + r.planned, 0))}</span>
+                </p>
+              </div>
             </div>
 
           )}
