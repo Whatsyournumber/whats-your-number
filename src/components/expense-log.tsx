@@ -466,6 +466,12 @@ export function ExpenseLog() {
     flashTimer.current = window.setTimeout(() => setFlashRow(null), 2400);
   };
 
+  const focusOverspent = () => {
+    const over = rows.filter((r) => r.pct >= 100).sort((a, b) => b.pct - a.pct)[0];
+    if (over) focusCategory(over.id);
+    else categoryCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
 
   const [draft, setDraft] = useState<Draft | null>(null);
   const [expandedTx, setExpandedTx] = useState<string | null>(null);
