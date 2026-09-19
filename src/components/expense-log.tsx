@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { BudgetDialog } from "@/components/budget-dialog";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -410,10 +411,16 @@ export function ExpenseLog() {
   );
 
   const moveExpense = (key: string, toId: string) => {
-    saveCatOverrides({ ...catOverrides, [key]: toId });
+    moveExpenses([key], toId);
+  };
+
+  const moveExpenses = (keys: string[], toId: string) => {
+    const next = { ...catOverrides };
+    for (const key of keys) next[key] = toId;
+    saveCatOverrides(next);
     const cat = findBudgetCategory(toId);
     toast.success(
-      t("Gasto movido de categoría", "Expense moved"),
+      keys.length > 1 ? t(`${keys.length} gastos movidos`, `${keys.length} expenses moved`) : t("Gasto movido de categoría", "Expense moved"),
       cat ? { description: `${cat.emoji} ${t(cat.es, cat.en)}` } : undefined,
     );
   };
@@ -580,8 +587,9 @@ export function ExpenseLog() {
   const [expandedTx, setExpandedTx] = useState<string | null>(null);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   // Gasto que se está moviendo a otra categoría desde el desglose.
-  const [moveItem, setMoveItem] = useState<{ key: string; label: string; from: string } | null>(null);
-  const [dragItem, setDragItem] = useState<{ key: string; label: string; from: string } | null>(null);
+  const [moveItem, setMoveItem] = useState<{ keys: string[]; label: string; from: string } | null>(null);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [dragItem, setDragItem] = useState<{ keys: string[]; from: string } | null>(null);
   const [dragOverCategory, setDragOverCategory] = useState<string | null>(null);
   const [transcript, setTranscript] = useState("");
   const [saving, setSaving] = useState(false);
@@ -1517,9 +1525,10 @@ export function ExpenseLog() {
                         onDragLeave={() => setDragOverCategory((id) => id === r.id ? null : id)}
                         onDrop={(event) => {
                           event.preventDefault();
-                          if (dragItem && dragItem.from !== r.id) moveExpense(dragItem.key, r.id);
+                          if (dragItem && dragItem.from !== r.id) moveExpenses(dragItem.keys, r.id);
                           setDragItem(null);
                           setDragOverCategory(null);
+                          setSelectedItems([]);
                         }}
                         className={cn(
                           "scroll-mt-24 rounded-lg transition-all duration-500",
@@ -1599,7 +1608,8 @@ export function ExpenseLog() {
                               key={`${it.key}-${i}`}
                               draggable
                               onDragStart={(event) => {
-                                setDragItem({ key: it.key, label: it.label, from: r.id });
+                                const keys = selectedItems.includes(it.key) ? selectedItems : [it.key];
+                                setDragItem({ keys, from: r.id });
                                 event.dataTransfer.effectAllowed = "move";
                                 event.dataTransfer.setData("text/plain", it.key);
                               }}
@@ -1607,9 +1617,22 @@ export function ExpenseLog() {
                                 setDragItem(null);
                                 setDragOverCategory(null);
                               }}
-                              className="flex cursor-grab items-center gap-2 py-2 active:cursor-grabbing"
+                              className={cn(
+                                "flex cursor-grab items-center gap-2 py-2 active:cursor-grabbing",
+                                selectedItems.includes(it.key) && "bg-positive/5",
+                              )}
                             >
                               <GripVertical className="hidden h-4 w-4 shrink-0 text-muted-foreground sm:block" aria-hidden="true" />
+                              <Checkbox
+                                checked={selectedItems.includes(it.key)}
+                                onCheckedChange={(checked) => {
+                                  setSelectedItems((current) => checked
+                                    ? [...new Set([...current, it.key])]
+                                    : current.filter((key) => key !== it.key));
+                                }}
+                                onClick={(event) => event.stopPropagation()}
+                                aria-label={t(`Seleccionar ${it.label}`, `Select ${it.label}`)}
+                              />
                               <div className="min-w-0 flex-1">
                                 <p className="truncate text-sm">{it.label}</p>
                                 {it.date && (
@@ -1621,7 +1644,10 @@ export function ExpenseLog() {
                               <span className="numeric shrink-0 text-sm font-medium">{fmt(it.amount)}</span>
                               <button
                                 type="button"
-                                onClick={() => setMoveItem({ key: it.key, label: it.label, from: r.id })}
+                                onClick={() => {
+                                  const keys = selectedItems.includes(it.key) ? selectedItems : [it.key];
+                                  setMoveItem({ keys, label: keys.length > 1 ? t(`${keys.length} gastos`, `${keys.length} expenses`) : it.label, from: r.id });
+                                }}
                                 className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                                 aria-label={t("Cambiar de categoría", "Change category")}
                               >
@@ -1887,7 +1913,8 @@ export function ExpenseLog() {
                   key={r.id}
                   type="button"
                   onClick={() => {
-                    if (moveItem) moveExpense(moveItem.key, r.id);
+                    if (moveItem) moveExpenses(moveItem.keys, r.id);
+                    setSelectedItems([]);
                     setMoveItem(null);
                   }}
                   className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-muted"
