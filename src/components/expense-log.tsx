@@ -938,7 +938,15 @@ export function ExpenseLog() {
                   <p className="text-sm text-muted-foreground">{t("Gastado a la fecha", "Spent to date")}</p>
                   <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl">{fmt(spent)}</p>
                 </div>
-                <div className="flex w-full min-w-0 items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-3 text-left sm:p-4">
+                 <button
+                   type="button"
+                   onClick={focusOverspent}
+                   aria-label={t("Ver categorías donde te excediste", "See categories where you overspent")}
+                   className={cn(
+                     "flex w-full min-w-0 cursor-pointer items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-3 text-left transition-colors hover:bg-muted/40 sm:p-4",
+                     !isOnPace && "hover:border-negative/50",
+                   )}
+                 >
                   <span
                     className={cn(
                       "grid h-9 w-9 shrink-0 place-items-center rounded-lg",
