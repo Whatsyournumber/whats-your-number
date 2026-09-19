@@ -233,7 +233,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                            onChange={(v) => setAmount(l.id, v)}
                            format
                            ariaLabel={t("Monto objetivo mensual", "Monthly target amount")}
-                           className="h-9 w-24 text-sm sm:w-28"
+                           className="h-9 w-20 text-sm sm:w-28"
                          />
                        </div>
                       <button
