@@ -205,7 +205,26 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                           <Pencil className="h-4 w-4" />
                         </button>
                       ) : null}
-                       <div className="flex shrink-0 flex-col items-end">
+                       <div className="flex shrink-0 items-center gap-2">
+                         {g === "essentials" ? (
+                           <div
+                             className="flex h-9 items-center gap-1.5 rounded-md border border-border/60 bg-card/40 px-2"
+                             title={t("Día del mes en que se cobra", "Day of month it is charged")}
+                           >
+                             <CalendarDays className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                             <Input
+                               type="number"
+                               min={1}
+                               max={31}
+                               inputMode="numeric"
+                               value={l.dueDay ?? ""}
+                               placeholder="—"
+                               onChange={(e) => setDueDay(l.id, e.target.value)}
+                               aria-label={t("Día del mes en que se cobra", "Day of month it is charged")}
+                               className="h-7 w-9 border-0 bg-transparent p-0 text-center text-sm"
+                             />
+                           </div>
+                         ) : null}
                          <NumberInput
                            value={l.amount}
                            onChange={(v) => setAmount(l.id, v)}
