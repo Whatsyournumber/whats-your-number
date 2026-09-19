@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Check, Pencil, Plus, Trash2 } from "lucide-react";
+import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -238,28 +238,61 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
         </div>
 
         {adding ? (
-          <div className="space-y-3 rounded-xl border border-border/50 p-3">
-            {(Object.keys(available) as BudgetGroup[]).map((g) =>
-              available[g].length ? (
-                <div key={g}>
-                  <p className="mb-1.5 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                    {t(GROUP_LABELS[g].es, GROUP_LABELS[g].en)}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {available[g].map((c) => (
-                      <button
-                        key={c.id}
-                        type="button"
-                        onClick={() => addCategory(c.id)}
-                        className="rounded-full border border-border/60 px-2.5 py-1 text-xs transition hover:border-primary/50"
-                      >
-                        {c.emoji} {lang === "en" ? c.en : c.es}
-                      </button>
-                    ))}
-                  </div>
+          <div className="space-y-4 rounded-xl border border-border/60 bg-card/40 p-3 sm:p-4">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm font-semibold">{t("¿Qué tipo de gasto es?", "What type of expense is it?")}</p>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                className="h-9 w-9 shrink-0"
+                onClick={() => {
+                  setAdding(false);
+                  setCustomName("");
+                }}
+                aria-label={t("Cerrar", "Close")}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("Tipo de gasto", "Expense type")}>
+              {(["essentials", "lifestyle"] as const).map((group) => {
+                const selected = customGroup === group;
+                return (
+                  <Button
+                    key={group}
+                    type="button"
+                    variant={selected ? "default" : "outline"}
+                    className="h-auto min-h-12 whitespace-normal px-3 py-2.5 text-sm"
+                    onClick={() => setCustomGroup(group)}
+                    aria-pressed={selected}
+                  >
+                    {t(GROUP_LABELS[group].es, GROUP_LABELS[group].en)}
+                  </Button>
+                );
+              })}
+            </div>
+            {available[customGroup].length ? (
+              <div>
+                <p className="mb-2 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                  {t("Categorías disponibles", "Available categories")}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {available[customGroup].map((c) => (
+                    <Button
+                      key={c.id}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-9 rounded-full px-3 text-sm"
+                      onClick={() => addCategory(c.id)}
+                    >
+                      {c.emoji} {lang === "en" ? c.en : c.es}
+                    </Button>
+                  ))}
                 </div>
-              ) : null,
-            )}
+              </div>
+            ) : null}
             <div className="flex items-center gap-2">
               <Input
                 value={customName}
@@ -270,24 +303,6 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
               <Button type="button" size="sm" variant="secondary" onClick={addCustom} disabled={!customName.trim()}>
                 {t("Añadir", "Add")}
               </Button>
-            </div>
-            <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("Tipo de gasto", "Expense type")}>
-              {(["essentials", "lifestyle"] as const).map((group) => {
-                const selected = customGroup === group;
-                return (
-                  <Button
-                    key={group}
-                    type="button"
-                    size="sm"
-                    variant={selected ? "default" : "outline"}
-                    className="h-auto min-h-11 whitespace-normal px-2 py-2 text-xs"
-                    onClick={() => setCustomGroup(group)}
-                    aria-pressed={selected}
-                  >
-                    {t(GROUP_LABELS[group].es, GROUP_LABELS[group].en)}
-                  </Button>
-                );
-              })}
             </div>
           </div>
         ) : (
