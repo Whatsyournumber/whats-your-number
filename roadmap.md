@@ -29,3 +29,4 @@
 - [x] Landing: ampliar el difuminado central para eliminar el corte entre fondo y foto
 - [x] Landing: actualizar título y subtítulo de la sección final (Número de Vida Libre)
 - [x] Landing: cambiar el CTA final a "Comienza ya" / "Start now"
+- [x] Foto de recibo: mostrar carga, confirmar solo categoría y monto, y enseñar el desglose tras guardar

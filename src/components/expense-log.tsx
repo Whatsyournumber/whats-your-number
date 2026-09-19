@@ -43,7 +43,14 @@ import { SPEND_PLAN_FIELDS, getWynMoneyLocale, money } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
 type DraftItem = { name: string; amount: number; category: string };
-type Draft = { merchant: string; amount: number; date: string; category: string; items: DraftItem[] };
+type Draft = {
+  merchant: string;
+  amount: number;
+  date: string;
+  category: string;
+  items: DraftItem[];
+  source: "voice" | "receipt";
+};
 
 const ALERTS_KEY = "whatsyournumber:expense-alerts";
 
@@ -418,16 +425,16 @@ export function ExpenseLog() {
   const alerts = rows.filter((r) => r.pct >= 80 && !dismissed.includes(r.id)).slice(0, 2);
 
   const [draft, setDraft] = useState<Draft | null>(null);
+  const [savedReceipt, setSavedReceipt] = useState<Draft | null>(null);
   const [transcript, setTranscript] = useState("");
   const [saving, setSaving] = useState(false);
-  const [splitItems, setSplitItems] = useState(false);
   const [busy, setBusy] = useState<"voice" | "receipt" | null>(null);
   const [recording, setRecording] = useState(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const camRef = useRef<HTMLInputElement | null>(null);
 
-  const openDraft = (parsed: {
+  const openDraft = (source: "voice" | "receipt", parsed: {
     merchant: string;
     amount: number;
     date: string | null;
@@ -448,6 +455,7 @@ export function ExpenseLog() {
       date: valid ? parsed.date! : format(now, "yyyy-MM-dd"),
       category: categoryNames.includes(parsed.category) ? parsed.category : "Otros",
       items,
+      source,
     });
   };
 
@@ -466,7 +474,7 @@ export function ExpenseLog() {
         },
       });
       setTranscript(result.transcript ?? "");
-      openDraft(result);
+      openDraft(kind, result);
     } catch (error) {
       toast.error(
         t("No pudimos leer el gasto. Inténtalo de nuevo.", "We couldn't read the expense. Please try again."),
@@ -511,7 +519,7 @@ export function ExpenseLog() {
     }
     setSaving(true);
     try {
-      const willSplit = splitItems && draft.items.length > 0;
+      const willSplit = draft.source === "receipt" && draft.items.length > 0;
       if (willSplit) {
         for (const item of draft.items) {
           await saveExpense({
@@ -541,8 +549,8 @@ export function ExpenseLog() {
       toast.success(t("Gasto guardado", "Expense saved"), {
         description: `${draft.merchant} · ${fmt(draft.amount)}`,
       });
+      if (willSplit) setSavedReceipt(draft);
       setDraft(null);
-      setSplitItems(false);
       setTranscript("");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : String(error));
@@ -661,6 +669,20 @@ export function ExpenseLog() {
         open={manualOpen}
         onOpenChange={setManualOpen}
       />
+
+      <Dialog open={busy === "receipt"}>
+        <DialogContent className="max-w-xs text-center" hideClose>
+          <div className="flex flex-col items-center py-5">
+            <span className="grid h-14 w-14 place-items-center rounded-full bg-positive/10 text-positive">
+              <Loader2 className="h-7 w-7 animate-spin" />
+            </span>
+            <DialogTitle className="mt-4">{t("Leyendo tu recibo", "Reading your receipt")}</DialogTitle>
+            <DialogDescription className="mt-2">
+              {t("Identificando el total y cada producto.", "Identifying the total and each item.")}
+            </DialogDescription>
+          </div>
+        </DialogContent>
+      </Dialog>
 
 
 
@@ -1373,18 +1395,22 @@ export function ExpenseLog() {
           </DialogHeader>
           {draft && (
             <div className="grid gap-3">
-              <div className="grid gap-1.5">
-                <Label>{t("Comercio", "Merchant")}</Label>
-                <Input value={draft.merchant} onChange={(e) => setDraft({ ...draft, merchant: e.target.value })} />
-              </div>
+              {draft.source !== "receipt" && (
+                <div className="grid gap-1.5">
+                  <Label>{t("Comercio", "Merchant")}</Label>
+                  <Input value={draft.merchant} onChange={(e) => setDraft({ ...draft, merchant: e.target.value })} />
+                </div>
+              )}
               <div className="grid gap-1.5">
                 <Label>{`${t("Monto", "Amount")} (${currency})`}</Label>
                 <NumberInput value={draft.amount} onChange={(v) => setDraft({ ...draft, amount: v || 0 })} min={0} format />
               </div>
-              <div className="grid gap-1.5">
-                <Label>{t("Fecha", "Date")}</Label>
-                <Input type="date" value={draft.date} onChange={(e) => setDraft({ ...draft, date: e.target.value })} />
-              </div>
+              {draft.source !== "receipt" && (
+                <div className="grid gap-1.5">
+                  <Label>{t("Fecha", "Date")}</Label>
+                  <Input type="date" value={draft.date} onChange={(e) => setDraft({ ...draft, date: e.target.value })} />
+                </div>
+              )}
               <div className="grid gap-1.5">
                 <Label>{t("Categoría", "Category")}</Label>
                 <Select value={draft.category} onValueChange={(v) => setDraft({ ...draft, category: v })}>
@@ -1401,68 +1427,6 @@ export function ExpenseLog() {
                 </Select>
               </div>
 
-              {draft.items.length > 0 && (
-                <div className="grid gap-2 rounded-xl border border-border bg-muted/20 p-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <Label className="text-xs uppercase tracking-wide text-muted-foreground">
-                      {t("Qué compraste", "What you bought")}
-                    </Label>
-                    <button
-                      type="button"
-                      onClick={() => setSplitItems((v) => !v)}
-                      className={cn(
-                        "rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
-                        splitItems
-                          ? "border-positive/60 bg-positive/10 text-positive"
-                          : "border-border text-muted-foreground hover:text-foreground",
-                      )}
-                    >
-                      {t("Guardar por separado", "Save separately")}
-                    </button>
-                  </div>
-                  <ul className="grid gap-2">
-                    {draft.items.map((item, index) => (
-                      <li key={`${item.name}-${index}`} className="grid gap-1.5 sm:grid-cols-[1fr_auto] sm:items-center">
-                        <div className="flex min-w-0 items-baseline justify-between gap-3">
-                          <span className="min-w-0 flex-1 text-sm text-foreground">{item.name}</span>
-                          <span className="text-sm font-semibold tabular-nums">{fmt(item.amount)}</span>
-                        </div>
-                        <Select
-                          value={item.category}
-                          onValueChange={(v) =>
-                            setDraft({
-                              ...draft,
-                              items: draft.items.map((it, i) => (i === index ? { ...it, category: v } : it)),
-                            })
-                          }
-                        >
-                          <SelectTrigger className="h-8 w-full text-xs sm:w-40">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {categoryNames.map((name) => (
-                              <SelectItem key={name} value={name}>
-                                {translateCategory(name, lang)}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="text-xs text-muted-foreground">
-                    {splitItems
-                      ? t(
-                          "Se guardará un gasto por cada producto con su categoría.",
-                          "Each product will be saved as its own expense with its category.",
-                        )
-                      : t(
-                          "Se guarda un solo gasto con el detalle de la compra.",
-                          "It saves one expense with the purchase detail.",
-                        )}
-                  </p>
-                </div>
-              )}
             </div>
           )}
           <DialogFooter>
@@ -1470,6 +1434,35 @@ export function ExpenseLog() {
               {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {t("Guardar gasto", "Save expense")}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={Boolean(savedReceipt)} onOpenChange={(open) => !open && setSavedReceipt(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("Compra registrada", "Purchase saved")}</DialogTitle>
+            <DialogDescription>
+              {t("Este es el desglose que guardamos.", "Here is the breakdown we saved.")}
+            </DialogDescription>
+          </DialogHeader>
+          {savedReceipt && (
+            <div className="max-h-[50vh] overflow-y-auto rounded-lg border border-border">
+              <ul className="divide-y divide-border/60">
+                {savedReceipt.items.map((item, index) => (
+                  <li key={`${item.name}-${index}`} className="flex items-center gap-3 px-3 py-2.5">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium">{item.name}</p>
+                      <p className="text-xs text-muted-foreground">{translateCategory(item.category, lang)}</p>
+                    </div>
+                    <span className="numeric shrink-0 text-sm font-semibold">{fmt(item.amount)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setSavedReceipt(null)}>{t("Listo", "Done")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
