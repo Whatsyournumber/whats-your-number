@@ -517,7 +517,7 @@ export function ExpenseLog() {
     }
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [planLines, expenseTx, expenseFixedItems, customLines, periodFactor, spent, t, categories.rules, catOverrides]);
+  }, [planLines, expenseTx, expenseFixedItems, match, periodFactor, spent, t, categories.rules, catOverrides]);
 
   const [dismissed, setDismissed] = useState<string[]>([]);
 
