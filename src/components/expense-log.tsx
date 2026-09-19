@@ -591,7 +591,6 @@ export function ExpenseLog() {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [dragItem, setDragItem] = useState<{ keys: string[]; from: string } | null>(null);
   const dragItemRef = useRef<{ keys: string[]; from: string } | null>(null);
-  const [dragOverCategory, setDragOverCategory] = useState<string | null>(null);
   const [transcript, setTranscript] = useState("");
   const [saving, setSaving] = useState(false);
   const [busy, setBusy] = useState<"voice" | "receipt" | null>(null);
