@@ -421,6 +421,10 @@ export function ExpenseLog() {
       const n = name.trim().toLowerCase();
       const custom = customLines.find((c) => c.aliases.some((a) => n === a || n.includes(a) || a.includes(n)));
       if (custom) return custom.id;
+      if (
+        ["hipoteca", "mortgage", "alquiler", "renta", "rent", "condominio", "community fee", "mantenimiento vivienda", "mantenimiento hogar", "home maintenance", "seguro vivienda", "seguro hogar", "home insurance"]
+          .some((term) => n.includes(term))
+      ) return "housing";
       return BUDGET_CATEGORIES.find((c) => c.aliases.some((a) => n === a || n.includes(a)))?.id ?? null;
     };
     const actual = new Map<string, number>();
