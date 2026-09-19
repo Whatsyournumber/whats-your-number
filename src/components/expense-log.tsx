@@ -703,7 +703,7 @@ export function ExpenseLog() {
                 <Wallet className="h-4 w-4 text-positive sm:h-5 sm:w-5" />
               </span>
               <h3 className="min-w-0 whitespace-nowrap text-lg font-semibold sm:text-xl lg:text-2xl">
-                {t("Tu plan de gasto", "Your spending plan")}
+                {t("Tu plan de gasto mensual", "Your monthly spending plan")}
               </h3>
               {period === "month" && (
                 <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} className="shrink-0 text-muted-foreground transition-colors hover:text-foreground">
@@ -774,9 +774,10 @@ export function ExpenseLog() {
             </div>
 
              <div className="mt-3 hidden items-center gap-6 lg:flex">
-               <div className="grid min-w-0 shrink-0 grid-cols-2 items-baseline gap-x-9 gap-y-2">
-                 <p className="text-sm text-muted-foreground">{t("Gasto objetivo", "Spending target")}</p>
-                 <p className="text-sm text-muted-foreground">{t("Gastado a la fecha", "Spent to date")}</p>
+                <div className="grid min-w-0 shrink-0 grid-cols-[auto_auto_auto] items-baseline gap-x-6 gap-y-2">
+                  <p className="text-sm text-muted-foreground">{t("Gasto objetivo mensual", "Monthly spending target")}</p>
+                  <span aria-hidden className="-my-1 row-span-2 self-stretch border-l border-border/70" />
+                  <p className="text-sm text-muted-foreground">{t("Gastado a la fecha", "Spent to date")}</p>
                  <div className="inline-flex min-w-0 items-baseline gap-1.5 rounded-xl border border-border bg-muted/20 px-3 py-1.5 transition-colors focus-within:border-positive/60">
                    <span className="numeric text-xl font-semibold text-muted-foreground">{currencySymbol}</span>
                    <NumberInput
@@ -784,7 +785,7 @@ export function ExpenseLog() {
                      onChange={(v) => applyTarget(v)}
                      min={0}
                      format
-                     ariaLabel={t("Gasto objetivo", "Spending target")}
+                     ariaLabel={t("Gasto objetivo mensual", "Monthly spending target")}
                      placeholder="0"
                      className="numeric h-auto w-32 border-0 bg-transparent px-0 py-0 text-3xl font-bold shadow-none transition-none placeholder:text-foreground focus-visible:ring-0 md:text-3xl"
                    />
@@ -851,7 +852,7 @@ export function ExpenseLog() {
             <div className="mt-4 hidden gap-8 sm:mt-5 md:grid md:grid-cols-2 lg:hidden">
               <div className="grid min-w-0 grid-rows-[auto_1fr] justify-items-center gap-5 text-center">
                 <div className="min-w-0">
-                  <p className="text-sm text-muted-foreground">{t("Gasto objetivo", "Spending target")}</p>
+                  <p className="text-sm text-muted-foreground">{t("Gasto objetivo mensual", "Monthly spending target")}</p>
                   <div className="mt-2 inline-flex min-w-0 items-baseline gap-1 rounded-xl border border-border bg-muted/20 px-3 py-1.5 transition-colors focus-within:border-positive/60">
                     <span className="numeric text-xl font-semibold text-muted-foreground sm:text-2xl">{currencySymbol}</span>
                     <NumberInput
@@ -859,7 +860,7 @@ export function ExpenseLog() {
                       onChange={(v) => applyTarget(v)}
                       min={0}
                       format
-                      ariaLabel={t("Gasto objetivo", "Spending target")}
+                      ariaLabel={t("Gasto objetivo mensual", "Monthly spending target")}
                       className="numeric h-auto w-28 border-0 bg-transparent px-0 py-0 text-3xl font-bold shadow-none transition-none focus-visible:ring-0 sm:w-32 sm:text-4xl md:text-4xl lg:text-5xl"
                     />
                   </div>
