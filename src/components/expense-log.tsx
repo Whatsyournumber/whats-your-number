@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, CalendarDays, Camera, ChevronDown, ChevronRight, Image as ImageIcon, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowUp, CalendarDays, Camera, ChevronDown, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { BudgetDialog } from "@/components/budget-dialog";
@@ -454,6 +454,7 @@ export function ExpenseLog() {
   const recorderRef = useRef<MediaRecorder | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const camRef = useRef<HTMLInputElement | null>(null);
+  const latestExpensesRef = useRef<HTMLDivElement | null>(null);
 
   const openDraft = (source: "voice" | "receipt", parsed: {
     merchant: string;
@@ -540,7 +541,7 @@ export function ExpenseLog() {
     }
     setSaving(true);
     try {
-      await saveExpense({
+      const savedId = await saveExpense({
         userId: user.id,
         date: draft.date,
         merchant: draft.merchant,
@@ -553,11 +554,14 @@ export function ExpenseLog() {
             : t("Registro rápido", "Quick log"),
       });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      setPeriod("month");
+      if (draft.source === "receipt" && draft.items.length > 0) setExpandedTx(savedId);
       toast.success(t("Gasto guardado", "Expense saved"), {
         description: `${draft.merchant} · ${fmt(draft.amount)}`,
       });
       setDraft(null);
       setTranscript("");
+      window.setTimeout(() => latestExpensesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : String(error));
     } finally {
@@ -589,25 +593,25 @@ export function ExpenseLog() {
               <Plus className="h-5 w-5" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuItem onSelect={() => setManualOpen(true)}>
-              <PencilLine className="mr-2 h-4 w-4 text-positive" />
+          <DropdownMenuContent align="end" className="w-72 p-2">
+            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => setManualOpen(true)}>
+              <PencilLine className="mr-2 h-5 w-5 text-positive" />
               {t("Manual", "Manual")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => (recording ? stopRecording() : startRecording())}>
-              {recording ? <Square className="mr-2 h-4 w-4 text-negative" /> : <Mic className="mr-2 h-4 w-4 text-positive" />}
+            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => (recording ? stopRecording() : startRecording())}>
+              {recording ? <Square className="mr-2 h-5 w-5 text-negative" /> : <Mic className="mr-2 h-5 w-5 text-positive" />}
               {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => camRef.current?.click()}>
-              <Camera className="mr-2 h-4 w-4 text-positive" />
+            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => camRef.current?.click()}>
+              <Camera className="mr-2 h-5 w-5 text-positive" />
               {t("Tomar foto", "Take photo")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
-              <ImageIcon className="mr-2 h-4 w-4 text-positive" />
-              {t("Foto o captura", "Photo or screenshot")}
+            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => fileRef.current?.click()}>
+              <Upload className="mr-2 h-5 w-5 text-positive" />
+              {t("Sube foto o captura", "Upload photo or screenshot")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={openNewRecurring}>
-              <Repeat className="mr-2 h-4 w-4 text-positive" />
+            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={openNewRecurring}>
+              <Repeat className="mr-2 h-5 w-5 text-positive" />
               {t("Recurrente", "Recurring")}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -644,25 +648,25 @@ export function ExpenseLog() {
               {t("Añadir gasto", "Add expense")}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuItem onSelect={() => setManualOpen(true)}>
-              <PencilLine className="mr-2 h-4 w-4 text-positive" />
+          <DropdownMenuContent align="end" className="w-72 p-2">
+            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => setManualOpen(true)}>
+              <PencilLine className="mr-2 h-5 w-5 text-positive" />
               {t("Manual", "Manual")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => (recording ? stopRecording() : startRecording())}>
-              {recording ? <Square className="mr-2 h-4 w-4 text-negative" /> : <Mic className="mr-2 h-4 w-4 text-positive" />}
+            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => (recording ? stopRecording() : startRecording())}>
+              {recording ? <Square className="mr-2 h-5 w-5 text-negative" /> : <Mic className="mr-2 h-5 w-5 text-positive" />}
               {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => camRef.current?.click()}>
-              <Camera className="mr-2 h-4 w-4 text-positive" />
+            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => camRef.current?.click()}>
+              <Camera className="mr-2 h-5 w-5 text-positive" />
               {t("Tomar foto", "Take photo")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
-              <ImageIcon className="mr-2 h-4 w-4 text-positive" />
-              {t("Foto o captura", "Photo or screenshot")}
+            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={() => fileRef.current?.click()}>
+              <Upload className="mr-2 h-5 w-5 text-positive" />
+              {t("Sube foto o captura", "Upload photo or screenshot")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={openNewRecurring}>
-              <Repeat className="mr-2 h-4 w-4 text-positive" />
+            <DropdownMenuItem className="min-h-14 rounded-md px-3 text-base" onSelect={openNewRecurring}>
+              <Repeat className="mr-2 h-5 w-5 text-positive" />
               {t("Recurrente", "Recurring")}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -1354,7 +1358,7 @@ export function ExpenseLog() {
           )}
 
 
-        <div className="rounded-2xl border border-border bg-card p-4">
+        <div ref={latestExpensesRef} className="scroll-mt-4 rounded-2xl border border-border bg-card p-4">
           <p className="mb-3 text-sm font-medium">{t("Últimos gastos", "Latest expenses")}</p>
           {periodTx.length === 0 ? (
             <p className="text-sm text-muted-foreground">
