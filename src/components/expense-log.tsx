@@ -424,23 +424,23 @@ export function ExpenseLog() {
     };
     const actual = new Map<string, number>();
     // Detalle de gastos por categoría: cada fila se puede abrir para ver en qué se gastó.
-    const detail = new Map<string, { label: string; amount: number; date?: string }[]>();
-    const push = (id: string, label: string, amount: number, date?: string) => {
+    const detail = new Map<string, { key: string; label: string; amount: number; date?: string }[]>();
+    const push = (id: string, key: string, label: string, amount: number, date?: string) => {
       if (amount <= 0) return;
       actual.set(id, (actual.get(id) ?? 0) + amount);
       const arr = detail.get(id) ?? [];
-      arr.push(date ? { label, amount, date } : { label, amount });
+      arr.push(date ? { key, label, amount, date } : { key, label, amount });
       detail.set(id, arr);
     };
     for (const x of expenseTx) {
       const name = categorizeTx(x as Tx, categories.rules);
-      const id = match(name) ?? "others";
-      push(id, x.merchant || name, Math.abs(x.amount), x.tx_date ?? undefined);
+      const id = catOverrides[x.id] ?? match(name) ?? "others";
+      push(id, x.id, x.merchant || name, Math.abs(x.amount), x.tx_date ?? undefined);
     }
     for (const item of expenseFixedItems) {
       const amount = (Number(item.amount) || 0) * periodFactor;
-      const id = match(item.name) ?? "others";
-      push(id, item.name, amount);
+      const id = catOverrides[item.id] ?? match(item.name) ?? "others";
+      push(id, item.id, item.name, amount);
     }
     const sortItems = (id: string) => (detail.get(id) ?? []).sort((a, b) => b.amount - a.amount);
     const list = planLines
