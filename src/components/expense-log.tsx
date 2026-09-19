@@ -1522,7 +1522,6 @@ export function ExpenseLog() {
                           if (!activeDrag || (activeDrag.from === r.id && activeDrag.keys.length === 1)) return;
                           event.preventDefault();
                           event.dataTransfer.dropEffect = "move";
-                          setDragOverCategory(r.id);
                         }}
                         onDrop={(event) => {
                           event.preventDefault();
