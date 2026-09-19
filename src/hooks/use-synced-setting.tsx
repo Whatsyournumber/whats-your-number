@@ -8,7 +8,12 @@ function readLocal<T>(storageKey: string): T | null {
   try {
     const raw = window.localStorage.getItem(storageKey);
     if (!raw) return null;
-    return JSON.parse(raw) as T;
+    try {
+      return JSON.parse(raw) as T;
+    } catch {
+      // Valores antiguos guardados como texto plano (sin JSON.stringify).
+      return raw as unknown as T;
+    }
   } catch {
     return null;
   }
