@@ -314,7 +314,7 @@ export function ExpenseLog() {
   // Próximos pagos recurrentes ordenados por la fecha en que caen.
   const upcoming = useMemo(() => {
     const base = startOfDay(now);
-    return fixed.items
+    return expenseFixedItems
       .filter((i) => i.amount > 0)
       .map((i) => {
         const day = Math.min(Math.max(1, i.dayOfMonth ?? 1), daysInMonth);
@@ -422,12 +422,12 @@ export function ExpenseLog() {
       arr.push(date ? { label, amount, date } : { label, amount });
       detail.set(id, arr);
     };
-    for (const x of periodTx) {
+    for (const x of expenseTx) {
       const name = categorizeTx(x as Tx, categories.rules);
       const id = match(name) ?? "others";
       push(id, x.merchant || name, Math.abs(x.amount), x.tx_date ?? undefined);
     }
-    for (const item of fixed.items) {
+    for (const item of expenseFixedItems) {
       const amount = (Number(item.amount) || 0) * periodFactor;
       const id = match(item.name) ?? "others";
       push(id, item.name, amount);
