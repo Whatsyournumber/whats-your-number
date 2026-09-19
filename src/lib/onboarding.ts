@@ -743,8 +743,8 @@ export type SpendPlanGroup = "essentials" | "lifestyle" | "other";
 
 /** Secciones del plan de gastos, en el orden en que se muestran. */
 export const SPEND_PLAN_GROUPS: ReadonlyArray<{ id: SpendPlanGroup; es: string; en: string }> = [
-  { id: "essentials", es: "Esenciales", en: "Essentials" },
-  { id: "lifestyle", es: "Estilo de vida", en: "Lifestyle" },
+  { id: "essentials", es: "Gastos fijos mensuales", en: "Monthly fixed expenses" },
+  { id: "lifestyle", es: "Gastos variables", en: "Variable expenses" },
   { id: "other", es: "Otros", en: "Other" },
 ];
 
@@ -757,19 +757,19 @@ export const SPEND_PLAN_GROUPS: ReadonlyArray<{ id: SpendPlanGroup; es: string; 
 export const SPEND_PLAN_FIELDS = [
   { key: "fixed_housing", group: "essentials", fixed: true, budgetId: "housing", emoji: "\u{1F3E0}", es: "Hipoteca / Alquiler", en: "Mortgage / Rent" },
   { key: "fixed_utilities", group: "essentials", fixed: true, budgetId: "utilities", emoji: "\u{1F4A1}", es: "Servicios", en: "Utilities" },
-  { key: "fixed_groceries", group: "essentials", fixed: false, budgetId: "groceries", emoji: "\u{1F6D2}", es: "Supermercado", en: "Groceries" },
-  { key: "fixed_transport", group: "essentials", fixed: false, budgetId: "transport", emoji: "\u{1F697}", es: "Transporte", en: "Transport" },
+  { key: "fixed_groceries", group: "lifestyle", fixed: false, budgetId: "groceries", emoji: "\u{1F6D2}", es: "Supermercado", en: "Groceries" },
+  { key: "fixed_transport", group: "lifestyle", fixed: false, budgetId: "transport", emoji: "\u{1F697}", es: "Transporte", en: "Transport" },
   { key: "fixed_insurance", group: "essentials", fixed: true, budgetId: "insurance", emoji: "\u{1F6E1}\uFE0F", es: "Seguros", en: "Insurance" },
   { key: "fixed_education", group: "essentials", fixed: true, budgetId: "education", emoji: "\u{1F393}", es: "Educaci\u00f3n", en: "Education" },
-  { key: "fixed_family", group: "essentials", fixed: false, kids: true, budgetId: "family", emoji: "\u{1F9F8}", es: "Ni\u00f1os", en: "Kids" },
+  { key: "fixed_family", group: "lifestyle", fixed: false, kids: true, budgetId: "family", emoji: "\u{1F9F8}", es: "Ni\u00f1os", en: "Kids" },
 
   { key: "fixed_restaurants", group: "lifestyle", fixed: false, budgetId: "restaurants", emoji: "\u{1F37D}\uFE0F", es: "Restaurantes", en: "Restaurants" },
   { key: "fixed_delivery", group: "lifestyle", fixed: false, budgetId: "delivery", emoji: "\u{1F6F5}", es: "Delivery", en: "Delivery" },
   { key: "fixed_travel", group: "lifestyle", fixed: false, budgetId: "travel", emoji: "✈️", es: "Viajes", en: "Travel" },
   { key: "fixed_nightlife", group: "lifestyle", fixed: false, budgetId: "nightlife", emoji: "\u{1F389}", es: "Ocio", en: "Nightlife" },
   { key: "fixed_shopping", group: "lifestyle", fixed: false, budgetId: "shopping", emoji: "\u{1F6CD}\uFE0F", es: "Compras", en: "Shopping" },
-  { key: "fixed_gym", group: "lifestyle", fixed: true, budgetId: "gym", emoji: "\u{1F3CB}\uFE0F", es: "Gimnasio", en: "Gym" },
-  { key: "fixed_subscriptions", group: "lifestyle", fixed: true, budgetId: "apps", emoji: "\u{1F4F1}", es: "Suscripciones", en: "Subscriptions" },
+  { key: "fixed_gym", group: "essentials", fixed: true, budgetId: "gym", emoji: "\u{1F3CB}\uFE0F", es: "Gimnasio", en: "Gym" },
+  { key: "fixed_subscriptions", group: "essentials", fixed: true, budgetId: "apps", emoji: "\u{1F4F1}", es: "Suscripciones", en: "Subscriptions" },
 
   { key: "fixed_other", group: "other", fixed: false, budgetId: "other", emoji: "\u{1F9FE}", es: "Otros", en: "Other" },
 ] as const satisfies readonly {

@@ -14,12 +14,12 @@ export type BudgetCategory = {
 export const BUDGET_CATEGORIES: BudgetCategory[] = [
   { id: "housing", emoji: "🏠", es: "Vivienda", en: "Housing", group: "essentials", aliases: ["vivienda", "housing", "alquiler", "hipoteca", "renta", "condominio"] },
   { id: "utilities", emoji: "💡", es: "Servicios", en: "Utilities", group: "essentials", aliases: ["servicios", "utilities"] },
-  { id: "groceries", emoji: "🛒", es: "Supermercado", en: "Groceries", group: "essentials", aliases: ["mercado", "supermercado", "groceries"] },
-  { id: "transport", emoji: "🚗", es: "Transporte", en: "Transport", group: "essentials", aliases: ["transporte", "transport", "coche", "car"] },
+  { id: "groceries", emoji: "🛒", es: "Supermercado", en: "Groceries", group: "lifestyle", aliases: ["mercado", "supermercado", "groceries"] },
+  { id: "transport", emoji: "🚗", es: "Transporte", en: "Transport", group: "lifestyle", aliases: ["transporte", "transport", "coche", "car"] },
   { id: "insurance", emoji: "🛡️", es: "Seguros", en: "Insurance", group: "essentials", aliases: ["seguros", "insurance", "bancos & seguros", "banks & insurance"] },
-  { id: "health", emoji: "🏥", es: "Salud", en: "Health", group: "essentials", aliases: ["salud", "health"] },
+  { id: "health", emoji: "🏥", es: "Salud", en: "Health", group: "lifestyle", aliases: ["salud", "health"] },
   { id: "education", emoji: "🎓", es: "Educación", en: "Education", group: "essentials", aliases: ["educacion", "educación", "education", "colegio", "school"] },
-  { id: "family", emoji: "👨‍👩‍👧", es: "Hijos/Familia", en: "Kids/Family", group: "essentials", aliases: ["hijos", "familia", "family", "kids"] },
+  { id: "family", emoji: "👨‍👩‍👧", es: "Hijos/Familia", en: "Kids/Family", group: "lifestyle", aliases: ["hijos", "familia", "family", "kids"] },
   { id: "debt", emoji: "💳", es: "Deudas/préstamos", en: "Debt/loans", group: "essentials", aliases: ["deudas", "prestamos", "préstamos", "debt", "loans"] },
 
   { id: "restaurants", emoji: "🍽️", es: "Restaurantes", en: "Restaurants", group: "lifestyle", aliases: ["restaurantes", "restaurants"] },
@@ -29,8 +29,8 @@ export const BUDGET_CATEGORIES: BudgetCategory[] = [
   { id: "shopping", emoji: "🛍️", es: "Compras", en: "Shopping", group: "lifestyle", aliases: ["compras", "shopping"] },
   { id: "clothing", emoji: "👕", es: "Ropa", en: "Clothing", group: "lifestyle", aliases: ["ropa", "clothing"] },
   { id: "beauty", emoji: "💇", es: "Cuidado personal", en: "Personal care", group: "lifestyle", aliases: ["belleza", "cuidado personal", "beauty", "personal care"] },
-  { id: "gym", emoji: "🏋️", es: "Gimnasio/Deportes", en: "Gym/Sports", group: "lifestyle", aliases: ["deportes", "gimnasio", "sports", "gym"] },
-  { id: "apps", emoji: "📱", es: "Apps/Suscripciones", en: "Apps/Subscriptions", group: "lifestyle", aliases: ["apps", "suscripciones", "subscriptions"] },
+  { id: "gym", emoji: "🏋️", es: "Gimnasio/Deportes", en: "Gym/Sports", group: "essentials", aliases: ["deportes", "gimnasio", "sports", "gym"] },
+  { id: "apps", emoji: "📱", es: "Apps/Suscripciones", en: "Apps/Subscriptions", group: "essentials", aliases: ["apps", "suscripciones", "subscriptions"] },
   { id: "entertainment", emoji: "🎮", es: "Entretenimiento", en: "Entertainment", group: "lifestyle", aliases: ["entretenimiento", "entertainment"] },
   { id: "pets", emoji: "🐶", es: "Mascotas", en: "Pets", group: "lifestyle", aliases: ["mascotas", "pets"] },
   { id: "gifts", emoji: "🎁", es: "Regalos", en: "Gifts", group: "lifestyle", aliases: ["regalos", "gifts"] },
@@ -58,8 +58,8 @@ export const DEFAULT_BUDGET_IDS = [
 ];
 
 export const GROUP_LABELS: Record<BudgetGroup, { es: string; en: string }> = {
-  essentials: { es: "Esenciales", en: "Essentials" },
-  lifestyle: { es: "Estilo de vida", en: "Lifestyle" },
+  essentials: { es: "Gastos fijos mensuales", en: "Monthly fixed expenses" },
+  lifestyle: { es: "Gastos variables", en: "Variable expenses" },
   other: { es: "Otros", en: "Other" },
 };
 

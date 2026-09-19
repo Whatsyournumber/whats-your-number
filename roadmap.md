@@ -31,3 +31,4 @@
 - [x] Landing: cambiar el CTA final a "Comienza ya" / "Start now"
 - [x] Foto de recibo: mostrar carga, confirmar solo categoría y monto, y enseñar el desglose tras guardar
 - [x] Últimos gastos: agrupar el recibo como una compra expandible con sus productos
+- [x] Plan mensual: renombrar grupos a Gastos fijos mensuales/Gastos variables y llevar los fijos automáticamente al objetivo por categoría
