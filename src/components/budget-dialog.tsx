@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
 import { useLanguage, useT } from "@/hooks/use-language";
 import type { BudgetLine } from "@/hooks/use-spend-budgets";
-import { BUDGET_CATEGORIES, DEFAULT_BUDGET_IDS, GROUP_LABELS, findBudgetCategory, type BudgetGroup } from "@/lib/budget-categories";
+import { DEFAULT_BUDGET_IDS, GROUP_LABELS, findBudgetCategory, type BudgetGroup } from "@/lib/budget-categories";
 
 
 type Props = {
@@ -59,13 +59,6 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
   };
 
   const total = draft.reduce((s, l) => s + (Number.isFinite(l.amount) ? l.amount : 0), 0);
-
-  const available = useMemo(() => {
-    const used = new Set(draft.map((l) => l.id));
-    const groups: Record<BudgetGroup, typeof BUDGET_CATEGORIES> = { essentials: [], lifestyle: [], other: [] };
-    for (const c of BUDGET_CATEGORIES) if (!used.has(c.id)) groups[c.group].push(c);
-    return groups;
-  }, [draft]);
 
   const setAmount = (id: string, amount: number) =>
     setDraft((d) => d.map((l) => (l.id === id ? { ...l, amount } : l)));
@@ -121,11 +114,6 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
     setEditingName("");
   };
 
-
-  const addCategory = (id: string) => {
-    setDraft((d) => [...d, { id, amount: 0 }]);
-    setAdding(false);
-  };
 
   const addCustom = () => {
     const name = customName.trim();
@@ -263,36 +251,15 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
                     key={group}
                     type="button"
                     variant={selected ? "default" : "outline"}
-                    className="h-auto min-h-12 whitespace-normal px-3 py-2.5 text-sm"
+                    className="h-12 whitespace-nowrap px-2 text-sm"
                     onClick={() => setCustomGroup(group)}
                     aria-pressed={selected}
                   >
-                    {t(GROUP_LABELS[group].es, GROUP_LABELS[group].en)}
+                    {group === "essentials" ? t("Gastos fijos", "Fixed expenses") : t("Gastos variables", "Variable expenses")}
                   </Button>
                 );
               })}
             </div>
-            {available[customGroup].length ? (
-              <div>
-                <p className="mb-2 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                  {t("Categorías disponibles", "Available categories")}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {available[customGroup].map((c) => (
-                    <Button
-                      key={c.id}
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="h-9 rounded-full px-3 text-sm"
-                      onClick={() => addCategory(c.id)}
-                    >
-                      {c.emoji} {lang === "en" ? c.en : c.es}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            ) : null}
             <div className="flex items-center gap-2">
               <Input
                 value={customName}
@@ -313,7 +280,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
         )}
 
         <div className="flex flex-col gap-3 border-t border-border/60 pt-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2">
+          {!adding ? <div className="flex items-center gap-2">
             <span className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
               {t("Total", "Total")}
             </span>
@@ -326,7 +293,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, automatic
               className="numeric h-9 w-28 text-sm sm:w-32"
             />
             <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
-          </div>
+          </div> : <span />}
           <Button
             type="button"
             className="w-full sm:w-auto"
