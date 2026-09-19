@@ -395,16 +395,26 @@ export function ExpenseLog() {
       return BUDGET_CATEGORIES.find((c) => c.aliases.some((a) => n === a || n.includes(a)))?.id ?? null;
     };
     const actual = new Map<string, number>();
-    for (const [name, amount] of byCategory) {
-      const id = match(name);
-      if (id) actual.set(id, (actual.get(id) ?? 0) + amount);
+    // Detalle de gastos por categoría: cada fila se puede abrir para ver en qué se gastó.
+    const detail = new Map<string, { label: string; amount: number; date?: string }[]>();
+    const push = (id: string, label: string, amount: number, date?: string) => {
+      if (amount <= 0) return;
+      actual.set(id, (actual.get(id) ?? 0) + amount);
+      const arr = detail.get(id) ?? [];
+      arr.push(date ? { label, amount, date } : { label, amount });
+      detail.set(id, arr);
+    };
+    for (const x of periodTx) {
+      const name = categorizeTx(x as Tx, categories.rules);
+      const id = match(name) ?? "others";
+      push(id, x.merchant || name, Math.abs(x.amount), x.tx_date ?? undefined);
     }
     for (const item of fixed.items) {
       const amount = (Number(item.amount) || 0) * periodFactor;
-      if (amount <= 0) continue;
-      const id = match(item.name);
-      if (id) actual.set(id, (actual.get(id) ?? 0) + amount);
+      const id = match(item.name) ?? "others";
+      push(id, item.name, amount);
     }
+    const sortItems = (id: string) => (detail.get(id) ?? []).sort((a, b) => b.amount - a.amount);
     const list = planLines
       .filter((l) => l.amount > 0)
       .map((l) => {
@@ -418,6 +428,7 @@ export function ExpenseLog() {
           planned,
           actual: spentCat,
           pct: planned > 0 ? (spentCat / planned) * 100 : 0,
+          items: sortItems(l.id),
         };
       })
       .sort((a, b) => b.pct - a.pct);
@@ -433,10 +444,12 @@ export function ExpenseLog() {
         planned: 0,
         actual: leftover,
         pct: 0,
+        items: sortItems("others"),
       });
     }
     return list;
-  }, [planLines, byCategory, fixed.items, customLines, periodFactor, spent, t]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [planLines, periodTx, fixed.items, customLines, periodFactor, spent, t, categories.rules]);
 
   const [dismissed, setDismissed] = useState<string[]>([]);
 
@@ -491,6 +504,7 @@ export function ExpenseLog() {
 
   const [draft, setDraft] = useState<Draft | null>(null);
   const [expandedTx, setExpandedTx] = useState<string | null>(null);
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [transcript, setTranscript] = useState("");
   const [saving, setSaving] = useState(false);
   const [busy, setBusy] = useState<"voice" | "receipt" | null>(null);
@@ -1386,61 +1400,90 @@ export function ExpenseLog() {
                 </button>
               </div>
               <ul className="mt-4 space-y-3.5">
-                {rows.map((r) => (
-                  <li
-                    key={r.id}
-                    ref={(el) => {
-                      rowRefs.current[r.id] = el;
-                    }}
-                    className={cn(
-                      "flex scroll-mt-24 items-center gap-3 rounded-lg transition-all duration-500",
-                      flashRow === r.id &&
-                        (r.planned > 0 && r.actual > r.planned
-                          ? "bg-negative/10 ring-1 ring-negative/40"
-                          : "bg-positive/10 ring-1 ring-positive/40"),
-                    )}
-                  >
-
-                    <span
+                {rows.map((r) => {
+                  const expandedCat = expandedCategory === r.id;
+                  return (
+                    <li
+                      key={r.id}
+                      ref={(el) => {
+                        rowRefs.current[r.id] = el;
+                      }}
                       className={cn(
-                        "grid h-9 w-9 shrink-0 place-items-center rounded-full text-base sm:h-10 sm:w-10",
-                        r.planned > 0 && r.actual > r.planned ? "bg-negative/20" : "bg-positive/15",
+                        "scroll-mt-24 rounded-lg transition-all duration-500",
+                        flashRow === r.id &&
+                          (r.planned > 0 && r.actual > r.planned
+                            ? "bg-negative/10 ring-1 ring-negative/40"
+                            : "bg-positive/10 ring-1 ring-positive/40"),
                       )}
                     >
-                      {r.emoji}
-                    </span>
-                    <div className="min-w-0 flex-1 lg:flex lg:items-center lg:gap-3">
-                      <div className="min-w-0 lg:w-44 lg:shrink-0">
-                        <p className="truncate text-sm leading-5">{r.name}</p>
-                        <p className="numeric text-[0.6875rem] leading-4 text-muted-foreground">
-                          {r.planned > 0 ? `${fmt(r.actual)} / ${fmt(r.planned)}` : fmt(r.actual)}
-                        </p>
+                      <div className="flex items-center gap-3">
+                        <span
+                          className={cn(
+                            "grid h-9 w-9 shrink-0 place-items-center rounded-full text-base sm:h-10 sm:w-10",
+                            r.planned > 0 && r.actual > r.planned ? "bg-negative/20" : "bg-positive/15",
+                          )}
+                        >
+                          {r.emoji}
+                        </span>
+                        <div className="min-w-0 flex-1 lg:flex lg:items-center lg:gap-3">
+                          <div className="min-w-0 lg:w-44 lg:shrink-0">
+                            <p className="truncate text-sm leading-5">{r.name}</p>
+                            <p className="numeric text-[0.6875rem] leading-4 text-muted-foreground">
+                              {r.planned > 0 ? `${fmt(r.actual)} / ${fmt(r.planned)}` : fmt(r.actual)}
+                            </p>
+                          </div>
+                          <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted lg:mt-0 lg:min-w-0 lg:flex-1">
+                            <div
+                              className={cn("h-full rounded-full", r.planned > 0 && r.actual > r.planned ? "bg-negative" : "bg-positive")}
+                              style={{ width: `${r.planned > 0 ? Math.min(100, r.pct) : 100}%` }}
+                            />
+                          </div>
+                        </div>
+                        <span
+                          className={cn(
+                            "numeric w-11 shrink-0 text-right text-sm sm:w-12",
+                            r.planned > 0 && r.actual > r.planned ? "text-negative" : "text-foreground",
+                          )}
+                        >
+                          {r.planned > 0 ? `${Math.round(r.pct)}%` : "—"}
+                        </span>
+                        {r.items.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => setExpandedCategory(expandedCat ? null : r.id)}
+                            className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                            aria-label={expandedCat ? t("Ocultar gastos", "Hide expenses") : t("Ver gastos", "View expenses")}
+                            aria-expanded={expandedCat}
+                          >
+                            <ChevronDown className={cn("h-4 w-4 transition-transform", expandedCat && "rotate-180")} />
+                          </button>
+                        )}
                       </div>
-                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted lg:mt-0 lg:min-w-0 lg:flex-1">
-                        <div
-                          className={cn("h-full rounded-full", r.planned > 0 && r.actual > r.planned ? "bg-negative" : "bg-positive")}
-                          style={{ width: `${r.planned > 0 ? Math.min(100, r.pct) : 100}%` }}
-                        />
-                      </div>
-                    </div>
-                    <span
-                      className={cn(
-                        "numeric w-11 shrink-0 text-right text-sm sm:w-12",
-                        r.planned > 0 && r.actual > r.planned ? "text-negative" : "text-foreground",
+                      {expandedCat && r.items.length > 0 && (
+                        <ul className="ml-12 mt-2 divide-y divide-border/40 rounded-lg bg-muted/20 px-3 sm:ml-[3.25rem]">
+                          {r.items.slice(0, 12).map((it, i) => (
+                            <li key={`${it.label}-${i}`} className="flex items-center gap-3 py-2">
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate text-sm">{it.label}</p>
+                                {it.date && (
+                                  <p className="text-[11px] text-muted-foreground">
+                                    {format(parseISO(it.date), "d MMM", { locale })}
+                                  </p>
+                                )}
+                              </div>
+                              <span className="numeric shrink-0 text-sm font-medium">{fmt(it.amount)}</span>
+                            </li>
+                          ))}
+                        </ul>
                       )}
-                    >
-                      {r.planned > 0 ? `${Math.round(r.pct)}%` : "—"}
-                    </span>
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ul>
               {/* Total: la suma de todas las categorías cuadra con "Gastado a la fecha". */}
-              <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/60 pt-3.5">
+              <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/60 pl-12 pt-3.5 sm:pl-[3.25rem]">
                 <p className="text-sm font-semibold">{t("Total", "Total")}</p>
-                <p className="numeric text-sm">
-                  <span className="font-semibold">{fmt(rows.reduce((s, r) => s + r.actual, 0))}</span>
-                  <span className="text-muted-foreground"> / {fmt(rows.reduce((s, r) => s + r.planned, 0))}</span>
-                </p>
+                <p className="numeric text-sm font-semibold">{fmt(rows.reduce((s, r) => s + r.actual, 0))}</p>
               </div>
             </div>
 
