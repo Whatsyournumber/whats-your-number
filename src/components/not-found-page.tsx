@@ -6,6 +6,7 @@ import {
   Instagram,
   LayoutDashboard,
   Linkedin,
+  RotateCcw,
   Tag,
 } from "lucide-react";
 import { motion } from "motion/react";
@@ -38,7 +39,7 @@ const STARS = Array.from({ length: 28 }, (_, i) => {
   };
 });
 
-export function NotFoundPage() {
+export function NotFoundPage({ onRetry }: { onRetry?: () => void } = {}) {
   const t = useT();
   const { lang } = useLanguage();
   const { user } = useAuth();
@@ -84,7 +85,7 @@ export function NotFoundPage() {
           className="inline-flex items-center gap-2 rounded-full border border-border bg-elevated/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground backdrop-blur sm:text-[11px]"
         >
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-          {t("Página no encontrada", "Page not found")}
+          {onRetry ? t("Algo falló", "Something went wrong") : t("Página no encontrada", "Page not found")}
         </motion.span>
 
         {/* El cero es el faro: él te trae de vuelta. */}
@@ -113,13 +114,20 @@ export function NotFoundPage() {
           className="mt-5"
         >
           <p className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">
-            {t("Este número no estaba en tu plan.", "This number wasn't in your plan.")}
+            {onRetry
+              ? t("Esta página no cargó.", "This page didn't load.")
+              : t("Este número no estaba en tu plan.", "This number wasn't in your plan.")}
           </p>
           <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-            {t(
-              "El enlace se movió o nunca existió. El faro te lleva de vuelta a lo que sí importa.",
-              "The link moved or never existed. The lighthouse takes you back to what matters.",
-            )}
+            {onRetry
+              ? t(
+                  "Algo falló de nuestro lado. Puedes reintentar o volver al inicio.",
+                  "Something went wrong on our end. You can retry or go back home.",
+                )
+              : t(
+                  "El enlace se movió o nunca existió. El faro te lleva de vuelta a lo que sí importa.",
+                  "The link moved or never existed. The lighthouse takes you back to what matters.",
+                )}
           </p>
         </motion.div>
 
@@ -129,13 +137,29 @@ export function NotFoundPage() {
           transition={{ duration: 0.6, delay: 0.28, ease: [0.32, 0.72, 0, 1] }}
           className="mt-8 flex w-full flex-col items-center gap-4"
         >
-          <Link
-            to={homeHref}
-            className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform duration-200 hover:scale-[1.03] active:scale-100"
-          >
-            <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
-            {t("Volver al inicio", "Back to home")}
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-2.5">
+            {onRetry ? (
+              <button
+                type="button"
+                onClick={onRetry}
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform duration-200 hover:scale-[1.03] active:scale-100"
+              >
+                <RotateCcw className="h-4 w-4" />
+                {t("Reintentar", "Try again")}
+              </button>
+            ) : null}
+            <Link
+              to={homeHref}
+              className={
+                onRetry
+                  ? "group inline-flex items-center gap-2 rounded-full border border-border bg-elevated/60 px-7 py-3 text-sm font-semibold text-foreground backdrop-blur transition-colors hover:border-primary/40"
+                  : "group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform duration-200 hover:scale-[1.03] active:scale-100"
+              }
+            >
+              <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
+              {t("Volver al inicio", "Back to home")}
+            </Link>
+          </div>
 
           <nav className="flex flex-wrap items-center justify-center gap-2">
             {quickLinks.map(({ to, icon: Icon, label }) => (

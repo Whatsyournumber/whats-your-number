@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 
 function readLocal<T>(storageKey: string): T | null {
   try {
@@ -120,7 +121,10 @@ export function useSyncedSetting<T>(
       timer.current = setTimeout(() => {
         void supabase
           .from("user_settings")
-          .upsert({ user_id: userId, key, value: { v: next } }, { onConflict: "user_id,key" })
+          .upsert(
+            { user_id: userId, key, value: { v: next } as unknown as Json },
+            { onConflict: "user_id,key" },
+          )
           .then(({ error }) => {
             if (error) console.error("user_settings upsert", error.message);
           });

@@ -40,6 +40,7 @@ import { useIndexReturns } from "@/hooks/use-index-returns";
 import { holdingValue, useHoldings, wealthTotals } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
 import { usePrimaryGoal } from "@/hooks/use-primary-goal";
+import { useSyncedSetting } from "@/hooks/use-synced-setting";
 import { cn } from "@/lib/utils";
 import { buildInsights, lifestyles, minMonthlyForRetirement, num } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
@@ -47,6 +48,8 @@ import { buildRealMonths } from "@/lib/real-months";
 import { readDemoSnapshot, type DemoSnapshot } from "@/lib/demo-snapshot";
 import { translateGoalName, translateGoalNote } from "@/lib/i18n-data";
 import { buildTravelDays, categorizeTxWithTravel } from "@/lib/categorize";
+
+const EMPTY_MONEY_BUCKETS: Record<string, "needs" | "savings" | "wants" | "excluded"> = {};
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
