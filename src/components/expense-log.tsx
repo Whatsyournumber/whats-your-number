@@ -397,6 +397,24 @@ export function ExpenseLog() {
     [planLines],
   );
 
+  /**
+   * Correcciones manuales: gasto (id de movimiento o de gasto fijo) → categoría del plan.
+   * Se guardan en la cuenta, así la corrección vale en móvil, tablet y ordenador.
+   */
+  const { value: catOverrides, save: saveCatOverrides } = useSyncedSetting<Record<string, string>>(
+    "whatsyournumber:expense-category-overrides",
+    EMPTY_OVERRIDES,
+  );
+
+  const moveExpense = (key: string, toId: string) => {
+    saveCatOverrides({ ...catOverrides, [key]: toId });
+    const cat = findBudgetCategory(toId);
+    toast.success(
+      t("Gasto movido de categoría", "Expense moved"),
+      cat ? { description: `${cat.emoji} ${t(cat.es, cat.en)}` } : undefined,
+    );
+  };
+
   const rows = useMemo(() => {
     const match = (name: string) => {
       const n = name.trim().toLowerCase();
