@@ -532,48 +532,6 @@ export function ExpenseLog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [planLines, expenseTx, expenseFixedItems, match, periodFactor, spent, t, categories.rules, catOverrides]);
 
-  // Mientras arrastras, un rótulo flotante dice qué cantidad y cuántos gastos
-  // van contigo, para que quede claro que se mueven varios a la vez.
-  const dragInfo = useMemo(() => {
-    const keys = dragItem?.keys ?? [];
-    if (keys.length === 0) return null;
-    const wanted = new Set(keys);
-    let amount = 0;
-    for (const r of rows) {
-      for (const it of r.items) {
-        if (!wanted.has(it.key)) continue;
-        amount += it.amount;
-        wanted.delete(it.key);
-      }
-      if (wanted.size === 0) break;
-    }
-    return { count: keys.length, amount };
-  }, [dragItem, rows]);
-
-  const [dragPoint, setDragPoint] = useState<{ x: number; y: number } | null>(null);
-
-  useEffect(() => {
-    if (!dragItem) {
-      setDragPoint(null);
-      return;
-    }
-    let frame = 0;
-    const onMove = (event: DragEvent) => {
-      const x = event.clientX;
-      const y = event.clientY;
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = 0;
-        setDragPoint({ x, y });
-      });
-    };
-    document.addEventListener("dragover", onMove, true);
-    return () => {
-      document.removeEventListener("dragover", onMove, true);
-      if (frame) window.cancelAnimationFrame(frame);
-    };
-  }, [dragItem]);
-
   const [dismissed, setDismissed] = useState<string[]>([]);
 
   useEffect(() => {
