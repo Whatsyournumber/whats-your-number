@@ -32,7 +32,7 @@ export const captureExpense = createServerFn({ method: "POST" })
         data.currency,
         data.today,
       );
-      return { ...expense, transcript };
+      return { ...expense, items: [] as { name: string; amount: number; category: string }[], transcript };
     }
 
     const expense = await mod.parseExpenseFromReceipt(
@@ -43,5 +43,5 @@ export const captureExpense = createServerFn({ method: "POST" })
       data.currency,
       data.today,
     );
-    return { ...expense, transcript: "" };
+    return { ...expense, items: expense.items ?? [], transcript: "" };
   });
