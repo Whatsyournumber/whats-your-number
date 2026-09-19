@@ -591,7 +591,6 @@ export function ExpenseLog() {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [dragItem, setDragItem] = useState<{ keys: string[]; from: string } | null>(null);
   const dragItemRef = useRef<{ keys: string[]; from: string } | null>(null);
-  const [dragOverCategory, setDragOverCategory] = useState<string | null>(null);
   const [transcript, setTranscript] = useState("");
   const [saving, setSaving] = useState(false);
   const [busy, setBusy] = useState<"voice" | "receipt" | null>(null);
@@ -1523,9 +1522,7 @@ export function ExpenseLog() {
                           if (!activeDrag || (activeDrag.from === r.id && activeDrag.keys.length === 1)) return;
                           event.preventDefault();
                           event.dataTransfer.dropEffect = "move";
-                          setDragOverCategory(r.id);
                         }}
-                        onDragLeave={() => setDragOverCategory((id) => id === r.id ? null : id)}
                         onDrop={(event) => {
                           event.preventDefault();
                           const activeDrag = dragItemRef.current ?? dragItem;
@@ -1534,12 +1531,10 @@ export function ExpenseLog() {
                           if (keys.length > 0) moveExpenses(keys, r.id);
                           dragItemRef.current = null;
                           setDragItem(null);
-                          setDragOverCategory(null);
                           setSelectedItems([]);
                         }}
                         className={cn(
                           "scroll-mt-24 rounded-lg transition-all duration-500",
-                          dragOverCategory === r.id && "bg-positive/10 ring-1 ring-positive/50",
                           flashRow === r.id &&
                             (r.planned > 0 && r.actual > r.planned
                               ? "bg-negative/10 ring-1 ring-negative/40"
@@ -1626,7 +1621,6 @@ export function ExpenseLog() {
                               onDragEnd={() => {
                                 dragItemRef.current = null;
                                 setDragItem(null);
-                                setDragOverCategory(null);
                               }}
                               className={cn(
                                 "flex cursor-grab items-center gap-2 py-2 active:cursor-grabbing",
