@@ -532,6 +532,48 @@ export function ExpenseLog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [planLines, expenseTx, expenseFixedItems, match, periodFactor, spent, t, categories.rules, catOverrides]);
 
+  // Mientras arrastras, un rótulo flotante dice qué cantidad y cuántos gastos
+  // van contigo, para que quede claro que se mueven varios a la vez.
+  const dragInfo = useMemo(() => {
+    const keys = dragItem?.keys ?? [];
+    if (keys.length === 0) return null;
+    const wanted = new Set(keys);
+    let amount = 0;
+    for (const r of rows) {
+      for (const it of r.items) {
+        if (!wanted.has(it.key)) continue;
+        amount += it.amount;
+        wanted.delete(it.key);
+      }
+      if (wanted.size === 0) break;
+    }
+    return { count: keys.length, amount };
+  }, [dragItem, rows]);
+
+  const [dragPoint, setDragPoint] = useState<{ x: number; y: number } | null>(null);
+
+  useEffect(() => {
+    if (!dragItem) {
+      setDragPoint(null);
+      return;
+    }
+    let frame = 0;
+    const onMove = (event: DragEvent) => {
+      const x = event.clientX;
+      const y = event.clientY;
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        setDragPoint({ x, y });
+      });
+    };
+    document.addEventListener("dragover", onMove, true);
+    return () => {
+      document.removeEventListener("dragover", onMove, true);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [dragItem]);
+
   const [dismissed, setDismissed] = useState<string[]>([]);
 
   useEffect(() => {
@@ -1945,6 +1987,24 @@ export function ExpenseLog() {
         }}
         fmt={fmt}
       />
+
+      {dragInfo ? (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-[calc(100%+16px)] select-none"
+          style={dragPoint ? { left: dragPoint.x, top: dragPoint.y } : { left: "50%", top: "22%" }}
+        >
+          <div className="flex items-center gap-2 whitespace-nowrap rounded-full border border-positive/40 bg-background/95 px-3 py-1.5 shadow-xl shadow-black/40 backdrop-blur-sm">
+            <span className="numeric text-sm font-semibold">{fmt(dragInfo.amount)}</span>
+            <span className="h-3 w-px bg-border" />
+            <span className="text-xs text-muted-foreground">
+              {dragInfo.count === 1
+                ? t("1 gasto", "1 expense")
+                : t(`${dragInfo.count} gastos`, `${dragInfo.count} expenses`)}
+            </span>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }
