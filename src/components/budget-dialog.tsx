@@ -52,7 +52,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
 
   const label = (l: BudgetLine) => {
     const cat = findBudgetCategory(l.id);
-    if (cat) return `${cat.emoji} ${lang === "en" ? cat.en : cat.es}`;
+    if (cat) return `${cat.emoji} ${l.label ?? (lang === "en" ? cat.en : cat.es)}`;
     return `${l.emoji ?? "📦"} ${l.label ?? l.id}`;
   };
 
@@ -100,11 +100,10 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
 
   const removeLine = (id: string) => setDraft((d) => d.filter((l) => l.id !== id));
 
-  const isCustom = (id: string) => id.startsWith("custom:");
-
   const startEdit = (l: BudgetLine) => {
     setEditingId(l.id);
-    setEditingName(l.label ?? l.id.replace(/^custom:/, ""));
+    const cat = findBudgetCategory(l.id);
+    setEditingName(l.label ?? (cat ? (lang === "en" ? cat.en : cat.es) : l.id.replace(/^custom:/, "")));
   };
 
   const commitEdit = (id: string) => {
@@ -113,13 +112,8 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
       setEditingId(null);
       return;
     }
-    const nextId = `custom:${name.toLowerCase()}`;
     setDraft((d) =>
-      d.map((l) =>
-        l.id === id
-          ? { ...l, id: d.some((o) => o.id === nextId && o.id !== id) ? l.id : nextId, label: name }
-          : l,
-      ),
+      d.map((l) => (l.id === id ? { ...l, label: name } : l)),
     );
     setEditingId(null);
     setEditingName("");
@@ -195,7 +189,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                       ) : (
                         <span className="min-w-0 flex-1 truncate text-sm">{label(l)}</span>
                       )}
-                      {isCustom(l.id) && editingId !== l.id ? (
+                      {editingId !== l.id ? (
                         <button
                           type="button"
                           onClick={() => startEdit(l)}
