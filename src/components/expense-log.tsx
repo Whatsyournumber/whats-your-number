@@ -851,7 +851,7 @@ export function ExpenseLog() {
             <div className="mt-4 hidden gap-8 sm:mt-5 md:grid md:grid-cols-2 lg:hidden">
               <div className="grid min-w-0 grid-rows-[auto_1fr] justify-items-center gap-5 text-center">
                 <div className="min-w-0">
-                  <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
+                  <p className="text-sm text-muted-foreground">{t("Gasto objetivo", "Spending target")}</p>
                   <div className="mt-2 inline-flex min-w-0 items-baseline gap-1 rounded-xl border border-border bg-muted/20 px-3 py-1.5 transition-colors focus-within:border-positive/60">
                     <span className="numeric text-xl font-semibold text-muted-foreground sm:text-2xl">{currencySymbol}</span>
                     <NumberInput
@@ -859,7 +859,7 @@ export function ExpenseLog() {
                       onChange={(v) => applyTarget(v)}
                       min={0}
                       format
-                      ariaLabel={t("Gasto objetivo mensual", "Monthly spending target")}
+                      ariaLabel={t("Gasto objetivo", "Spending target")}
                       className="numeric h-auto w-28 border-0 bg-transparent px-0 py-0 text-3xl font-bold shadow-none transition-none focus-visible:ring-0 sm:w-32 sm:text-4xl md:text-4xl lg:text-5xl"
                     />
                   </div>
@@ -890,7 +890,7 @@ export function ExpenseLog() {
 
               <div className="grid min-w-0 grid-rows-[auto_1fr] justify-items-center gap-5 text-center md:border-l md:border-border/60 md:pl-8">
                 <div className="min-w-0">
-                  <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
+                  <p className="text-sm text-muted-foreground">{t("Gastado a la fecha", "Spent to date")}</p>
                   <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl">{fmt(spent)}</p>
                 </div>
                 <div className="flex w-full min-w-0 items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-3 text-left sm:p-4">
