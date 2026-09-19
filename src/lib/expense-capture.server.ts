@@ -90,7 +90,7 @@ export async function parseExpenseFromText(
   return output as ParsedExpense;
 }
 
-/** Lee la foto de un recibo y devuelve comercio, total, fecha y categoría. */
+/** Lee la foto de un recibo: total, comercio, fecha, categoría y el detalle de la compra. */
 export async function parseExpenseFromReceipt(
   apiKey: string,
   base64: string,
@@ -98,24 +98,28 @@ export async function parseExpenseFromReceipt(
   categories: string[],
   currency: string,
   today: string,
-): Promise<ParsedExpense> {
+): Promise<ParsedReceipt> {
   const gateway = createLovableAiGatewayProvider(apiKey);
   const { output } = await generateText({
     model: gateway("google/gemini-3.5-flash"),
-    system: prompt(categories, currency, today),
+    system: [
+      prompt(categories, currency, today),
+      "items: una línea por cada producto o servicio que aparezca en el ticket, con su nombre tal como está escrito, su importe pagado (positivo, con descuentos aplicados) y la categoría de la lista que mejor le corresponda.",
+      "No incluyas subtotales, impuestos, propinas ni el total como items. Si el ticket no muestra el detalle, devuelve items vacío.",
+    ].join(" "),
     messages: [
       {
         role: "user",
         content: [
           {
             type: "text",
-            text: "Lee este recibo o ticket y devuelve el TOTAL pagado, el comercio, la fecha del ticket y la categoría.",
+            text: "Lee este recibo o ticket: devuelve el TOTAL pagado, el comercio, la fecha, la categoría y el desglose de cada producto comprado con su importe.",
           },
           { type: "image", image: base64, mediaType: mimeType || "image/jpeg" },
         ],
       },
     ],
-    output: Output.object({ schema: expenseSchema }),
+    output: Output.object({ schema: receiptSchema }),
   });
-  return output as ParsedExpense;
+  return output as ParsedReceipt;
 }
