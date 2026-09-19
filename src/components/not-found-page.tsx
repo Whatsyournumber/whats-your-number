@@ -136,13 +136,29 @@ export function NotFoundPage({ onRetry }: { onRetry?: () => void } = {}) {
           transition={{ duration: 0.6, delay: 0.28, ease: [0.32, 0.72, 0, 1] }}
           className="mt-8 flex w-full flex-col items-center gap-4"
         >
-          <Link
-            to={homeHref}
-            className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform duration-200 hover:scale-[1.03] active:scale-100"
-          >
-            <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
-            {t("Volver al inicio", "Back to home")}
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-2.5">
+            {onRetry ? (
+              <button
+                type="button"
+                onClick={onRetry}
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform duration-200 hover:scale-[1.03] active:scale-100"
+              >
+                <RotateCcw className="h-4 w-4" />
+                {t("Reintentar", "Try again")}
+              </button>
+            ) : null}
+            <Link
+              to={homeHref}
+              className={
+                onRetry
+                  ? "group inline-flex items-center gap-2 rounded-full border border-border bg-elevated/60 px-7 py-3 text-sm font-semibold text-foreground backdrop-blur transition-colors hover:border-primary/40"
+                  : "group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform duration-200 hover:scale-[1.03] active:scale-100"
+              }
+            >
+              <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
+              {t("Volver al inicio", "Back to home")}
+            </Link>
+          </div>
 
           <nav className="flex flex-wrap items-center justify-center gap-2">
             {quickLinks.map(({ to, icon: Icon, label }) => (
