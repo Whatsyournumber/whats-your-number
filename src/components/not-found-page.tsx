@@ -38,7 +38,7 @@ const STARS = Array.from({ length: 28 }, (_, i) => {
   };
 });
 
-export function NotFoundPage() {
+export function NotFoundPage({ onRetry }: { onRetry?: () => void } = {}) {
   const t = useT();
   const { lang } = useLanguage();
   const { user } = useAuth();
