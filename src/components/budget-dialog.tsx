@@ -61,6 +61,13 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
   const setAmount = (id: string, amount: number) =>
     setDraft((d) => d.map((l) => (l.id === id ? { ...l, amount } : l)));
 
+  /** Día del mes en que se cobra un gasto fijo (1-31). Vacío = sin fecha. */
+  const setDueDay = (id: string, raw: string) => {
+    const n = Math.round(Number(raw));
+    const dueDay = Number.isFinite(n) && n >= 1 ? Math.min(31, n) : undefined;
+    setDraft((d) => d.map((l) => (l.id === id ? { ...l, dueDay } : l)));
+  };
+
   const setTotal = (nextTotal: number) => {
     const safeTotal = Math.max(0, Math.round(nextTotal));
     setDraft((current) => {
