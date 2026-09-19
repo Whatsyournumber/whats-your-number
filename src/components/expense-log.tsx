@@ -445,6 +445,28 @@ export function ExpenseLog() {
 
   const alerts = rows.filter((r) => r.pct >= 80 && !dismissed.includes(r.id)).slice(0, 2);
 
+  const categoryCardRef = useRef<HTMLDivElement | null>(null);
+  const rowRefs = useRef<Record<string, HTMLLIElement | null>>({});
+  const flashTimer = useRef<number | null>(null);
+  const [flashRow, setFlashRow] = useState<string | null>(null);
+
+  useEffect(
+    () => () => {
+      if (flashTimer.current) window.clearTimeout(flashTimer.current);
+    },
+    [],
+  );
+
+  const focusCategory = (id: string) => {
+    const node = rowRefs.current[id];
+    if (node) node.scrollIntoView({ behavior: "smooth", block: "center" });
+    else categoryCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (flashTimer.current) window.clearTimeout(flashTimer.current);
+    setFlashRow(id);
+    flashTimer.current = window.setTimeout(() => setFlashRow(null), 2400);
+  };
+
+
   const [draft, setDraft] = useState<Draft | null>(null);
   const [expandedTx, setExpandedTx] = useState<string | null>(null);
   const [transcript, setTranscript] = useState("");
@@ -1002,9 +1024,10 @@ export function ExpenseLog() {
             >
               <button
                 type="button"
-                onClick={() => setPlanOpen(true)}
+                onClick={() => focusCategory(a.id)}
                 className={cn(
                   "flex min-w-0 flex-1 items-center gap-2.5 text-left text-[0.8125rem]",
+
                   a.pct >= 100 ? "text-negative/90" : "text-amber-200/90",
                 )}
               >
@@ -1303,9 +1326,13 @@ export function ExpenseLog() {
           )}
 
           {rows.length > 0 && (
-            <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
+            <div
+              ref={categoryCardRef}
+              className="scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6"
+            >
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-base font-semibold">{t("Gastos por categoría", "Spending by category")}</h3>
+
                 <button
                   type="button"
                   onClick={() => setPlanOpen(true)}
@@ -1317,7 +1344,20 @@ export function ExpenseLog() {
               </div>
               <ul className="mt-4 space-y-3.5">
                 {rows.map((r) => (
-                  <li key={r.id} className="flex items-center gap-3">
+                  <li
+                    key={r.id}
+                    ref={(el) => {
+                      rowRefs.current[r.id] = el;
+                    }}
+                    className={cn(
+                      "flex scroll-mt-24 items-center gap-3 rounded-lg transition-all duration-500",
+                      flashRow === r.id &&
+                        (r.actual > r.planned
+                          ? "bg-negative/10 ring-1 ring-negative/40"
+                          : "bg-positive/10 ring-1 ring-positive/40"),
+                    )}
+                  >
+
                     <span
                       className={cn(
                         "grid h-9 w-9 shrink-0 place-items-center rounded-full text-base sm:h-10 sm:w-10",
