@@ -14,6 +14,7 @@ import {
   totalExpenses,
   type NorthPlan,
 } from "@/lib/onboarding";
+import { convertAmount } from "@/lib/fx";
 
 export type DerivedMonth = {
   month: string;
