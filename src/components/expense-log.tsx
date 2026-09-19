@@ -42,7 +42,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { SPEND_PLAN_FIELDS, getWynMoneyLocale, money } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
-type Draft = { merchant: string; amount: number; date: string; category: string };
+type DraftItem = { name: string; amount: number; category: string };
+type Draft = { merchant: string; amount: number; date: string; category: string; items: DraftItem[] };
 
 const ALERTS_KEY = "whatsyournumber:expense-alerts";
 
@@ -419,19 +420,34 @@ export function ExpenseLog() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [transcript, setTranscript] = useState("");
   const [saving, setSaving] = useState(false);
+  const [splitItems, setSplitItems] = useState(false);
   const [busy, setBusy] = useState<"voice" | "receipt" | null>(null);
   const [recording, setRecording] = useState(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const camRef = useRef<HTMLInputElement | null>(null);
 
-  const openDraft = (parsed: { merchant: string; amount: number; date: string | null; category: string }) => {
+  const openDraft = (parsed: {
+    merchant: string;
+    amount: number;
+    date: string | null;
+    category: string;
+    items?: { name: string; amount: number; category: string }[];
+  }) => {
     const valid = parsed.date && /^\d{4}-\d{2}-\d{2}$/.test(parsed.date);
+    const items = (parsed.items ?? [])
+      .map((i) => ({
+        name: String(i.name || "").trim(),
+        amount: Math.abs(Number(i.amount) || 0),
+        category: categoryNames.includes(i.category) ? i.category : "Otros",
+      }))
+      .filter((i) => i.name && i.amount > 0);
     setDraft({
       merchant: parsed.merchant || t("Gasto", "Expense"),
       amount: Math.abs(Number(parsed.amount) || 0),
       date: valid ? parsed.date! : format(now, "yyyy-MM-dd"),
       category: categoryNames.includes(parsed.category) ? parsed.category : "Otros",
+      items,
     });
   };
 
@@ -495,20 +511,38 @@ export function ExpenseLog() {
     }
     setSaving(true);
     try {
-      await saveExpense({
-        userId: user.id,
-        date: draft.date,
-        merchant: draft.merchant,
-        category: draft.category,
-        amount: draft.amount,
-        currency,
-        description: t("Registro rápido", "Quick log"),
-      });
+      const willSplit = splitItems && draft.items.length > 0;
+      if (willSplit) {
+        for (const item of draft.items) {
+          await saveExpense({
+            userId: user.id,
+            date: draft.date,
+            merchant: `${draft.merchant} · ${item.name}`,
+            category: item.category,
+            amount: item.amount,
+            currency,
+            description: t("Detalle del recibo", "Receipt line"),
+          });
+        }
+      } else {
+        await saveExpense({
+          userId: user.id,
+          date: draft.date,
+          merchant: draft.merchant,
+          category: draft.category,
+          amount: draft.amount,
+          currency,
+          description: draft.items.length
+            ? draft.items.map((i) => `${i.name} ${fmt(i.amount)}`).join(" · ")
+            : t("Registro rápido", "Quick log"),
+        });
+      }
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
       toast.success(t("Gasto guardado", "Expense saved"), {
         description: `${draft.merchant} · ${fmt(draft.amount)}`,
       });
       setDraft(null);
+      setSplitItems(false);
       setTranscript("");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : String(error));
