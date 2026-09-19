@@ -1485,6 +1485,29 @@ export function ExpenseLog() {
                   <Pencil className="h-3.5 w-3.5" />
                 </button>
               </div>
+              {selectedItems.length > 0 && (
+                <div
+                  draggable
+                  onDragStart={(event) => {
+                    setDragItem({ keys: selectedItems, from: "__multiple__" });
+                    event.dataTransfer.effectAllowed = "move";
+                    event.dataTransfer.setData("text/plain", selectedItems.join(","));
+                  }}
+                  onDragEnd={() => {
+                    setDragItem(null);
+                    setDragOverCategory(null);
+                  }}
+                  className="mt-3 hidden cursor-grab items-center gap-2 rounded-md border border-positive/40 bg-positive/10 px-3 py-2 text-sm text-positive active:cursor-grabbing sm:flex"
+                >
+                  <GripVertical className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  <span className="font-medium">
+                    {t(`${selectedItems.length} gastos seleccionados`, `${selectedItems.length} expenses selected`)}
+                  </span>
+                  <span className="ml-auto text-xs text-muted-foreground">
+                    {t("Arrastra este grupo", "Drag this group")}
+                  </span>
+                </div>
+              )}
               <ul className="mt-4 space-y-3.5">
                 {[...rows]
                   .sort((a, b) => {
