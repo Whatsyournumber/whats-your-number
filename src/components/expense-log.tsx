@@ -1625,7 +1625,6 @@ export function ExpenseLog() {
                               onDragEnd={() => {
                                 dragItemRef.current = null;
                                 setDragItem(null);
-                                setDragOverCategory(null);
                               }}
                               className={cn(
                                 "flex cursor-grab items-center gap-2 py-2 active:cursor-grabbing",
