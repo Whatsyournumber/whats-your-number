@@ -37,15 +37,20 @@ export async function saveExpense(input: {
   description: string;
 }) {
   const statementId = await ensureManualStatement(input.userId);
-  const { error } = await supabase.from("imported_transactions").insert({
-    user_id: input.userId,
-    statement_id: statementId,
-    tx_date: input.date,
-    merchant: input.merchant,
-    description: input.description,
-    amount: -Math.abs(input.amount),
-    currency: input.currency,
-    category: input.category,
-  });
+  const { data, error } = await supabase
+    .from("imported_transactions")
+    .insert({
+      user_id: input.userId,
+      statement_id: statementId,
+      tx_date: input.date,
+      merchant: input.merchant,
+      description: input.description,
+      amount: -Math.abs(input.amount),
+      currency: input.currency,
+      category: input.category,
+    })
+    .select("id")
+    .single();
   if (error) throw new Error(error.message);
+  return data.id;
 }
