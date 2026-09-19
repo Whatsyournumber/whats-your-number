@@ -167,7 +167,7 @@ export function ExpenseLog() {
     setEditMerchant(x.merchant ?? "");
     setEditAmount(Math.abs(x.amount));
     setEditDate(x.tx_date ?? format(new Date(), "yyyy-MM-dd"));
-    setEditCategory(categorizeTx(x, categories.rules));
+    setEditCategory(x.category || categorizeTx(x, categories.rules));
   };
 
   const onSaveEditTx = async () => {
@@ -188,6 +188,8 @@ export function ExpenseLog() {
         })
         .eq("id", editTx.id);
       if (error) throw new Error(error.message);
+      const selectedCategoryId = match(editCategory) ?? "others";
+      saveCatOverrides({ ...catOverrides, [editTx.id]: selectedCategoryId });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
       toast.success(t("Gasto actualizado", "Expense updated"));
       setEditTx(null);
@@ -1731,7 +1733,7 @@ export function ExpenseLog() {
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium">{x.merchant}</p>
                         <p className="text-[11px] text-muted-foreground">
-                          {translateCategory(categorizeTx(x as Tx, categories.rules), lang)}
+                          {translateCategory(x.category || categorizeTx(x as Tx, categories.rules), lang)}
                           {receiptItems.length > 0 ? ` · ${receiptItems.length} ${t("productos", "items")}` : ""}
                         </p>
                       </div>
