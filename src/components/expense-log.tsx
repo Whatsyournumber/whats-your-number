@@ -401,7 +401,7 @@ export function ExpenseLog() {
       if (amount <= 0) return;
       actual.set(id, (actual.get(id) ?? 0) + amount);
       const arr = detail.get(id) ?? [];
-      arr.push({ label, amount, date });
+      arr.push(date ? { label, amount, date } : { label, amount });
       detail.set(id, arr);
     };
     for (const x of periodTx) {
