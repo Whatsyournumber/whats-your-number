@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, CalendarDays, Camera, ChevronRight, Image as ImageIcon, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowUp, CalendarDays, Camera, ChevronDown, ChevronRight, Image as ImageIcon, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { BudgetDialog } from "@/components/budget-dialog";
@@ -53,6 +53,27 @@ type Draft = {
 };
 
 const ALERTS_KEY = "whatsyournumber:expense-alerts";
+const RECEIPT_DETAIL_PREFIX = "wyn-receipt:";
+
+const receiptItemsFrom = (description: string | null | undefined): DraftItem[] => {
+  if (!description?.startsWith(RECEIPT_DETAIL_PREFIX)) return [];
+  try {
+    const parsed = JSON.parse(description.slice(RECEIPT_DETAIL_PREFIX.length)) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .map((item) => {
+        if (!item || typeof item !== "object") return null;
+        const row = item as Record<string, unknown>;
+        const name = typeof row.name === "string" ? row.name.trim() : "";
+        const amount = Math.abs(Number(row.amount) || 0);
+        const category = typeof row.category === "string" ? row.category : "Otros";
+        return name && amount > 0 ? { name, amount, category } : null;
+      })
+      .filter((item): item is DraftItem => item !== null);
+  } catch {
+    return [];
+  }
+};
 
 const blobToBase64 = (blob: Blob) =>
   new Promise<string>((resolve, reject) => {
@@ -425,7 +446,7 @@ export function ExpenseLog() {
   const alerts = rows.filter((r) => r.pct >= 80 && !dismissed.includes(r.id)).slice(0, 2);
 
   const [draft, setDraft] = useState<Draft | null>(null);
-  const [savedReceipt, setSavedReceipt] = useState<Draft | null>(null);
+  const [expandedTx, setExpandedTx] = useState<string | null>(null);
   const [transcript, setTranscript] = useState("");
   const [saving, setSaving] = useState(false);
   const [busy, setBusy] = useState<"voice" | "receipt" | null>(null);
@@ -519,37 +540,22 @@ export function ExpenseLog() {
     }
     setSaving(true);
     try {
-      const willSplit = draft.source === "receipt" && draft.items.length > 0;
-      if (willSplit) {
-        for (const item of draft.items) {
-          await saveExpense({
-            userId: user.id,
-            date: draft.date,
-            merchant: `${draft.merchant} · ${item.name}`,
-            category: item.category,
-            amount: item.amount,
-            currency,
-            description: t("Detalle del recibo", "Receipt line"),
-          });
-        }
-      } else {
-        await saveExpense({
-          userId: user.id,
-          date: draft.date,
-          merchant: draft.merchant,
-          category: draft.category,
-          amount: draft.amount,
-          currency,
-          description: draft.items.length
-            ? draft.items.map((i) => `${i.name} ${fmt(i.amount)}`).join(" · ")
+      await saveExpense({
+        userId: user.id,
+        date: draft.date,
+        merchant: draft.merchant,
+        category: draft.category,
+        amount: draft.amount,
+        currency,
+        description:
+          draft.source === "receipt" && draft.items.length > 0
+            ? `${RECEIPT_DETAIL_PREFIX}${JSON.stringify(draft.items)}`
             : t("Registro rápido", "Quick log"),
-        });
-      }
+      });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
       toast.success(t("Gasto guardado", "Expense saved"), {
         description: `${draft.merchant} · ${fmt(draft.amount)}`,
       });
-      if (willSplit) setSavedReceipt(draft);
       setDraft(null);
       setTranscript("");
     } catch (error) {
@@ -1356,28 +1362,59 @@ export function ExpenseLog() {
             </p>
           ) : (
             <ul className="divide-y divide-border/60">
-              {periodTx.slice(0, 6).map((x) => (
-                <li key={x.id} className="flex items-center gap-3 py-2.5">
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{x.merchant}</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {translateCategory(categorizeTx(x as Tx, categories.rules), lang)}
-                    </p>
-                  </div>
-                  <span className="shrink-0 text-[11px] text-muted-foreground">
-                    {x.tx_date ? format(parseISO(x.tx_date), "d MMM", { locale }) : ""}
-                  </span>
-                  <span className="shrink-0 text-sm font-semibold text-rose-300">-{fmt(Math.abs(x.amount))}</span>
-                  <button
-                    type="button"
-                    onClick={() => openEditTx(x as Tx)}
-                    className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    aria-label={t("Editar gasto", "Edit expense")}
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                  </button>
-                </li>
-              ))}
+              {periodTx.slice(0, 6).map((x) => {
+                const receiptItems = receiptItemsFrom(x.description);
+                const expanded = expandedTx === x.id;
+                return (
+                  <li key={x.id} className="py-2.5">
+                    <div className="flex items-center gap-3">
+                      {receiptItems.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setExpandedTx(expanded ? null : x.id)}
+                          className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          aria-label={expanded ? t("Ocultar productos", "Hide items") : t("Ver productos", "View items")}
+                          aria-expanded={expanded}
+                        >
+                          <ChevronDown className={cn("h-4 w-4 transition-transform", expanded && "rotate-180")} />
+                        </button>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium">{x.merchant}</p>
+                        <p className="text-[11px] text-muted-foreground">
+                          {translateCategory(categorizeTx(x as Tx, categories.rules), lang)}
+                          {receiptItems.length > 0 ? ` · ${receiptItems.length} ${t("productos", "items")}` : ""}
+                        </p>
+                      </div>
+                      <span className="shrink-0 text-[11px] text-muted-foreground">
+                        {x.tx_date ? format(parseISO(x.tx_date), "d MMM", { locale }) : ""}
+                      </span>
+                      <span className="shrink-0 text-sm font-semibold text-rose-300">-{fmt(Math.abs(x.amount))}</span>
+                      <button
+                        type="button"
+                        onClick={() => openEditTx(x as Tx)}
+                        className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                        aria-label={t("Editar gasto", "Edit expense")}
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                    {expanded && receiptItems.length > 0 && (
+                      <ul className="ml-10 mt-2 divide-y divide-border/40 rounded-lg bg-muted/20 px-3">
+                        {receiptItems.map((item, index) => (
+                          <li key={`${item.name}-${index}`} className="flex items-center gap-3 py-2">
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm">{item.name}</p>
+                              <p className="text-[11px] text-muted-foreground">{translateCategory(item.category, lang)}</p>
+                            </div>
+                            <span className="numeric shrink-0 text-sm font-medium">{fmt(item.amount)}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
@@ -1438,34 +1475,6 @@ export function ExpenseLog() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={Boolean(savedReceipt)} onOpenChange={(open) => !open && setSavedReceipt(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>{t("Compra registrada", "Purchase saved")}</DialogTitle>
-            <DialogDescription>
-              {t("Este es el desglose que guardamos.", "Here is the breakdown we saved.")}
-            </DialogDescription>
-          </DialogHeader>
-          {savedReceipt && (
-            <div className="max-h-[50vh] overflow-y-auto rounded-lg border border-border">
-              <ul className="divide-y divide-border/60">
-                {savedReceipt.items.map((item, index) => (
-                  <li key={`${item.name}-${index}`} className="flex items-center gap-3 px-3 py-2.5">
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium">{item.name}</p>
-                      <p className="text-xs text-muted-foreground">{translateCategory(item.category, lang)}</p>
-                    </div>
-                    <span className="numeric shrink-0 text-sm font-semibold">{fmt(item.amount)}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <DialogFooter>
-            <Button onClick={() => setSavedReceipt(null)}>{t("Listo", "Done")}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={recOpen} onOpenChange={setRecOpen}>
         <DialogContent className="sm:max-w-md">
