@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
@@ -313,19 +313,20 @@ export function ExpenseLog() {
   const todayDay = now.getDate();
   const monthVariable = daily.reduce((s, v) => s + v, 0);
 
-  // Próximos pagos recurrentes ordenados por la fecha en que caen.
-  const upcoming = useMemo(() => {
+  /** Fecha del próximo cobro a partir del día del mes. */
+  const nextChargeDate = (dayOfMonth?: number) => {
     const base = startOfDay(now);
+    const day = Math.min(Math.max(1, dayOfMonth ?? 1), daysInMonth);
+    let next = new Date(now.getFullYear(), now.getMonth(), day);
+    if (next < base) next = new Date(now.getFullYear(), now.getMonth() + 1, Math.min(day, 28));
+    return next;
+  };
+
+  // Próximos pagos recurrentes ordenados por la fecha en que caen.
+  const fixedUpcoming = useMemo(() => {
     return expenseFixedItems
       .filter((i) => i.amount > 0)
-      .map((i) => {
-        const day = Math.min(Math.max(1, i.dayOfMonth ?? 1), daysInMonth);
-        let next = new Date(now.getFullYear(), now.getMonth(), day);
-        if (next < base) next = new Date(now.getFullYear(), now.getMonth() + 1, Math.min(day, 28));
-        return { ...i, next };
-      })
-      .sort((a, b) => a.next.getTime() - b.next.getTime())
-      .slice(0, 5);
+      .map((i) => ({ ...i, next: nextChargeDate(i.dayOfMonth) }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expenseFixedItems, daysInMonth]);
 
@@ -416,8 +417,9 @@ export function ExpenseLog() {
     );
   };
 
-  const rows = useMemo(() => {
-    const match = (name: string) => {
+  /** Empareja el nombre de un gasto con una categoría del plan. */
+  const match = useCallback(
+    (name: string) => {
       const n = name.trim().toLowerCase();
       const custom = customLines.find((c) => c.aliases.some((a) => n === a || n.includes(a) || a.includes(n)));
       if (custom) return custom.id;
@@ -426,7 +428,38 @@ export function ExpenseLog() {
           .some((term) => n.includes(term))
       ) return "housing";
       return BUDGET_CATEGORIES.find((c) => c.aliases.some((a) => n === a || n.includes(a)))?.id ?? null;
-    };
+    },
+    [customLines],
+  );
+
+  /**
+   * Próximos pagos: los gastos fijos del plan con día de cobro, más los
+   * recurrentes sueltos que no pertenecen a una categoría ya fechada.
+   */
+  const upcoming = useMemo(() => {
+    const planned = planLines.filter(
+      (l) => l.amount > 0 && (l.dueDay ?? 0) >= 1 && (findBudgetCategory(l.id)?.group ?? l.group) === "essentials",
+    );
+    const dated = new Set(planned.map((l) => l.id));
+    const fromPlan = planned.map((l) => {
+      const cat = findBudgetCategory(l.id);
+      return {
+        id: `plan:${l.id}`,
+        planId: l.id,
+        name: `${cat?.emoji ?? l.emoji ?? "📦"} ${cat ? t(cat.es, cat.en) : (l.label ?? l.id)}`,
+        amount: l.amount,
+        dayOfMonth: l.dueDay ?? 1,
+        next: nextChargeDate(l.dueDay),
+      };
+    });
+    const fromFixed = fixedUpcoming
+      .filter((i) => !dated.has(catOverrides[i.id] ?? match(i.name) ?? ""))
+      .map((i) => ({ ...i, planId: null as string | null }));
+    return [...fromPlan, ...fromFixed].sort((a, b) => a.next.getTime() - b.next.getTime()).slice(0, 6);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [planLines, fixedUpcoming, catOverrides, match, t, daysInMonth]);
+
+  const rows = useMemo(() => {
     const actual = new Map<string, number>();
     // Detalle de gastos por categoría: cada fila se puede abrir para ver en qué se gastó.
     const detail = new Map<string, { key: string; label: string; amount: number; date?: string }[]>();
@@ -484,7 +517,7 @@ export function ExpenseLog() {
     }
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [planLines, expenseTx, expenseFixedItems, customLines, periodFactor, spent, t, categories.rules, catOverrides]);
+  }, [planLines, expenseTx, expenseFixedItems, match, periodFactor, spent, t, categories.rules, catOverrides]);
 
   const [dismissed, setDismissed] = useState<string[]>([]);
 
@@ -1404,7 +1437,7 @@ export function ExpenseLog() {
                           <span className="numeric shrink-0 text-sm font-semibold">{fmt(i.amount)}</span>
                           <button
                             type="button"
-                            onClick={() => openEditRecurring(i)}
+                            onClick={() => (i.planId ? setPlanOpen(true) : openEditRecurring(i))}
                             className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                             aria-label={t("Editar gasto recurrente", "Edit recurring expense")}
                           >
