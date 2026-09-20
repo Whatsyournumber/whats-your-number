@@ -19,6 +19,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { useSyncedSetting } from "@/hooks/use-synced-setting";
 import { sameMerchant, useTransactions, type Tx } from "@/hooks/use-transactions";
+import { findBudgetCategory } from "@/lib/budget-categories";
 import { buildTravelDays, categorizeTxWithTravel } from "@/lib/categorize";
 import { money } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
@@ -254,9 +255,37 @@ function CashFlow() {
   const retirementFundWants = retirementFundBucket === "wants" ? retirementFundAmount : 0;
   const retirementFundSavings = retirementFundBucket === "savings" ? retirementFundAmount : 0;
 
+  // Plan de gasto del onboarding: los gastos fijos alimentan "Necesidades" y
+  // las categorías variables se usan como referencia en los tooltips.
+  const planBuckets = useMemo(() => {
+    const needs: { label: string; amount: number }[] = [];
+    const wants: { label: string; amount: number }[] = [];
+    for (const line of budgetLines) {
+      const amount = Math.max(0, Number(line.amount) || 0);
+      if (amount <= 0) continue;
+      const cat = line.id.startsWith("custom:") ? null : findBudgetCategory(line.id);
+      const label = cleanCategoryName(line.label ?? (cat ? (lang === "en" ? cat.en : cat.es) : line.id.replace(/^custom:/, "")));
+      const group = line.group ?? cat?.group ?? "other";
+      const override = categoryBuckets[label];
+      const isNeed = override ? override === "needs" : group === "essentials";
+      if (override === "excluded" || override === "savings") continue;
+      (isNeed ? needs : wants).push({ label, amount });
+    }
+    const sum = (rows: { amount: number }[]) => rows.reduce((s, r) => s + r.amount, 0);
+    needs.sort((a, b) => b.amount - a.amount);
+    wants.sort((a, b) => b.amount - a.amount);
+    return { needs, wants, needsAmount: sum(needs), wantsAmount: sum(wants) };
+  }, [budgetLines, lang, categoryBuckets]);
+
+  const hasPlanNeeds = planBuckets.needsAmount > 0;
+
   // Cuando hay movimientos, toda la distribución sale exclusivamente del mes corriente.
   // No se suman presupuestos, metas ni gastos fijos estimados del perfil.
-  const fixedAmount = hasReal ? fixedNeedsAmount + retirementFundNeeds + spend.needs : d.cashFlow.buckets[0]!.amount;
+  const fixedAmount = hasPlanNeeds
+    ? planBuckets.needsAmount
+    : hasReal
+      ? fixedNeedsAmount + retirementFundNeeds + spend.needs
+      : d.cashFlow.buckets[0]!.amount;
   const lifestyleAmount = hasReal ? fixedWantsAmount + retirementFundWants + spend.wants : d.cashFlow.buckets[1]!.amount;
   const investAmount = hasReal ? fixedSavingsAmount + retirementFundSavings + spend.investments : d.cashFlow.buckets[2]!.amount;
 
@@ -275,18 +304,18 @@ function CashFlow() {
   const saveAmount = investAmount + freeAmount;
 
 
-  const needsBreakdown = hasReal
-    ? [
-        ...fixedNeeds
-          .filter((item) => Number(item.amount) > 0)
-          .map((item) => ({ label: item.name.replace(/^\p{Extended_Pictographic}\s*/u, ""), amount: Number(item.amount) })),
-        ...(retirementFundNeeds > 0 ? [{ label: t("Fondo de retiro", "Retirement fund"), amount: retirementFundNeeds }] : []),
-        ...[...spend.needsBy.entries()]
-          .map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
-      ]
-        .sort((a, b) => b.amount - a.amount)
-    : [];
-  const wantsBreakdown = hasReal
+  const needsBreakdown = hasPlanNeeds
+    ? planBuckets.needs
+    : hasReal
+      ? [
+          ...fixedNeeds
+            .filter((item) => Number(item.amount) > 0)
+            .map((item) => ({ label: item.name.replace(/^\p{Extended_Pictographic}\s*/u, ""), amount: Number(item.amount) })),
+          ...(retirementFundNeeds > 0 ? [{ label: t("Fondo de retiro", "Retirement fund"), amount: retirementFundNeeds }] : []),
+          ...[...spend.needsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
+        ].sort((a, b) => b.amount - a.amount)
+      : [];
+  const realWantsBreakdown = hasReal
     ? [
         ...fixedWants.filter((item) => Number(item.amount) > 0).map((item) => ({ label: cleanCategoryName(item.name), amount: Number(item.amount) })),
         ...(retirementFundWants > 0 ? [{ label: t("Fondo de retiro", "Retirement fund"), amount: retirementFundWants }] : []),
@@ -294,6 +323,8 @@ function CashFlow() {
       ]
         .sort((a, b) => b.amount - a.amount)
     : [];
+  // Sin gastos registrados aún, el tooltip muestra las categorías del plan del onboarding.
+  const wantsBreakdown = realWantsBreakdown.length > 0 ? realWantsBreakdown : planBuckets.wants;
 
   const saveBreakdown = hasReal
     ? [
@@ -304,7 +335,8 @@ function CashFlow() {
         ...[...spend.investmentsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
         { label: t("Flujo libre del mes", "Free flow this month"), amount: freeAmount },
       ].sort((a, b) => b.amount - a.amount)
-    : [];
+    : [{ label: t("Flujo libre del mes", "Free flow this month"), amount: freeAmount }];
+
 
   const editableCategories = useMemo(() => {
     const names = new Set<string>();
