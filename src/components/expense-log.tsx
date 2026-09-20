@@ -2,7 +2,7 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "rea
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowLeftRight, ArrowUp, CalendarDays, Camera, ChevronDown, ChevronRight, GripVertical, Image, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowLeftRight, ArrowUp, CalendarDays, Camera, ChevronDown, ChevronRight, FolderOpen, GalleryThumbnails, GripVertical, Images, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { BudgetDialog } from "@/components/budget-dialog";
@@ -1312,34 +1312,60 @@ export function ExpenseLog() {
             }}
           />
 
-          {/* Selector de origen de la foto en móvil: cámara, Google Fotos, galería o archivos */}
+          {/* Selector de origen de la foto en móvil: cámara arriba y 3 opciones abajo */}
           <Dialog open={photoPickerOpen} onOpenChange={setPhotoPickerOpen}>
-            <DialogContent className="w-[calc(100vw-2rem)] max-w-sm rounded-2xl p-4 sm:hidden">
+            <DialogContent className="w-[calc(100vw-2rem)] max-w-sm rounded-3xl p-4 sm:hidden">
               <DialogHeader>
-                <DialogTitle className="text-lg font-bold">{t("Seleccionar una acción", "Choose an action")}</DialogTitle>
+                <DialogTitle className="text-lg font-bold">{t("Añadir recibo", "Add receipt")}</DialogTitle>
+                <DialogDescription className="text-sm">
+                  {t("Elige cómo subirlo", "Choose how to upload it")}
+                </DialogDescription>
               </DialogHeader>
-              <div className="mt-1 space-y-1.5">
-                {(
-                  [
-                    { icon: Camera, es: "Tomar foto", en: "Take photo", pick: () => camRef.current?.click() },
-                    { icon: Image, es: "Google Fotos", en: "Google Photos", pick: () => fileRef.current?.click() },
-                    { icon: Image, es: "Galería", en: "Gallery", pick: () => fileRef.current?.click() },
-                    { icon: Upload, es: "Archivos", en: "Files", pick: () => docsRef.current?.click() },
-                  ] as const
-                ).map((o) => (
-                  <button
-                    key={o.es}
-                    type="button"
-                    onClick={() => {
-                      setPhotoPickerOpen(false);
-                      o.pick();
-                    }}
-                    className="flex min-h-14 w-full items-center gap-3 rounded-xl border border-border/60 px-4 text-left text-base font-medium transition-colors hover:bg-card"
-                  >
-                    <o.icon className="h-6 w-6 shrink-0 text-positive" />
-                    {t(o.es, o.en)}
-                  </button>
-                ))}
+
+              <div className="mt-3 space-y-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPhotoPickerOpen(false);
+                    camRef.current?.click();
+                  }}
+                  className="flex min-h-[68px] w-full items-center gap-3 rounded-2xl border border-positive/30 bg-positive/10 px-4 text-left outline-none transition-transform focus-visible:ring-2 focus-visible:ring-positive/50 active:scale-[0.98]"
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-positive/20">
+                    <Camera className="h-6 w-6 text-positive" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-base font-semibold">{t("Tomar foto", "Take photo")}</span>
+                    <span className="block text-xs text-muted-foreground">
+                      {t("Apunta el recibo y listo", "Point at the receipt")}
+                    </span>
+                  </span>
+                </button>
+
+                <div className="grid grid-cols-3 gap-2.5">
+                  {(
+                    [
+                      { icon: Images, es: "Google Fotos", en: "Photos", pick: () => fileRef.current?.click() },
+                      { icon: GalleryThumbnails, es: "Galería", en: "Gallery", pick: () => fileRef.current?.click() },
+                      { icon: FolderOpen, es: "Archivos", en: "Files", pick: () => docsRef.current?.click() },
+                    ] as const
+                  ).map((o) => (
+                    <button
+                      key={o.es}
+                      type="button"
+                      onClick={() => {
+                        setPhotoPickerOpen(false);
+                        o.pick();
+                      }}
+                      className="flex min-h-[100px] flex-col items-center justify-center gap-2 rounded-2xl border border-border/60 bg-card/40 px-1.5 py-3 text-center outline-none transition-transform focus-visible:ring-2 focus-visible:ring-positive/50 active:scale-[0.97]"
+                    >
+                      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-positive/10">
+                        <o.icon className="h-5 w-5 text-positive" />
+                      </span>
+                      <span className="text-xs font-semibold leading-tight">{t(o.es, o.en)}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </DialogContent>
           </Dialog>
