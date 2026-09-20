@@ -745,6 +745,71 @@ export function ExpenseLog() {
     }
   };
 
+  // Varios archivos a la vez: se leen todos y cada recibo se guarda solo.
+  const sendReceiptFiles = async (files: File[]) => {
+    if (files.length === 0) return;
+    if (files.length === 1) {
+      void send("receipt", files[0]);
+      return;
+    }
+    if (!user?.id) return;
+    setBusy("receipt");
+    let saved = 0;
+    let lastId: string | null = null;
+    for (const file of files) {
+      try {
+        const data = await blobToBase64(file);
+        const result = await captureExpense({
+          data: {
+            kind: "receipt",
+            data,
+            mimeType: file.type,
+            categories: categoryNames,
+            currency,
+            today: format(now, "yyyy-MM-dd"),
+            lang,
+          },
+        });
+        const amount = Math.abs(Number(result.amount) || 0);
+        if (amount <= 0) continue;
+        const items = (result.items ?? [])
+          .map((i) => ({
+            name: String(i.name || "").trim(),
+            amount: Math.abs(Number(i.amount) || 0),
+            category: categoryNames.includes(i.category) ? i.category : "Otros",
+          }))
+          .filter((i) => i.name && i.amount > 0);
+        const valid = result.date && /^\d{4}-\d{2}-\d{2}$/.test(result.date);
+        lastId = await saveExpense({
+          userId: user.id,
+          date: valid ? (result.date as string) : format(now, "yyyy-MM-dd"),
+          merchant: result.merchant || t("Gasto", "Expense"),
+          category: categoryNames.includes(result.category) ? result.category : "Otros",
+          amount,
+          currency,
+          description: items.length > 0 ? `${RECEIPT_DETAIL_PREFIX}${JSON.stringify(items)}` : t("Registro rápido", "Quick log"),
+        });
+        saved++;
+      } catch {
+        // Un archivo ilegible no frena al resto.
+      }
+    }
+    setBusy(null);
+    if (saved > 0) {
+      await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      setPeriod("month");
+      if (lastId) setExpandedTx(lastId);
+      toast.success(
+        saved === 1
+          ? t("Gasto guardado", "Expense saved")
+          : t(`${saved} gastos guardados`, `${saved} expenses saved`),
+      );
+      window.setTimeout(() => latestExpensesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
+    } else {
+      toast.error(t("No pudimos leer los recibos. Inténtalo de nuevo.", "We couldn't read the receipts. Please try again."));
+    }
+  };
+
   const startRecording = async (showMobileDialog = false) => {
     if (showMobileDialog) {
       setVoiceDialogOpen(true);
