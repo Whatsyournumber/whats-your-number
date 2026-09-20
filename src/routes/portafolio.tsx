@@ -1399,7 +1399,7 @@ function PortafolioContent() {
               <Input className="h-9" inputMode="decimal" value={draft.linked_liability} onChange={(e) => setDraft({ ...draft, linked_liability: e.target.value })} />
             </div>
           )}
-          {(!isNew || ["etf", "stock", "crypto", "bond"].includes(draft.kind)) && (
+          {(!isNew || draft.kind !== "cash") && (
             <div className="space-y-1">
               <Label className="text-[11px] text-muted-foreground">{t("Aporte mensual", "Monthly contribution")}</Label>
               <Input className="h-9" inputMode="decimal" value={draft.monthly_contribution} onChange={(e) => setDraft({ ...draft, monthly_contribution: e.target.value })} />
