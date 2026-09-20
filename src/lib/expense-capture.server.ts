@@ -126,7 +126,7 @@ function prompt(categories: string[], currency: string, today: string, lang: "es
       : "La entrada puede estar en CUALQUIER idioma o alfabeto (árabe, francés, chino, japonés, ruso, hebreo, tailandés...): escribe merchant y cualquier texto libre en ESPAÑOL, traduciéndolo fielmente. Transcribe nombres propios y marcas al alfabeto latino. Nunca devuelvas texto en el alfabeto original.",
     "Interpreta fechas en cualquier formato local (DD/MM/AAAA, MM/DD/AAAA, calendarios o meses escritos en otro idioma) y conviértelas a YYYY-MM-DD.",
     "Interpreta números en cualquier formato local: coma o punto decimal, separadores de miles, y dígitos arábigo-índicos (٠١٢٣٤٥٦٧٨٩) o de otros sistemas. Devuelve amount como número decimal con punto.",
-
+  ].join(" ");
 }
 
 /** Interpreta una nota de voz ya transcrita (en cualquier idioma) y la convierte en un gasto en el idioma de la app. */
