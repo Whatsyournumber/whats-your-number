@@ -23,6 +23,7 @@ export function EditableKpiCard({
   index = 0,
   variant = "default",
   editHref,
+  hintClassName,
 }: {
   label: string;
   value: string;
@@ -37,6 +38,7 @@ export function EditableKpiCard({
   index?: number;
   variant?: "default" | "flat";
   editHref?: string;
+  hintClassName?: string;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(rawValue);
@@ -150,7 +152,14 @@ export function EditableKpiCard({
           </span>
         )}
         {hint && !editing && (
-          <span className="min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground">{hint}</span>
+          <span
+            className={cn(
+              "min-w-0 text-xs text-muted-foreground",
+              hintClassName ? cn("whitespace-normal", hintClassName) : "truncate whitespace-nowrap",
+            )}
+          >
+            {hint}
+          </span>
         )}
       </div>
     </motion.div>
