@@ -732,12 +732,20 @@ function Dashboard() {
           <KpiCard
             label={t("Patrimonio neto", "Net worth")}
             value={fmt(current.netWorth)}
-            {...(hasHistory
+            {...(hasHistory ? { delta: delta(current.netWorth, previous.netWorth) } : {})}
+            {...(targetNumber > 0
               ? {
-                  delta: delta(current.netWorth, previous.netWorth),
-                  hint: t("vs mes anterior", "vs last month"),
+                  hint: (
+                    <>
+                      <span className="numeric font-semibold text-positive">{numberProgress.toFixed(1)}%</span>{" "}
+                      {t("de tu libertad financiera", "of your financial freedom")}
+                    </>
+                  ),
+                  hintClassName: "whitespace-normal text-balance",
                 }
-              : {})}
+              : hasHistory
+                ? { hint: t("vs mes anterior", "vs last month") }
+                : {})}
             icon={Wallet}
             accent
             index={0}
