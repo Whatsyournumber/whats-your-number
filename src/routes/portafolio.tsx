@@ -611,6 +611,7 @@ function PortafolioContent() {
   // Edición de una posición desde la propia fila: guarda en mis datos (holdings).
   const [editId, setEditId] = useState<string | null>(null);
   const [draft, setDraft] = useState<{
+    kind: HoldingKind;
     label: string;
     ticker: string;
     quantity: string;
@@ -625,6 +626,7 @@ function PortafolioContent() {
     const h = holdings.find((x) => x.id === id);
     if (!h) return;
     setDraft({
+      kind: h.kind,
       label: h.label ?? "",
       ticker: h.ticker ?? "",
       quantity: h.quantity ? String(h.quantity) : "",
@@ -636,6 +638,20 @@ function PortafolioContent() {
     });
     setEditId(id);
   };
+  const openNew = () => {
+    setEditId("new");
+    setDraft({
+      kind: "etf",
+      label: "",
+      ticker: "",
+      quantity: "",
+      cost_basis: "",
+      manual_value: "",
+      monthly_contribution: "",
+      expected_return: String(defaultReturn("etf")),
+      purchased_at: new Date().toISOString().slice(0, 10),
+    });
+  };
   const closeEdit = () => {
     setEditId(null);
     setDraft(null);
@@ -645,21 +661,27 @@ function PortafolioContent() {
     return Number.isFinite(n) ? n : fallbackValue;
   };
   const saveEdit = async () => {
-    if (!editingHolding || !draft) return;
+    if (!draft) return;
+    const base = editingHolding ?? newHolding(draft.kind, "", holdings.length);
     const updated = {
-      ...editingHolding,
-      label: draft.label.trim() || editingHolding.label,
+      ...base,
+      kind: draft.kind,
+      label: draft.label.trim() || draft.ticker.trim().toUpperCase() || base.label || t("Posición", "Position"),
       ticker: draft.ticker.trim().toUpperCase() || null,
       quantity: numOr(draft.quantity),
       cost_basis: numOr(draft.cost_basis),
       manual_value: numOr(draft.manual_value),
       monthly_contribution: numOr(draft.monthly_contribution),
-      expected_return: numOr(draft.expected_return, editingHolding.expected_return),
-      purchased_at: draft.purchased_at || editingHolding.purchased_at || null,
+      expected_return: numOr(draft.expected_return, base.expected_return),
+      purchased_at: draft.purchased_at || base.purchased_at || null,
     };
     try {
-      await saveAll(holdings.map((h) => (h.id === updated.id ? updated : h)));
-      toast.success(t("Posición actualizada", "Position updated"));
+      await saveAll(
+        editingHolding
+          ? holdings.map((h) => (h.id === updated.id ? updated : h))
+          : [...holdings, updated],
+      );
+      toast.success(editingHolding ? t("Posición actualizada", "Position updated") : t("Activo añadido", "Asset added"));
       closeEdit();
     } catch {
       toast.error(t("No pudimos guardar. Inténtalo de nuevo.", "We couldn't save. Please try again."));
