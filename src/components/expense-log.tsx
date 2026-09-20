@@ -31,6 +31,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useLanguage, useT } from "@/hooks/use-language";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets, type BudgetLine } from "@/hooks/use-spend-budgets";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
@@ -684,6 +685,7 @@ export function ExpenseLog() {
   const fileRef = useRef<HTMLInputElement | null>(null);
   const camRef = useRef<HTMLInputElement | null>(null);
   const latestExpensesRef = useRef<HTMLDivElement | null>(null);
+  const isMobile = useIsMobile();
 
   const openDraft = (source: "voice" | "receipt", parsed: {
     merchant: string;
@@ -1269,7 +1271,9 @@ export function ExpenseLog() {
           <input
             ref={fileRef}
             type="file"
-            accept="image/*,application/pdf"
+            /* En móvil solo imágenes: así Android ofrece Google Fotos / Galería
+               directamente en vez del selector genérico de archivos. */
+            accept={isMobile ? "image/*" : "image/*,application/pdf"}
             className="hidden"
             onChange={(e) => {
               const file = e.target.files?.[0];
