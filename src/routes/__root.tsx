@@ -169,6 +169,7 @@ const PUBLIC_PATHS = [
   "/en",
   "/auth",
   "/precios",
+  "/contacto",
   "/blog",
   "/en/blog",
   "/demo",
