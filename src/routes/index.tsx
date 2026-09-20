@@ -348,9 +348,10 @@ export function Landing() {
       titleLight: t("Descubre cuándo", "Discover when"),
       titleAccent: t("puedes dejar de trabajar.", "you can stop working."),
       desc: t(
-        "Usa la calculadora de patrimonio y jubilación para conocer el capital que necesitas para vivir de tus rendimientos y cuánto te falta para llegar.",
-        "Use the net worth and retirement calculator to know the capital you need to live off your returns and how far you are from getting there.",
+        "Descubre el capital que necesitas para vivir de tus rendimientos y cuánto invertir cada mes para convertir tu libertad en realidad.",
+        "Discover the capital you need to live off your returns and how much to invest each month to turn your freedom into reality.",
       ),
+      highlight: t("tu libertad", "your freedom"),
     },
     {
       icon: Bot,
