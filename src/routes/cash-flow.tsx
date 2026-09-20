@@ -425,7 +425,7 @@ function CashFlow() {
           label={t("Necesidades", "Needs")}
           value={fmt(buckets[0]!.amount)}
           hint={`${((buckets[0]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-          tooltip={<BreakdownTooltip items={needsBreakdown} fmt={fmt} total={buckets[0]!.amount} />}
+          tooltip={<BreakdownTooltip items={needsBreakdown} fmt={fmt} total={buckets[0]!.amount} showAmounts />}
           index={1}
         />
         <KpiCard
