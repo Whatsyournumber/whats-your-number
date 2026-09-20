@@ -673,6 +673,8 @@ export function ExpenseLog() {
   const [saving, setSaving] = useState(false);
   const [busy, setBusy] = useState<"voice" | "receipt" | null>(null);
   const [recording, setRecording] = useState(false);
+  const [voiceDialogOpen, setVoiceDialogOpen] = useState(false);
+  const [voiceStarting, setVoiceStarting] = useState(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const camRef = useRef<HTMLInputElement | null>(null);
@@ -726,10 +728,15 @@ export function ExpenseLog() {
       );
     } finally {
       setBusy(null);
+      if (kind === "voice") setVoiceDialogOpen(false);
     }
   };
 
-  const startRecording = async () => {
+  const startRecording = async (showMobileDialog = false) => {
+    if (showMobileDialog) {
+      setVoiceDialogOpen(true);
+      setVoiceStarting(true);
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
@@ -747,8 +754,11 @@ export function ExpenseLog() {
       };
       recorderRef.current = recorder;
       recorder.start();
+      setVoiceStarting(false);
       setRecording(true);
     } catch {
+      setVoiceStarting(false);
+      setVoiceDialogOpen(false);
       toast.error(t("Necesitamos permiso del micrófono.", "We need microphone access."));
     }
   };
@@ -820,7 +830,7 @@ export function ExpenseLog() {
               <PencilLine className="mr-2.5 h-6 w-6 text-positive" />
               {t("Manual", "Manual")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => (recording ? stopRecording() : startRecording())}>
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => (recording ? stopRecording() : startRecording(true))}>
               {recording ? <Square className="mr-2.5 h-6 w-6 text-negative" /> : <Mic className="mr-2.5 h-6 w-6 text-positive" />}
               {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
             </DropdownMenuItem>
@@ -901,6 +911,59 @@ export function ExpenseLog() {
         open={manualOpen}
         onOpenChange={setManualOpen}
       />
+
+      <Dialog
+        open={voiceDialogOpen}
+        onOpenChange={(open) => {
+          if (!open && recording) stopRecording();
+          if (!open && !recording && busy !== "voice") setVoiceDialogOpen(false);
+        }}
+      >
+        <DialogContent className="w-[calc(100%-2rem)] max-w-sm overflow-hidden rounded-2xl border-negative/25 bg-card p-0 text-center shadow-2xl sm:hidden [&>button]:hidden">
+          <div className="relative flex min-h-[360px] flex-col items-center justify-center overflow-hidden px-6 py-8">
+            <div className="relative mb-6 grid h-32 w-32 place-items-center">
+              {recording && (
+                <>
+                  <span className="absolute inset-0 animate-ping rounded-full bg-negative/10 motion-reduce:animate-none" />
+                  <span className="absolute inset-3 animate-pulse rounded-full border border-negative/30 motion-reduce:animate-none" />
+                </>
+              )}
+              <span className="relative grid h-24 w-24 place-items-center rounded-full bg-negative/15 text-negative ring-1 ring-negative/25">
+                {voiceStarting || busy === "voice" ? (
+                  <Loader2 className="h-11 w-11 animate-spin" />
+                ) : (
+                  <Mic className="h-11 w-11" strokeWidth={1.8} />
+                )}
+              </span>
+            </div>
+
+            <DialogTitle className="text-2xl">
+              {busy === "voice"
+                ? t("Preparando tu gasto", "Preparing your expense")
+                : voiceStarting
+                  ? t("Activando micrófono", "Starting microphone")
+                  : t("Grabando", "Recording")}
+            </DialogTitle>
+            <DialogDescription className="mt-3 max-w-[17rem] text-sm leading-6">
+              {busy === "voice"
+                ? t("Entendiendo el monto, la fecha y la categoría.", "Understanding the amount, date, and category.")
+                : t("Di por ejemplo: «45 euros en el supermercado hoy».", "Say, for example: “45 dollars at the supermarket today.”")}
+            </DialogDescription>
+
+            {recording && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={stopRecording}
+                className="mt-7 h-12 w-full border-negative/35 bg-negative/10 text-negative hover:bg-negative/15 hover:text-negative"
+              >
+                <Square className="mr-2 h-4 w-4 fill-current" />
+                {t("Detener grabación", "Stop recording")}
+              </Button>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={busy === "receipt"}>
         <DialogContent className="max-w-xs text-center [&>button]:hidden">
@@ -1224,7 +1287,7 @@ export function ExpenseLog() {
             <button
               type="button"
               onClick={stopRecording}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-rose-500/60 bg-rose-500/10 px-3.5 py-2.5 text-xs text-rose-300"
+              className="hidden w-full items-center justify-center gap-2 rounded-xl border border-rose-500/60 bg-rose-500/10 px-3.5 py-2.5 text-xs text-rose-300 sm:flex"
             >
               <Square className="h-3.5 w-3.5" />
               {t(
