@@ -33,5 +33,5 @@
 - [x] Últimos gastos: agrupar el recibo como una compra expandible con sus productos
 - [x] Plan mensual: renombrar grupos a Gastos fijos mensuales/Gastos variables y llevar los fijos automáticamente al objetivo por categoría
 - [x] Tu Número: títulos de los 3 recuadros en una sola línea (Monto mensual / Años restantes / Probabilidad)
-^- [x] Tu Número: dejar solo título + subtítulo + monto (quitar "Capital de control" y "Para controlar tus gastos mensuales")
-^- [x] Retiro: subtítulo "Descubre cuánto necesitas para vivir de tus inversiones y alcanzar tu libertad financiera."
+- [x] Tu Número: dejar solo título + subtítulo + monto (quitar "Capital de control" y "Para controlar tus gastos mensuales")
+- [x] Retiro: subtítulo "Descubre cuánto necesitas para vivir de tus inversiones y alcanzar tu libertad financiera."
