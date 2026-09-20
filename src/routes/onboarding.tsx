@@ -216,6 +216,9 @@ function OnboardingPage() {
     await supabase
       .from("onboarding_profiles")
       .upsert({ user_id: user.id, ...data, ...life, current_step: step, ...patch }, { onConflict: "user_id" });
+    // La vivienda del onboarding también vive en Mis datos: valor como activo
+    // (Propiedades) y saldo de la hipoteca como pasivo ligado.
+    await syncHomeHolding(supabase, user.id, { housing: life.housing, assets_property: data.assets_property, mortgage_balance: data.mortgage_balance }, t("Mi vivienda", "My home"));
     setSaving(false);
   };
 
