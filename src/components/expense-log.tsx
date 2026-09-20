@@ -1347,9 +1347,9 @@ export function ExpenseLog() {
                 <div className="grid grid-cols-3 gap-2.5">
                   {(
                     [
-                      { icon: Images, es: "Google Fotos", en: "Photos", pick: () => fileRef.current?.click() },
-                      { icon: GalleryThumbnails, es: "Galería", en: "Gallery", pick: () => fileRef.current?.click() },
-                      { icon: FolderOpen, es: "Archivos", en: "Files", pick: () => docsRef.current?.click() },
+                      { Icon: GooglePhotosIcon, es: "Google Fotos", en: "Photos", pick: () => fileRef.current?.click() },
+                      { Icon: GalleryIcon, es: "Galería", en: "Gallery", pick: () => fileRef.current?.click() },
+                      { Icon: FolderIcon, es: "Archivos", en: "Files", pick: () => docsRef.current?.click() },
                     ] as const
                   ).map((o) => (
                     <button
@@ -1361,8 +1361,8 @@ export function ExpenseLog() {
                       }}
                       className="flex min-h-[100px] flex-col items-center justify-center gap-2 rounded-2xl border border-border/60 bg-card/40 px-1.5 py-3 text-center outline-none transition-transform focus-visible:ring-2 focus-visible:ring-positive/50 active:scale-[0.97]"
                     >
-                      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-positive/10">
-                        <o.icon className="h-5 w-5 text-positive" />
+                      <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.07] ring-1 ring-white/10">
+                        <o.Icon className="h-7 w-7" />
                       </span>
                       <span className="text-xs font-semibold leading-tight">{t(o.es, o.en)}</span>
                     </button>
