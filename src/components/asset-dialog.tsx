@@ -356,6 +356,33 @@ export function AssetDialog({
           </div>
         )}
       </DialogContent>
+      <AlertDialog open={confirmAction !== null} onOpenChange={(v) => (!v ? setConfirmAction(null) : null)}>
+        <AlertDialogContent className="w-[calc(100vw-2rem)] max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("¿Salir sin guardar?", "Leave without saving?")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("Tienes cambios sin guardar. Si sales ahora, se perderán.", "You have unsaved changes. If you leave now, they will be lost.")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("Seguir editando", "Keep editing")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                const action = confirmAction;
+                setConfirmAction(null);
+                if (action === "back") {
+                  setDraft(null);
+                  baseline.current = null;
+                } else {
+                  forceClose();
+                }
+              }}
+            >
+              {t("Descartar cambios", "Discard changes")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
