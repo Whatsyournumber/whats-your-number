@@ -950,10 +950,11 @@ function Dashboard() {
                 subtitle = t("Meta alcanzada", "Goal reached");
               } else if (g.note) {
                 subtitle = translateGoalNote(g.note, lang);
-              } else if (remaining > 0 && years > 0 && years < 99) {
+              } else if (remaining > 0 && years > 0) {
+                const yearsLabel = years >= 99 ? "+99" : String(years);
                 subtitle = t(
-                  `Te faltan ${fmtCompact(remaining)} • ~ ${years} años al ritmo actual`,
-                  `You need ${fmtCompact(remaining)} • ~ ${years} years at current pace`,
+                  `Te faltan ${fmtCompact(remaining)} · ~ ${yearsLabel} años al ritmo actual`,
+                  `You need ${fmtCompact(remaining)} · ~ ${yearsLabel} years at current pace`,
                 );
               } else {
                 subtitle = t("En camino", "On track");
