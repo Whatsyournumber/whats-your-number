@@ -9,6 +9,7 @@ import {
   lifestyles,
   money,
   netWorth,
+  totalLiabilities,
   totalAssets,
   totalIncome,
   totalExpenses,
@@ -118,7 +119,12 @@ export function buildDataset(p: Profile): Dataset {
     { key: "assets_property", name: "Propiedades", value: p.assets_property, color: "var(--color-chart-7, var(--color-chart-2))" },
   ].filter((a) => a.value > 0);
 
-  const liabilities = p.liabilities > 0 ? [{ name: "Deudas", value: p.liabilities, color: "var(--color-negative)" }] : [];
+  const debts = Math.max(0, p.liabilities || 0);
+  const mortgage = Math.max(0, p.mortgage_balance || 0);
+  const liabilities = [
+    ...(debts > 0 ? [{ name: "Deudas", value: debts, color: "var(--color-negative)" }] : []),
+    ...(mortgage > 0 ? [{ name: "Hipoteca", value: mortgage, color: "var(--color-negative)" }] : []),
+  ];
 
   const plan = buildPlan(p);
   const city = cities.find((c) => c.name === p.city) ?? null;
@@ -219,7 +225,7 @@ export function buildDataset(p: Profile): Dataset {
     savingsRate: plan.savingsRate,
     netWorth: nw,
     totalAssets: assetsTotal,
-    totalLiabilities: p.liabilities,
+    totalLiabilities: totalLiabilities(p),
     assets,
     liabilities,
     plan,
