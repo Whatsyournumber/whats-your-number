@@ -73,8 +73,7 @@ export async function transcribeExpenseAudio(
         return "";
       }
       const data = (await response.json()) as { text?: string };
-      const text = (data.text ?? "").trim();
-      return looksValid(text) ? text : "";
+      return (data.text ?? "").trim();
     } catch (error) {
       console.error(`[voz] ${model} fallo`, error);
       return "";
