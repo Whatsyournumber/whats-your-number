@@ -298,9 +298,11 @@ function CashFlow() {
     ? planBuckets.needsAmount
     : hasReal
       ? fixedNeedsAmount + retirementFundNeeds + spend.needs
-      : d.cashFlow.buckets[0]!.amount;
-  const lifestyleAmount = hasReal ? fixedWantsAmount + retirementFundWants + spend.wants : d.cashFlow.buckets[1]!.amount;
-  const investAmount = hasReal ? fixedSavingsAmount + retirementFundSavings + spend.investments : d.cashFlow.buckets[2]!.amount;
+      : 0;
+  // Deseos e inversiones parten de 0 hasta que se registran gastos reales;
+  // el plan del onboarding solo sirve de referencia en los tooltips.
+  const lifestyleAmount = hasReal ? fixedWantsAmount + retirementFundWants + spend.wants : 0;
+  const investAmount = hasReal ? fixedSavingsAmount + retirementFundSavings + spend.investments : 0;
 
   const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount - investAmount);
 
