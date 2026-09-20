@@ -39,6 +39,7 @@ export const captureExpense = createServerFn({ method: "POST" })
         categories,
         data.currency,
         data.today,
+        data.lang,
       );
       return { ...expense, items: [] as { name: string; amount: number; category: string }[], transcript };
     }
@@ -50,6 +51,7 @@ export const captureExpense = createServerFn({ method: "POST" })
       categories,
       data.currency,
       data.today,
+      data.lang,
     );
     return { ...expense, items: expense.items ?? [], transcript: "" };
   });
