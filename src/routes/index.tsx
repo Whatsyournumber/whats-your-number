@@ -381,10 +381,11 @@ export function Landing() {
       titleLight: t("Descubre cuándo", "Discover when"),
       titleAccent: t("puedes dejar de trabajar.", "you can stop working."),
       desc: t(
-        "Descubre el capital que necesitas para vivir de tus rendimientos y cuánto invertir cada mes para convertir tu libertad en realidad.",
-        "Discover the capital you need to live off your returns and how much to invest each month to turn your freedom into reality.",
+        "Descubre el capital que necesitas para vivir de tus rendimientos y cuánto invertir cada mes para convertir tu libertad financiera en realidad.",
+        "Discover the capital you need to live off your returns and how much to invest each month to turn your financial freedom into reality.",
       ),
-      highlight: t("tu libertad", "your freedom"),
+      highlight: t("tu libertad financiera", "your financial freedom"),
+      tone: "positive",
     },
     {
       icon: Bot,
@@ -602,7 +603,7 @@ export function Landing() {
 
                 <div className="relative mt-4">
                   <h3 className="min-h-[3.5rem] text-lg font-semibold leading-snug tracking-tight">
-                    <span className="text-foreground">{card.titleLight}</span>
+                    <span className="text-white">{card.titleLight}</span>
                     <br />
                     <span className="text-primary">{card.titleAccent}</span>
                   </h3>
