@@ -354,7 +354,7 @@ export function Landing() {
     titleLight: string;
     titleAccent: string;
     desc: string;
-    highlight?: string;
+    highlight?: string | undefined;
   }[] = [
     {
       icon: PieChart,
