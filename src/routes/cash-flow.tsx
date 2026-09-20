@@ -271,11 +271,21 @@ function CashFlow() {
       if (override === "excluded" || override === "savings") continue;
       (isNeed ? needs : wants).push({ label, amount });
     }
+    // Letra de la hipoteca del onboarding: cuenta como gasto fijo en Necesidades.
+    const mBalance = Number(profile.mortgage_balance) || 0;
+    const mRate = Number(profile.mortgage_rate) || 0;
+    const mTerm = Number(profile.mortgage_term) || 0;
+    if (mBalance > 0 && mTerm > 0 && !needs.some((n) => /hipoteca|mortgage/i.test(n.label))) {
+      const r = mRate / 100 / 12;
+      const n = mTerm * 12;
+      const payment = r > 0 ? (mBalance * r) / (1 - Math.pow(1 + r, -n)) : mBalance / n;
+      if (payment > 0) needs.push({ label: lang === "en" ? "Mortgage" : "Hipoteca", amount: Math.round(payment) });
+    }
     const sum = (rows: { amount: number }[]) => rows.reduce((s, r) => s + r.amount, 0);
     needs.sort((a, b) => b.amount - a.amount);
     wants.sort((a, b) => b.amount - a.amount);
     return { needs, wants, needsAmount: sum(needs), wantsAmount: sum(wants) };
-  }, [budgetLines, lang, categoryBuckets]);
+  }, [budgetLines, lang, categoryBuckets, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term]);
 
   const hasPlanNeeds = planBuckets.needsAmount > 0;
 
@@ -415,7 +425,7 @@ function CashFlow() {
           label={t("Necesidades", "Needs")}
           value={fmt(buckets[0]!.amount)}
           hint={`${((buckets[0]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-          tooltip={<BreakdownTooltip items={needsBreakdown} fmt={fmt} total={buckets[0]!.amount} />}
+          tooltip={<BreakdownTooltip items={needsBreakdown} fmt={fmt} total={buckets[0]!.amount} showAmounts />}
           index={1}
         />
         <KpiCard
@@ -686,10 +696,12 @@ function BreakdownTooltip({
   items,
   fmt,
   total,
+  showAmounts = false,
 }: {
   items: { label: string; amount: number }[];
   fmt: (n: number) => string;
   total: number;
+  showAmounts?: boolean;
 }) {
   const t = useT();
   return (
@@ -703,7 +715,7 @@ function BreakdownTooltip({
             <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
               <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />
               <span className="flex-1 leading-relaxed">{item.label}</span>
-              <span className="numeric shrink-0 text-xs">{fmt(item.amount)}</span>
+              {showAmounts && <span className="numeric shrink-0 text-xs">{fmt(item.amount)}</span>}
             </li>
           ))}
         </ul>
