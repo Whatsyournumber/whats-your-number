@@ -35,3 +35,5 @@
 - [x] Tu Número: títulos de los 3 recuadros en una sola línea (Monto mensual / Años restantes / Probabilidad)
 - [x] Tu Número: dejar solo título + subtítulo + monto (quitar "Capital de control" y "Para controlar tus gastos mensuales")
 - [x] Retiro: subtítulo "Descubre cuánto necesitas para vivir de tus inversiones y alcanzar tu libertad financiera."
+- [x] Tu Número: quitar el recuadro de Probabilidad y renombrar a "Monto mensual deseado"
+- [x] Tu Número: la barra de progreso usa la misma data que la barra de WhatsYournumber (capital invertible / tu número)
