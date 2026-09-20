@@ -187,8 +187,7 @@ function Pricing() {
         t("Integración SSO y soporte dedicado", "SSO integration and dedicated support"),
         t("Account manager y SLA garantizado", "Account manager and guaranteed SLA"),
       ],
-      cta: t("Contactar", "Contact us"),
-      href: "mailto:hello@whatsyour-number.com?subject=Plan%20Corporativo%20B2B",
+      cta: t("Solicitar plan a la medida", "Request a custom plan"),
       highlight: false,
     },
   ];
@@ -468,7 +467,7 @@ function Pricing() {
                       setSelectedPlan(plan.name);
                     }}
                   >
-                    <a href={plan.href}>{plan.cta}</a>
+                    <Link to="/contacto" search={{ planName: plan.name }}>{plan.cta}</Link>
                   </Button>
                 ) : (
                   <Button

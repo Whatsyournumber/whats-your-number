@@ -22,6 +22,7 @@ import { Route as CalculadoraLibertadFinancieraRouteImport } from './routes/calc
 import { Route as CashFlowRouteImport } from './routes/cash-flow'
 import { Route as CiudadesRouteImport } from './routes/ciudades'
 import { Route as ConfiguracionRouteImport } from './routes/configuracion'
+import { Route as ContactoRouteImport } from './routes/contacto'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as DemoNinosRouteImport } from './routes/demo-ninos'
@@ -65,6 +66,7 @@ import { Route as NinosOnboardingRouteImport } from './routes/ninos/onboarding'
 import { Route as NinosPadresRouteImport } from './routes/ninos/padres'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as ApiPublicDistributeNewPostsRouteImport } from './routes/api/public/distribute-new-posts'
 import { Route as ApiPublicRssRouteImport } from './routes/api/public/rss'
 import { Route as ApiPublicVerifyBacklinksRouteImport } from './routes/api/public/verify-backlinks'
@@ -147,6 +149,11 @@ const CiudadesRoute = CiudadesRouteImport.update({
 const ConfiguracionRoute = ConfiguracionRouteImport.update({
   id: '/configuracion',
   path: '/configuracion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactoRoute = ContactoRouteImport.update({
+  id: '/contacto',
+  path: '/contacto',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -369,6 +376,11 @@ const Char91DotmcpChar93InvokeToolToolRoute =
     path: '/.mcp/invoke-tool/$tool',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
+  id: '/api/public/contact',
+  path: '/api/public/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicDistributeNewPostsRoute =
   ApiPublicDistributeNewPostsRouteImport.update({
     id: '/api/public/distribute-new-posts',
@@ -469,6 +481,7 @@ export interface FileRoutesByFullPath {
   '/cash-flow': typeof CashFlowRoute
   '/ciudades': typeof CiudadesRoute
   '/configuracion': typeof ConfiguracionRoute
+  '/contacto': typeof ContactoRoute
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
   '/demo-ninos': typeof DemoNinosRoute
@@ -511,6 +524,7 @@ export interface FileRoutesByFullPath {
   '/ninos/': typeof NinosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
   '/api/public/verify-backlinks': typeof ApiPublicVerifyBacklinksRoute
@@ -541,6 +555,7 @@ export interface FileRoutesByTo {
   '/cash-flow': typeof CashFlowRoute
   '/ciudades': typeof CiudadesRoute
   '/configuracion': typeof ConfiguracionRoute
+  '/contacto': typeof ContactoRoute
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
   '/demo-ninos': typeof DemoNinosRoute
@@ -581,6 +596,7 @@ export interface FileRoutesByTo {
   '/ninos': typeof NinosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
   '/api/public/verify-backlinks': typeof ApiPublicVerifyBacklinksRoute
@@ -614,6 +630,7 @@ export interface FileRoutesById {
   '/cash-flow': typeof CashFlowRoute
   '/ciudades': typeof CiudadesRoute
   '/configuracion': typeof ConfiguracionRoute
+  '/contacto': typeof ContactoRoute
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
   '/demo-ninos': typeof DemoNinosRoute
@@ -656,6 +673,7 @@ export interface FileRoutesById {
   '/ninos/': typeof NinosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
   '/api/public/verify-backlinks': typeof ApiPublicVerifyBacklinksRoute
@@ -690,6 +708,7 @@ export interface FileRouteTypes {
     | '/cash-flow'
     | '/ciudades'
     | '/configuracion'
+    | '/contacto'
     | '/dashboard'
     | '/demo'
     | '/demo-ninos'
@@ -732,6 +751,7 @@ export interface FileRouteTypes {
     | '/ninos/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/api/public/contact'
     | '/api/public/distribute-new-posts'
     | '/api/public/rss'
     | '/api/public/verify-backlinks'
@@ -762,6 +782,7 @@ export interface FileRouteTypes {
     | '/cash-flow'
     | '/ciudades'
     | '/configuracion'
+    | '/contacto'
     | '/dashboard'
     | '/demo'
     | '/demo-ninos'
@@ -802,6 +823,7 @@ export interface FileRouteTypes {
     | '/ninos'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/api/public/contact'
     | '/api/public/distribute-new-posts'
     | '/api/public/rss'
     | '/api/public/verify-backlinks'
@@ -834,6 +856,7 @@ export interface FileRouteTypes {
     | '/cash-flow'
     | '/ciudades'
     | '/configuracion'
+    | '/contacto'
     | '/dashboard'
     | '/demo'
     | '/demo-ninos'
@@ -876,6 +899,7 @@ export interface FileRouteTypes {
     | '/ninos/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/api/public/contact'
     | '/api/public/distribute-new-posts'
     | '/api/public/rss'
     | '/api/public/verify-backlinks'
@@ -909,6 +933,7 @@ export interface RootRouteChildren {
   CashFlowRoute: typeof CashFlowRoute
   CiudadesRoute: typeof CiudadesRoute
   ConfiguracionRoute: typeof ConfiguracionRoute
+  ContactoRoute: typeof ContactoRoute
   DashboardRoute: typeof DashboardRoute
   DemoRoute: typeof DemoRoute
   DemoNinosRoute: typeof DemoNinosRoute
@@ -938,6 +963,7 @@ export interface RootRouteChildren {
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicDistributeNewPostsRoute: typeof ApiPublicDistributeNewPostsRoute
   ApiPublicRssRoute: typeof ApiPublicRssRoute
   ApiPublicVerifyBacklinksRoute: typeof ApiPublicVerifyBacklinksRoute
@@ -1036,6 +1062,13 @@ declare module '@tanstack/react-router' {
       path: '/configuracion'
       fullPath: '/configuracion'
       preLoaderRoute: typeof ConfiguracionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contacto': {
+      id: '/contacto'
+      path: '/contacto'
+      fullPath: '/contacto'
+      preLoaderRoute: typeof ContactoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -1339,6 +1372,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/contact': {
+      id: '/api/public/contact'
+      path: '/api/public/contact'
+      fullPath: '/api/public/contact'
+      preLoaderRoute: typeof ApiPublicContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/distribute-new-posts': {
       id: '/api/public/distribute-new-posts'
       path: '/api/public/distribute-new-posts'
@@ -1552,6 +1592,7 @@ const rootRouteChildren: RootRouteChildren = {
   CashFlowRoute: CashFlowRoute,
   CiudadesRoute: CiudadesRoute,
   ConfiguracionRoute: ConfiguracionRoute,
+  ContactoRoute: ContactoRoute,
   DashboardRoute: DashboardRoute,
   DemoRoute: DemoRoute,
   DemoNinosRoute: DemoNinosRoute,
@@ -1582,6 +1623,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutSuccessRoute: CheckoutSuccessRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicDistributeNewPostsRoute: ApiPublicDistributeNewPostsRoute,
   ApiPublicRssRoute: ApiPublicRssRoute,
   ApiPublicVerifyBacklinksRoute: ApiPublicVerifyBacklinksRoute,

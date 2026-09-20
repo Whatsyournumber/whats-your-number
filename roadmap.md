@@ -39,3 +39,8 @@
 - [x] Tu Número: la barra de progreso usa la misma data que la barra de WhatsYournumber (capital invertible / tu número)
 - [x] Landing: tarjeta 02 con "tu libertad financiera" en verde
 - [x] Landing: títulos de las 3 tarjetas en blanco
+- [x] Página de contacto /contacto (bilingüe) con formulario, tema y confirmación
+- [x] Mensajes guardados en el buzón interno contact_messages (solo accesible para el equipo)
+- [x] "Solicitar plan a la medida" en Precios lleva a /contacto con el plan preseleccionado
+- [x] Enlace "Contacto" en el pie de página (principal, niños y afiliados)
+- [ ] Enviar cada mensaje por correo a thecontentcclub@gmail.com — bloqueado: falta verificar el dominio de remitente (notify.whatsyour-number.com) en la configuración de correo
