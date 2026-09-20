@@ -36,7 +36,7 @@ export const Route = createFileRoute("/contacto")({
       { property: "og:title", content: "Contacto — WhatsYournumber" },
       {
         property: "og:description",
-        content: "Hablemos: planes a la medida, soporte y colaboraciones. Respuesta en menos de 24 h.",
+        content: "Hablemos: planes a la medida, soporte y colaboraciones. Te respondemos lo antes posible.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
