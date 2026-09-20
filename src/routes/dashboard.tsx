@@ -874,7 +874,7 @@ function Dashboard() {
                 <Link to="/mi-perfil">{t("Editar mis datos", "Edit my data")}</Link>
               </Button>
             </div>
-            <p className="text-center text-[11px] leading-snug text-muted-foreground/70">
+            <p className="mt-auto text-xs leading-snug text-muted-foreground/75 sm:text-[13px]">
               * {t("basado en el estilo de vida que escojiste", "based on the lifestyle you chose")}
             </p>
           </div>
