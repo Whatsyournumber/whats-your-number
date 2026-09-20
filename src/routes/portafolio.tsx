@@ -1335,7 +1335,7 @@ function PortafolioContent() {
       <div className="space-y-3">
         {isNew ? (
           <div className="flex items-center gap-2 border-b border-border/50 pb-3">
-            <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => setDraft(null)} aria-label={t("Volver a tipos de activo", "Back to asset types")}>
+            <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={backToKinds} aria-label={t("Volver a tipos de activo", "Back to asset types")}>
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
