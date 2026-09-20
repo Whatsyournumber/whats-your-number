@@ -510,8 +510,8 @@ function RetiroContent() {
                         `Money to contribute monthly at ${rate}% for ${aporteYearsLabel}`,
                       )
                     : t(
-                        `Con este monto te retirarías en ${aporteYearsToRetireLabel}`,
-                        `With this amount you would retire in ${aporteYearsToRetireLabel}`,
+                        `Te retirarías en ${aporteYearsToRetireLabel}`,
+                        `You would retire in ${aporteYearsToRetireLabel}`,
                       )}
                 </p>
               </>
