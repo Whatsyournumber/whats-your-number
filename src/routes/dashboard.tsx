@@ -139,6 +139,12 @@ function Dashboard() {
   const { rules } = useCategories();
   const { lines: budgetLines } = useSpendBudgets();
   const { target: spendTarget, hasTarget: hasSpendTarget } = useSpendTarget();
+  // Total de tu plan de gasto mensual (onboarding / Registro de gastos).
+  const spendPlanMonthlyTotal = useMemo(() => {
+    const sum = budgetLines.reduce((s, l) => s + (Number.isFinite(l.amount) ? l.amount : 0), 0);
+    if (sum > 0) return sum;
+    return hasSpendTarget && spendTarget > 0 ? spendTarget : 0;
+  }, [budgetLines, hasSpendTarget, spendTarget]);
   const { live: indexLive } = useIndexReturns();
   const { holdings } = useHoldings();
   const holdingSymbols = holdings
