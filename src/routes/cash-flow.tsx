@@ -272,10 +272,13 @@ function CashFlow() {
       (isNeed ? needs : wants).push({ label, amount });
     }
     // Letra de la hipoteca del onboarding: cuenta como gasto fijo en Necesidades.
+    // No se añade si el plan ya tiene una línea de vivienda (Vivienda, Alquiler,
+    // Hipoteca...) para no duplicar el mismo concepto.
     const mBalance = Number(profile.mortgage_balance) || 0;
     const mRate = Number(profile.mortgage_rate) || 0;
     const mTerm = Number(profile.mortgage_term) || 0;
-    if (mBalance > 0 && mTerm > 0 && !needs.some((n) => /hipoteca|mortgage/i.test(n.label))) {
+    const hasHousingLine = needs.some((n) => /hipoteca|mortgage|vivienda|housing|alquiler|renta\b|rent\b/i.test(n.label));
+    if (mBalance > 0 && mTerm > 0 && !hasHousingLine) {
       const r = mRate / 100 / 12;
       const n = mTerm * 12;
       const payment = r > 0 ? (mBalance * r) / (1 - Math.pow(1 + r, -n)) : mBalance / n;
