@@ -270,10 +270,17 @@ function Dashboard() {
     const bucketFor = (name: string) => moneyBuckets[clean(name)] ?? (isSaving(name) ? "savings" : isWant(name) ? "wants" : "needs");
     const monthTransactions = transactions.filter((tx) => tx.tx_date?.slice(0, 7) === activeKey);
     if (!monthTransactions.length) {
+      // Sin gastos registrados este mes, el gasto real son los gastos fijos del
+      // plan (ahorro e inversión no cuentan como gasto). Los variables se suman
+      // a medida que la persona los registra.
+      const fixedOnly = fixed.items
+        .filter((item) => bucketFor(item.name) !== "savings")
+        .reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
       const fallbackInvest = d.cashFlow.buckets[2]?.amount ?? 0;
       const fallbackFree = Math.max(0, d.income - d.cashFlow.buckets.reduce((sum, bucket) => sum + bucket.amount, 0));
+      const fallbackExpenses = d.cashFlow.buckets[0]!.amount + d.cashFlow.buckets[1]!.amount;
       return {
-        expenses: d.cashFlow.buckets[0]!.amount + d.cashFlow.buckets[1]!.amount,
+        expenses: fixedOnly > 0 ? fixedOnly : fallbackExpenses,
         savings: fallbackInvest + fallbackFree,
       };
     }
