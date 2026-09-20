@@ -217,8 +217,10 @@ function RetiroContent() {
     }
     return 0; // inalcanzable en 100 años con este aporte
   })();
-  const aporteRetireYear =
-    monthsToNumber > 0 ? new Date().getFullYear() + Math.ceil(monthsToNumber / 12) : 0;
+  const aporteYearsToRetire = monthsToNumber > 0 ? Math.ceil(monthsToNumber / 12) : 0;
+  const aporteYearsToRetireLabel = `${aporteYearsToRetire} ${
+    aporteYearsToRetire === 1 ? t("año", "year") : t("años", "years")
+  }`;
 
   // Realismo: lo que de verdad te sobra hoy con tus gastos reales (fijos + variables importados).
   const capacity = Math.max(0, d.income - d.expenses);
@@ -502,14 +504,14 @@ function RetiroContent() {
                   </span>
                 </div>
                 <p className="relative mt-2 text-[11px] text-muted-foreground">
-                  {aporteIsSuggested || aporteRetireYear <= 0
+                  {aporteIsSuggested || aporteYearsToRetire <= 0
                     ? t(
                         `Dinero a aportar mensual al ${rate}% por ${aporteYearsLabel}`,
                         `Money to contribute monthly at ${rate}% for ${aporteYearsLabel}`,
                       )
                     : t(
-                        `Con este monto tu año de retiro sería ${aporteRetireYear}`,
-                        `With this amount your retirement year would be ${aporteRetireYear}`,
+                        `Te retirarías en ${aporteYearsToRetireLabel}`,
+                        `You would retire in ${aporteYearsToRetireLabel}`,
                       )}
                 </p>
               </>
