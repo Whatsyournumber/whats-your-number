@@ -944,7 +944,7 @@ export function ExpenseLog() {
                 ? t("Preparando tu gasto", "Preparing your expense")
                 : voiceStarting
                   ? t("Activando micrófono", "Starting microphone")
-                  : t("Grabando", "Recording")}
+                  : t("Grabando...", "Recording...")}
             </DialogTitle>
             <DialogDescription className="mt-3 max-w-[17rem] text-sm leading-6">
               {busy === "voice"
