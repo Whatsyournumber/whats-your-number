@@ -654,7 +654,7 @@ function RetiroContent() {
           {t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}
           {isGoal && goalNote ? `: ${goalNote}` : ""}
         </p>
-        <div className="relative mt-9 h-2.5 w-full">
+        <div className="relative mt-14 h-2.5 w-full">
           <div className="h-2.5 w-full overflow-hidden rounded-full bg-elevated">
             <div className="wealth-gradient h-full rounded-full" style={{ width: `${pctBar}%` }} />
           </div>
