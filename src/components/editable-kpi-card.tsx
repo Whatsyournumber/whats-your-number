@@ -38,6 +38,7 @@ export function EditableKpiCard({
   index?: number;
   variant?: "default" | "flat";
   editHref?: string;
+  hintClassName?: string;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(rawValue);
