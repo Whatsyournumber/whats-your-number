@@ -966,10 +966,15 @@ function Dashboard() {
                 value >= 75 ? "bg-positive" : value >= 50 ? "bg-warning" : "bg-negative";
 
               if (g.name === "Cartera de inversión") {
+                const noInvestments = portfolioValue <= 0;
                 const diff = portfolioReturn - sp500Rate;
-                const progress = sp500Rate > 0 ? Math.min(100, Math.max(0, (portfolioReturn / sp500Rate) * 100)) : 0;
-                const diffText = `${diff >= 0 ? "+" : ""}${diff.toFixed(0)}%`;
-                const diffColor = diff >= 0 ? "text-positive" : "text-negative";
+                const progress = noInvestments
+                  ? 0
+                  : sp500Rate > 0
+                    ? Math.min(100, Math.max(0, (portfolioReturn / sp500Rate) * 100))
+                    : 0;
+                const diffText = noInvestments ? "0%" : `${diff >= 0 ? "+" : ""}${diff.toFixed(0)}%`;
+                const diffColor = noInvestments ? "text-muted-foreground" : diff >= 0 ? "text-positive" : "text-negative";
                 return (
                   <li key={g.name}>
                     <Link to="/portafolio" className="group flex items-start gap-2.5 rounded-2xl p-1.5 transition-colors hover:bg-elevated/40">
@@ -985,12 +990,16 @@ function Dashboard() {
                           <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {fmtCompact(portfolioValue)} {t(`al ${portfolioReturn.toFixed(0)}%`, `at ${portfolioReturn.toFixed(0)}%`)}
+                          {noInvestments
+                            ? t("Comienza a invertir el 20% de tu ahorro", "Start investing 20% of your savings")
+                            : <>{fmtCompact(portfolioValue)} {t(`al ${portfolioReturn.toFixed(0)}%`, `at ${portfolioReturn.toFixed(0)}%`)}</>}
                         </p>
                         <Progress value={progress} indicatorClassName={goalBarColor(progress)} className="mt-1.5 h-1.5" />
-                        <p className="mt-1 truncate text-[11px] text-muted-foreground">
-                          {t(`vs ${sp500Rate.toFixed(0)}% S&P 500`, `vs ${sp500Rate.toFixed(0)}% S&P 500`)}
-                        </p>
+                        {!noInvestments && (
+                          <p className="mt-1 truncate text-[11px] text-muted-foreground">
+                            {t(`vs ${sp500Rate.toFixed(0)}% S&P 500`, `vs ${sp500Rate.toFixed(0)}% S&P 500`)}
+                          </p>
+                        )}
                       </div>
                     </Link>
                   </li>
