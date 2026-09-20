@@ -816,9 +816,9 @@ function Dashboard() {
 
 
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-5">
         
-        <Panel title={t("Evolución de cuál tu número", "Evolution of your number")} description={t("Avance hacia tu número de retiro", "Advance toward your retirement number")} className="lg:col-span-2" bleedMobile>
+        <Panel title={t("Evolución de cuál tu número", "Evolution of your number")} description={t("Avance hacia tu número de retiro", "Advance toward your retirement number")} className="lg:col-span-3" bleedMobile>
           <ResponsiveContainer width="100%" height={280}>
             <AreaChart data={months} margin={chartMargin}>
               <defs>
@@ -853,7 +853,7 @@ function Dashboard() {
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title={numberTitle} description={numberDescription}>
+        <Panel title={numberTitle} description={numberDescription} className="lg:col-span-2">
           <div className="space-y-4">
             <div>
               <p className="text-xs text-muted-foreground">{numberLabel}</p>
@@ -881,20 +881,20 @@ function Dashboard() {
               </div>
               <Progress value={numberProgress} className="h-2" />
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              <div className="rounded-xl bg-elevated/60 p-3">
-                <p className="text-xs text-muted-foreground">{t("Monto mensual", "Monthly amount")}</p>
+            <div className="grid grid-cols-3 gap-1">
+              <div className="rounded-xl bg-elevated/60 p-2">
+                <p className="whitespace-nowrap text-[10px] text-muted-foreground">{t("Monto mensual", "Monthly amount")}</p>
                 <p className="numeric mt-1 truncate text-lg font-semibold" title={`${fmt(targetNumber > 0 ? (targetNumber * swr) / 12 : 0)}${t("/mes", "/mo")}`}>
                   {fmt(targetNumber > 0 ? (targetNumber * swr) / 12 : 0)}
                 </p>
               </div>
-              <div className="rounded-xl bg-elevated/60 p-3">
-                <p className="text-xs text-muted-foreground">{t("Años restantes", "Years left")}</p>
-                <p className="numeric mt-1 text-lg font-semibold">{numberYearsLeft}</p>
+              <div className="rounded-xl bg-elevated/60 p-2">
+                <p className="whitespace-nowrap text-[10px] text-muted-foreground">{t("Años restantes", "Years left")}</p>
+                <p className="numeric mt-1 truncate text-lg font-semibold">{numberYearsLeft}</p>
               </div>
-              <div className="rounded-xl bg-elevated/60 p-3">
-                <p className="text-xs text-muted-foreground">{t("Probabilidad", "Probability")}</p>
-                <p className="numeric mt-1 text-lg font-semibold">{plan.probability}%</p>
+              <div className="rounded-xl bg-elevated/60 p-2">
+                <p className="whitespace-nowrap text-[10px] text-muted-foreground">{t("Probabilidad", "Probability")}</p>
+                <p className="numeric mt-1 truncate text-lg font-semibold">{plan.probability}%</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -1046,17 +1046,17 @@ function Dashboard() {
                           </span>
                           <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
                         </div>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="truncate text-[11px] text-muted-foreground">
+                          {noInvestments
+                            ? t("Comienza a invertir el 20% de tus ingresos", "Start investing 20% of your income")
+                            : t(`vs ${sp500Rate.toFixed(0)}% S&P 500`, `vs ${sp500Rate.toFixed(0)}% S&P 500`)}
+                        </p>
+                        <p className="numeric mt-0.5 text-sm font-medium">
                           {noInvestments
                             ? <>{fmtCompact(portfolioValue)} {t("invertidos", "invested")}</>
                             : <>{fmtCompact(portfolioValue)} {t(`al ${portfolioReturn.toFixed(0)}%`, `at ${portfolioReturn.toFixed(0)}%`)}</>}
                         </p>
                         <Progress value={progress} indicatorClassName={goalBarColor(progress)} className="mt-1.5 h-1.5" />
-                        <p className="mt-1 truncate text-[11px] text-muted-foreground">
-                          {noInvestments
-                            ? t("Comienza a invertir el 20% de tus ingresos", "Start investing 20% of your income")
-                            : t(`vs ${sp500Rate.toFixed(0)}% S&P 500`, `vs ${sp500Rate.toFixed(0)}% S&P 500`)}
-                        </p>
                       </div>
                     </Link>
                   </li>
@@ -1088,7 +1088,8 @@ function Dashboard() {
                         </span>
                         <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="truncate text-[11px] text-muted-foreground">{subtitle}</p>
+                      <p className="numeric mt-0.5 text-sm font-medium">
                         {fmtCompact(left)} {t("de", "of")} {fmtCompact(right)}
                       </p>
                       <Progress
@@ -1096,7 +1097,6 @@ function Dashboard() {
                         indicatorClassName={isCityGoal ? (cityReached ? "bg-positive" : "bg-negative") : goalBarColor(pct)}
                         className="mt-1.5 h-1.5"
                       />
-                      <p className="mt-1 truncate text-[11px] text-muted-foreground">{subtitle}</p>
                     </div>
                   </Link>
                 </li>
