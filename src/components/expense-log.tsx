@@ -1346,11 +1346,12 @@ export function ExpenseLog() {
             /* En móvil solo imágenes: así Android ofrece Google Fotos / Galería
                directamente en vez del selector genérico de archivos. */
             accept={isMobile ? "image/*" : "image/*,application/pdf"}
+            multiple
             className="hidden"
             onChange={(e) => {
-              const file = e.target.files?.[0];
+              const files = Array.from(e.target.files ?? []);
               e.target.value = "";
-              if (file) void send("receipt", file);
+              void sendReceiptFiles(files);
             }}
           />
           {/* Cámara directa */}
@@ -1371,11 +1372,12 @@ export function ExpenseLog() {
             ref={docsRef}
             type="file"
             accept="image/*,application/pdf"
+            multiple
             className="hidden"
             onChange={(e) => {
-              const file = e.target.files?.[0];
+              const files = Array.from(e.target.files ?? []);
               e.target.value = "";
-              if (file) void send("receipt", file);
+              void sendReceiptFiles(files);
             }}
           />
 
