@@ -181,7 +181,8 @@ export function buildDataset(p: Profile): Dataset {
       monthly: savings,
       displayCurrent: income,
       displayTarget: cityMonthlySafe,
-      progressPct: income >= cityMonthlySafe ? 100 : Math.min(100, Math.round((cityMonthlySafe / Math.max(1, income)) * 100)),
+      // 100 solo si tus ingresos cubren el coste de la ciudad; si no, % de cobertura real.
+      progressPct: income >= cityMonthlySafe ? 100 : Math.min(99, Math.round((Math.max(0, income) / Math.max(1, cityMonthlySafe)) * 100)),
       note: p.city
         ? `${p.city}: ${fmt(cityMonthlySafe)}/mes · ${
             income >= cityMonthlySafe ? "ya puedes vivir allí" : `ahorro ${fmt(cityCapacitySafe)}/mes`

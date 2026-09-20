@@ -117,6 +117,13 @@ function lifestyleSubtitle(profile: ReturnType<typeof useProfile>["profile"], t:
   return t(`Estilo de vida ${style}, ${status.toLowerCase()}`, `${styleEn} lifestyle, ${statusEn}`);
 }
 
+/** "Para estilo de vida cómodo, no te alcanza" — cuando los ingresos no cubren la ciudad. */
+function lifestyleShortfallSubtitle(profile: ReturnType<typeof useProfile>["profile"], t: (es: string, en: string) => string) {
+  const style = lifestyles.find((l) => l.value === profile.lifestyle)?.label.toLowerCase() ?? "cómodo";
+  const styleEn = lifestyleLabelEn[profile.lifestyle] ?? "comfortable";
+  return t(`Para estilo de vida ${style}, no te alcanza`, `For a ${styleEn} lifestyle, it's not enough`);
+}
+
 function Dashboard() {
   const t = useT();
   const { lang } = useLanguage();
