@@ -521,6 +521,7 @@ function PortafolioContent() {
     const cash = cashDetailed.reduce((s, h) => s + holdingValue(h, prices), 0);
     if (cash > 0)
       detailed.push({
+        holdingId: cashDetailed.length === 1 ? (cashDetailed[0]!.id as string | null) : null,
         ticker: t("Efectivo", "Cash"),
         name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"),
         type: "Cash" as never,
