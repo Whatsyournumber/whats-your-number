@@ -23,6 +23,7 @@ export function EditableKpiCard({
   index = 0,
   variant = "default",
   editHref,
+  hintClassName,
 }: {
   label: string;
   value: string;
