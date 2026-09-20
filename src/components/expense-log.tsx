@@ -592,7 +592,9 @@ export function ExpenseLog() {
     }
   };
 
-  const alerts = rows.filter((r) => r.pct >= 80 && !dismissed.includes(r.id)).slice(0, 2);
+  // Solo las categorías que se muestran en la lista pueden recibir foco desde una alerta.
+  const visibleRows = rows.filter((r) => r.group !== "essentials");
+  const alerts = visibleRows.filter((r) => r.pct >= 80 && !dismissed.includes(r.id)).slice(0, 2);
 
   const categoryCardRef = useRef<HTMLDivElement | null>(null);
   const rowRefs = useRef<Record<string, HTMLLIElement | null>>({});
