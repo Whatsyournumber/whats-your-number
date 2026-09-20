@@ -996,7 +996,15 @@ function Dashboard() {
                 );
               }
 
-              const goalTextColor = pct >= 75 ? "text-positive" : pct >= 50 ? "text-warning" : "text-negative";
+              const goalTextColor = isCityGoal
+                ? cityReached
+                  ? "text-positive"
+                  : "text-negative"
+                : pct >= 75
+                  ? "text-positive"
+                  : pct >= 50
+                    ? "text-warning"
+                    : "text-negative";
               const goalHref = isCityGoal ? "/ciudades" : g.name === "Fondo de emergencia" ? "/mi-perfil" : "/retiro";
 
               return (
@@ -1016,7 +1024,11 @@ function Dashboard() {
                       <p className="text-sm text-muted-foreground">
                         {fmtCompact(left)} {t("de", "of")} {fmtCompact(right)}
                       </p>
-                      <Progress value={pct} indicatorClassName={goalBarColor(pct)} className="mt-1.5 h-1.5" />
+                      <Progress
+                        value={pct}
+                        indicatorClassName={isCityGoal ? (cityReached ? "bg-positive" : "bg-negative") : goalBarColor(pct)}
+                        className="mt-1.5 h-1.5"
+                      />
                       <p className="mt-1 truncate text-[11px] text-muted-foreground">{subtitle}</p>
                     </div>
                   </Link>
