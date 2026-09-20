@@ -1442,28 +1442,15 @@ function PortafolioContent() {
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              const rowEditId = h.holdingId ?? `fallback:${h.type}`;
-              if (editId === rowEditId) closeEdit();
-              else if (h.holdingId) openEdit(h.holdingId);
+              if (h.holdingId) openEdit(h.holdingId);
               else openFallbackEdit(h);
             }}
             aria-label={t(`Editar ${h.ticker}`, `Edit ${h.ticker}`)}
             title={t("Editar", "Edit")}
-            className={cn(
-              "absolute right-2 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-md border border-border/40 text-muted-foreground/70 transition hover:border-primary/40 hover:bg-primary/10 hover:text-foreground",
-              editId === (h.holdingId ?? `fallback:${h.type}`) &&
-                "border-primary/50 bg-primary/15 text-primary",
-            )}
+            className="absolute right-2 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground/60 transition hover:bg-primary/10 hover:text-foreground"
           >
-            {editId === (h.holdingId ?? `fallback:${h.type}`) ? (
-              <X className="h-3.5 w-3.5" />
-            ) : (
-              <Pencil className="h-3.5 w-3.5" />
-            )}
+            <Pencil className="h-3.5 w-3.5" />
           </button>
-
-
-          {editId === (h.holdingId ?? `fallback:${h.type}`) ? assetEditor(false) : null}
         </div>
 
         );
