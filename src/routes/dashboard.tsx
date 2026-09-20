@@ -384,9 +384,10 @@ function Dashboard() {
     invested: investableAssets,
     years: retireYearsLeft,
   });
-  const retirementMonthlyGoal = profile.retirement_monthly_contribution > 0
-    ? Math.round(profile.retirement_monthly_contribution)
-    : minRetirementMonthly;
+  // La recomendación del panel es siempre el aporte inicial sugerido por el
+  // onboarding (llegar a tu número al 10% del S&P 500 antes de tu edad de
+  // retiro). El monto que guardes o pruebes en el simulador no la reemplaza.
+  const retirementMonthlyGoal = minRetirementMonthly;
   const retirementHint = (() => {
     if (retireYearsLeft <= 0 || baseTargetNumber <= 0) return undefined;
     const pill = (n: number | string, tone: string) => (
