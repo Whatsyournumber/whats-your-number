@@ -47,7 +47,6 @@ export async function transcribeExpenseAudio(
   apiKey: string,
   base64: string,
   mimeType: string,
-  lang: "es" | "en" = "es",
 ) {
   const bytes = base64ToBytes(base64);
   const audioType = mimeType.startsWith("video/") ? "audio/webm" : mimeType || "audio/webm";
