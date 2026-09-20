@@ -303,13 +303,10 @@ function Dashboard() {
       const fixedOnly = fixed.items
         .filter((item) => bucketFor(item.name) !== "savings" && !planFixed.isDuplicate(item.name))
         .reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0) + planFixed.total;
-      const fallbackInvest = d.cashFlow.buckets[2]?.amount ?? 0;
-      const fallbackFree = Math.max(0, d.income - d.cashFlow.buckets.reduce((sum, bucket) => sum + bucket.amount, 0));
       const fallbackExpenses = d.cashFlow.buckets[0]!.amount + d.cashFlow.buckets[1]!.amount;
-      return {
-        expenses: fixedOnly > 0 ? fixedOnly : fallbackExpenses,
-        savings: fallbackInvest + fallbackFree,
-      };
+      const expenses = fixedOnly > 0 ? fixedOnly : fallbackExpenses;
+      // Potencial de ahorro = ingresos − gastos (puede ser negativo).
+      return { expenses, savings: d.income - expenses };
     }
     const statementIncome = monthTransactions.filter((tx) => tx.amount > 0).reduce((sum, tx) => sum + tx.amount, 0);
     const totalIncome = statementIncome > 0 ? statementIncome : d.income;
