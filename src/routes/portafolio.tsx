@@ -1286,6 +1286,21 @@ function PortafolioContent() {
               </p>
             )}
           </div>
+
+          {h.holdingId ? (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                openEdit(h.holdingId!);
+              }}
+              className="absolute bottom-2 right-3 inline-flex items-center gap-1.5 rounded-full border border-border/60 px-2.5 py-1 text-[11px] text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
+              aria-label={t("Editar posición", "Edit position")}
+            >
+              <Pencil className="h-3 w-3" />
+              {t("Editar", "Edit")}
+            </button>
+          ) : null}
         </div>
         );
       })}
