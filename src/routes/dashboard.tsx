@@ -582,6 +582,11 @@ function Dashboard() {
     return (
       <span className="inline-flex items-center gap-1.5">
         {t("Pudieras ahorrar", "You could save")} {pill(`${num(savingsRate, 1)}%`, good)}
+        {good && (
+          <>
+            {t("· Por encima del", "· Above the")} {pill("20%", true)} {t("mínimo", "minimum")}
+          </>
+        )}
       </span>
     );
   })();
