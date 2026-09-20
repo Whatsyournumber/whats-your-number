@@ -182,7 +182,12 @@ function OnboardingPage() {
         const next = { ...emptyOnboarding, currency: defaultCurrency() };
         for (const key of Object.keys(emptyOnboarding) as (keyof OnboardingData)[]) {
           const v = r[key];
-          if (v !== null && v !== undefined) (next as Record<string, unknown>)[key] = typeof v === "string" ? v : Number(v);
+          if (v !== null && v !== undefined) {
+            // Ningún importe del perfil puede ser negativo: limpiamos valores corruptos.
+            const num = Number(v);
+            (next as Record<string, unknown>)[key] =
+              typeof v === "string" ? v : Number.isFinite(num) ? Math.max(0, num) : 0;
+          }
         }
         if (typeof r["full_name"] === "string") next.full_name = r["full_name"];
         const nextLife = { ...emptyLife };
