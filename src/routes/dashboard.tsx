@@ -897,9 +897,12 @@ function Dashboard() {
         >
           <ul className="space-y-1">
             {d.goals.map((g) => {
-              const pct = g.progressPct ?? (g.target > 0 ? Math.min(100, (g.current / g.target) * 100) : 0);
+              const isEmergency = g.name === "Fondo de emergencia";
+              // El fondo de emergencia = 6 meses de tu plan de gasto mensual; sin plan, se usa el gasto del perfil.
+              const targetBase = isEmergency && spendPlanMonthlyTotal > 0 ? Math.round(spendPlanMonthlyTotal * 6) : g.target;
               const left = g.displayCurrent ?? g.current;
-              const right = g.displayTarget ?? g.target;
+              const right = g.displayTarget ?? targetBase;
+              const pct = g.progressPct ?? (targetBase > 0 ? Math.min(100, (left / targetBase) * 100) : 0);
               const remaining = Math.max(0, right - left);
               const portfolioRate = (() => {
                 // El rendimiento de la cartera excluye cripto y ETF para reflejar la ganancia operativa neta.
