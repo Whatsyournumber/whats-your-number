@@ -27,7 +27,7 @@ import { translateOption } from "@/lib/i18n-data";
 
 import { useProfile, type Profile } from "@/hooks/use-profile";
 import { useAuth } from "@/hooks/use-auth";
-import { seedHoldingsFromTotals, useHoldings, wealthTotals, type Holding } from "@/hooks/use-holdings";
+import { HOME_HOLDING_NOTE, newHolding, seedHoldingsFromTotals, useHoldings, wealthTotals, type Holding } from "@/hooks/use-holdings";
 import {
   childrenOptions,
   cities,

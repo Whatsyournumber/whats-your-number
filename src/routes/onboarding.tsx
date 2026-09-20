@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { SPEND_PLAN_FIELDS, SPEND_PLAN_GROUPS, totalSpendPlan, type SpendPlanKey } from "@/lib/onboarding";
 import { seedSpendPlanFromOnboarding } from "@/lib/spend-plan-seed";
+import { syncHomeHolding } from "@/hooks/use-holdings";
 import { StatementImporter } from "@/components/statement-importer";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
