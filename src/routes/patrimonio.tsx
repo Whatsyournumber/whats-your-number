@@ -1005,6 +1005,8 @@ function PatrimonioContent() {
           </div>
         )}
       </Panel>
+
+      {addAsset ? <AssetDialog open onOpenChange={setAddAsset} /> : null}
     </PageShell>
 
   );
