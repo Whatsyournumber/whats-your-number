@@ -53,6 +53,24 @@ export const Route = createFileRoute("/api/public/contact")({
           return Response.json({ ok: false, error: "save_failed" }, { status: 500 });
         }
 
+        try {
+          const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+          await sendTemplateEmail("contact-notification", "", {
+            templateData: {
+              name: data.name,
+              email: data.email,
+              company: data.company ?? "",
+              topic: data.topic,
+              plan: data.plan ?? "",
+              message: data.message,
+              lang: data.lang,
+            },
+            replyTo: data.email,
+          });
+        } catch (sendError) {
+          console.error("Sending contact notification failed", sendError);
+        }
+
         return Response.json({ ok: true });
       },
     },
