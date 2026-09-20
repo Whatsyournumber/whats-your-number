@@ -143,7 +143,10 @@ export function ExpenseLog() {
       fixed.update(recEditId, { name, amount, dayOfMonth: recDay });
       const planId = `custom:fixed:${recEditId}`;
       const existing = budgets.lines.find((line) => line.id === planId);
-      const previousAmount = existing?.amount ?? 0;
+      // Los recurrentes creados antes de las líneas de plan no tienen budget line:
+      // en ese caso el monto anterior es el del propio gasto fijo, no 0.
+      const previousAmount =
+        existing?.amount ?? Number(fixed.items.find((i) => i.id === recEditId)?.amount ?? 0) ?? 0;
       const nextLine: BudgetLine = {
         ...existing,
         id: planId,
@@ -589,7 +592,9 @@ export function ExpenseLog() {
     }
   };
 
-  const alerts = rows.filter((r) => r.pct >= 80 && !dismissed.includes(r.id)).slice(0, 2);
+  // Solo las categorías que se muestran en la lista pueden recibir foco desde una alerta.
+  const visibleRows = rows.filter((r) => r.group !== "essentials");
+  const alerts = visibleRows.filter((r) => r.pct >= 80 && !dismissed.includes(r.id)).slice(0, 2);
 
   const categoryCardRef = useRef<HTMLDivElement | null>(null);
   const rowRefs = useRef<Record<string, HTMLLIElement | null>>({});
@@ -613,7 +618,7 @@ export function ExpenseLog() {
   };
 
   const focusOverspent = () => {
-    const over = rows.filter((r) => r.pct >= 100).sort((a, b) => b.pct - a.pct)[0];
+    const over = visibleRows.filter((r) => r.pct >= 100).sort((a, b) => b.pct - a.pct)[0];
     if (over) focusCategory(over.id);
     else categoryCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -1629,8 +1634,7 @@ export function ExpenseLog() {
                 </button>
               </div>
               <ul className="mt-4 space-y-3.5">
-                 {[...rows]
-                   .filter((r) => r.group !== "essentials")
+                 {[...visibleRows]
                    .sort((a, b) => b.pct - a.pct)
                    .map((r, index) => {
                    const expandedCat = expandedCategory === r.id;
@@ -1795,10 +1799,10 @@ export function ExpenseLog() {
                   );
                 })}
               </ul>
-              {/* Total: la suma de todas las categorías cuadra con "Gastado a la fecha". */}
+              {/* Total: suma exactamente las categorías visibles de la lista. */}
               <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/60 pl-12 pt-3.5 sm:pl-[3.25rem]">
                 <p className="text-sm font-semibold">{t("Total", "Total")}</p>
-                <p className="numeric text-sm font-semibold">{fmt(rows.reduce((s, r) => s + r.actual, 0))}</p>
+                <p className="numeric text-sm font-semibold">{fmt(visibleRows.reduce((s, r) => s + r.actual, 0))}</p>
               </div>
             </div>
 
