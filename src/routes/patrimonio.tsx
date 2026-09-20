@@ -626,7 +626,7 @@ function PatrimonioContent() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
-          title={comparing ? t("Rendimiento", "Performance") : t("Crecimiento del patrimonio", "Net worth growth")}
+          title={comparing ? t("Rendimiento", "Performance") : t("Evolución", "Growth")}
           {...(comparing ? { description: t(`vs ${benchName} · ${compareLen}m`, `vs ${benchName} · ${compareLen}m`) } : {})}
           className="flex flex-col p-3 md:p-5 lg:col-span-2"
           bleedMobile
@@ -842,8 +842,8 @@ function PatrimonioContent() {
 
       <Panel
         title={
-          <span className="inline-flex items-center gap-2">
-            {t("Detalle de tus activos", "Your assets in detail")}
+          <span className="inline-flex items-center gap-2 whitespace-nowrap">
+            {t("Tus activos", "Your assets")}
             <Link
               to="/mi-perfil"
               hash="patrimonio"
