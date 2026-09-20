@@ -531,7 +531,16 @@ export function ExpenseLog() {
       const id = catOverrides[item.id] ?? match(item.name) ?? "others";
       push(id, item.id, item.name, amount);
     }
-    const sortItems = (id: string) => (detail.get(id) ?? []).sort((a, b) => b.amount - a.amount);
+    const sortByDate = (
+      a: { amount: number; date?: string },
+      b: { amount: number; date?: string },
+    ) => {
+      if (a.date && b.date) return b.date.localeCompare(a.date) || b.amount - a.amount;
+      if (a.date) return -1;
+      if (b.date) return 1;
+      return b.amount - a.amount;
+    };
+    const sortItems = (id: string) => (detail.get(id) ?? []).sort(sortByDate);
     const list = planLines
       .filter((l) => l.amount > 0)
       .map((l) => {
@@ -559,7 +568,7 @@ export function ExpenseLog() {
       const otherItems = [...detail.entries()]
         .filter(([id]) => !plannedIds.has(id))
         .flatMap(([, items]) => items)
-        .sort((a, b) => b.amount - a.amount);
+        .sort(sortByDate);
       list.push({
         id: "others",
         name: t("Otros gastos", "Other spending"),
