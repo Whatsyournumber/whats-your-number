@@ -142,8 +142,8 @@ function ContactPage() {
             </h1>
             <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-white/75 md:text-base">
               {t(
-                "Una duda, un plan a la medida o un problema con tu cuenta: escríbenos y te respondemos en menos de 24 horas.",
-                "A question, a custom plan or a problem with your account: write to us and we'll reply within 24 hours.",
+                 "Una duda, un plan a la medida o un problema con tu cuenta: escríbenos y te respondemos lo antes posible.",
+                 "A question, a custom plan or a problem with your account: write to us and we'll reply as soon as possible.",
               )}
             </p>
           </motion.div>
