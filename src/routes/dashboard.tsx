@@ -204,7 +204,17 @@ function Dashboard() {
   const yieldingGain = yieldingPositions.reduce((s, h) => s + (h.value - h.cost), 0);
   const portfolioReturn = yieldingCost ? (yieldingGain / yieldingCost) * 100 : 0;
 
-  const months = (realMonths ?? d.months).map((month, i, arr) => {
+  // Sin históricos importados (EEFF) la serie empieza en el mes en que se creó la
+  // cuenta: no inventamos meses anteriores a que la persona empezara a usar la app.
+  const accountStartKey = authUser?.created_at ? String(authUser.created_at).slice(0, 7) : "";
+  const baseMonths = (() => {
+    const source = realMonths ?? d.months;
+    if (realMonths || !accountStartKey) return source;
+    const trimmed = source.filter((m) => (m.month ?? "") >= accountStartKey);
+    return trimmed.length ? trimmed : source.slice(-1);
+  })();
+
+  const months = baseMonths.map((month, i, arr) => {
     const expenses = month.expenses + (realMonths ? fixed.total : 0);
     // El último mes siempre refleja el patrimonio vivo (precios de mercado incluidos).
     const netWorth = i === arr.length - 1 ? liveNetWorth : month.netWorth;
