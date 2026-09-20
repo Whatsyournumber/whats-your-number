@@ -1310,12 +1310,70 @@ function PortafolioContent() {
             <>
               <div className="space-y-1">
                 <Label className="text-[11px] text-muted-foreground">{t("Ticker", "Ticker")}</Label>
-                <Input
-                  className="h-9"
-                  value={draft.ticker}
-                  placeholder={draft.kind === "crypto" ? "BTC-USD" : draft.kind === "bond" ? t("Opcional", "Optional") : "VOO"}
-                  onChange={(e) => setDraft({ ...draft, ticker: e.target.value.toUpperCase() })}
-                />
+                <div className="relative">
+                  <Input
+                    className="h-9 uppercase"
+                    value={tickerOpen ? tickerQuery : draft.ticker}
+                    placeholder={draft.kind === "crypto" ? "BTC-USD" : draft.kind === "bond" ? t("Opcional", "Optional") : "VOO"}
+                    onFocus={() => {
+                      setTickerQuery(draft.ticker);
+                      setTickerOpen(true);
+                    }}
+                    onBlur={(e) => {
+                      const v = e.target.value.trim().toUpperCase();
+                      if (draft.kind === "crypto" && v && !v.includes("-")) setDraft({ ...draft, ticker: `${v}-USD` });
+                      window.setTimeout(() => setTickerOpen(false), 150);
+                    }}
+                    onChange={(e) => {
+                      setTickerQuery(e.target.value);
+                      setTickerOpen(true);
+                      setDraft({ ...draft, ticker: e.target.value.toUpperCase() });
+                    }}
+                  />
+                  {tickerOpen && tickerQuery.trim().length >= 1 ? (
+                    <div className="absolute left-0 top-10 z-50 w-[min(18rem,80vw)] overflow-hidden rounded-xl border border-border/60 bg-card/95 shadow-2xl backdrop-blur-xl">
+                      {tickerSearch.isFetching && tickerHits.length === 0 ? (
+                        <p className="px-3 py-2 text-xs text-muted-foreground">{t("Buscando…", "Searching…")}</p>
+                      ) : null}
+                      {tickerHits.map((h) => (
+                        <button
+                          key={h.symbol}
+                          type="button"
+                          onMouseDown={(event) => event.preventDefault()}
+                          onClick={() => {
+                            setDraft({ ...draft, ticker: h.symbol.toUpperCase(), label: draft.label || h.name || h.symbol });
+                            setTickerOpen(false);
+                          }}
+                          className="flex w-full items-center gap-2 px-3 py-2 text-left transition hover:bg-elevated/70"
+                        >
+                          <span className="text-xs font-semibold text-foreground">{h.symbol}</span>
+                          <span className="truncate text-[11px] text-muted-foreground">{h.name}</span>
+                        </button>
+                      ))}
+                      {!tickerSearch.isFetching && tickerHits.length === 0 ? (
+                        <p className="px-3 py-2 text-xs text-muted-foreground">{t("Sin resultados", "No results")}</p>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </div>
+                {draftTicker ? (
+                  <p className="text-[10px] leading-tight text-muted-foreground">
+                    {draftQuote ? (
+                      <>
+                        {draftTicker} ·{" "}
+                        <span className="font-semibold text-foreground">
+                          {draftQuote.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        </span>{" "}
+                        <span className={(draftQuote.changePct ?? 0) >= 0 ? "text-positive" : "text-destructive"}>
+                          {(draftQuote.changePct ?? 0) >= 0 ? "+" : ""}
+                          {(draftQuote.changePct ?? 0).toFixed(2)}%
+                        </span>
+                      </>
+                    ) : (
+                      t("Buscando precio de mercado…", "Fetching market price…")
+                    )}
+                  </p>
+                ) : null}
               </div>
               <div className="space-y-1">
                 <Label className="text-[11px] text-muted-foreground">{t("Unidades", "Units")}</Label>
