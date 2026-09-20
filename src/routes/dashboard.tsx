@@ -519,13 +519,14 @@ function Dashboard() {
           `${mortgage.rate.toFixed(1)}% • ${mortgage.term} ${mortgage.term === 1 ? "year" : "years"} • ${fmt(mortgagePayment)}/mo`,
         )
       : t("Ver simulador", "Open simulator");
-  const savingsRate = current.income > 0 ? (current.savings / current.income) * 100 : 0;
+  // Tasa de ahorro = ahorro real del mes / salario (misma base que las tarjetas).
+  const savingsRate = d.income > 0 ? (monthlySavings / d.income) * 100 : 0;
 
   // Mínimo aceptable para ahorrar o invertir: 20% del ingreso.
 
   const incomeHint = (() => {
-    if (current.income <= 0) return t("Ingreso mensual estimado", "Estimated monthly income");
-    if (current.income > current.expenses) {
+    if (d.income <= 0) return t("Ingreso mensual estimado", "Estimated monthly income");
+    if (d.income > monthlyExpenses) {
       const rate = savingsRate;
       if (rate >= 20) {
         return (
@@ -781,7 +782,7 @@ function Dashboard() {
             index={2}
           />
         </Link>
-        <Link to="/retiro" className="block transition-transform hover:-translate-y-0.5">
+        <Link to="/cash-flow" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Ahorro", "Savings")}
             value={fmt(monthlySavings)}
@@ -790,7 +791,9 @@ function Dashboard() {
             index={3}
           />
         </Link>
-        <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} hint={savingsRateHint} icon={ArrowUpRight} index={4} />
+        <Link to="/cash-flow" className="block transition-transform hover:-translate-y-0.5">
+          <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} hint={savingsRateHint} icon={ArrowUpRight} index={4} />
+        </Link>
         <Link to="/hipoteca" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Hipoteca", "Mortgage")}
