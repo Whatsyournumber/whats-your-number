@@ -121,8 +121,8 @@ export function TopCitiesPanel({
           <>
             <span className="md:hidden lg:inline">
               {t(
-                "Donde vives hoy y ciudades similares con tu presupuesto que te acercan antes a tu número.",
-                "Where you live today plus similar cities within your budget that get you to your number sooner.",
+                "Tu ciudad y otras similares que te acercan antes a tu número.",
+                "Your city and similar ones that get you to your number sooner.",
               )}
             </span>
             {/* Versión corta solo para tablet. */}
