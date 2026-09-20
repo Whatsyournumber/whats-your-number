@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowLeft, CalendarIcon, Info, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import { Area, CartesianGrid, ComposedChart, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -11,6 +11,16 @@ import { axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -635,10 +645,17 @@ function PortafolioContent() {
   const draftTicker = (draft?.ticker ?? "").trim().toUpperCase();
   const draftQuoteQuery = useQuotes(draftTicker.length >= 1 ? [draftTicker] : []);
   const draftQuote = (draftQuoteQuery.data?.quotes ?? []).find((q) => q.symbol.toUpperCase() === draftTicker);
+  // Detectar cambios sin guardar para confirmar antes de salir del editor.
+  const editBaseline = useRef<string | null>(null);
+  const [discardConfirm, setDiscardConfirm] = useState<"close" | "back" | null>(null);
+  const startDraft = (d: NonNullable<typeof draft>) => {
+    setDraft(d);
+    editBaseline.current = JSON.stringify(d);
+  };
   const openEdit = (id: string) => {
     const h = holdings.find((x) => x.id === id);
     if (!h) return;
-    setDraft({
+    startDraft({
       kind: h.kind,
       label: h.label ?? "",
       ticker: h.ticker ?? "",
@@ -655,7 +672,7 @@ function PortafolioContent() {
   const openFallbackEdit = (h: (typeof enriched)[number]) => {
     const fallbackId = `fallback:${h.type}`;
     const kind: HoldingKind = h.type === "Acción" ? "stock" : h.type === "Cripto" ? "crypto" : h.type === "Cash" ? "cash" : "etf";
-    setDraft({
+    startDraft({
       kind,
       label: h.ticker,
       ticker: "",
@@ -673,9 +690,10 @@ function PortafolioContent() {
   const openNew = () => {
     setEditId("new");
     setDraft(null);
+    editBaseline.current = null;
   };
   const selectNewKind = (kind: HoldingKind) =>
-    setDraft({
+    startDraft({
       kind,
       label: "",
       ticker: "",
@@ -687,9 +705,26 @@ function PortafolioContent() {
       linked_liability: "",
       purchased_at: new Date().toISOString().slice(0, 10),
     });
-  const closeEdit = () => {
+  const editDirty = draft !== null && editBaseline.current !== null && JSON.stringify(draft) !== editBaseline.current;
+  const forceCloseEdit = () => {
     setEditId(null);
     setDraft(null);
+    editBaseline.current = null;
+  };
+  const closeEdit = () => {
+    if (editDirty) {
+      setDiscardConfirm("close");
+      return;
+    }
+    forceCloseEdit();
+  };
+  const backToKinds = () => {
+    if (editDirty) {
+      setDiscardConfirm("back");
+      return;
+    }
+    setDraft(null);
+    editBaseline.current = null;
   };
   const numOr = (v: string, fallbackValue = 0) => {
     const n = Number(String(v).replace(",", "."));
@@ -731,7 +766,7 @@ function PortafolioContent() {
         );
       }
       toast.success(editingHolding ? t("Posición actualizada", "Position updated") : t("Activo añadido", "Asset added"));
-      closeEdit();
+      forceCloseEdit();
     } catch {
       toast.error(t("No pudimos guardar. Inténtalo de nuevo.", "We couldn't save. Please try again."));
     }
@@ -1300,7 +1335,7 @@ function PortafolioContent() {
       <div className="space-y-3">
         {isNew ? (
           <div className="flex items-center gap-2 border-b border-border/50 pb-3">
-            <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => setDraft(null)} aria-label={t("Volver a tipos de activo", "Back to asset types")}>
+            <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={backToKinds} aria-label={t("Volver a tipos de activo", "Back to asset types")}>
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
@@ -1577,6 +1612,33 @@ function PortafolioContent() {
         </DialogHeader>
         {editId === "new" && !draft ? assetKindSelector : assetEditor(editId === "new")}
       </DialogContent>
+      <AlertDialog open={discardConfirm !== null} onOpenChange={(open) => (!open ? setDiscardConfirm(null) : null)}>
+        <AlertDialogContent className="w-[calc(100vw-2rem)] max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("¿Salir sin guardar?", "Leave without saving?")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("Tienes cambios sin guardar. Si sales ahora, se perderán.", "You have unsaved changes. If you leave now, they will be lost.")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("Seguir editando", "Keep editing")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                const action = discardConfirm;
+                setDiscardConfirm(null);
+                if (action === "back") {
+                  setDraft(null);
+                  editBaseline.current = null;
+                } else {
+                  forceCloseEdit();
+                }
+              }}
+            >
+              {t("Descartar cambios", "Discard changes")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 

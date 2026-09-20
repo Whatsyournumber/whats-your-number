@@ -1,7 +1,17 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -66,13 +76,34 @@ export function AssetDialog({
   const draftQuoteQuery = useQuotes(draftTicker.length >= 1 ? [draftTicker] : []);
   const draftQuote = (draftQuoteQuery.data?.quotes ?? []).find((q) => q.symbol.toUpperCase() === draftTicker);
 
-  const close = () => {
+  // Detectar cambios sin guardar para confirmar antes de salir.
+  const baseline = useRef<string | null>(editingHolding ? JSON.stringify(draftFrom(editingHolding)) : null);
+  const [confirmAction, setConfirmAction] = useState<"close" | "back" | null>(null);
+  const isDirty = draft !== null && baseline.current !== null && JSON.stringify(draft) !== baseline.current;
+
+  const forceClose = () => {
     setDraft(editingHolding ? draftFrom(editingHolding) : null);
+    baseline.current = editingHolding ? JSON.stringify(draftFrom(editingHolding)) : null;
     onOpenChange(false);
   };
+  const close = () => {
+    if (isDirty) {
+      setConfirmAction("close");
+      return;
+    }
+    forceClose();
+  };
+  const goBack = () => {
+    if (isDirty) {
+      setConfirmAction("back");
+      return;
+    }
+    setDraft(null);
+    baseline.current = null;
+  };
 
-  const selectNewKind = (kind: HoldingKind) =>
-    setDraft({
+  const selectNewKind = (kind: HoldingKind) => {
+    const fresh: Draft = {
       kind,
       label: "",
       ticker: "",
@@ -83,7 +114,10 @@ export function AssetDialog({
       expected_return: String(defaultReturn(kind)),
       linked_liability: "",
       purchased_at: new Date().toISOString().slice(0, 10),
-    });
+    };
+    setDraft(fresh);
+    baseline.current = JSON.stringify(fresh);
+  };
 
   const save = async () => {
     if (!draft) return;
@@ -104,7 +138,7 @@ export function AssetDialog({
     try {
       await saveAll(editingHolding ? holdings.map((h) => (h.id === updated.id ? updated : h)) : [...holdings, updated]);
       toast.success(editingHolding ? t("Activo actualizado", "Asset updated") : t("Activo añadido", "Asset added"));
-      close();
+      forceClose();
     } catch {
       toast.error(t("No pudimos guardar. Inténtalo de nuevo.", "We couldn't save. Please try again."));
     }
@@ -159,7 +193,7 @@ export function AssetDialog({
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8"
-                  onClick={() => setDraft(null)}
+                  onClick={goBack}
                   aria-label={t("Volver a tipos de activo", "Back to asset types")}
                 >
                   <ArrowLeft className="h-4 w-4" />
@@ -322,6 +356,33 @@ export function AssetDialog({
           </div>
         )}
       </DialogContent>
+      <AlertDialog open={confirmAction !== null} onOpenChange={(v) => (!v ? setConfirmAction(null) : null)}>
+        <AlertDialogContent className="w-[calc(100vw-2rem)] max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("¿Salir sin guardar?", "Leave without saving?")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("Tienes cambios sin guardar. Si sales ahora, se perderán.", "You have unsaved changes. If you leave now, they will be lost.")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("Seguir editando", "Keep editing")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                const action = confirmAction;
+                setConfirmAction(null);
+                if (action === "back") {
+                  setDraft(null);
+                  baseline.current = null;
+                } else {
+                  forceClose();
+                }
+              }}
+            >
+              {t("Descartar cambios", "Discard changes")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
