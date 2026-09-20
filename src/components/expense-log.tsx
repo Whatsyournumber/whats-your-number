@@ -1799,10 +1799,10 @@ export function ExpenseLog() {
                   );
                 })}
               </ul>
-              {/* Total: la suma de todas las categorías cuadra con "Gastado a la fecha". */}
+              {/* Total: suma exactamente las categorías visibles de la lista. */}
               <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/60 pl-12 pt-3.5 sm:pl-[3.25rem]">
                 <p className="text-sm font-semibold">{t("Total", "Total")}</p>
-                <p className="numeric text-sm font-semibold">{fmt(rows.reduce((s, r) => s + r.actual, 0))}</p>
+                <p className="numeric text-sm font-semibold">{fmt(visibleRows.reduce((s, r) => s + r.actual, 0))}</p>
               </div>
             </div>
 
