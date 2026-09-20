@@ -366,12 +366,12 @@ function Dashboard() {
     ? (
         <span className="inline-flex min-w-0 items-center gap-1.5">
           <span className="shrink-0">
-            <span className="sm:hidden">{t("Tu plan", "Your plan")}</span>
-            <span className="hidden sm:inline">{t("Tu plan mensual", "Monthly plan")}</span>
+             <span className="sm:hidden">{t("Tu plan mensual es", "Your monthly plan is")}</span>
+             <span className="hidden sm:inline">{t("Tu plan de gastos mensual es", "Your monthly spending plan is")}</span>
           </span>
           <span className="shrink-0 text-foreground">{fmt(spendTarget)}</span>
           <span className={cn("shrink-0 rounded-full px-2 py-0.5 font-semibold", spendPlanBadge)}>
-            {spendPlanOver ? t("Excedido", "Over") : t("En plan", "On track")} {spendPlanUsed}%
+             {spendPlanOver ? t("Excedido", "Over") : t("Vas al", "You're at")} {spendPlanUsed}%
           </span>
         </span>
       )
