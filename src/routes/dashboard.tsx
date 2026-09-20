@@ -36,6 +36,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { sameMerchant, useTransactions, type Tx } from "@/hooks/use-transactions";
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
+import { BUDGET_CATEGORIES } from "@/lib/budget-categories";
 import { useIndexReturns } from "@/hooks/use-index-returns";
 import { holdingValue, useHoldings, wealthTotals } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
