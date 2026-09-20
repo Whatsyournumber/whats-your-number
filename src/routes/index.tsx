@@ -331,7 +331,14 @@ export function Landing() {
     t("Tu Próxima Ciudad", "Your Next City"),
   ];
 
-  const whyCards = [
+  const whyCards: {
+    icon: typeof PieChart;
+    number: string;
+    titleLight: string;
+    titleAccent: string;
+    desc: string;
+    highlight?: string;
+  }[] = [
     {
       icon: PieChart,
       number: "01",
