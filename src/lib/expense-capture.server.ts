@@ -43,7 +43,12 @@ function base64ToBytes(base64: string): Uint8Array<ArrayBuffer> {
 }
 
 /** Pasa el audio del usuario a texto con el modelo de transcripción del gateway. */
-export async function transcribeExpenseAudio(apiKey: string, base64: string, mimeType: string) {
+export async function transcribeExpenseAudio(
+  apiKey: string,
+  base64: string,
+  mimeType: string,
+  lang: "es" | "en" = "es",
+) {
   const bytes = base64ToBytes(base64);
   const audioType = mimeType.startsWith("video/") ? "audio/webm" : mimeType || "audio/webm";
   const fileName = `nota.${extFor(audioType)}`;
@@ -52,7 +57,9 @@ export async function transcribeExpenseAudio(apiKey: string, base64: string, mim
     try {
       const form = new FormData();
       form.append("model", model);
+      form.append("language", lang);
       form.append("file", new Blob([bytes as unknown as BlobPart], { type: audioType }), fileName);
+
 
       const response = await fetch(`${GATEWAY}/audio/transcriptions`, {
         method: "POST",
