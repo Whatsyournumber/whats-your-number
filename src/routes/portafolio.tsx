@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { CalendarIcon, Info, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
@@ -12,7 +12,6 @@ import { KpiCard } from "@/components/kpi-card";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -21,7 +20,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useDailySeries, useMarketSeries, useQuotes, useSymbolReturns, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
-import { holdingValue, useHoldings } from "@/hooks/use-holdings";
+import { defaultReturn, holdingValue, newHolding, useHoldings, type HoldingKind } from "@/hooks/use-holdings";
 import { Label } from "@/components/ui/label";
 import { useProfile } from "@/hooks/use-profile";
 import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
@@ -611,6 +610,7 @@ function PortafolioContent() {
   // Edición de una posición desde la propia fila: guarda en mis datos (holdings).
   const [editId, setEditId] = useState<string | null>(null);
   const [draft, setDraft] = useState<{
+    kind: HoldingKind;
     label: string;
     ticker: string;
     quantity: string;
@@ -625,6 +625,7 @@ function PortafolioContent() {
     const h = holdings.find((x) => x.id === id);
     if (!h) return;
     setDraft({
+      kind: h.kind,
       label: h.label ?? "",
       ticker: h.ticker ?? "",
       quantity: h.quantity ? String(h.quantity) : "",
@@ -636,6 +637,20 @@ function PortafolioContent() {
     });
     setEditId(id);
   };
+  const openNew = () => {
+    setEditId("new");
+    setDraft({
+      kind: "etf",
+      label: "",
+      ticker: "",
+      quantity: "",
+      cost_basis: "",
+      manual_value: "",
+      monthly_contribution: "",
+      expected_return: String(defaultReturn("etf")),
+      purchased_at: new Date().toISOString().slice(0, 10),
+    });
+  };
   const closeEdit = () => {
     setEditId(null);
     setDraft(null);
@@ -645,21 +660,27 @@ function PortafolioContent() {
     return Number.isFinite(n) ? n : fallbackValue;
   };
   const saveEdit = async () => {
-    if (!editingHolding || !draft) return;
+    if (!draft) return;
+    const base = editingHolding ?? newHolding(draft.kind, "", holdings.length);
     const updated = {
-      ...editingHolding,
-      label: draft.label.trim() || editingHolding.label,
+      ...base,
+      kind: draft.kind,
+      label: draft.label.trim() || draft.ticker.trim().toUpperCase() || base.label || t("Posición", "Position"),
       ticker: draft.ticker.trim().toUpperCase() || null,
       quantity: numOr(draft.quantity),
       cost_basis: numOr(draft.cost_basis),
       manual_value: numOr(draft.manual_value),
       monthly_contribution: numOr(draft.monthly_contribution),
-      expected_return: numOr(draft.expected_return, editingHolding.expected_return),
-      purchased_at: draft.purchased_at || editingHolding.purchased_at || null,
+      expected_return: numOr(draft.expected_return, base.expected_return),
+      purchased_at: draft.purchased_at || base.purchased_at || null,
     };
     try {
-      await saveAll(holdings.map((h) => (h.id === updated.id ? updated : h)));
-      toast.success(t("Posición actualizada", "Position updated"));
+      await saveAll(
+        editingHolding
+          ? holdings.map((h) => (h.id === updated.id ? updated : h))
+          : [...holdings, updated],
+      );
+      toast.success(editingHolding ? t("Posición actualizada", "Position updated") : t("Activo añadido", "Asset added"));
       closeEdit();
     } catch {
       toast.error(t("No pudimos guardar. Inténtalo de nuevo.", "We couldn't save. Please try again."));
@@ -1186,9 +1207,118 @@ function PortafolioContent() {
   const simResult = projPoints[projPoints.length - 1]!;
 
 
+  // Formulario en línea: edita el activo en su propia tarjeta (sin ventana emergente).
+  const assetEditor = (isNew: boolean) =>
+    draft ? (
+      <div
+        className="col-span-2 mt-2 space-y-3 rounded-xl border border-border/60 bg-background/40 p-3 md:col-span-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {isNew ? (
+          <div className="flex flex-wrap gap-1.5">
+            {([
+              ["etf", t("ETF", "ETF")],
+              ["stock", t("Acción", "Stock")],
+              ["crypto", t("Cripto", "Crypto")],
+              ["cash", t("Efectivo", "Cash")],
+              ["property", t("Propiedad", "Property")],
+              ["bond", t("Renta fija", "Bonds")],
+            ] as Array<[HoldingKind, string]>).map(([k, label]) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setDraft({ ...draft, kind: k, expected_return: String(defaultReturn(k)) })}
+                className={cn(
+                  "rounded-full border px-2.5 py-1 text-[11px] transition",
+                  draft.kind === k
+                    ? "border-primary/50 bg-primary/10 text-foreground"
+                    : "border-border/60 text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        ) : null}
+        <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Nombre", "Name")}</Label>
+            <Input className="h-9" value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Ticker", "Ticker")}</Label>
+            <Input
+              className="h-9"
+              value={draft.ticker}
+              placeholder="VOO"
+              onChange={(e) => setDraft({ ...draft, ticker: e.target.value.toUpperCase() })}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Unidades", "Units")}</Label>
+            <Input className="h-9" inputMode="decimal" value={draft.quantity} onChange={(e) => setDraft({ ...draft, quantity: e.target.value })} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Monto invertido", "Amount invested")}</Label>
+            <Input className="h-9" inputMode="decimal" value={draft.cost_basis} onChange={(e) => setDraft({ ...draft, cost_basis: e.target.value })} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Valor actual", "Current value")}</Label>
+            <Input className="h-9" inputMode="decimal" value={draft.manual_value} onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Aporte mensual", "Monthly contribution")}</Label>
+            <Input
+              className="h-9"
+              inputMode="decimal"
+              value={draft.monthly_contribution}
+              onChange={(e) => setDraft({ ...draft, monthly_contribution: e.target.value })}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Retorno esperado %", "Expected return %")}</Label>
+            <Input
+              className="h-9"
+              inputMode="decimal"
+              value={draft.expected_return}
+              onChange={(e) => setDraft({ ...draft, expected_return: e.target.value })}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Fecha de compra", "Purchase date")}</Label>
+            <Input className="h-9" type="date" value={draft.purchased_at} onChange={(e) => setDraft({ ...draft, purchased_at: e.target.value })} />
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-[11px] text-muted-foreground">
+            {t(
+              "Si dejas el valor actual en cero, usamos el precio de mercado por tus unidades.",
+              "If you leave the current value at zero, we use the market price times your units.",
+            )}
+          </p>
+          <div className="flex shrink-0 gap-2">
+            <Button type="button" size="sm" variant="ghost" onClick={closeEdit}>
+              {t("Cancelar", "Cancel")}
+            </Button>
+            <Button type="button" size="sm" onClick={() => void saveEdit()} disabled={saving}>
+              {saving ? t("Guardando", "Saving") : t("Guardar", "Save")}
+            </Button>
+          </div>
+        </div>
+      </div>
+    ) : null;
+
 
   const rows = (list: typeof enriched) => (
     <div className="space-y-2">
+      {editId === "new" ? (
+        <div className="grid grid-cols-2 gap-3 rounded-xl border border-primary/30 bg-elevated/60 p-3 md:grid-cols-6">
+          <div className="col-span-2 md:col-span-6">
+            <p className="text-sm font-medium">{t("Nuevo activo", "New asset")}</p>
+          </div>
+          {assetEditor(true)}
+        </div>
+      ) : null}
       {[...list].sort((a, b) => {
         const aC = a.type === "Cripto" ? 1 : 0;
         const bC = b.type === "Cripto" ? 1 : 0;
@@ -1213,7 +1343,7 @@ function PortafolioContent() {
             }
           }}
           className={cn(
-            "relative grid cursor-pointer grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 pb-10 transition hover:bg-elevated md:grid-cols-6",
+            "relative grid cursor-pointer grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 pr-10 transition hover:bg-elevated md:grid-cols-6",
             tk && focusTicker === tk && "ring-1 ring-[var(--color-chart-4)]/60",
           )}
         >
@@ -1295,16 +1425,22 @@ function PortafolioContent() {
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                openEdit(h.holdingId!);
+                if (editId === h.holdingId) closeEdit();
+                else openEdit(h.holdingId!);
               }}
-              className="absolute bottom-2 right-3 inline-flex items-center gap-1.5 rounded-full border border-border/60 px-2.5 py-1 text-[11px] text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
+              className={cn(
+                "absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-border/60 text-muted-foreground transition hover:border-primary/40 hover:text-foreground",
+                editId === h.holdingId && "border-primary/50 bg-primary/10 text-foreground",
+              )}
               aria-label={t("Editar posición", "Edit position")}
             >
-              <Pencil className="h-3 w-3" />
-              {t("Editar", "Edit")}
+              <Pencil className="h-3.5 w-3.5" />
             </button>
           ) : null}
+
+          {h.holdingId && editId === h.holdingId ? assetEditor(false) : null}
         </div>
+
         );
       })}
     </div>
@@ -1853,15 +1989,15 @@ function PortafolioContent() {
         title={t("Posiciones", "Positions")}
         description={`${enriched.length} ${t("posiciones", "positions")}`}
         actions={
-          <Link
-            to="/mi-perfil"
-            hash="patrimonio"
+          <button
+            type="button"
+            onClick={() => (editId === "new" ? closeEdit() : openNew())}
             className="inline-flex items-center gap-1.5 rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
-            aria-label={t("Editar en mis datos", "Edit in my data")}
+            aria-label={t("Añadir activo", "Add asset")}
           >
-            <Pencil className="h-3.5 w-3.5" />
-            {t("Editar", "Edit")}
-          </Link>
+            <Plus className="h-3.5 w-3.5" />
+            {t("Añadir activo", "Add asset")}
+          </button>
         }
       >
         <Tabs value={posTab} onValueChange={setPosTab}>
@@ -1881,96 +2017,6 @@ function PortafolioContent() {
           ))}
         </Tabs>
 
-        <Dialog open={Boolean(editId && draft)} onOpenChange={(o) => (o ? null : closeEdit())}>
-          <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>
-                {t("Editar posición", "Edit position")}
-                {editingHolding ? ` · ${editingHolding.ticker || editingHolding.label}` : ""}
-              </DialogTitle>
-            </DialogHeader>
-            {draft ? (
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">{t("Nombre", "Name")}</Label>
-                    <Input value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">{t("Ticker", "Ticker")}</Label>
-                    <Input
-                      value={draft.ticker}
-                      onChange={(e) => setDraft({ ...draft, ticker: e.target.value.toUpperCase() })}
-                      placeholder="VOO"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">{t("Unidades", "Units")}</Label>
-                    <Input
-                      inputMode="decimal"
-                      value={draft.quantity}
-                      onChange={(e) => setDraft({ ...draft, quantity: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">{t("Monto invertido", "Amount invested")}</Label>
-                    <Input
-                      inputMode="decimal"
-                      value={draft.cost_basis}
-                      onChange={(e) => setDraft({ ...draft, cost_basis: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">{t("Valor actual", "Current value")}</Label>
-                    <Input
-                      inputMode="decimal"
-                      value={draft.manual_value}
-                      onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">{t("Aporte mensual", "Monthly contribution")}</Label>
-                    <Input
-                      inputMode="decimal"
-                      value={draft.monthly_contribution}
-                      onChange={(e) => setDraft({ ...draft, monthly_contribution: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">{t("Retorno esperado %", "Expected return %")}</Label>
-                    <Input
-                      inputMode="decimal"
-                      value={draft.expected_return}
-                      onChange={(e) => setDraft({ ...draft, expected_return: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">{t("Fecha de compra", "Purchase date")}</Label>
-                    <Input
-                      type="date"
-                      value={draft.purchased_at}
-                      onChange={(e) => setDraft({ ...draft, purchased_at: e.target.value })}
-                    />
-                  </div>
-                </div>
-                <p className="text-[11px] text-muted-foreground">
-                  {t(
-                    "Si dejas el valor actual en cero, usamos el precio de mercado por tus unidades.",
-                    "If you leave the current value at zero, we use the market price times your units.",
-                  )}
-                </p>
-              </div>
-            ) : null}
-            <DialogFooter>
-              <Button type="button" variant="ghost" onClick={closeEdit}>
-                {t("Cancelar", "Cancel")}
-              </Button>
-              <Button type="button" onClick={() => void saveEdit()} disabled={saving}>
-                {saving ? t("Guardando", "Saving") : t("Guardar", "Save")}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
 
         <div className="relative mt-2 overflow-hidden rounded-2xl border border-border/50 bg-elevated/50 px-4 py-3.5">
           <div className="grid grid-cols-2 items-center gap-3 md:grid-cols-6">
