@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { CalendarIcon, Info, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
+import { ArrowLeft, CalendarIcon, Info, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
@@ -619,6 +619,7 @@ function PortafolioContent() {
     manual_value: string;
     monthly_contribution: string;
     expected_return: string;
+    linked_liability: string;
     purchased_at: string;
   } | null>(null);
   const editingHolding = holdings.find((h) => h.id === editId) ?? null;
@@ -634,6 +635,7 @@ function PortafolioContent() {
       manual_value: h.manual_value ? String(h.manual_value) : "",
       monthly_contribution: h.monthly_contribution ? String(h.monthly_contribution) : "",
       expected_return: h.expected_return ? String(h.expected_return) : "",
+      linked_liability: h.linked_liability ? String(h.linked_liability) : "",
       purchased_at: (h.purchased_at ?? "").slice(0, 10),
     });
     setEditId(id);
@@ -651,24 +653,28 @@ function PortafolioContent() {
       manual_value: h.value > 0 ? String(h.value) : "",
       monthly_contribution: "",
       expected_return: "",
+      linked_liability: "",
       purchased_at: "",
     });
     setEditId(fallbackId);
   };
   const openNew = () => {
     setEditId("new");
+    setDraft(null);
+  };
+  const selectNewKind = (kind: HoldingKind) =>
     setDraft({
-      kind: "etf",
+      kind,
       label: "",
       ticker: "",
       quantity: "",
       cost_basis: "",
       manual_value: "",
       monthly_contribution: "",
-      expected_return: String(defaultReturn("etf")),
+      expected_return: String(defaultReturn(kind)),
+      linked_liability: "",
       purchased_at: new Date().toISOString().slice(0, 10),
     });
-  };
   const closeEdit = () => {
     setEditId(null);
     setDraft(null);
@@ -690,6 +696,7 @@ function PortafolioContent() {
       manual_value: numOr(draft.manual_value),
       monthly_contribution: numOr(draft.monthly_contribution),
       expected_return: numOr(draft.expected_return, base.expected_return),
+      linked_liability: numOr(draft.linked_liability),
       purchased_at: draft.purchased_at || base.purchased_at || null,
     };
     try {
@@ -1238,34 +1245,47 @@ function PortafolioContent() {
   const simResult = projPoints[projPoints.length - 1]!;
 
 
+  const newAssetKinds: Array<[HoldingKind, string, string]> = [
+    ["etf", t("ETF", "ETF"), t("Fondos cotizados", "Exchange-traded funds")],
+    ["stock", t("Acción", "Stock"), t("Empresas individuales", "Individual companies")],
+    ["crypto", t("Cripto", "Crypto"), t("Activos digitales", "Digital assets")],
+    ["cash", t("Efectivo", "Cash"), t("Cuentas y efectivo", "Accounts and cash")],
+    ["property", t("Propiedad", "Property"), t("Bienes raíces", "Real estate")],
+    ["bond", t("Renta fija", "Fixed income"), t("Bonos e instrumentos", "Bonds and instruments")],
+  ];
+
+  const assetKindSelector = (
+    <div className="grid gap-2 sm:grid-cols-2">
+      {newAssetKinds.map(([kind, label, description]) => (
+        <Button
+          key={kind}
+          type="button"
+          variant="outline"
+          onClick={() => selectNewKind(kind)}
+          className="h-auto justify-start rounded-lg border-border/60 px-4 py-3 text-left hover:border-primary/50 hover:bg-primary/10"
+        >
+          <span>
+            <span className="block text-sm font-semibold text-foreground">{label}</span>
+            <span className="mt-0.5 block text-xs font-normal text-muted-foreground">{description}</span>
+          </span>
+        </Button>
+      ))}
+    </div>
+  );
+
   // Formulario dentro de una ventana emergente (popup).
   const assetEditor = (isNew: boolean) =>
     draft ? (
       <div className="space-y-3">
         {isNew ? (
-          <div className="flex flex-wrap gap-1.5">
-            {([
-              ["etf", t("ETF", "ETF")],
-              ["stock", t("Acción", "Stock")],
-              ["crypto", t("Cripto", "Crypto")],
-              ["cash", t("Efectivo", "Cash")],
-              ["property", t("Propiedad", "Property")],
-              ["bond", t("Renta fija", "Bonds")],
-            ] as Array<[HoldingKind, string]>).map(([k, label]) => (
-              <button
-                key={k}
-                type="button"
-                onClick={() => setDraft({ ...draft, kind: k, expected_return: String(defaultReturn(k)) })}
-                className={cn(
-                  "rounded-full border px-2.5 py-1 text-[11px] transition",
-                  draft.kind === k
-                    ? "border-primary/50 bg-primary/10 text-foreground"
-                    : "border-border/60 text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {label}
-              </button>
-            ))}
+          <div className="flex items-center gap-2 border-b border-border/50 pb-3">
+            <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => setDraft(null)} aria-label={t("Volver a tipos de activo", "Back to asset types")}>
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <p className="text-sm font-semibold">{newAssetKinds.find(([kind]) => kind === draft.kind)?.[1]}</p>
+              <p className="text-xs text-muted-foreground">{newAssetKinds.find(([kind]) => kind === draft.kind)?.[2]}</p>
+            </div>
           </div>
         ) : null}
         <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
@@ -1273,56 +1293,65 @@ function PortafolioContent() {
             <Label className="text-[11px] text-muted-foreground">{t("Nombre", "Name")}</Label>
             <Input className="h-9" value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} />
           </div>
+          {(!isNew || ["etf", "stock", "crypto", "bond"].includes(draft.kind)) && (
+            <>
+              <div className="space-y-1">
+                <Label className="text-[11px] text-muted-foreground">{t("Ticker", "Ticker")}</Label>
+                <Input
+                  className="h-9"
+                  value={draft.ticker}
+                  placeholder={draft.kind === "crypto" ? "BTC-USD" : draft.kind === "bond" ? t("Opcional", "Optional") : "VOO"}
+                  onChange={(e) => setDraft({ ...draft, ticker: e.target.value.toUpperCase() })}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[11px] text-muted-foreground">{t("Unidades", "Units")}</Label>
+                <Input className="h-9" inputMode="decimal" value={draft.quantity} onChange={(e) => setDraft({ ...draft, quantity: e.target.value })} />
+              </div>
+            </>
+          )}
           <div className="space-y-1">
-            <Label className="text-[11px] text-muted-foreground">{t("Ticker", "Ticker")}</Label>
-            <Input
-              className="h-9"
-              value={draft.ticker}
-              placeholder="VOO"
-              onChange={(e) => setDraft({ ...draft, ticker: e.target.value.toUpperCase() })}
-            />
-          </div>
-          <div className="space-y-1">
-            <Label className="text-[11px] text-muted-foreground">{t("Unidades", "Units")}</Label>
-            <Input className="h-9" inputMode="decimal" value={draft.quantity} onChange={(e) => setDraft({ ...draft, quantity: e.target.value })} />
-          </div>
-          <div className="space-y-1">
-            <Label className="text-[11px] text-muted-foreground">{t("Monto invertido", "Amount invested")}</Label>
+            <Label className="text-[11px] text-muted-foreground">
+              {draft.kind === "cash" ? t("Saldo actual", "Current balance") : draft.kind === "property" ? t("Precio de compra", "Purchase price") : t("Monto invertido", "Amount invested")}
+            </Label>
             <Input className="h-9" inputMode="decimal" value={draft.cost_basis} onChange={(e) => setDraft({ ...draft, cost_basis: e.target.value })} />
           </div>
-          <div className="space-y-1">
-            <Label className="text-[11px] text-muted-foreground">{t("Valor actual", "Current value")}</Label>
-            <Input className="h-9" inputMode="decimal" value={draft.manual_value} onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })} />
-          </div>
-          <div className="space-y-1">
-            <Label className="text-[11px] text-muted-foreground">{t("Aporte mensual", "Monthly contribution")}</Label>
-            <Input
-              className="h-9"
-              inputMode="decimal"
-              value={draft.monthly_contribution}
-              onChange={(e) => setDraft({ ...draft, monthly_contribution: e.target.value })}
-            />
-          </div>
-          <div className="space-y-1">
-            <Label className="text-[11px] text-muted-foreground">{t("Retorno esperado %", "Expected return %")}</Label>
-            <Input
-              className="h-9"
-              inputMode="decimal"
-              value={draft.expected_return}
-              onChange={(e) => setDraft({ ...draft, expected_return: e.target.value })}
-            />
-          </div>
-          <div className="space-y-1">
-            <Label className="text-[11px] text-muted-foreground">{t("Fecha de compra", "Purchase date")}</Label>
-            <Input className="h-9" type="date" value={draft.purchased_at} onChange={(e) => setDraft({ ...draft, purchased_at: e.target.value })} />
-          </div>
+          {(!isNew || draft.kind !== "cash") && (
+            <div className="space-y-1">
+              <Label className="text-[11px] text-muted-foreground">{t("Valor actual", "Current value")}</Label>
+              <Input className="h-9" inputMode="decimal" value={draft.manual_value} onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })} />
+            </div>
+          )}
+          {draft.kind === "property" && (
+            <div className="space-y-1">
+              <Label className="text-[11px] text-muted-foreground">{t("Deuda pendiente", "Outstanding debt")}</Label>
+              <Input className="h-9" inputMode="decimal" value={draft.linked_liability} onChange={(e) => setDraft({ ...draft, linked_liability: e.target.value })} />
+            </div>
+          )}
+          {(!isNew || ["etf", "stock", "crypto", "bond"].includes(draft.kind)) && (
+            <div className="space-y-1">
+              <Label className="text-[11px] text-muted-foreground">{t("Aporte mensual", "Monthly contribution")}</Label>
+              <Input className="h-9" inputMode="decimal" value={draft.monthly_contribution} onChange={(e) => setDraft({ ...draft, monthly_contribution: e.target.value })} />
+            </div>
+          )}
+          {(!isNew || draft.kind !== "cash") && (
+            <div className="space-y-1">
+              <Label className="text-[11px] text-muted-foreground">{t("Retorno esperado %", "Expected return %")}</Label>
+              <Input className="h-9" inputMode="decimal" value={draft.expected_return} onChange={(e) => setDraft({ ...draft, expected_return: e.target.value })} />
+            </div>
+          )}
+          {(!isNew || draft.kind !== "cash") && (
+            <div className="space-y-1">
+              <Label className="text-[11px] text-muted-foreground">{t("Fecha de compra", "Purchase date")}</Label>
+              <Input className="h-9" type="date" value={draft.purchased_at} onChange={(e) => setDraft({ ...draft, purchased_at: e.target.value })} />
+            </div>
+          )}
         </div>
         <div className="flex items-center justify-between gap-3">
           <p className="text-[11px] text-muted-foreground">
-            {t(
-              "Si dejas el valor actual en cero, usamos el precio de mercado por tus unidades.",
-              "If you leave the current value at zero, we use the market price times your units.",
-            )}
+            {["etf", "stock", "crypto", "bond"].includes(draft.kind)
+              ? t("Si dejas el valor actual en cero, usamos el precio de mercado por tus unidades.", "If you leave the current value at zero, we use the market price times your units.")
+              : ""}
           </p>
           <div className="flex shrink-0 gap-2">
             <Button type="button" size="sm" variant="ghost" onClick={closeEdit}>
@@ -1473,7 +1502,7 @@ function PortafolioContent() {
             {t("Modifica los datos del activo y guarda los cambios.", "Edit the asset details and save your changes.")}
           </DialogDescription>
         </DialogHeader>
-        {assetEditor(editId === "new")}
+        {editId === "new" && !draft ? assetKindSelector : assetEditor(editId === "new")}
       </DialogContent>
     </Dialog>
   );
