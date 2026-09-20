@@ -271,11 +271,21 @@ function CashFlow() {
       if (override === "excluded" || override === "savings") continue;
       (isNeed ? needs : wants).push({ label, amount });
     }
+    // Letra de la hipoteca del onboarding: cuenta como gasto fijo en Necesidades.
+    const mBalance = Number(profile.mortgage_balance) || 0;
+    const mRate = Number(profile.mortgage_rate) || 0;
+    const mTerm = Number(profile.mortgage_term) || 0;
+    if (mBalance > 0 && mTerm > 0 && !needs.some((n) => /hipoteca|mortgage/i.test(n.label))) {
+      const r = mRate / 100 / 12;
+      const n = mTerm * 12;
+      const payment = r > 0 ? (mBalance * r) / (1 - Math.pow(1 + r, -n)) : mBalance / n;
+      if (payment > 0) needs.push({ label: lang === "en" ? "Mortgage" : "Hipoteca", amount: Math.round(payment) });
+    }
     const sum = (rows: { amount: number }[]) => rows.reduce((s, r) => s + r.amount, 0);
     needs.sort((a, b) => b.amount - a.amount);
     wants.sort((a, b) => b.amount - a.amount);
     return { needs, wants, needsAmount: sum(needs), wantsAmount: sum(wants) };
-  }, [budgetLines, lang, categoryBuckets]);
+  }, [budgetLines, lang, categoryBuckets, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term]);
 
   const hasPlanNeeds = planBuckets.needsAmount > 0;
 
