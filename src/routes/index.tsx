@@ -571,7 +571,7 @@ export function Landing() {
                     <span className="text-primary">{card.titleAccent}</span>
                   </h3>
                   <p className="mt-2 min-h-[3rem] text-sm leading-relaxed text-muted-foreground/80">
-                    {card.desc}
+                    <HighlightDesc desc={card.desc} highlight={card.highlight} solid />
                   </p>
                 </div>
 
