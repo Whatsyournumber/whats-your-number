@@ -640,15 +640,17 @@ function PortafolioContent() {
   };
   const openFallbackEdit = (h: (typeof enriched)[number]) => {
     const fallbackId = `fallback:${h.type}`;
+    const kind: HoldingKind = h.type === "Acción" ? "stock" : h.type === "Cripto" ? "crypto" : h.type === "Cash" ? "cash" : "etf";
     setDraft({
-      kind: h.type === "Acción" ? "stock" : h.type === "Cripto" ? "crypto" : h.type === "Cash" ? "cash" : "etf",
+      kind,
       label: h.ticker,
       ticker: "",
       quantity: "",
-      cost_basis: h.cost > 0 ? String(h.cost) : "",
+      // En mis datos solo hay totales actuales: no inventamos costo ni retorno.
+      cost_basis: h.value > 0 ? String(h.value) : "",
       manual_value: h.value > 0 ? String(h.value) : "",
       monthly_contribution: "",
-      expected_return: String(Math.round(h.growth * 1000) / 10),
+      expected_return: "",
       purchased_at: "",
     });
     setEditId(fallbackId);
