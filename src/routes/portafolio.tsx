@@ -356,7 +356,7 @@ function PortafolioContent() {
                   : t("Activo", "Asset");
   const { profile } = useProfile();
   const { user } = useAuth();
-  const { holdings } = useHoldings();
+  const { holdings, saveAll, saving } = useHoldings();
   const d = buildDataset(profile);
   const fmt = (n: number, _dec?: number) => d.fmt(n);
   const fmtCompact = (n: number) => d.fmtCompact(n);
