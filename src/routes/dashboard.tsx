@@ -525,8 +525,8 @@ function Dashboard() {
   // Mínimo aceptable para ahorrar o invertir: 20% del ingreso.
 
   const incomeHint = (() => {
-    if (current.income <= 0) return t("Ingreso mensual estimado", "Estimated monthly income");
-    if (current.income > current.expenses) {
+    if (d.income <= 0) return t("Ingreso mensual estimado", "Estimated monthly income");
+    if (d.income > monthlyExpenses) {
       const rate = savingsRate;
       if (rate >= 20) {
         return (
