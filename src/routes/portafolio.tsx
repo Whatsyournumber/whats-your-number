@@ -1448,26 +1448,30 @@ function PortafolioContent() {
             )}
           </div>
 
-          <div className="col-span-2 flex justify-end border-t border-border/40 pt-2 md:col-span-6">
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const rowEditId = h.holdingId ?? `fallback:${h.type}`;
-                  if (editId === rowEditId) closeEdit();
-                  else if (h.holdingId) openEdit(h.holdingId);
-                  else openFallbackEdit(h);
-                }}
-                className={cn(
-                  "inline-flex h-9 items-center gap-2 rounded-full border border-primary/50 bg-primary/10 px-4 text-sm font-medium text-foreground transition hover:bg-primary/20",
-                  editId === (h.holdingId ?? `fallback:${h.type}`) && "bg-primary/20",
-                )}
-                aria-label={t(`Editar ${h.ticker}`, `Edit ${h.ticker}`)}
-              >
-                <Pencil className="h-4 w-4" />
-                {editId === (h.holdingId ?? `fallback:${h.type}`) ? t("Cerrar", "Close") : t("Editar", "Edit")}
-              </button>
-          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              const rowEditId = h.holdingId ?? `fallback:${h.type}`;
+              if (editId === rowEditId) closeEdit();
+              else if (h.holdingId) openEdit(h.holdingId);
+              else openFallbackEdit(h);
+            }}
+            aria-label={t(`Editar ${h.ticker}`, `Edit ${h.ticker}`)}
+            title={t("Editar", "Edit")}
+            className={cn(
+              "absolute right-2 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-md border border-border/40 text-muted-foreground/70 transition hover:border-primary/40 hover:bg-primary/10 hover:text-foreground",
+              editId === (h.holdingId ?? `fallback:${h.type}`) &&
+                "border-primary/50 bg-primary/15 text-primary",
+            )}
+          >
+            {editId === (h.holdingId ?? `fallback:${h.type}`) ? (
+              <X className="h-3.5 w-3.5" />
+            ) : (
+              <Pencil className="h-3.5 w-3.5" />
+            )}
+          </button>
+
 
           {editId === (h.holdingId ?? `fallback:${h.type}`) ? assetEditor(false) : null}
         </div>
