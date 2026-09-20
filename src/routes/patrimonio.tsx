@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Area, AreaChart, Cell, ComposedChart, Line, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
-import { Pencil } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
+
+import { AssetDialog } from "@/components/asset-dialog";
 
 import { cn } from "@/lib/utils";
 
@@ -138,6 +140,7 @@ function PatrimonioContent() {
   const d = buildDataset(profile);
   const { fmt, assets } = d;
   const [evoMonth, setEvoMonth] = useState<string | null>(null);
+  const [addAsset, setAddAsset] = useState(false);
   const [benchmark, setBenchmark] = useState<"none" | "sp500" | "nasdaq" | "world">("none");
   const seriesQuery = useMarketSeries(["^GSPC", "^NDX", "URTH"]);
 
@@ -850,6 +853,12 @@ function PatrimonioContent() {
             </Link>
           </span>
         }
+        actions={
+          <Button type="button" size="sm" variant="outline" className="gap-1.5" onClick={() => setAddAsset(true)}>
+            <Plus className="h-4 w-4" />
+            {t("Añadir activo", "Add asset")}
+          </Button>
+        }
       >
         {detailRows.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t("Aún no registras activos.", "You haven't recorded any assets yet.")}</p>
@@ -996,6 +1005,8 @@ function PatrimonioContent() {
           </div>
         )}
       </Panel>
+
+      {addAsset ? <AssetDialog open onOpenChange={setAddAsset} /> : null}
     </PageShell>
 
   );
