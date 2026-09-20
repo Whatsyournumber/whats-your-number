@@ -1329,7 +1329,7 @@ export function ExpenseLog() {
                     setPhotoPickerOpen(false);
                     camRef.current?.click();
                   }}
-                  className="flex min-h-[68px] w-full items-center gap-3 rounded-2xl border border-positive/30 bg-positive/10 px-4 text-left transition-transform active:scale-[0.98]"
+                  className="flex min-h-[68px] w-full items-center gap-3 rounded-2xl border border-positive/30 bg-positive/10 px-4 text-left outline-none transition-transform focus-visible:ring-2 focus-visible:ring-positive/50 active:scale-[0.98]"
                 >
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-positive/20">
                     <Camera className="h-6 w-6 text-positive" />
@@ -1357,7 +1357,7 @@ export function ExpenseLog() {
                         setPhotoPickerOpen(false);
                         o.pick();
                       }}
-                      className="flex min-h-[100px] flex-col items-center justify-center gap-2 rounded-2xl border border-border/60 bg-card/40 px-1.5 py-3 text-center transition-transform active:scale-[0.97]"
+                      className="flex min-h-[100px] flex-col items-center justify-center gap-2 rounded-2xl border border-border/60 bg-card/40 px-1.5 py-3 text-center outline-none transition-transform focus-visible:ring-2 focus-visible:ring-positive/50 active:scale-[0.97]"
                     >
                       <span className="flex h-11 w-11 items-center justify-center rounded-full bg-positive/10">
                         <o.icon className="h-5 w-5 text-positive" />
