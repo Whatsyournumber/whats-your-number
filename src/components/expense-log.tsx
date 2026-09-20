@@ -717,6 +717,8 @@ export function ExpenseLog() {
           categories: categoryNames,
           currency,
           today: format(now, "yyyy-MM-dd"),
+          lang,
+
         },
       });
       setTranscript(result.transcript ?? "");
