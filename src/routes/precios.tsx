@@ -467,7 +467,7 @@ function Pricing() {
                       setSelectedPlan(plan.name);
                     }}
                   >
-                    <Link to="/contacto" search={{ plan: plan.name }}>{plan.cta}</Link>
+                    <Link to="/contacto" search={{ planName: plan.name }}>{plan.cta}</Link>
                   </Button>
                 ) : (
                   <Button

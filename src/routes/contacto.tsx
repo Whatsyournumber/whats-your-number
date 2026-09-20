@@ -33,18 +33,19 @@ const topicLabels: Record<Topic, [string, string]> = {
 };
 
 type ContactSearch = {
-  plan?: string;
+  planName?: string;
   topic?: string;
 };
 
 export const Route = createFileRoute("/contacto")({
   validateSearch: (search: Record<string, unknown>): ContactSearch => {
-    const plan = typeof search["plan"] === "string" ? search["plan"].slice(0, 60) : undefined;
+    const planName =
+      typeof search["planName"] === "string" ? search["planName"].slice(0, 60) : undefined;
     const topic =
       typeof search["topic"] === "string" && (TOPICS as readonly string[]).includes(search["topic"])
         ? search["topic"]
         : undefined;
-    return { ...(plan ? { plan } : {}), ...(topic ? { topic } : {}) };
+    return { ...(planName ? { planName } : {}), ...(topic ? { topic } : {}) };
   },
   head: () => ({
     meta: [
@@ -73,7 +74,7 @@ export const Route = createFileRoute("/contacto")({
 function ContactPage() {
   const t = useT();
   const { lang } = useLanguage();
-  const { plan, topic } = Route.useSearch();
+  const { planName: plan, topic } = Route.useSearch();
 
   const initialTopic: Topic =
     topic && (TOPICS as readonly string[]).includes(topic)
