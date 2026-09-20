@@ -150,7 +150,7 @@ const PHOTO = {
   granada: granadaPhoto,
   sansebastian: "https://upload.wikimedia.org/wikipedia/commons/f/f4/San_Sebasti%C3%A1n_-_Ayuntamiento_10.jpg",
   laspalmas: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Canteras_EM1B2907_%2840642755393%29.jpg",
-  murcia: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Sabado_Santo_Murcia_19-04-2014.jpg",
+  murcia: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/Catedral_de_Santa_Mar%C3%ADa%2C_Murcia%2C_Espa%C3%B1a%2C_2022-07-12%2C_DD_33-35_HDR.jpg/1280px-Catedral_de_Santa_Mar%C3%ADa%2C_Murcia%2C_Espa%C3%B1a%2C_2022-07-12%2C_DD_33-35_HDR.jpg",
   coruna: "https://upload.wikimedia.org/wikipedia/commons/4/45/Ayuntamiento%2C_La_Coru%C3%B1a%2C_Espa%C3%B1a%2C_2015-09-25%2C_DD_44.jpg",
   queretaro: "https://upload.wikimedia.org/wikipedia/commons/0/07/Santiago_de_Quer%C3%A9taro_Centro_Financiero.jpg",
   puebla: "https://upload.wikimedia.org/wikipedia/commons/a/a3/Catedral_de_Puebla%2C_M%C3%A9xico%2C_2013-10-11%2C_DD_13.JPG",
