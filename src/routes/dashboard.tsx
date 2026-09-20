@@ -855,7 +855,7 @@ function Dashboard() {
             </div>
             <div className="grid grid-cols-2 gap-1">
               <div className="rounded-xl bg-elevated/60 p-2">
-                <p className="whitespace-nowrap text-[10px] text-muted-foreground">
+                <p className="min-h-[22px] text-balance text-[10px] leading-tight text-muted-foreground">
                   {t("Monto mensual deseado", "Desired monthly amount")}
                 </p>
                 <p className="numeric mt-1 truncate text-lg font-semibold" title={`${fmt(targetNumber > 0 ? (targetNumber * swr) / 12 : 0)}${t("/mes", "/mo")}`}>
@@ -863,7 +863,9 @@ function Dashboard() {
                 </p>
               </div>
               <div className="rounded-xl bg-elevated/60 p-2">
-                <p className="whitespace-nowrap text-[10px] text-muted-foreground">{t("Años restantes", "Years left")}</p>
+                <p className="min-h-[22px] text-balance text-[10px] leading-tight text-muted-foreground">
+                  {t("Años restantes para retirarte", "Years left to retire")}
+                </p>
                 <p className="numeric mt-1 truncate text-lg font-semibold">{numberYearsLeft}</p>
               </div>
             </div>
