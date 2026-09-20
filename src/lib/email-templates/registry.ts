@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react'
+import { template as contactNotification } from './contact-notification'
 
 export interface TemplateEntry {
   component: ComponentType<any>
