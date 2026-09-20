@@ -1271,7 +1271,9 @@ export function ExpenseLog() {
           <input
             ref={fileRef}
             type="file"
-            accept="image/*,application/pdf"
+            /* En móvil solo imágenes: así Android ofrece Google Fotos / Galería
+               directamente en vez del selector genérico de archivos. */
+            accept={isMobile ? "image/*" : "image/*,application/pdf"}
             className="hidden"
             onChange={(e) => {
               const file = e.target.files?.[0];
