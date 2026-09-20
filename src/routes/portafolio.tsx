@@ -1990,15 +1990,15 @@ function PortafolioContent() {
         title={t("Posiciones", "Positions")}
         description={`${enriched.length} ${t("posiciones", "positions")}`}
         actions={
-          <Link
-            to="/mi-perfil"
-            hash="patrimonio"
+          <button
+            type="button"
+            onClick={() => (editId === "new" ? closeEdit() : openNew())}
             className="inline-flex items-center gap-1.5 rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
-            aria-label={t("Editar en mis datos", "Edit in my data")}
+            aria-label={t("Añadir activo", "Add asset")}
           >
-            <Pencil className="h-3.5 w-3.5" />
-            {t("Editar", "Edit")}
-          </Link>
+            <Plus className="h-3.5 w-3.5" />
+            {t("Añadir activo", "Add asset")}
+          </button>
         }
       >
         <Tabs value={posTab} onValueChange={setPosTab}>
