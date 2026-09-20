@@ -875,7 +875,7 @@ function Dashboard() {
               </Button>
             </div>
             <p className="mt-auto text-xs leading-snug text-muted-foreground/75 sm:text-[13px]">
-              * {t("basado en el estilo de vida que escojiste", "based on the lifestyle you chose")}
+              * {t("basado en el estilo de vida que escogiste", "based on the lifestyle you chose")}
             </p>
           </div>
         </Panel>
