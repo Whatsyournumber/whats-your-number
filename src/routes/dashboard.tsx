@@ -825,8 +825,8 @@ function Dashboard() {
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title={numberTitle} description={numberDescription} className="lg:col-span-2">
-          <div className="space-y-4">
+        <Panel title={numberTitle} description={numberDescription} className="flex h-full flex-col lg:col-span-2">
+          <div className="flex h-full flex-1 flex-col gap-4">
             <div>
               <p
                 className={cn(
@@ -874,8 +874,8 @@ function Dashboard() {
                 <Link to="/mi-perfil">{t("Editar mis datos", "Edit my data")}</Link>
               </Button>
             </div>
-            <p className="text-center text-[11px] leading-snug text-muted-foreground/70">
-              * {t("basado en el estilo de vida que escojiste", "based on the lifestyle you chose")}
+            <p className="mt-auto text-xs leading-snug text-muted-foreground/75 sm:text-[13px]">
+              * {t("basado en el estilo de vida que escogiste", "based on the lifestyle you chose")}
             </p>
           </div>
         </Panel>
