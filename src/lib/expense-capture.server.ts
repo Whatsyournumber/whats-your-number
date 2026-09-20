@@ -53,11 +53,8 @@ export async function transcribeExpenseAudio(
   const audioType = mimeType.startsWith("video/") ? "audio/webm" : mimeType || "audio/webm";
   const fileName = `nota.${extFor(audioType)}`;
 
-  // Solo aceptamos español o inglés: cualquier otro alfabeto (árabe, cirílico, CJK…)
-  // significa que el modelo alucinó y hay que probar el siguiente.
-  const NON_LATIN = /[Ѐ-ӿ֐-׿؀-ۿऀ-ॿ぀-ヿ가-힯一-鿿]/;
-  const looksValid = (text: string) => text.length > 0 && !NON_LATIN.test(text) && /[a-záéíóúñü]/i.test(text);
-
+  // La IA entiende cualquier idioma: transcribimos lo que se hable y luego
+  // parseExpenseFromText lo normaliza al idioma de la app (inglés o español).
   const tryModel = async (model: string) => {
     try {
       const form = new FormData();
