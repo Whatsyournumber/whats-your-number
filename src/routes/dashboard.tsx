@@ -353,7 +353,7 @@ function Dashboard() {
       expenses: needs + wants,
       savings: savings + Math.max(0, totalIncome - needs - wants - savings),
     };
-  }, [activeKey, budgetLines, d.cashFlow.buckets, d.income, fixed.items, holdings, moneyBuckets, rules, transactions]);
+  }, [activeKey, budgetLines, d.cashFlow.buckets, d.income, fixed.items, holdings, moneyBuckets, planFixed, rules, transactions]);
   const monthlySavings = monthlyDistribution.savings;
   const monthlyExpenses = monthlyDistribution.expenses;
   const spendPlanUsed = hasSpendTarget && spendTarget > 0
