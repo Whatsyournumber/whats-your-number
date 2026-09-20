@@ -681,7 +681,7 @@ function PortafolioContent() {
       cost_basis: "",
       manual_value: "",
       monthly_contribution: "",
-      expected_return: String(defaultReturn(kind)),
+      expected_return: String(kind === "property" ? 8 : defaultReturn(kind)),
       linked_liability: "",
       purchased_at: new Date().toISOString().slice(0, 10),
     });
@@ -1305,7 +1305,7 @@ function PortafolioContent() {
             <Label className="text-[11px] text-muted-foreground">{t("Nombre", "Name")}</Label>
             <Input className="h-9" value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} />
           </div>
-          {(!isNew || ["etf", "stock", "crypto", "bond"].includes(draft.kind)) && (
+          {(!isNew || ["etf", "stock", "crypto", "bond", "property"].includes(draft.kind)) && (
             <>
               <div className="space-y-1">
                 <Label className="text-[11px] text-muted-foreground">{t("Ticker", "Ticker")}</Label>
@@ -1382,7 +1382,7 @@ function PortafolioContent() {
           )}
           <div className="space-y-1">
             <Label className="text-[11px] text-muted-foreground">
-              {draft.kind === "cash" ? t("Saldo actual", "Current balance") : draft.kind === "property" ? t("Precio de compra", "Purchase price") : t("Monto invertido", "Amount invested")}
+              {draft.kind === "cash" ? t("Saldo actual", "Current balance") : t("Monto invertido", "Amount invested")}
             </Label>
             <Input className="h-9" inputMode="decimal" value={draft.cost_basis} onChange={(e) => setDraft({ ...draft, cost_basis: e.target.value })} />
           </div>
@@ -1390,12 +1390,6 @@ function PortafolioContent() {
             <div className="space-y-1">
               <Label className="text-[11px] text-muted-foreground">{t("Valor actual", "Current value")}</Label>
               <Input className="h-9" inputMode="decimal" value={draft.manual_value} onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })} />
-            </div>
-          )}
-          {draft.kind === "property" && (
-            <div className="space-y-1">
-              <Label className="text-[11px] text-muted-foreground">{t("Deuda pendiente", "Outstanding debt")}</Label>
-              <Input className="h-9" inputMode="decimal" value={draft.linked_liability} onChange={(e) => setDraft({ ...draft, linked_liability: e.target.value })} />
             </div>
           )}
           {(!isNew || draft.kind !== "cash") && (
@@ -1419,7 +1413,7 @@ function PortafolioContent() {
         </div>
         <div className="flex items-center justify-between gap-3">
           <p className="text-[11px] text-muted-foreground">
-            {["etf", "stock", "crypto", "bond"].includes(draft.kind)
+            {["etf", "stock", "crypto", "bond", "property"].includes(draft.kind)
               ? t("Si dejas el valor actual en cero, usamos el precio de mercado por tus unidades.", "If you leave the current value at zero, we use the market price times your units.")
               : ""}
           </p>
