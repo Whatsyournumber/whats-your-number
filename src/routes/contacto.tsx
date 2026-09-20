@@ -31,7 +31,7 @@ export const Route = createFileRoute("/contacto")({
       {
         name: "description",
         content:
-          "Escríbele al equipo de WhatsYournumber: preguntas, plan a la medida para tu familia o empresa, soporte y colaboraciones. Respondemos en menos de 24 horas.",
+          "Escríbele al equipo de WhatsYournumber: preguntas, plan a la medida para tu familia o empresa, soporte y colaboraciones. Te respondemos lo antes posible.",
       },
       { property: "og:title", content: "Contacto — WhatsYournumber" },
       {
