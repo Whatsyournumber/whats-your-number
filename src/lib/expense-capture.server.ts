@@ -114,28 +114,32 @@ export async function transcribeExpenseAudio(
 
 
 
-function prompt(categories: string[], currency: string, today: string) {
+function prompt(categories: string[], currency: string, today: string, lang: "es" | "en" = "es") {
   return [
     "Eres un asistente que registra gastos personales.",
     `Hoy es ${today}. La moneda del usuario es ${currency}.`,
     `Devuelve la categoría ELEGIDA de esta lista exacta: ${categories.join(", ")}.`,
     "amount siempre positivo (el gasto). date en formato YYYY-MM-DD; si no se menciona usa hoy.",
     "merchant: el comercio o concepto corto, sin adjetivos.",
+    lang === "en"
+      ? "The input can be in ANY language: always write merchant (and any free text) in ENGLISH, translating it faithfully."
+      : "La entrada puede estar en CUALQUIER idioma: escribe merchant (y cualquier texto libre) en ESPAÑOL, traduciéndolo fielmente.",
   ].join(" ");
 }
 
-/** Interpreta una nota de voz ya transcrita y la convierte en un gasto. */
+/** Interpreta una nota de voz ya transcrita (en cualquier idioma) y la convierte en un gasto en el idioma de la app. */
 export async function parseExpenseFromText(
   apiKey: string,
   text: string,
   categories: string[],
   currency: string,
   today: string,
+  lang: "es" | "en" = "es",
 ): Promise<ParsedExpense> {
   const gateway = createLovableAiGatewayProvider(apiKey);
   const { output } = await generateText({
     model: gateway("google/gemini-3.5-flash"),
-    system: prompt(categories, currency, today),
+    system: prompt(categories, currency, today, lang),
     prompt: `Extrae el gasto de esta frase: "${text}"`,
     output: Output.object({ schema: expenseSchema }),
   });
