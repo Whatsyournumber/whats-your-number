@@ -31,12 +31,12 @@ export const Route = createFileRoute("/contacto")({
       {
         name: "description",
         content:
-          "Escríbele al equipo de WhatsYournumber: preguntas, plan a la medida para tu familia o empresa, soporte y colaboraciones. Respondemos en menos de 24 horas.",
+          "Escríbele al equipo de WhatsYournumber: preguntas, plan a la medida para tu familia o empresa, soporte y colaboraciones. Te respondemos lo antes posible.",
       },
       { property: "og:title", content: "Contacto — WhatsYournumber" },
       {
         property: "og:description",
-        content: "Hablemos: planes a la medida, soporte y colaboraciones. Respuesta en menos de 24 h.",
+        content: "Hablemos: planes a la medida, soporte y colaboraciones. Te respondemos lo antes posible.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -142,8 +142,8 @@ function ContactPage() {
             </h1>
             <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-white/75 md:text-base">
               {t(
-                "Una duda, un plan a la medida o un problema con tu cuenta: escríbenos y te respondemos en menos de 24 horas.",
-                "A question, a custom plan or a problem with your account: write to us and we'll reply within 24 hours.",
+                "Una duda, un plan a la medida o un problema con tu cuenta: escríbenos y te respondemos lo antes posible.",
+                 "A question, a custom plan or a problem with your account: write to us and we'll reply as soon as possible.",
               )}
             </p>
           </motion.div>
@@ -172,8 +172,8 @@ function ContactPage() {
               </h2>
               <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
                 {t(
-                  "Gracias por escribirnos. Te respondemos a tu correo en menos de 24 horas.",
-                  "Thanks for reaching out. We'll reply to your email within 24 hours.",
+                  "Gracias por escribirnos. Te respondemos lo antes posible.",
+                  "Thanks for reaching out. We'll reply as soon as possible.",
                 )}
               </p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
@@ -265,8 +265,8 @@ function ContactPage() {
               </Button>
               <p className="text-center text-xs text-muted-foreground">
                 {t(
-                  "Te respondemos a tu correo, sin spam.",
-                  "We reply to your email, no spam.",
+                   "Te respondemos lo antes posible, sin spam.",
+                   "We reply as soon as possible, no spam.",
                 )}
               </p>
             </form>
