@@ -193,8 +193,13 @@ export function totalAssets(d: OnboardingData) {
   );
 }
 
+// Pasivos reales: deudas declaradas + saldo de la hipoteca. Nunca negativos.
+export function totalLiabilities(d: OnboardingData) {
+  return Math.max(0, d.liabilities || 0) + Math.max(0, d.mortgage_balance || 0);
+}
+
 export function netWorth(d: OnboardingData) {
-  return totalAssets(d) - d.liabilities;
+  return totalAssets(d) - totalLiabilities(d);
 }
 
 export type NorthPlan = {
