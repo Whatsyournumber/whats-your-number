@@ -9,6 +9,7 @@ import {
   lifestyles,
   money,
   netWorth,
+  totalLiabilities,
   totalAssets,
   totalIncome,
   totalExpenses,
