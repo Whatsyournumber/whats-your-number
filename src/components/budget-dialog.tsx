@@ -156,7 +156,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={requestOpenChange}>
       <DialogContent className="max-h-[88vh] max-w-2xl overflow-y-auto pt-0">
         {/* Cabecera con el total mensual (no editable; se edita en el pie). */}
         <DialogHeader className="sticky top-0 z-10 -mx-6 space-y-1.5 bg-background/95 px-6 pb-4 pt-6 text-left backdrop-blur-sm">
@@ -354,6 +354,27 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
         </div>
 
       </DialogContent>
+      <AlertDialog open={confirmClose} onOpenChange={setConfirmClose}>
+        <AlertDialogContent className="w-[calc(100vw-2rem)] max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("¿Salir sin guardar?", "Leave without saving?")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("Tienes cambios sin guardar. Si sales ahora, se perderán.", "You have unsaved changes. If you leave now, they will be lost.")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("Seguir editando", "Keep editing")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setConfirmClose(false);
+                onOpenChange(false);
+              }}
+            >
+              {t("Descartar cambios", "Discard changes")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
