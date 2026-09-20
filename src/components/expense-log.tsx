@@ -1436,6 +1436,13 @@ export function ExpenseLog() {
                     </button>
                   ))}
                 </div>
+
+                <p className="pt-1 text-center text-[11px] leading-snug text-muted-foreground/80">
+                  {t(
+                    "Puedes seleccionar varios gastos al mismo tiempo",
+                    "You can select several expenses at the same time",
+                  )}
+                </p>
               </div>
             </DialogContent>
           </Dialog>
