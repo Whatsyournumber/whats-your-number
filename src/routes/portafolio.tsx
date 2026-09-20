@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarIcon, Info, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
+import { toast } from "sonner";
 import { Area, CartesianGrid, ComposedChart, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { PlanGate } from "@/components/plan-gate";
@@ -11,6 +12,7 @@ import { KpiCard } from "@/components/kpi-card";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -20,6 +22,7 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { useDailySeries, useMarketSeries, useQuotes, useSymbolReturns, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
+import { Label } from "@/components/ui/label";
 import { useProfile } from "@/hooks/use-profile";
 import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
@@ -353,7 +356,7 @@ function PortafolioContent() {
                   : t("Activo", "Asset");
   const { profile } = useProfile();
   const { user } = useAuth();
-  const { holdings } = useHoldings();
+  const { holdings, saveAll, saving } = useHoldings();
   const d = buildDataset(profile);
   const fmt = (n: number, _dec?: number) => d.fmt(n);
   const fmtCompact = (n: number) => d.fmtCompact(n);
@@ -486,6 +489,7 @@ function PortafolioContent() {
       const growth = marketGrowth !== null ? Math.max(0, marketGrowth) : Math.max(0, h.expected_return || 7) / 100;
       const tickerLabel = h.ticker || h.label || t("Activo", "Asset");
       return {
+        holdingId: h.id as string | null,
         ticker: tickerLabel,
         name: h.label && h.label !== tickerLabel ? h.label : kindSubtitle(h.kind),
 
@@ -520,6 +524,7 @@ function PortafolioContent() {
     const cash = cashDetailed.reduce((s, h) => s + holdingValue(h, prices), 0);
     if (cash > 0)
       detailed.push({
+        holdingId: cashDetailed.length === 1 ? (cashDetailed[0]!.id as string | null) : null,
         ticker: t("Efectivo", "Cash"),
         name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"),
         type: "Cash" as never,
@@ -536,10 +541,10 @@ function PortafolioContent() {
   }
 
   const fallback = [
-    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, income: 0, cost: Math.round(profile.assets_etf / (1 + r)), priceRet: null, strike: null, units: null, improvements: 0, years: 0 },
-    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, income: 0, cost: Math.round(profile.assets_stocks / (1 + r * 1.3)), priceRet: null, strike: null, units: null, improvements: 0, years: 0 },
-    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, income: 0, cost: Math.round(profile.assets_crypto / (1 + r * 2)), priceRet: null, strike: null, units: null, improvements: 0, years: 0 },
-    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, income: 0, cost: profile.assets_cash + profile.assets_bank, priceRet: null, strike: null, units: null, improvements: 0, years: 0 },
+    { holdingId: null as string | null, ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, income: 0, cost: Math.round(profile.assets_etf / (1 + r)), priceRet: null, strike: null, units: null, improvements: 0, years: 0 },
+    { holdingId: null as string | null, ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, income: 0, cost: Math.round(profile.assets_stocks / (1 + r * 1.3)), priceRet: null, strike: null, units: null, improvements: 0, years: 0 },
+    { holdingId: null as string | null, ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, income: 0, cost: Math.round(profile.assets_crypto / (1 + r * 2)), priceRet: null, strike: null, units: null, improvements: 0, years: 0 },
+    { holdingId: null as string | null, ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, income: 0, cost: profile.assets_cash + profile.assets_bank, priceRet: null, strike: null, units: null, improvements: 0, years: 0 },
   ].filter((h) => h.value > 0);
 
   const positions = detailed.length ? detailed : fallback;
@@ -602,6 +607,64 @@ function PortafolioContent() {
   const annualGain = gainPositions.reduce((s, h) => s + h.value * h.growth, 0);
   // Totales del tab activo en Posiciones (Todos = cartera completa).
   const [posTab, setPosTab] = useState<string>("Todos");
+
+  // Edición de una posición desde la propia fila: guarda en mis datos (holdings).
+  const [editId, setEditId] = useState<string | null>(null);
+  const [draft, setDraft] = useState<{
+    label: string;
+    ticker: string;
+    quantity: string;
+    cost_basis: string;
+    manual_value: string;
+    monthly_contribution: string;
+    expected_return: string;
+    purchased_at: string;
+  } | null>(null);
+  const editingHolding = holdings.find((h) => h.id === editId) ?? null;
+  const openEdit = (id: string) => {
+    const h = holdings.find((x) => x.id === id);
+    if (!h) return;
+    setDraft({
+      label: h.label ?? "",
+      ticker: h.ticker ?? "",
+      quantity: h.quantity ? String(h.quantity) : "",
+      cost_basis: h.cost_basis ? String(h.cost_basis) : "",
+      manual_value: h.manual_value ? String(h.manual_value) : "",
+      monthly_contribution: h.monthly_contribution ? String(h.monthly_contribution) : "",
+      expected_return: h.expected_return ? String(h.expected_return) : "",
+      purchased_at: (h.purchased_at ?? "").slice(0, 10),
+    });
+    setEditId(id);
+  };
+  const closeEdit = () => {
+    setEditId(null);
+    setDraft(null);
+  };
+  const numOr = (v: string, fallbackValue = 0) => {
+    const n = Number(String(v).replace(",", "."));
+    return Number.isFinite(n) ? n : fallbackValue;
+  };
+  const saveEdit = async () => {
+    if (!editingHolding || !draft) return;
+    const updated = {
+      ...editingHolding,
+      label: draft.label.trim() || editingHolding.label,
+      ticker: draft.ticker.trim().toUpperCase() || null,
+      quantity: numOr(draft.quantity),
+      cost_basis: numOr(draft.cost_basis),
+      manual_value: numOr(draft.manual_value),
+      monthly_contribution: numOr(draft.monthly_contribution),
+      expected_return: numOr(draft.expected_return, editingHolding.expected_return),
+      purchased_at: draft.purchased_at || editingHolding.purchased_at || null,
+    };
+    try {
+      await saveAll(holdings.map((h) => (h.id === updated.id ? updated : h)));
+      toast.success(t("Posición actualizada", "Position updated"));
+      closeEdit();
+    } catch {
+      toast.error(t("No pudimos guardar. Inténtalo de nuevo.", "We couldn't save. Please try again."));
+    }
+  };
   const tabList = posTab === "Todos" ? enriched : enriched.filter((h) => h.type === posTab);
   const tabValue = tabList.reduce((s, h) => s + h.value, 0);
   const tabAnnualGain = tabList.filter((h) => !gainExcludedTypes.has(h.type)).reduce((s, h) => s + h.value * h.growth, 0);
@@ -1150,7 +1213,7 @@ function PortafolioContent() {
             }
           }}
           className={cn(
-            "grid cursor-pointer grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 transition hover:bg-elevated md:grid-cols-6",
+            "relative grid cursor-pointer grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 pb-10 transition hover:bg-elevated md:grid-cols-6",
             tk && focusTicker === tk && "ring-1 ring-[var(--color-chart-4)]/60",
           )}
         >
@@ -1226,6 +1289,21 @@ function PortafolioContent() {
               </p>
             )}
           </div>
+
+          {h.holdingId ? (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                openEdit(h.holdingId!);
+              }}
+              className="absolute bottom-2 right-3 inline-flex items-center gap-1.5 rounded-full border border-border/60 px-2.5 py-1 text-[11px] text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
+              aria-label={t("Editar posición", "Edit position")}
+            >
+              <Pencil className="h-3 w-3" />
+              {t("Editar", "Edit")}
+            </button>
+          ) : null}
         </div>
         );
       })}
@@ -1802,6 +1880,97 @@ function PortafolioContent() {
             </TabsContent>
           ))}
         </Tabs>
+
+        <Dialog open={Boolean(editId && draft)} onOpenChange={(o) => (o ? null : closeEdit())}>
+          <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                {t("Editar posición", "Edit position")}
+                {editingHolding ? ` · ${editingHolding.ticker || editingHolding.label}` : ""}
+              </DialogTitle>
+            </DialogHeader>
+            {draft ? (
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">{t("Nombre", "Name")}</Label>
+                    <Input value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">{t("Ticker", "Ticker")}</Label>
+                    <Input
+                      value={draft.ticker}
+                      onChange={(e) => setDraft({ ...draft, ticker: e.target.value.toUpperCase() })}
+                      placeholder="VOO"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">{t("Unidades", "Units")}</Label>
+                    <Input
+                      inputMode="decimal"
+                      value={draft.quantity}
+                      onChange={(e) => setDraft({ ...draft, quantity: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">{t("Monto invertido", "Amount invested")}</Label>
+                    <Input
+                      inputMode="decimal"
+                      value={draft.cost_basis}
+                      onChange={(e) => setDraft({ ...draft, cost_basis: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">{t("Valor actual", "Current value")}</Label>
+                    <Input
+                      inputMode="decimal"
+                      value={draft.manual_value}
+                      onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">{t("Aporte mensual", "Monthly contribution")}</Label>
+                    <Input
+                      inputMode="decimal"
+                      value={draft.monthly_contribution}
+                      onChange={(e) => setDraft({ ...draft, monthly_contribution: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">{t("Retorno esperado %", "Expected return %")}</Label>
+                    <Input
+                      inputMode="decimal"
+                      value={draft.expected_return}
+                      onChange={(e) => setDraft({ ...draft, expected_return: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">{t("Fecha de compra", "Purchase date")}</Label>
+                    <Input
+                      type="date"
+                      value={draft.purchased_at}
+                      onChange={(e) => setDraft({ ...draft, purchased_at: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  {t(
+                    "Si dejas el valor actual en cero, usamos el precio de mercado por tus unidades.",
+                    "If you leave the current value at zero, we use the market price times your units.",
+                  )}
+                </p>
+              </div>
+            ) : null}
+            <DialogFooter>
+              <Button type="button" variant="ghost" onClick={closeEdit}>
+                {t("Cancelar", "Cancel")}
+              </Button>
+              <Button type="button" onClick={() => void saveEdit()} disabled={saving}>
+                {saving ? t("Guardando", "Saving") : t("Guardar", "Save")}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         <div className="relative mt-2 overflow-hidden rounded-2xl border border-border/50 bg-elevated/50 px-4 py-3.5">
           <div className="grid grid-cols-2 items-center gap-3 md:grid-cols-6">

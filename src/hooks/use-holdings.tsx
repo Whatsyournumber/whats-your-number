@@ -242,6 +242,7 @@ export function useHoldings() {
           probability: h.probability == null || Number.isNaN(h.probability) ? 100 : num(h.probability),
           note: h.note || null,
           position: i,
+          purchased_at: h.purchased_at || null,
         }));
         const { error } = await supabase.from("holdings").upsert(payload);
         if (error) throw error;
