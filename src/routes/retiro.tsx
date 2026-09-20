@@ -504,14 +504,14 @@ function RetiroContent() {
                   </span>
                 </div>
                 <p className="relative mt-2 text-[11px] text-muted-foreground">
-                  {aporteIsSuggested || aporteRetireYear <= 0
+                  {aporteIsSuggested || aporteYearsToRetire <= 0
                     ? t(
                         `Dinero a aportar mensual al ${rate}% por ${aporteYearsLabel}`,
                         `Money to contribute monthly at ${rate}% for ${aporteYearsLabel}`,
                       )
                     : t(
-                        `Con este monto tu año de retiro sería ${aporteRetireYear}`,
-                        `With this amount your retirement year would be ${aporteRetireYear}`,
+                        `Con este monto te retirarías en ${aporteYearsToRetireLabel}`,
+                        `With this amount you would retire in ${aporteYearsToRetireLabel}`,
                       )}
                 </p>
               </>
