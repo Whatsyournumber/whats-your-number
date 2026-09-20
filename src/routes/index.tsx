@@ -40,10 +40,27 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { HOME_FAQS, buildLandingFaqJsonLd } from "@/lib/landing-faqs";
 import { useEffect } from "react";
 
-/** Renderiza la descripción resaltando la frase clave con una línea de gradiente sutil. */
-function HighlightDesc({ desc, highlight }: { desc: string; highlight?: string }) {
+/** Renderiza la descripción resaltando la frase clave con una línea de gradiente sutil o en color de marca. */
+function HighlightDesc({
+  desc,
+  highlight,
+  solid,
+}: {
+  desc: string;
+  highlight?: string;
+  solid?: boolean;
+}) {
   if (!highlight || !desc.includes(highlight)) return <>{desc}</>;
   const idx = desc.indexOf(highlight);
+  if (solid) {
+    return (
+      <>
+        {desc.slice(0, idx)}
+        <span className="font-medium text-primary">{highlight}</span>
+        {desc.slice(idx + highlight.length)}
+      </>
+    );
+  }
   return (
     <>
       {desc.slice(0, idx)}
