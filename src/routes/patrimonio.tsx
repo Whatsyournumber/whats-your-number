@@ -845,14 +845,9 @@ function PatrimonioContent() {
         title={
           <span className="inline-flex items-center gap-2 whitespace-nowrap">
             {t("Tus activos", "Your assets")}
-            <Link
-              to="/mi-perfil"
-              hash="patrimonio"
-              className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <span className="tabular-nums">({detailRows.length} {t("activos", "assets")})</span>
-              <Pencil className="h-3.5 w-3.5" />
-            </Link>
+            <span className="tabular-nums text-xs font-normal text-muted-foreground">
+              ({detailRows.length} {t("activos", "assets")})
+            </span>
           </span>
         }
         actions={
