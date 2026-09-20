@@ -2,8 +2,10 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "rea
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowLeftRight, ArrowUp, CalendarDays, Camera, ChevronDown, ChevronRight, FolderOpen, GalleryThumbnails, GripVertical, Images, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowLeftRight, ArrowUp, CalendarDays, Camera, ChevronDown, ChevronRight, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
+
+import { FolderIcon, GalleryIcon, GooglePhotosIcon } from "@/components/expense-source-icons";
 
 import { BudgetDialog } from "@/components/budget-dialog";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
