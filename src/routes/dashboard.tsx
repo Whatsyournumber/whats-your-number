@@ -507,9 +507,16 @@ function Dashboard() {
       );
     }
     const deficit = current.expenses - current.income;
+    const planYears = retireYearsLeft;
     return (
       <span className="inline-flex items-center gap-1.5">
-        {t("Faltan", "Short")} <span className="rounded-full bg-negative/12 px-2 py-0.5 font-semibold text-negative">{fmt(deficit)}</span>{t("/mes · necesitas extra", "/mo · you need extra")}
+        {t("Faltan", "Short")} <span className="rounded-full bg-negative/12 px-2 py-0.5 font-semibold text-negative">{fmt(deficit)}</span>
+        {planYears > 0
+          ? t(
+              `/mes para tu plan de retiro en ${planYears} ${planYears === 1 ? "año" : "años"}`,
+              `/mo for your retirement plan in ${planYears} ${planYears === 1 ? "year" : "years"}`,
+            )
+          : t("/mes · necesitas extra", "/mo · you need extra")}
       </span>
     );
   })();
