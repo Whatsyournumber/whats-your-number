@@ -35,22 +35,54 @@ export function TopCitiesPanel({
     setMine(readMyCities());
     return subscribeMyCities(() => setMine(readMyCities()));
   }, []);
+  const norm = (s: string) =>
+    s
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
   const top = useMemo(() => {
     const ctx = {
       netWorth,
       age: profile.age ?? 30,
       expectedReturn: profile.expected_return || 7,
     };
-    if (mine.length > 0) {
-      const all = rankCities({ ...filters, region: "any", climate: "any", stability: "any" }, ctx);
-      const picked = mine.map((id) => all.find((r) => r.city.id === id)).filter(Boolean) as ReturnType<
-        typeof rankCities
-      >;
-      if (picked.length > 0) return picked;
+    const all = rankCities({ ...filters, region: "any", climate: "any", stability: "any" }, ctx);
+    // 1) La ciudad donde vives hoy (si está en el catálogo) siempre va primero.
+    const home = profile.city
+      ? all.find((r) => norm(r.city.name) === norm(profile.city as string)) ??
+        all.find((r) => norm(profile.city as string).includes(norm(r.city.name)))
+      : undefined;
+
+    // 2) Ciudades parecidas: presupuesto similar o menor y que te acerquen antes a tu número.
+    const rest = all.filter((r) => r.city.id !== home?.city.id);
+    let similar: CityScore[];
+    if (home) {
+      const homeYears = home.yearsToRetire ?? Number.POSITIVE_INFINITY;
+      const faster = rest.filter((r) => {
+        const y = r.yearsToRetire ?? Number.POSITIVE_INFINITY;
+        return r.cost <= home.cost * 1.1 && y <= homeYears;
+      });
+      const pool = faster.length > 0 ? faster : rest.filter((r) => r.cost <= home.cost * 1.25);
+      similar = (pool.length > 0 ? pool : rest)
+        .sort((a, b) => {
+          const ya = a.yearsToRetire ?? Number.POSITIVE_INFINITY;
+          const yb = b.yearsToRetire ?? Number.POSITIVE_INFINITY;
+          if (ya !== yb) return ya - yb;
+          return Math.abs(a.cost - home.cost) - Math.abs(b.cost - home.cost);
+        })
+        .slice(0, 2);
+      return [home, ...similar];
     }
-    // Ranking 100% según tu perfil: sin ciudades fijas.
+
+    // Sin ciudad de residencia conocida: usa las guardadas o el ranking del perfil.
+    if (mine.length > 0) {
+      const picked = mine.map((id) => all.find((r) => r.city.id === id)).filter(Boolean) as CityScore[];
+      if (picked.length > 0) return picked.slice(0, 3);
+    }
     return rankCities(filters, ctx).slice(0, 3);
-  }, [filters, mine, netWorth, profile.age, profile.expected_return]);
+  }, [filters, mine, netWorth, profile.age, profile.city, profile.expected_return]);
+
   // Ciudad abierta en el pop-up de detalle.
   const [detail, setDetail] = useState<CityScore | null>(null);
 
