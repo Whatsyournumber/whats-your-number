@@ -10,7 +10,9 @@ const schema = z.object({
   categories: z.array(z.string()).default([]),
   currency: z.string().default("EUR"),
   today: z.string(),
+  lang: z.enum(["es", "en"]).default("es"),
 });
+
 
 /** Convierte una nota de voz o la foto de un recibo en un gasto listo para guardar. */
 export const captureExpense = createServerFn({ method: "POST" })
