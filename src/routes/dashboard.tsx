@@ -152,6 +152,32 @@ function Dashboard() {
     if (sum > 0) return sum;
     return hasSpendTarget && spendTarget > 0 ? spendTarget : 0;
   }, [budgetLines, hasSpendTarget, spendTarget]);
+  // Gastos fijos del plan (categorías esenciales con día de cobro): son gasto
+  // real del mes aunque todavía no se registre ninguna compra.
+  const planFixed = useMemo(() => {
+    const list = budgetLines.filter((l) => {
+      const cat = BUDGET_CATEGORIES.find((c) => c.id === l.id);
+      const group = cat?.group ?? l.group;
+      return Number(l.amount) > 0 && (l.dueDay ?? 0) >= 1 && group === "essentials";
+    });
+    const aliases = new Set<string>();
+    for (const line of list) {
+      const cat = BUDGET_CATEGORIES.find((c) => c.id === line.id);
+      for (const word of [line.label, cat?.es, cat?.en, ...(line.keywords ?? []), ...(cat?.aliases ?? [])]) {
+        const clean = (word ?? "").trim().toLowerCase();
+        if (clean.length > 2) aliases.add(clean);
+      }
+    }
+    return {
+      total: list.reduce((sum, line) => sum + Number(line.amount), 0),
+      // Evita contar dos veces el mismo gasto fijo suelto y su línea del plan.
+      isDuplicate: (name: string) => {
+        const clean = name.replace(/^\p{Extended_Pictographic}\s*/u, "").trim().toLowerCase();
+        if (clean.length < 3) return false;
+        return [...aliases].some((alias) => clean === alias || clean.includes(alias) || alias.includes(clean));
+      },
+    };
+  }, [budgetLines]);
   const { live: indexLive } = useIndexReturns();
   const { holdings } = useHoldings();
   const holdingSymbols = holdings
