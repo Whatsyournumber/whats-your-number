@@ -122,8 +122,10 @@ function prompt(categories: string[], currency: string, today: string, lang: "es
     "amount siempre positivo (el gasto). date en formato YYYY-MM-DD; si no se menciona usa hoy.",
     "merchant: el comercio o concepto corto, sin adjetivos.",
     lang === "en"
-      ? "The input can be in ANY language: always write merchant (and any free text) in ENGLISH, translating it faithfully."
-      : "La entrada puede estar en CUALQUIER idioma: escribe merchant (y cualquier texto libre) en ESPAÑOL, traduciéndolo fielmente.",
+      ? "The input can be in ANY language or script (Arabic, French, Chinese, Japanese, Russian, Hebrew, Thai...): always write merchant and any free text in ENGLISH, translating it faithfully. Transliterate proper names/brands into the Latin alphabet. Never return text in the original script."
+      : "La entrada puede estar en CUALQUIER idioma o alfabeto (árabe, francés, chino, japonés, ruso, hebreo, tailandés...): escribe merchant y cualquier texto libre en ESPAÑOL, traduciéndolo fielmente. Transcribe nombres propios y marcas al alfabeto latino. Nunca devuelvas texto en el alfabeto original.",
+    "Interpreta fechas en cualquier formato local (DD/MM/AAAA, MM/DD/AAAA, calendarios o meses escritos en otro idioma) y conviértelas a YYYY-MM-DD.",
+    "Interpreta números en cualquier formato local: coma o punto decimal, separadores de miles, y dígitos arábigo-índicos (٠١٢٣٤٥٦٧٨٩) o de otros sistemas. Devuelve amount como número decimal con punto.",
   ].join(" ");
 }
 
@@ -161,7 +163,11 @@ export async function parseExpenseFromReceipt(
     model: gateway("google/gemini-3.5-flash"),
     system: [
       prompt(categories, currency, today, lang),
-      "items: una línea por cada producto o servicio que aparezca en el ticket, con su nombre tal como está escrito, su importe pagado (positivo, con descuentos aplicados) y la categoría de la lista que mejor le corresponda.",
+      "items: una línea por cada producto o servicio que aparezca en el ticket, con su nombre, su importe pagado (positivo, con descuentos aplicados) y la categoría de la lista que mejor le corresponda.",
+      lang === "en"
+        ? "Receipts may be written in any language or script (Arabic, French, Chinese, Japanese, Russian, Hebrew, Thai...). Translate every item name and the merchant into ENGLISH; never keep the original script. Keep the product recognizable (e.g. 'خبز' -> 'Bread', 'Pain au chocolat' -> 'Chocolate croissant')."
+        : "El ticket puede estar en cualquier idioma o alfabeto (árabe, francés, chino, japonés, ruso, hebreo, tailandés...). Traduce al ESPAÑOL el nombre de cada producto y el comercio; nunca dejes el alfabeto original. Mantén el producto reconocible (p. ej. 'خبز' -> 'Pan', 'Pain au chocolat' -> 'Napolitana de chocolate').",
+      "Lee también tickets escritos de derecha a izquierda y con dígitos locales; si el importe está en otra moneda, devuelve el número tal cual aparece sin convertirlo.",
       "No incluyas subtotales, impuestos, propinas ni el total como items. Si el ticket no muestra el detalle, devuelve items vacío.",
     ].join(" "),
     messages: [
@@ -170,7 +176,7 @@ export async function parseExpenseFromReceipt(
         content: [
           {
             type: "text",
-            text: "Lee este recibo o ticket: devuelve el TOTAL pagado, el comercio, la fecha, la categoría y el desglose de cada producto comprado con su importe.",
+            text: "Lee este recibo o ticket, esté en el idioma que esté: devuelve el TOTAL pagado, el comercio, la fecha, la categoría y el desglose de cada producto comprado con su importe, todo traducido al idioma de la app.",
           },
           { type: "image", image: base64, mediaType: mimeType || "image/jpeg" },
         ],
