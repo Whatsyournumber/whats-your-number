@@ -629,6 +629,10 @@ function PortafolioContent() {
     purchased_at: string;
   } | null>(null);
   const editingHolding = holdings.find((h) => h.id === editId) ?? null;
+  // Precio en vivo del ticker que se está editando.
+  const draftTicker = (draft?.ticker ?? "").trim().toUpperCase();
+  const draftQuoteQuery = useQuotes(draftTicker.length >= 1 ? [draftTicker] : []);
+  const draftQuote = (draftQuoteQuery.data?.quotes ?? []).find((q) => q.symbol.toUpperCase() === draftTicker);
   const openEdit = (id: string) => {
     const h = holdings.find((x) => x.id === id);
     if (!h) return;
