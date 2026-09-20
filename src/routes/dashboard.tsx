@@ -1088,7 +1088,8 @@ function Dashboard() {
                         </span>
                         <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="truncate text-[11px] text-muted-foreground">{subtitle}</p>
+                      <p className="numeric mt-0.5 text-sm font-medium">
                         {fmtCompact(left)} {t("de", "of")} {fmtCompact(right)}
                       </p>
                       <Progress
@@ -1096,7 +1097,6 @@ function Dashboard() {
                         indicatorClassName={isCityGoal ? (cityReached ? "bg-positive" : "bg-negative") : goalBarColor(pct)}
                         className="mt-1.5 h-1.5"
                       />
-                      <p className="mt-1 truncate text-[11px] text-muted-foreground">{subtitle}</p>
                     </div>
                   </Link>
                 </li>
