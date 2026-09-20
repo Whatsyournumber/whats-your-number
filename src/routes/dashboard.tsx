@@ -430,7 +430,7 @@ function Dashboard() {
     const pill = (n: number | string, tone: string) => (
       <span className={cn("rounded-full px-1.5 py-0.5 font-semibold", tone)}>{n}</span>
     );
-    if (minRetirementMonthly > 0) {
+    if (retirementMonthlyGoal > 0) {
       const tone = "bg-positive/12 text-positive";
       const line = (cls: string, pre: [string, string], mid: [string, string]) => (
         <span className={cn("inline-flex items-center gap-1", cls)}>
