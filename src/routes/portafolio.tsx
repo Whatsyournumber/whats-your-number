@@ -619,6 +619,7 @@ function PortafolioContent() {
     manual_value: string;
     monthly_contribution: string;
     expected_return: string;
+    linked_liability: string;
     purchased_at: string;
   } | null>(null);
   const editingHolding = holdings.find((h) => h.id === editId) ?? null;
@@ -634,6 +635,7 @@ function PortafolioContent() {
       manual_value: h.manual_value ? String(h.manual_value) : "",
       monthly_contribution: h.monthly_contribution ? String(h.monthly_contribution) : "",
       expected_return: h.expected_return ? String(h.expected_return) : "",
+      linked_liability: h.linked_liability ? String(h.linked_liability) : "",
       purchased_at: (h.purchased_at ?? "").slice(0, 10),
     });
     setEditId(id);
@@ -651,6 +653,7 @@ function PortafolioContent() {
       manual_value: h.value > 0 ? String(h.value) : "",
       monthly_contribution: "",
       expected_return: "",
+      linked_liability: "",
       purchased_at: "",
     });
     setEditId(fallbackId);
@@ -669,6 +672,7 @@ function PortafolioContent() {
       manual_value: "",
       monthly_contribution: "",
       expected_return: String(defaultReturn(kind)),
+      linked_liability: "",
       purchased_at: new Date().toISOString().slice(0, 10),
     });
   const closeEdit = () => {
@@ -692,6 +696,7 @@ function PortafolioContent() {
       manual_value: numOr(draft.manual_value),
       monthly_contribution: numOr(draft.monthly_contribution),
       expected_return: numOr(draft.expected_return, base.expected_return),
+      linked_liability: numOr(draft.linked_liability),
       purchased_at: draft.purchased_at || base.purchased_at || null,
     };
     try {
@@ -1315,6 +1320,12 @@ function PortafolioContent() {
             <div className="space-y-1">
               <Label className="text-[11px] text-muted-foreground">{t("Valor actual", "Current value")}</Label>
               <Input className="h-9" inputMode="decimal" value={draft.manual_value} onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })} />
+            </div>
+          )}
+          {draft.kind === "property" && (
+            <div className="space-y-1">
+              <Label className="text-[11px] text-muted-foreground">{t("Deuda pendiente", "Outstanding debt")}</Label>
+              <Input className="h-9" inputMode="decimal" value={draft.linked_liability} onChange={(e) => setDraft({ ...draft, linked_liability: e.target.value })} />
             </div>
           )}
           {(!isNew || ["etf", "stock", "crypto", "bond"].includes(draft.kind)) && (
