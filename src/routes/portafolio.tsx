@@ -1458,6 +1458,20 @@ function PortafolioContent() {
     </div>
   );
 
+  const assetEditDialog = (
+    <Dialog open={editId !== null} onOpenChange={(open) => (!open ? closeEdit() : null)}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{editId === "new" ? t("Nuevo activo", "New asset") : t("Editar activo", "Edit asset")}</DialogTitle>
+          <DialogDescription className="sr-only">
+            {t("Modifica los datos del activo y guarda los cambios.", "Edit the asset details and save your changes.")}
+          </DialogDescription>
+        </DialogHeader>
+        {assetEditor(editId === "new")}
+      </DialogContent>
+    </Dialog>
+  );
+
   const calendarLabel = evoPoint ? evoPoint.label : t("Actual", "Current");
 
   const benchmarkButtons = (
