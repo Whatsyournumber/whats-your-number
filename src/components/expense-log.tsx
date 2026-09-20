@@ -1347,7 +1347,7 @@ export function ExpenseLog() {
                 <div className="grid grid-cols-3 gap-2.5">
                   {(
                     [
-                      { Icon: GooglePhotosIcon, es: "Google Fotos", en: "Photos", pick: () => fileRef.current?.click() },
+                      { Icon: GooglePhotosIcon, es: "Google Imágenes", en: "Google Images", pick: () => fileRef.current?.click() },
                       { Icon: GalleryIcon, es: "Galería", en: "Gallery", pick: () => fileRef.current?.click() },
                       { Icon: FolderIcon, es: "Archivos", en: "Files", pick: () => docsRef.current?.click() },
                     ] as const
