@@ -766,7 +766,7 @@ function PortafolioContent() {
         );
       }
       toast.success(editingHolding ? t("Posición actualizada", "Position updated") : t("Activo añadido", "Asset added"));
-      closeEdit();
+      forceCloseEdit();
     } catch {
       toast.error(t("No pudimos guardar. Inténtalo de nuevo.", "We couldn't save. Please try again."));
     }
