@@ -881,20 +881,20 @@ function Dashboard() {
               </div>
               <Progress value={numberProgress} className="h-2" />
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              <div className="rounded-xl bg-elevated/60 p-3">
-                <p className="text-xs text-muted-foreground">{t("Monto mensual", "Monthly amount")}</p>
+            <div className="grid grid-cols-3 gap-1.5">
+              <div className="rounded-xl bg-elevated/60 p-2.5">
+                <p className="truncate whitespace-nowrap text-[11px] text-muted-foreground">{t("Monto mensual", "Monthly amount")}</p>
                 <p className="numeric mt-1 truncate text-lg font-semibold" title={`${fmt(targetNumber > 0 ? (targetNumber * swr) / 12 : 0)}${t("/mes", "/mo")}`}>
                   {fmt(targetNumber > 0 ? (targetNumber * swr) / 12 : 0)}
                 </p>
               </div>
-              <div className="rounded-xl bg-elevated/60 p-3">
-                <p className="text-xs text-muted-foreground">{t("Años restantes", "Years left")}</p>
-                <p className="numeric mt-1 text-lg font-semibold">{numberYearsLeft}</p>
+              <div className="rounded-xl bg-elevated/60 p-2.5">
+                <p className="truncate whitespace-nowrap text-[11px] text-muted-foreground">{t("Años restantes", "Years left")}</p>
+                <p className="numeric mt-1 truncate text-lg font-semibold">{numberYearsLeft}</p>
               </div>
-              <div className="rounded-xl bg-elevated/60 p-3">
-                <p className="text-xs text-muted-foreground">{t("Probabilidad", "Probability")}</p>
-                <p className="numeric mt-1 text-lg font-semibold">{plan.probability}%</p>
+              <div className="rounded-xl bg-elevated/60 p-2.5">
+                <p className="truncate whitespace-nowrap text-[11px] text-muted-foreground">{t("Probabilidad", "Probability")}</p>
+                <p className="numeric mt-1 truncate text-lg font-semibold">{plan.probability}%</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
