@@ -1260,10 +1260,9 @@ function PortafolioContent() {
     ["stock", t("Acción", "Stock"), t("Empresas individuales", "Individual companies")],
     ["crypto", t("Cripto", "Crypto"), t("Activos digitales", "Digital assets")],
     ["cash", t("Efectivo", "Cash"), t("Cuentas y efectivo", "Accounts and cash")],
-    ["property", t("Propiedad", "Property"), t("Bienes raíces", "Real estate")],
+    ["property", t("REITs", "REITs"), t("Fondos de inversión inmobiliaria", "Real estate investment trusts")],
     ["bond", t("Renta fija", "Fixed income"), t("Bonos e instrumentos", "Bonds and instruments")],
     ["structured", t("Nota estructurada", "Structured note"), t("Productos estructurados", "Structured products")],
-    ["retirement", t("Fondo de retiro", "Retirement fund"), t("Planes de pensiones", "Pension plans")],
     ["other", t("Otros", "Other"), t("Cualquier otro activo", "Any other asset")],
   ];
 
