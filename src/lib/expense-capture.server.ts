@@ -122,9 +122,11 @@ function prompt(categories: string[], currency: string, today: string, lang: "es
     "amount siempre positivo (el gasto). date en formato YYYY-MM-DD; si no se menciona usa hoy.",
     "merchant: el comercio o concepto corto, sin adjetivos.",
     lang === "en"
-      ? "The input can be in ANY language: always write merchant (and any free text) in ENGLISH, translating it faithfully."
-      : "La entrada puede estar en CUALQUIER idioma: escribe merchant (y cualquier texto libre) en ESPAÑOL, traduciéndolo fielmente.",
-  ].join(" ");
+      ? "The input can be in ANY language or script (Arabic, French, Chinese, Japanese, Russian, Hebrew, Thai...): always write merchant and any free text in ENGLISH, translating it faithfully. Transliterate proper names/brands into the Latin alphabet. Never return text in the original script."
+      : "La entrada puede estar en CUALQUIER idioma o alfabeto (árabe, francés, chino, japonés, ruso, hebreo, tailandés...): escribe merchant y cualquier texto libre en ESPAÑOL, traduciéndolo fielmente. Transcribe nombres propios y marcas al alfabeto latino. Nunca devuelvas texto en el alfabeto original.",
+    "Interpreta fechas en cualquier formato local (DD/MM/AAAA, MM/DD/AAAA, calendarios o meses escritos en otro idioma) y conviértelas a YYYY-MM-DD.",
+    "Interpreta números en cualquier formato local: coma o punto decimal, separadores de miles, y dígitos arábigo-índicos (٠١٢٣٤٥٦٧٨٩) o de otros sistemas. Devuelve amount como número decimal con punto.",
+
 }
 
 /** Interpreta una nota de voz ya transcrita (en cualquier idioma) y la convierte en un gasto en el idioma de la app. */
