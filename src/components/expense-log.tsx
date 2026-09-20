@@ -849,7 +849,10 @@ export function ExpenseLog() {
               <Camera className="mr-2.5 h-6 w-6 text-positive" />
               {t("Tomar foto", "Take photo")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => fileRef.current?.click()}>
+            <DropdownMenuItem
+              className="min-h-16 rounded-lg px-3.5 text-[17px]"
+              onSelect={() => (isMobile ? setPhotoPickerOpen(true) : fileRef.current?.click())}
+            >
               <Upload className="mr-2.5 h-6 w-6 text-positive" />
               {t("Sube foto o captura", "Upload photo or screenshot")}
             </DropdownMenuItem>
