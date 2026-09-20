@@ -486,6 +486,7 @@ function PortafolioContent() {
       const growth = marketGrowth !== null ? Math.max(0, marketGrowth) : Math.max(0, h.expected_return || 7) / 100;
       const tickerLabel = h.ticker || h.label || t("Activo", "Asset");
       return {
+        holdingId: h.id as string | null,
         ticker: tickerLabel,
         name: h.label && h.label !== tickerLabel ? h.label : kindSubtitle(h.kind),
 
