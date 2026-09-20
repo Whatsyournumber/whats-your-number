@@ -156,20 +156,28 @@ function PatrimonioContent() {
   // Cierres diarios: rentabilidad exacta desde el día de compra (compras de hace días).
   const holdingDaily = useDailySeries(holdingSymbols).data?.series ?? {};
 
-  // Pasivos: deudas explícitas (TDC, préstamos) + hipotecas ligadas a propiedades
-  // + hipoteca del onboarding si no hay una propiedad que ya la cubra.
+  // Pasivos: deudas explícitas (TDC, préstamos) + hipoteca, contada una sola vez.
+  // El saldo del análisis de hipoteca (profile.mortgage_balance) es el dato más
+  // reciente: si existe, sustituye a la hipoteca ligada a la propiedad y a la
+  // parte de las "deudas" del onboarding que corresponde a esa misma hipoteca.
+  const propertyMortgageRows = holdings
+    .filter((h) => h.kind === "property" && h.linked_liability > 0)
+    .map((h) => ({ id: `mort-${h.id}`, label: t(`Hipoteca · ${h.label || t("Propiedad", "Property")}`, `Mortgage · ${h.label || t("Property", "Property")}`), value: h.linked_liability, interest: 0 }));
+  const propertyMortgagesSum = propertyMortgageRows.reduce((s, r) => s + r.value, 0);
+  const profileMortgage = Math.max(0, profile?.mortgage_balance || 0);
+  const mortgageRows =
+    profileMortgage > 0
+      ? [{ id: "mort-profile", label: t("Hipoteca", "Mortgage"), value: Math.max(profileMortgage, propertyMortgagesSum), interest: Math.max(0, profile?.mortgage_rate || 0) }]
+      : propertyMortgageRows;
+  const mortgageCovered = mortgageRows.reduce((s, r) => s + r.value, 0);
   const debtRows = holdings
     .filter((h) => h.kind === "debt" && holdingValue(h) > 0)
     .map((h) => ({ id: h.id, label: h.label || t("Deuda", "Debt"), value: holdingValue(h), interest: h.expected_return }));
-  const mortgageRows = holdings
-    .filter((h) => h.kind === "property" && h.linked_liability > 0)
-    .map((h) => ({ id: `mort-${h.id}`, label: t(`Hipoteca · ${h.label || t("Propiedad", "Property")}`, `Mortgage · ${h.label || t("Property", "Property")}`), value: h.linked_liability, interest: 0 }));
-  const profileMortgage = Math.max(0, profile?.mortgage_balance || 0);
-  const onboardingMortgageRows =
-    profileMortgage > 0 && mortgageRows.length === 0
-      ? [{ id: "mort-profile", label: t("Hipoteca", "Mortgage"), value: profileMortgage, interest: Math.max(0, profile?.mortgage_rate || 0) }]
-      : [];
-  const liabilityRows = [...debtRows, ...mortgageRows, ...onboardingMortgageRows].sort((a, b) => b.value - a.value);
+  // Deudas del onboarding que no son la hipoteca ya contada arriba.
+  const otherDebts = Math.max(0, Math.max(0, profile?.liabilities || 0) - mortgageCovered);
+  const otherDebtRows = otherDebts > 0 ? [{ id: "debts-profile", label: t("Deudas", "Debts"), value: otherDebts, interest: 0 }] : [];
+  const liabilityRows = [...debtRows, ...mortgageRows, ...otherDebtRows].sort((a, b) => b.value - a.value);
+  const liabilitiesTotal = liabilityRows.reduce((s, r) => s + r.value, 0);
 
   // Detalle completo: inversiones + inmuebles + retiro + cash + activos futuros (trading, venta, etc.).
   const groupOf = (kind: string) =>
