@@ -201,6 +201,23 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
                     {renderTab(tab)}
                   </SheetClose>
                 ))}
+                <SheetClose asChild>
+                  <Link
+                    to="/contacto"
+                    className={cn(
+                      "rounded-full px-3 py-1.5 text-sm transition-colors",
+                      isLight
+                        ? "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        : "text-muted-foreground hover:bg-elevated hover:text-foreground",
+                    )}
+                    activeOptions={{ exact: true }}
+                    activeProps={{
+                      className: isLight ? "bg-slate-100 text-slate-900" : "bg-elevated text-foreground",
+                    }}
+                  >
+                    {t("Contacto", "Contact")}
+                  </Link>
+                </SheetClose>
               </nav>
               {!user && (
                 <div className="flex flex-col gap-2">
