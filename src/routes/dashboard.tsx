@@ -650,34 +650,6 @@ function Dashboard() {
             : priority === "organizar"
               ? t("El número que ordena tu dinero", "The number that organizes your money")
               : t(`Libertad estimada a los ${plan.freedomAge} años`, `Freedom estimated at age ${plan.freedomAge}`);
-  const numberLabel = primary
-    ? t("Meta principal", "Primary goal")
-    : goalMode === "home"
-      ? t("Entrada objetivo", "Target down payment")
-      : goalMode === "business"
-        ? t("Capital objetivo", "Target capital")
-        : priority === "patrimonio"
-          ? t("Patrimonio objetivo", "Target wealth")
-          : priority === "gastos"
-            ? t("Capital de control", "Control capital")
-            : priority === "organizar"
-              ? t("Número organizador", "Organizing number")
-              : "Your Number";
-  const numberHint = primary
-    ? `${primary.emoji} ${t("Meta activa", "Active goal")}`
-    : goalMode === "home"
-      ? t("Para comprar tu vivienda", "To buy your home")
-      : goalMode === "business"
-        ? priority === "otro" && goalNote
-          ? t(`Para ${goalNote}`, `For ${goalNote}`)
-          : t("Para arrancar tu negocio", "To start your business")
-        : priority === "patrimonio"
-          ? t("Para hacer crecer tu patrimonio", "To grow your wealth")
-          : priority === "gastos"
-            ? t("Para controlar tus gastos mensuales", "To control your monthly spending")
-            : priority === "organizar"
-              ? t("Para organizar tus finanzas", "To organize your finances")
-              : t(`Para vivir con ${fmt(desiredIncome)} al mes`, `To live on ${fmt(desiredIncome)} a month`);
 
 
   return (
