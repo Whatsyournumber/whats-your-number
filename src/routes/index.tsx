@@ -47,7 +47,7 @@ function HighlightDesc({
   solid,
 }: {
   desc: string;
-  highlight?: string;
+  highlight?: string | undefined;
   solid?: boolean;
 }) {
   if (!highlight || !desc.includes(highlight)) return <>{desc}</>;
