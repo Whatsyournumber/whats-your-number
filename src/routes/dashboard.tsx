@@ -825,8 +825,8 @@ function Dashboard() {
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title={numberTitle} description={numberDescription} className="lg:col-span-2">
-          <div className="space-y-4">
+        <Panel title={numberTitle} description={numberDescription} className="flex h-full flex-col lg:col-span-2">
+          <div className="flex h-full flex-1 flex-col gap-4">
             <div>
               <p
                 className={cn(
