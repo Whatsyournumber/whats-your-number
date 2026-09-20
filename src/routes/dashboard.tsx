@@ -938,12 +938,14 @@ function Dashboard() {
               const years = yearsToTarget(right, left, g.monthly, portfolioRate);
 
               const isCityGoal = g.emoji === "🌍";
+              // Ciudad: verde solo si tus ingresos cubren el coste de vivir allí.
+              const cityReached = isCityGoal && (g.displayTarget ?? 1) > 0 && (g.displayCurrent ?? 0) >= (g.displayTarget ?? 1);
 
               let subtitle: string;
               if (isEmergency) {
                 subtitle = t("6 meses de tus gastos mensuales", "6 months of your monthly expenses");
               } else if (isCityGoal) {
-                subtitle = lifestyleSubtitle(profile, t);
+                subtitle = cityReached ? lifestyleSubtitle(profile, t) : lifestyleShortfallSubtitle(profile, t);
               } else if (pct >= 100) {
                 subtitle = t("Meta alcanzada", "Goal reached");
               } else if (g.note) {
