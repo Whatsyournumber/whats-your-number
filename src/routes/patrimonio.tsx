@@ -156,14 +156,20 @@ function PatrimonioContent() {
   // Cierres diarios: rentabilidad exacta desde el día de compra (compras de hace días).
   const holdingDaily = useDailySeries(holdingSymbols).data?.series ?? {};
 
-  // Pasivos: deudas explícitas (TDC, préstamos) + hipotecas ligadas a propiedades.
+  // Pasivos: deudas explícitas (TDC, préstamos) + hipotecas ligadas a propiedades
+  // + hipoteca del onboarding si no hay una propiedad que ya la cubra.
   const debtRows = holdings
     .filter((h) => h.kind === "debt" && holdingValue(h) > 0)
     .map((h) => ({ id: h.id, label: h.label || t("Deuda", "Debt"), value: holdingValue(h), interest: h.expected_return }));
   const mortgageRows = holdings
     .filter((h) => h.kind === "property" && h.linked_liability > 0)
     .map((h) => ({ id: `mort-${h.id}`, label: t(`Hipoteca · ${h.label || t("Propiedad", "Property")}`, `Mortgage · ${h.label || t("Property", "Property")}`), value: h.linked_liability, interest: 0 }));
-  const liabilityRows = [...debtRows, ...mortgageRows].sort((a, b) => b.value - a.value);
+  const profileMortgage = Math.max(0, profile?.mortgage_balance || 0);
+  const onboardingMortgageRows =
+    profileMortgage > 0 && mortgageRows.length === 0
+      ? [{ id: "mort-profile", label: t("Hipoteca", "Mortgage"), value: profileMortgage, interest: Math.max(0, profile?.mortgage_rate || 0) }]
+      : [];
+  const liabilityRows = [...debtRows, ...mortgageRows, ...onboardingMortgageRows].sort((a, b) => b.value - a.value);
 
   // Detalle completo: inversiones + inmuebles + retiro + cash + activos futuros (trading, venta, etc.).
   const groupOf = (kind: string) =>
