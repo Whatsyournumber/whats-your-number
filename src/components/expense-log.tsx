@@ -618,7 +618,7 @@ export function ExpenseLog() {
   };
 
   const focusOverspent = () => {
-    const over = rows.filter((r) => r.pct >= 100).sort((a, b) => b.pct - a.pct)[0];
+    const over = visibleRows.filter((r) => r.pct >= 100).sort((a, b) => b.pct - a.pct)[0];
     if (over) focusCategory(over.id);
     else categoryCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
