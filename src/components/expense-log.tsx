@@ -143,7 +143,10 @@ export function ExpenseLog() {
       fixed.update(recEditId, { name, amount, dayOfMonth: recDay });
       const planId = `custom:fixed:${recEditId}`;
       const existing = budgets.lines.find((line) => line.id === planId);
-      const previousAmount = existing?.amount ?? 0;
+      // Los recurrentes creados antes de las líneas de plan no tienen budget line:
+      // en ese caso el monto anterior es el del propio gasto fijo, no 0.
+      const previousAmount =
+        existing?.amount ?? Number(fixed.items.find((i) => i.id === recEditId)?.amount ?? 0) ?? 0;
       const nextLine: BudgetLine = {
         ...existing,
         id: planId,
