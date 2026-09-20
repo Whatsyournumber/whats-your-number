@@ -325,9 +325,12 @@ function Dashboard() {
       (row) => row.amount === Math.abs(Number(tx.amount)).toFixed(2) && (sameMerchant(row.name, tx.merchant) || sameMerchant(row.name, tx.description)),
     );
     const travelDays = buildTravelDays(monthTransactions as Tx[], rules);
-    let needs = fixed.items.filter((item) => bucketFor(item.name) === "needs").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
-    let wants = fixed.items.filter((item) => bucketFor(item.name) === "wants").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
-    let savings = fixed.items.filter((item) => bucketFor(item.name) === "savings").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
+    // Los gastos fijos del plan (con día de cobro) siempre cuentan como gasto
+    // del mes; los fijos sueltos solo si no repiten una línea del plan.
+    const looseFixed = fixed.items.filter((item) => !planFixed.isDuplicate(item.name));
+    let needs = looseFixed.filter((item) => bucketFor(item.name) === "needs").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0) + planFixed.total;
+    let wants = looseFixed.filter((item) => bucketFor(item.name) === "wants").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
+    let savings = looseFixed.filter((item) => bucketFor(item.name) === "savings").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
     const retirementFund = holdings
       .filter((holding) => holding.kind === "retirement")
       .reduce((sum, holding) => sum + Math.max(0, Number(holding.monthly_contribution) || 0), 0);
