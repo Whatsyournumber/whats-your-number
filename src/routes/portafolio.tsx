@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowLeft, CalendarIcon, Info, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import { Area, CartesianGrid, ComposedChart, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -11,6 +11,16 @@ import { axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
