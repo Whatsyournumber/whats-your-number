@@ -172,8 +172,8 @@ function ContactPage() {
               </h2>
               <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
                 {t(
-                  "Gracias por escribirnos. Te respondemos a tu correo en menos de 24 horas.",
-                  "Thanks for reaching out. We'll reply to your email within 24 hours.",
+                  "Gracias por escribirnos. Te respondemos lo antes posible.",
+                  "Thanks for reaching out. We'll reply as soon as possible.",
                 )}
               </p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
