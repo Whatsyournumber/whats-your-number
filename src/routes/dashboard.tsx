@@ -578,12 +578,7 @@ function Dashboard() {
         </span>
       );
     }
-    const good = savingsRate >= 20;
-    return (
-      <span className="inline-flex items-center gap-1.5">
-        {t("Ahorraste", "You saved")} {pill(`${num(savingsRate, 1)}%`, good)} {t(good ? "· Por encima del" : "· Por debajo del", good ? "· Above the" : "· Below the")} {pill("20%", good)} {t("mínimo", "minimum")}
-      </span>
-    );
+    return <span>{t("Pudiera ahorrar al ritmo actual", "You could save at your current pace")}</span>;
   })();
 
 
