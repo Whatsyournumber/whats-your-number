@@ -466,7 +466,6 @@ function Dashboard() {
 
   // Si el usuario eligió una meta principal en Life Planner, "Tu Número" refleja esa meta.
   const targetNumber = primary ? primary.cost : baseTargetNumber;
-  const numberNetWorth = primary ? primary.saved : baseNumberNetWorth;
   const monthlyContribution = primary ? primary.monthly : baseMonthlyContribution;
   // La barra es la misma que la de WhatsYournumber: capital invertible (sin
   // viviendas ni deudas) frente a tu número, no el patrimonio neto completo.
