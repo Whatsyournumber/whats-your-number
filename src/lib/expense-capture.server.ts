@@ -95,8 +95,12 @@ export async function transcribeExpenseAudio(
           content: [
             {
               type: "text",
-              text: "Transcribe literalmente este audio. Devuelve solo el texto, sin comillas ni comentarios. Si no hay voz, responde vacío.",
+              text:
+                lang === "en"
+                  ? "Transcribe this audio literally in English. Return only the text, no quotes or comments. If there is no speech, return empty."
+                  : "Transcribe literalmente este audio en español. Devuelve solo el texto, sin comillas ni comentarios. Si no hay voz, responde vacío.",
             },
+
             { type: "file", data: base64, mediaType: audioType },
           ],
         },
