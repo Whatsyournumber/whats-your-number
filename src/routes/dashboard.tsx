@@ -500,7 +500,7 @@ function Dashboard() {
       term: Number(profile.mortgage_term) || 0,
     };
     stored = {
-      balance: stored.balance || fromProfile.balance || Number(profile.liabilities) || 0,
+      balance: stored.balance || fromProfile.balance || Math.max(0, Number(profile.liabilities) || 0),
       rate: stored.rate || fromProfile.rate,
       term: stored.term || fromProfile.term,
     };
