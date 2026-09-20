@@ -1318,9 +1318,16 @@ function MoneyField({
         <input
           type="number"
           inputMode="decimal"
+          min={0}
+          step="any"
           value={value || ""}
           placeholder={hint ?? t("Escribe aquí", "Type here")}
-          onChange={(e) => onChange(Number(e.target.value || 0))}
+          // La rueda del ratón sobre un input numérico cambiaba el importe sin querer.
+          onWheel={(e) => e.currentTarget.blur()}
+          onChange={(e) => {
+            const n = Number(e.target.value || 0);
+            onChange(Number.isFinite(n) ? Math.max(0, n) : 0);
+          }}
           className="numeric w-28 max-sm:w-24 border-b border-dashed border-border bg-transparent text-right text-base font-semibold outline-none transition-colors focus:border-primary/60 placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/50"
         />
         <span className="text-xs text-muted-foreground">{currency}</span>
