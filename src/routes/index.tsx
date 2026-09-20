@@ -338,8 +338,8 @@ export function Landing() {
       titleLight: t("Entiende dónde va", "Understand where"),
       titleAccent: t("tu dinero.", "your money goes."),
       desc: t(
-        "Carga tus estados financieros y obtén claridad sobre tus gastos en menos de 30 segundos.",
-        "Upload your financial statements and get clarity on your spending in under 30 seconds.",
+        "Controla tus gastos día a día, compáralos con tu presupuesto y deja que la IA encuentre oportunidades para ahorrar más.",
+        "Track your expenses day by day, compare them with your budget and let the AI find opportunities to save more.",
       ),
     },
     {
