@@ -203,6 +203,23 @@ function RetiroContent() {
   const aporteYears = Math.max(1, Math.round(years));
   const aporteYearsLabel = `${aporteYears} ${aporteYears === 1 ? t("año", "year") : t("años", "years")}`;
 
+  // El aporte es "el sugerido" hasta que escribes y guardas el tuyo.
+  const aporteIsSuggested = savedContribution <= 0 && editedContribution === null;
+  // ¿En cuántos meses llegarías a tu número aportando este monto? Interés compuesto
+  // mensual, igual que la proyección del simulador.
+  const monthsToNumber = (() => {
+    if (targetNow <= 0 || aporteShown <= 0 || investable >= targetNow) return 0;
+    const mr = rate / 100 / 12;
+    let balance = investable;
+    for (let m = 1; m <= 1200; m += 1) {
+      balance = balance * (1 + mr) + aporteShown;
+      if (balance >= targetNow) return m;
+    }
+    return 0; // inalcanzable en 100 años con este aporte
+  })();
+  const aporteRetireYear =
+    monthsToNumber > 0 ? new Date().getFullYear() + Math.ceil(monthsToNumber / 12) : 0;
+
   // Realismo: lo que de verdad te sobra hoy con tus gastos reales (fijos + variables importados).
   const capacity = Math.max(0, d.income - d.expenses);
   const feasible = requiredMonthly <= capacity;
@@ -485,10 +502,15 @@ function RetiroContent() {
                   </span>
                 </div>
                 <p className="relative mt-2 text-[11px] text-muted-foreground">
-                  {t(
-                    `Dinero a aportar mensual al ${rate}% por ${aporteYearsLabel}`,
-                    `Money to contribute monthly at ${rate}% for ${aporteYearsLabel}`,
-                  )}
+                  {aporteIsSuggested || aporteRetireYear <= 0
+                    ? t(
+                        `Dinero a aportar mensual al ${rate}% por ${aporteYearsLabel}`,
+                        `Money to contribute monthly at ${rate}% for ${aporteYearsLabel}`,
+                      )
+                    : t(
+                        `Con este monto tu año de retiro sería ${aporteRetireYear}`,
+                        `With this amount your retirement year would be ${aporteRetireYear}`,
+                      )}
                 </p>
               </>
             )}
