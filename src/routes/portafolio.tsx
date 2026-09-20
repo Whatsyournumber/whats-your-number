@@ -1208,6 +1208,107 @@ function PortafolioContent() {
   const simResult = projPoints[projPoints.length - 1]!;
 
 
+  // Formulario en línea: edita el activo en su propia tarjeta (sin ventana emergente).
+  const assetEditor = (isNew: boolean) =>
+    draft ? (
+      <div
+        className="col-span-2 mt-2 space-y-3 rounded-xl border border-border/60 bg-background/40 p-3 md:col-span-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {isNew ? (
+          <div className="flex flex-wrap gap-1.5">
+            {([
+              ["etf", t("ETF", "ETF")],
+              ["stock", t("Acción", "Stock")],
+              ["crypto", t("Cripto", "Crypto")],
+              ["cash", t("Efectivo", "Cash")],
+              ["property", t("Propiedad", "Property")],
+              ["bond", t("Renta fija", "Bonds")],
+            ] as Array<[HoldingKind, string]>).map(([k, label]) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setDraft({ ...draft, kind: k, expected_return: String(defaultReturn(k)) })}
+                className={cn(
+                  "rounded-full border px-2.5 py-1 text-[11px] transition",
+                  draft.kind === k
+                    ? "border-primary/50 bg-primary/10 text-foreground"
+                    : "border-border/60 text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        ) : null}
+        <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Nombre", "Name")}</Label>
+            <Input className="h-9" value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Ticker", "Ticker")}</Label>
+            <Input
+              className="h-9"
+              value={draft.ticker}
+              placeholder="VOO"
+              onChange={(e) => setDraft({ ...draft, ticker: e.target.value.toUpperCase() })}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Unidades", "Units")}</Label>
+            <Input className="h-9" inputMode="decimal" value={draft.quantity} onChange={(e) => setDraft({ ...draft, quantity: e.target.value })} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Monto invertido", "Amount invested")}</Label>
+            <Input className="h-9" inputMode="decimal" value={draft.cost_basis} onChange={(e) => setDraft({ ...draft, cost_basis: e.target.value })} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Valor actual", "Current value")}</Label>
+            <Input className="h-9" inputMode="decimal" value={draft.manual_value} onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Aporte mensual", "Monthly contribution")}</Label>
+            <Input
+              className="h-9"
+              inputMode="decimal"
+              value={draft.monthly_contribution}
+              onChange={(e) => setDraft({ ...draft, monthly_contribution: e.target.value })}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Retorno esperado %", "Expected return %")}</Label>
+            <Input
+              className="h-9"
+              inputMode="decimal"
+              value={draft.expected_return}
+              onChange={(e) => setDraft({ ...draft, expected_return: e.target.value })}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Fecha de compra", "Purchase date")}</Label>
+            <Input className="h-9" type="date" value={draft.purchased_at} onChange={(e) => setDraft({ ...draft, purchased_at: e.target.value })} />
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-[11px] text-muted-foreground">
+            {t(
+              "Si dejas el valor actual en cero, usamos el precio de mercado por tus unidades.",
+              "If you leave the current value at zero, we use the market price times your units.",
+            )}
+          </p>
+          <div className="flex shrink-0 gap-2">
+            <Button type="button" size="sm" variant="ghost" onClick={closeEdit}>
+              {t("Cancelar", "Cancel")}
+            </Button>
+            <Button type="button" size="sm" onClick={() => void saveEdit()} disabled={saving}>
+              {saving ? t("Guardando", "Saving") : t("Guardar", "Save")}
+            </Button>
+          </div>
+        </div>
+      </div>
+    ) : null;
+
 
   const rows = (list: typeof enriched) => (
     <div className="space-y-2">
