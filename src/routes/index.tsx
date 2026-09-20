@@ -40,10 +40,27 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { HOME_FAQS, buildLandingFaqJsonLd } from "@/lib/landing-faqs";
 import { useEffect } from "react";
 
-/** Renderiza la descripción resaltando la frase clave con una línea de gradiente sutil. */
-function HighlightDesc({ desc, highlight }: { desc: string; highlight?: string }) {
+/** Renderiza la descripción resaltando la frase clave con una línea de gradiente sutil o en color de marca. */
+function HighlightDesc({
+  desc,
+  highlight,
+  solid,
+}: {
+  desc: string;
+  highlight?: string | undefined;
+  solid?: boolean;
+}) {
   if (!highlight || !desc.includes(highlight)) return <>{desc}</>;
   const idx = desc.indexOf(highlight);
+  if (solid) {
+    return (
+      <>
+        {desc.slice(0, idx)}
+        <span className="font-medium text-primary">{highlight}</span>
+        {desc.slice(idx + highlight.length)}
+      </>
+    );
+  }
   return (
     <>
       {desc.slice(0, idx)}
@@ -331,7 +348,14 @@ export function Landing() {
     t("Tu Próxima Ciudad", "Your Next City"),
   ];
 
-  const whyCards = [
+  const whyCards: {
+    icon: typeof PieChart;
+    number: string;
+    titleLight: string;
+    titleAccent: string;
+    desc: string;
+    highlight?: string | undefined;
+  }[] = [
     {
       icon: PieChart,
       number: "01",
@@ -348,9 +372,10 @@ export function Landing() {
       titleLight: t("Descubre cuándo", "Discover when"),
       titleAccent: t("puedes dejar de trabajar.", "you can stop working."),
       desc: t(
-        "Usa la calculadora de patrimonio y jubilación para conocer el capital que necesitas para vivir de tus rendimientos y cuánto te falta para llegar.",
-        "Use the net worth and retirement calculator to know the capital you need to live off your returns and how far you are from getting there.",
+        "Descubre el capital que necesitas para vivir de tus rendimientos y cuánto invertir cada mes para convertir tu libertad en realidad.",
+        "Discover the capital you need to live off your returns and how much to invest each month to turn your freedom into reality.",
       ),
+      highlight: t("tu libertad", "your freedom"),
     },
     {
       icon: Bot,
@@ -571,7 +596,7 @@ export function Landing() {
                     <span className="text-primary">{card.titleAccent}</span>
                   </h3>
                   <p className="mt-2 min-h-[3rem] text-sm leading-relaxed text-muted-foreground/80">
-                    {card.desc}
+                    <HighlightDesc desc={card.desc} highlight={card.highlight} solid />
                   </p>
                 </div>
 
