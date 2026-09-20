@@ -140,6 +140,7 @@ function PatrimonioContent() {
   const d = buildDataset(profile);
   const { fmt, assets } = d;
   const [evoMonth, setEvoMonth] = useState<string | null>(null);
+  const [addAsset, setAddAsset] = useState(false);
   const [benchmark, setBenchmark] = useState<"none" | "sp500" | "nasdaq" | "world">("none");
   const seriesQuery = useMarketSeries(["^GSPC", "^NDX", "URTH"]);
 
