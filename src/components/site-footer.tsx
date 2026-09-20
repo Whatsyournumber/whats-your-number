@@ -61,6 +61,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
             { label: t("Cómo funciona", "How it works"), to: "#como-funciona", anchor: true },
             { label: t("Cómo ganas", "How you earn"), to: "#como-ganas", anchor: true },
             { label: t("Precios", "Pricing"), to: "/precios" },
+            { label: t("Contacto", "Contact"), to: "/contacto" },
           ],
         }
       : kids
@@ -70,6 +71,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
                { label: t("Funciones", "Features"), to: `${kidsHref}#funciones` },
                { label: t("Precios", "Pricing"), to: "/precios" },
               { label: t("Programa de afiliados", "Affiliate program"), to: "/afiliados", external: true },
+              { label: t("Contacto", "Contact"), to: "/contacto" },
             ],
           }
         : {
@@ -78,6 +80,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
                { label: t("Funciones", "Features"), to: `${homeHref}#funciones` },
                { label: t("Precios", "Pricing"), to: `${homeHref}#precios` },
                { label: t("Programa de afiliados", "Affiliate program"), to: "/afiliados", external: true },
+               { label: t("Contacto", "Contact"), to: "/contacto" },
             ],
           },
     affiliates
