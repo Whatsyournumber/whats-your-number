@@ -384,7 +384,12 @@ function RetiroContent() {
               <div className="flex items-center justify-between pt-1">
                 <div>
                   <p className="text-lg font-semibold leading-tight"><Amount full={fmt(liveNumber)} short={fmtCompact(liveNumber)} from="lg" /></p>
-                  <p className="text-[10px] text-muted-foreground">{fmt(wantMonthly)}/{t("mes", "mo")} · {swr.toFixed(1)}%</p>
+                  <p className="text-[10px] text-muted-foreground">
+                    {fmt(wantMonthly)}/{t("mes", "mo")}{" "}
+                    {profile.city
+                      ? `${t("para", "for")} ${profile.city}`
+                      : t("para tu ciudad objetivo", "for your target city")}
+                  </p>
                 </div>
                 <Button
                   size="sm"
