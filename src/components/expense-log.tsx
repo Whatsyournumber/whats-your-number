@@ -684,6 +684,8 @@ export function ExpenseLog() {
   const recorderRef = useRef<MediaRecorder | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const camRef = useRef<HTMLInputElement | null>(null);
+  const docsRef = useRef<HTMLInputElement | null>(null);
+  const [photoPickerOpen, setPhotoPickerOpen] = useState(false);
   const latestExpensesRef = useRef<HTMLDivElement | null>(null);
   const isMobile = useIsMobile();
 
