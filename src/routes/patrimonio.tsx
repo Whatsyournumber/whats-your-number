@@ -208,6 +208,7 @@ function PatrimonioContent() {
       crypto: t("Cripto", "Crypto"),
       retirement: t("Fondo de retiro", "Retirement fund"),
       property: t("Inmueble", "Real estate"),
+      reit: t("REIT", "REIT"),
       future: t("Activo futuro", "Future asset"),
       other: t("Otro", "Other"),
     })[kind] ?? t("Activo", "Asset");
@@ -334,7 +335,7 @@ function PatrimonioContent() {
     assets_cash: ["cash"],
     assets_bank: ["bank", "money_market"],
     assets_retirement: ["retirement"],
-    assets_etf: ["etf", "other", "bond", "tbill", "note", "structured"],
+    assets_etf: ["etf", "other", "bond", "tbill", "note", "structured", "reit"],
     assets_stocks: ["stock"],
     assets_crypto: ["crypto"],
     assets_property: ["property"],

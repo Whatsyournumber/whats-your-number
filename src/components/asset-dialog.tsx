@@ -116,6 +116,7 @@ export function AssetDialog({
     ["crypto", t("Cripto", "Crypto"), t("Activos digitales", "Digital assets")],
     ["cash", t("Efectivo", "Cash"), t("Cuentas y efectivo", "Accounts and cash")],
     ["property", t("Propiedad", "Property"), t("Bienes raíces", "Real estate")],
+    ["reit", t("REITs", "REITs"), t("Fondos de inversión inmobiliaria", "Real estate investment trusts")],
     ["bond", t("Renta fija", "Fixed income"), t("Bonos e instrumentos", "Bonds and instruments")],
     ["structured", t("Nota estructurada", "Structured note"), t("Productos estructurados", "Structured products")],
     ["retirement", t("Fondo de retiro", "Retirement fund"), t("Planes de pensiones", "Pension plans")],
@@ -124,7 +125,7 @@ export function AssetDialog({
 
   return (
     <Dialog open={open} onOpenChange={(v) => (v ? onOpenChange(true) : close())}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-h-[85dvh] w-[calc(100vw-1.5rem)] max-w-2xl overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>
             {editingHolding ? t(`Editar ${editingHolding.label}`, `Edit ${editingHolding.label}`) : t("Nuevo activo", "New asset")}
@@ -174,7 +175,7 @@ export function AssetDialog({
                 <Label className="text-[11px] text-muted-foreground">{t("Nombre", "Name")}</Label>
                 <Input className="h-9" value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} />
               </div>
-              {(!isNew || ["etf", "stock", "crypto", "bond"].includes(draft.kind)) && (
+              {(!isNew || ["etf", "stock", "crypto", "bond", "reit"].includes(draft.kind)) && (
                 <>
                   <div className="space-y-1">
                     <Label className="text-[11px] text-muted-foreground">{t("Ticker", "Ticker")}</Label>
@@ -302,7 +303,7 @@ export function AssetDialog({
             </div>
             <div className="flex items-center justify-between gap-3">
               <p className="text-[11px] text-muted-foreground">
-                {["etf", "stock", "crypto", "bond"].includes(draft.kind)
+                {["etf", "stock", "crypto", "bond", "reit"].includes(draft.kind)
                   ? t(
                       "Si dejas el valor actual en cero, usamos el precio de mercado por tus unidades.",
                       "If you leave the current value at zero, we use the market price times your units.",

@@ -353,7 +353,9 @@ function PortafolioContent() {
                 ? t("Acción", "Stock")
                 : kind === "crypto"
                   ? t("Cripto", "Crypto")
-                  : t("Activo", "Asset");
+                  : kind === "reit"
+                    ? t("REIT", "REIT")
+                    : t("Activo", "Asset");
   const { profile } = useProfile();
   const { user } = useAuth();
   const { holdings, saveAll, saving } = useHoldings();
@@ -467,12 +469,12 @@ function PortafolioContent() {
         ? ("Estructurado" as const)
         : ["bond", "tbill", "note"].includes(kind)
           ? ("Renta fija" as const)
-          : kind === "property"
+          : kind === "property" || kind === "reit"
             ? ("Inmueble" as const)
             : ("ETF" as const);
 
   const detailed = holdings
-    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured"].includes(h.kind))
+    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit"].includes(h.kind))
     .map((h) => {
       const value = holdingValue(h, prices);
       // Retorno derivado del mercado: plusvalía real (valor hoy − costo) cuando hay ticker + costo;
@@ -1555,7 +1557,7 @@ function PortafolioContent() {
 
   const assetEditDialog = (
     <Dialog open={editId !== null} onOpenChange={(open) => (!open ? closeEdit() : null)}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-h-[85dvh] w-[calc(100vw-1.5rem)] max-w-2xl overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>
             {editId === "new"
