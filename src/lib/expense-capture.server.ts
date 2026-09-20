@@ -102,9 +102,7 @@ export async function transcribeExpenseAudio(
             {
               type: "text",
               text:
-                lang === "en"
-                  ? "Transcribe this audio literally in English. Return only the text, no quotes or comments. If there is no speech, return empty."
-                  : "Transcribe literalmente este audio en español. Devuelve solo el texto, sin comillas ni comentarios. Si no hay voz, responde vacío.",
+                "Transcribe literally this audio. The speaker talks in Spanish or English; transcribe in the language actually spoken. Return only the text, no quotes or comments. If the speech is in another language or there is no speech, return empty.",
             },
 
             { type: "file", data: base64, mediaType: audioType },
@@ -112,7 +110,8 @@ export async function transcribeExpenseAudio(
         },
       ],
     });
-    return (text ?? "").trim();
+    const out = (text ?? "").trim();
+    return looksValid(out) ? out : "";
   } catch (error) {
     console.error("[voz] multimodal fallo", error);
     return "";
