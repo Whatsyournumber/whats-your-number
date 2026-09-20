@@ -850,6 +850,12 @@ function PatrimonioContent() {
             </Link>
           </span>
         }
+        actions={
+          <Button type="button" size="sm" variant="outline" className="gap-1.5" onClick={() => setAddAsset(true)}>
+            <Plus className="h-4 w-4" />
+            {t("Añadir activo", "Add asset")}
+          </Button>
+        }
       >
         {detailRows.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t("Aún no registras activos.", "You haven't recorded any assets yet.")}</p>
