@@ -32,7 +32,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
 import { Label } from "@/components/ui/label";
+import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useT } from "@/hooks/use-language";
+import { useQuotes } from "@/hooks/use-market";
 import { useLifeGoals, type LifeGoal } from "@/hooks/use-life-goals";
 import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { useProfile } from "@/hooks/use-profile";
