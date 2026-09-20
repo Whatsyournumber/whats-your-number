@@ -138,7 +138,7 @@ export function AssetDialog({
     try {
       await saveAll(editingHolding ? holdings.map((h) => (h.id === updated.id ? updated : h)) : [...holdings, updated]);
       toast.success(editingHolding ? t("Activo actualizado", "Asset updated") : t("Activo añadido", "Asset added"));
-      close();
+      forceClose();
     } catch {
       toast.error(t("No pudimos guardar. Inténtalo de nuevo.", "We couldn't save. Please try again."));
     }
@@ -193,7 +193,7 @@ export function AssetDialog({
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8"
-                  onClick={() => setDraft(null)}
+                  onClick={goBack}
                   aria-label={t("Volver a tipos de activo", "Back to asset types")}
                 >
                   <ArrowLeft className="h-4 w-4" />
