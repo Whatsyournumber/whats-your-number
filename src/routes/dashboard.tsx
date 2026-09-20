@@ -1046,17 +1046,17 @@ function Dashboard() {
                           </span>
                           <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
                         </div>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="truncate text-[11px] text-muted-foreground">
+                          {noInvestments
+                            ? t("Comienza a invertir el 20% de tus ingresos", "Start investing 20% of your income")
+                            : t(`vs ${sp500Rate.toFixed(0)}% S&P 500`, `vs ${sp500Rate.toFixed(0)}% S&P 500`)}
+                        </p>
+                        <p className="numeric mt-0.5 text-sm font-medium">
                           {noInvestments
                             ? <>{fmtCompact(portfolioValue)} {t("invertidos", "invested")}</>
                             : <>{fmtCompact(portfolioValue)} {t(`al ${portfolioReturn.toFixed(0)}%`, `at ${portfolioReturn.toFixed(0)}%`)}</>}
                         </p>
                         <Progress value={progress} indicatorClassName={goalBarColor(progress)} className="mt-1.5 h-1.5" />
-                        <p className="mt-1 truncate text-[11px] text-muted-foreground">
-                          {noInvestments
-                            ? t("Comienza a invertir el 20% de tus ingresos", "Start investing 20% of your income")
-                            : t(`vs ${sp500Rate.toFixed(0)}% S&P 500`, `vs ${sp500Rate.toFixed(0)}% S&P 500`)}
-                        </p>
                       </div>
                     </Link>
                   </li>
