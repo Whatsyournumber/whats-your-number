@@ -1437,7 +1437,7 @@ export function ExpenseLog() {
                   ))}
                 </div>
 
-                <p className="pt-1 text-center text-[11px] leading-snug text-muted-foreground/80">
+                <p className="pt-1 text-center text-[11px] leading-snug text-muted-foreground">
                   {t(
                     "Puedes seleccionar varios gastos al mismo tiempo",
                     "You can select several expenses at the same time",
