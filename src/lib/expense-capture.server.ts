@@ -55,7 +55,7 @@ export async function transcribeExpenseAudio(
 
   // Solo aceptamos español o inglés: cualquier otro alfabeto (árabe, cirílico, CJK…)
   // significa que el modelo alucinó y hay que probar el siguiente.
-  const NON_LATIN = /[؀-ۿࠀ-֏ऀ-ॿႠ-ჿᄀ-ᅟ぀-ヿ一-鿿가-힯]/;
+  const NON_LATIN = /[Ѐ-ӿ֐-׿؀-ۿऀ-ॿ぀-ヿ가-힯一-鿿]/;
   const looksValid = (text: string) => text.length > 0 && !NON_LATIN.test(text) && /[a-záéíóúñü]/i.test(text);
 
   const tryModel = async (model: string) => {
