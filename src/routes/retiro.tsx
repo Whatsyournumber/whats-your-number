@@ -174,8 +174,6 @@ function RetiroContent() {
     setMonthly(aporteShown);
   }, [aporteShown, isGoal]);
 
-  // Lo que de verdad apartaste este mes (tu ahorro mensual actual).
-  const thisMonthContribution = Math.max(0, d.savings);
 
   const commitAge = () => {
     if (!draftAge || draftAge <= retirement.currentAge) return;
@@ -201,6 +199,9 @@ function RetiroContent() {
     return Math.ceil(mr > 0 ? (remaining * mr) / (Math.pow(1 + mr, months) - 1) : remaining / months);
   })();
   const yearsLabel = `${horizonYears} ${horizonYears === 1 ? t("año", "year") : t("años", "years")}`;
+  // Plazo real de la tarjeta de aporte mensual (usa la proyección, no el slider del simulador).
+  const aporteYears = Math.max(1, Math.round(years));
+  const aporteYearsLabel = `${aporteYears} ${aporteYears === 1 ? t("año", "year") : t("años", "years")}`;
 
   // Realismo: lo que de verdad te sobra hoy con tus gastos reales (fijos + variables importados).
   const capacity = Math.max(0, d.income - d.expenses);
@@ -483,17 +484,10 @@ function RetiroContent() {
                     S&P 500 · 10%
                   </span>
                 </div>
-                <p className="relative mt-2 text-[11px]">
-                  {t("Aportaste", "You put in")}{" "}
-                  <span className={cn("numeric font-semibold", thisMonthContribution >= aporteShown ? "text-positive" : "text-negative")}>
-                    {fmt(thisMonthContribution)}
-                  </span>
-                  {aporteShown > 0 && (
-                    <span className={cn("ml-1 font-medium", thisMonthContribution >= aporteShown ? "text-positive" : "text-negative")}>
-                      {thisMonthContribution >= aporteShown
-                        ? t("· en camino", "· on track")
-                        : `${t("· faltan", "· short by")} ${fmt(aporteShown - thisMonthContribution)}`}
-                    </span>
+                <p className="relative mt-2 text-[11px] text-muted-foreground">
+                  {t(
+                    `Dinero a aportar mensual al ${rate}% por ${aporteYearsLabel}`,
+                    `Money to contribute monthly at ${rate}% for ${aporteYearsLabel}`,
                   )}
                 </p>
               </>
