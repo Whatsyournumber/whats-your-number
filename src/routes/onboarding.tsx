@@ -182,7 +182,12 @@ function OnboardingPage() {
         const next = { ...emptyOnboarding, currency: defaultCurrency() };
         for (const key of Object.keys(emptyOnboarding) as (keyof OnboardingData)[]) {
           const v = r[key];
-          if (v !== null && v !== undefined) (next as Record<string, unknown>)[key] = typeof v === "string" ? v : Number(v);
+          if (v !== null && v !== undefined) {
+            // Ningún importe del perfil puede ser negativo: limpiamos valores corruptos.
+            const num = Number(v);
+            (next as Record<string, unknown>)[key] =
+              typeof v === "string" ? v : Number.isFinite(num) ? Math.max(0, num) : 0;
+          }
         }
         if (typeof r["full_name"] === "string") next.full_name = r["full_name"];
         const nextLife = { ...emptyLife };
@@ -1318,9 +1323,16 @@ function MoneyField({
         <input
           type="number"
           inputMode="decimal"
+          min={0}
+          step="any"
           value={value || ""}
           placeholder={hint ?? t("Escribe aquí", "Type here")}
-          onChange={(e) => onChange(Number(e.target.value || 0))}
+          // La rueda del ratón sobre un input numérico cambiaba el importe sin querer.
+          onWheel={(e) => e.currentTarget.blur()}
+          onChange={(e) => {
+            const n = Number(e.target.value || 0);
+            onChange(Number.isFinite(n) ? Math.max(0, n) : 0);
+          }}
           className="numeric w-28 max-sm:w-24 border-b border-dashed border-border bg-transparent text-right text-base font-semibold outline-none transition-colors focus:border-primary/60 placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/50"
         />
         <span className="text-xs text-muted-foreground">{currency}</span>
