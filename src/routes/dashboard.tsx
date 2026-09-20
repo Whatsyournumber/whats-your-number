@@ -416,19 +416,22 @@ function Dashboard() {
   const minRetirementMonthly = minMonthlyForRetirement({
     target: baseTargetNumber,
     invested: investableAssets,
-    years: retireYearsLeft,
+    years: Math.max(1, retireYearsLeft),
   });
-  // La recomendación del panel es siempre el aporte inicial sugerido por el
-  // onboarding (llegar a tu número al 10% del S&P 500 antes de tu edad de
-  // retiro). El monto que guardes o pruebes en el simulador no la reemplaza.
-  const retirementMonthlyGoal = minRetirementMonthly;
+  // Mismo número que muestra WhatsYournumber en la tarjeta de aporte mensual:
+  // el que guardaste ahí, o el sugerido al 10% del S&P 500 si todavía no elegiste.
+  const savedRetirementMonthly =
+    (profile.retirement_monthly_contribution || 0) > 0
+      ? Math.round(profile.retirement_monthly_contribution)
+      : 0;
+  const retirementMonthlyGoal = savedRetirementMonthly || minRetirementMonthly;
   const retirementHint = (() => {
     if (retireYearsLeft <= 0 || baseTargetNumber <= 0) return undefined;
     const pill = (n: number | string, tone: string) => (
       <span className={cn("rounded-full px-1.5 py-0.5 font-semibold", tone)}>{n}</span>
     );
     if (retirementMonthlyGoal > 0) {
-      const tone = monthlySavings >= retirementMonthlyGoal ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative";
+      const tone = "bg-positive/12 text-positive";
       const line = (cls: string, pre: [string, string], mid: [string, string]) => (
         <span className={cn("inline-flex items-center gap-1", cls)}>
           {t(pre[0], pre[1])}
