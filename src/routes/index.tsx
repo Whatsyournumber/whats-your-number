@@ -45,10 +45,12 @@ function HighlightDesc({
   desc,
   highlight,
   solid,
+  tone = "primary",
 }: {
   desc: string;
   highlight?: string | undefined;
   solid?: boolean;
+  tone?: "primary" | "positive";
 }) {
   if (!highlight || !desc.includes(highlight)) return <>{desc}</>;
   const idx = desc.indexOf(highlight);
@@ -56,7 +58,11 @@ function HighlightDesc({
     return (
       <>
         {desc.slice(0, idx)}
-        <span className="font-medium text-primary">{highlight}</span>
+        <span
+          className={`font-medium ${tone === "positive" ? "text-positive" : "text-primary"}`}
+        >
+          {highlight}
+        </span>
         {desc.slice(idx + highlight.length)}
       </>
     );
@@ -355,6 +361,7 @@ export function Landing() {
     titleAccent: string;
     desc: string;
     highlight?: string | undefined;
+    tone?: "primary" | "positive";
   }[] = [
     {
       icon: PieChart,
@@ -365,6 +372,8 @@ export function Landing() {
         "Controla tus gastos día a día, compáralos con tu presupuesto y deja que la IA encuentre oportunidades para ahorrar más.",
         "Track your expenses day by day, compare them with your budget and let the AI find opportunities to save more.",
       ),
+      highlight: t("Controla tus gastos día a día", "Track your expenses day by day"),
+      tone: "positive",
     },
     {
       icon: Target,
@@ -386,6 +395,8 @@ export function Landing() {
         "Tu asistente resume tus números, simula escenarios y te da contenido educativo para entender mejor tus finanzas.",
         "Your assistant summarizes your numbers, simulates scenarios and gives you educational content to better understand your finances.",
       ),
+      highlight: t("Tu asistente", "Your assistant"),
+      tone: "positive",
     },
   ];
 
@@ -596,7 +607,12 @@ export function Landing() {
                     <span className="text-primary">{card.titleAccent}</span>
                   </h3>
                   <p className="mt-2 min-h-[3rem] text-sm leading-relaxed text-muted-foreground/80">
-                    <HighlightDesc desc={card.desc} highlight={card.highlight} solid />
+                    <HighlightDesc
+                      desc={card.desc}
+                      highlight={card.highlight}
+                      solid
+                      tone={card.tone}
+                    />
                   </p>
                 </div>
 
