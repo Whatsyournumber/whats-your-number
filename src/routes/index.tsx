@@ -603,7 +603,7 @@ export function Landing() {
 
                 <div className="relative mt-4">
                   <h3 className="min-h-[3.5rem] text-lg font-semibold leading-snug tracking-tight">
-                    <span className="text-foreground">{card.titleLight}</span>
+                    <span className="text-white">{card.titleLight}</span>
                     <br />
                     <span className="text-primary">{card.titleAccent}</span>
                   </h3>
