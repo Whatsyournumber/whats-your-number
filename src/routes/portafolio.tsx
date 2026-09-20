@@ -2017,7 +2017,7 @@ function PortafolioContent() {
         actions={
           <button
             type="button"
-            onClick={() => (editId === "new" ? closeEdit() : openNew())}
+            onClick={openNew}
             className="inline-flex items-center gap-1.5 rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
             aria-label={t("Añadir activo", "Add asset")}
           >
