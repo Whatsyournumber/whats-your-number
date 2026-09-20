@@ -1770,7 +1770,7 @@ export function ExpenseLog() {
                     })}
                   </ul>
                   {/* Total de los gastos fijos listados (coincide con lo mostrado arriba). */}
-                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/60 pt-3.5">
+                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/60 pl-[3.25rem] pr-10 pt-3.5">
                     <p className="text-sm font-semibold">{t("Total gastos fijos", "Total fixed expenses")}</p>
                     <p className="numeric text-sm font-semibold">
                       {fmt(upcoming.reduce((s, i) => s + i.amount, 0))}
