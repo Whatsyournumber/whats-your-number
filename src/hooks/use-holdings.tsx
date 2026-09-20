@@ -175,7 +175,7 @@ export function seedHoldingsFromTotals(p: {
     ["debt", "Deudas", otherDebts],
   ];
   return rows
-    .filter(([, , v]) => v > 0)
+    .filter(([kind, , v]) => v > 0 || (kind === "property" && homeMortgage > 0))
     .map(([kind, label, v], i) => ({
       ...newHolding(kind, label, i),
       manual_value: Math.round(v),
