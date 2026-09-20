@@ -53,11 +53,16 @@ export async function transcribeExpenseAudio(
   const audioType = mimeType.startsWith("video/") ? "audio/webm" : mimeType || "audio/webm";
   const fileName = `nota.${extFor(audioType)}`;
 
+  // Solo aceptamos español o inglés: cualquier otro alfabeto (árabe, cirílico, CJK…)
+  // significa que el modelo alucinó y hay que probar el siguiente.
+  const NON_LATIN = /[؀-ۿࠀ-֏ऀ-ॿႠ-ჿᄀ-ᅟ぀-ヿ一-鿿가-힯]/;
+  const looksValid = (text: string) => text.length > 0 && !NON_LATIN.test(text) && /[a-záéíóúñü]/i.test(text);
+
   const tryModel = async (model: string) => {
     try {
       const form = new FormData();
       form.append("model", model);
-      form.append("language", lang);
+      // Sin "language": el modelo detecta solo; la app admite inglés o español.
       form.append("file", new Blob([bytes as unknown as BlobPart], { type: audioType }), fileName);
 
 
@@ -71,7 +76,8 @@ export async function transcribeExpenseAudio(
         return "";
       }
       const data = (await response.json()) as { text?: string };
-      return (data.text ?? "").trim();
+      const text = (data.text ?? "").trim();
+      return looksValid(text) ? text : "";
     } catch (error) {
       console.error(`[voz] ${model} fallo`, error);
       return "";
