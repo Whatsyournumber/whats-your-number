@@ -329,11 +329,14 @@ export function minMonthlyForRetirement(params: {
   const { target, invested, years, annual = 0.1 } = params;
   if (!Number.isFinite(target) || target <= 0) return 0;
   if (!Number.isFinite(years) || years <= 0) return 0;
-  const mr = Math.pow(1 + annual, 1 / 12) - 1;
+  // Misma convención que el simulador (projectRetirementFrom): tasa nominal
+  // anual dividida entre 12 meses, aportaciones a final de mes.
+  const mr = annual / 12;
   const months = Math.round(years * 12);
-  const remaining = target - Math.max(0, invested) * Math.pow(1 + annual, years);
+  const growth = Math.pow(1 + mr, months);
+  const remaining = target - Math.max(0, invested) * growth;
   if (remaining <= 0) return 0;
-  const raw = (remaining * mr) / (Math.pow(1 + mr, months) - 1);
+  const raw = (remaining * mr) / (growth - 1);
   // Mínimo orientativo: redondeamos al alza a la decena más cercana.
   return Math.max(10, Math.ceil(raw / 10) * 10);
 }
