@@ -732,6 +732,7 @@ function Dashboard() {
           value={fmt(current.income)}
           editHref="/mi-perfil"
           hint={incomeHint}
+          hintClassName="leading-snug"
           icon={Banknote}
           index={1}
         />
