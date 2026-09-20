@@ -88,18 +88,32 @@ export function TopCitiesPanel({
 
   if (top.length === 0) return null;
 
+  // La primera tarjeta es tu ciudad actual cuando coincide con el catálogo.
+  const homeCard =
+    profile.city && top[0] && norm(top[0].city.name) === norm(profile.city) ? top[0] : null;
+  const homeYears = homeCard?.yearsToRetire ?? null;
+
   return (
     <Panel
       title={
-        mine.length > 0
-          ? t("Mis ciudades guardadas", "My saved cities")
-          : t("Top city acorde con tu presupuesto", "Top city matching your budget")
+        homeCard
+          ? t("Tu ciudad y otras parecidas", "Your city and similar ones")
+          : mine.length > 0
+            ? t("Mis ciudades guardadas", "My saved cities")
+            : t("Top city acorde con tu presupuesto", "Top city matching your budget")
       }
 
-      description={t(
-        "Calculado con tus ingresos, gastos y patrimonio: cuánto necesitas al mes y cuánto tardas en llegar a tu número.",
-        "Calculated from your income, expenses and net worth: monthly budget and time to reach your number.",
-      )}
+      description={
+        homeCard
+          ? t(
+              "Donde vives hoy y ciudades similares con tu presupuesto que te acercan antes a tu número.",
+              "Where you live today plus similar cities within your budget that get you to your number sooner.",
+            )
+          : t(
+              "Calculado con tus ingresos, gastos y patrimonio: cuánto necesitas al mes y cuánto tardas en llegar a tu número.",
+              "Calculated from your income, expenses and net worth: monthly budget and time to reach your number.",
+            )
+      }
       actions={
         <Button asChild size="sm" variant="outline" className="rounded-full">
           <Link to="/ciudades">{t("Ver todas", "See all")}</Link>
@@ -110,6 +124,11 @@ export function TopCitiesPanel({
         {top.map((r, i) => {
           const target = r.cost * 12 * 25;
           const years = r.yearsToRetire;
+          const isHome = homeCard?.city.id === r.city.id;
+          const sooner =
+            !isHome && homeYears != null && years != null && homeYears - years > 0
+              ? Math.round(homeYears - years)
+              : 0;
           return (
             <button
               key={r.city.id}
@@ -126,8 +145,15 @@ export function TopCitiesPanel({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-transparent" />
                 <span className="absolute left-2.5 top-2.5 rounded-full bg-primary/90 px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
-                  #{i + 1} · Your next city
+                  {isHome
+                    ? t("Donde vives hoy", "Where you live today")
+                    : sooner > 0
+                      ? t(`${sooner} años antes`, `${sooner} yrs sooner`)
+                      : homeCard
+                        ? t("Similar a tu ciudad", "Similar to your city")
+                        : `#${i + 1} · Your next city`}
                 </span>
+
                 <div className="absolute bottom-2 left-3 right-3">
                   <p className="text-sm font-semibold leading-tight">{r.city.name}</p>
                   <p className="text-[11px] text-muted-foreground">{r.city.country}</p>
