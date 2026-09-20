@@ -139,6 +139,12 @@ function Dashboard() {
   const { rules } = useCategories();
   const { lines: budgetLines } = useSpendBudgets();
   const { target: spendTarget, hasTarget: hasSpendTarget } = useSpendTarget();
+  // Total de tu plan de gasto mensual (onboarding / Registro de gastos).
+  const spendPlanMonthlyTotal = useMemo(() => {
+    const sum = budgetLines.reduce((s, l) => s + (Number.isFinite(l.amount) ? l.amount : 0), 0);
+    if (sum > 0) return sum;
+    return hasSpendTarget && spendTarget > 0 ? spendTarget : 0;
+  }, [budgetLines, hasSpendTarget, spendTarget]);
   const { live: indexLive } = useIndexReturns();
   const { holdings } = useHoldings();
   const holdingSymbols = holdings
@@ -891,9 +897,12 @@ function Dashboard() {
         >
           <ul className="space-y-1">
             {d.goals.map((g) => {
-              const pct = g.progressPct ?? (g.target > 0 ? Math.min(100, (g.current / g.target) * 100) : 0);
+              const isEmergency = g.name === "Fondo de emergencia";
+              // El fondo de emergencia = 6 meses de tu plan de gasto mensual; sin plan, se usa el gasto del perfil.
+              const targetBase = isEmergency && spendPlanMonthlyTotal > 0 ? Math.round(spendPlanMonthlyTotal * 6) : g.target;
               const left = g.displayCurrent ?? g.current;
-              const right = g.displayTarget ?? g.target;
+              const right = g.displayTarget ?? targetBase;
+              const pct = g.progressPct ?? (targetBase > 0 ? Math.min(100, (left / targetBase) * 100) : 0);
               const remaining = Math.max(0, right - left);
               const portfolioRate = (() => {
                 // El rendimiento de la cartera excluye cripto y ETF para reflejar la ganancia operativa neta.
@@ -924,19 +933,12 @@ function Dashboard() {
               const isCityGoal = g.emoji === "🌍";
 
               let subtitle: string;
-              if (isCityGoal) {
+              if (isEmergency) {
+                subtitle = t("6 meses de tus gastos mensuales", "6 months of your monthly expenses");
+              } else if (isCityGoal) {
                 subtitle = lifestyleSubtitle(profile, t);
               } else if (pct >= 100) {
-                if (g.name === "Fondo de emergencia") {
-                  const monthlyExpenses = Math.max(1, profile.monthly_expenses || d.expenses);
-                  const monthsCovered = Math.round(left / monthlyExpenses);
-                  subtitle = t(
-                    `Min 6 meses de tus gastos objetivo - ${monthsCovered} meses cubiertos`,
-                    `Min 6 months of your target expenses - ${monthsCovered} months covered`,
-                  );
-                } else {
-                  subtitle = t("Meta alcanzada", "Goal reached");
-                }
+                subtitle = t("Meta alcanzada", "Goal reached");
               } else if (g.note) {
                 subtitle = translateGoalNote(g.note, lang);
               } else if (remaining > 0 && years > 0 && years < 99) {
