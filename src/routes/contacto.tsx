@@ -265,8 +265,8 @@ function ContactPage() {
               </Button>
               <p className="text-center text-xs text-muted-foreground">
                 {t(
-                  "Te respondemos a tu correo, sin spam.",
-                  "We reply to your email, no spam.",
+                   "Te respondemos lo antes posible, sin spam.",
+                   "We reply as soon as possible, no spam.",
                 )}
               </p>
             </form>
