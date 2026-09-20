@@ -278,7 +278,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                   >
                     {group === "essentials"
                       ? t("Gastos fijos", "Fixed expenses")
-                      : t("Gastos variables mensuales", "Monthly variable expenses")}
+                      : t("Gastos variables", "Variable expenses")}
                   </Button>
                 );
               })}
