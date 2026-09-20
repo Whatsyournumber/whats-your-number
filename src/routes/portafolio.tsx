@@ -1312,6 +1312,14 @@ function PortafolioContent() {
 
   const rows = (list: typeof enriched) => (
     <div className="space-y-2">
+      {editId === "new" ? (
+        <div className="grid grid-cols-2 gap-3 rounded-xl border border-primary/30 bg-elevated/60 p-3 md:grid-cols-6">
+          <div className="col-span-2 md:col-span-6">
+            <p className="text-sm font-medium">{t("Nuevo activo", "New asset")}</p>
+          </div>
+          {assetEditor(true)}
+        </div>
+      ) : null}
       {[...list].sort((a, b) => {
         const aC = a.type === "Cripto" ? 1 : 0;
         const bC = b.type === "Cripto" ? 1 : 0;
