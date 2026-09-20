@@ -1421,21 +1421,23 @@ function PortafolioContent() {
           </div>
 
           {h.holdingId ? (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (editId === h.holdingId) closeEdit();
-                else openEdit(h.holdingId!);
-              }}
-              className={cn(
-                "absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-border/60 text-muted-foreground transition hover:border-primary/40 hover:text-foreground",
-                editId === h.holdingId && "border-primary/50 bg-primary/10 text-foreground",
-              )}
-              aria-label={t("Editar posición", "Edit position")}
-            >
-              <Pencil className="h-3.5 w-3.5" />
-            </button>
+            <div className="col-span-2 flex justify-end border-t border-border/40 pt-2 md:col-span-6">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (editId === h.holdingId) closeEdit();
+                  else openEdit(h.holdingId!);
+                }}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full border border-border/60 px-3 py-1 text-[11px] text-muted-foreground transition hover:border-primary/40 hover:text-foreground",
+                  editId === h.holdingId && "border-primary/50 bg-primary/10 text-foreground",
+                )}
+              >
+                <Pencil className="h-3 w-3" />
+                {editId === h.holdingId ? t("Cerrar", "Close") : t("Editar", "Edit")}
+              </button>
+            </div>
           ) : null}
 
           {h.holdingId && editId === h.holdingId ? assetEditor(false) : null}
