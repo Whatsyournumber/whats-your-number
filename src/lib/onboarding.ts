@@ -647,8 +647,8 @@ export function buildInsights(
           ? `${cashPct}% of your ${money(assets, currency)} sits in cash. Consider whether that mix fits your goals and risk tolerance.`
           : `El ${cashPct}% de tus ${money(assets, currency)} está en efectivo. Considera si esa distribución encaja con tus objetivos y tu tolerancia al riesgo.`
         : en
-          ? `Only ${cashPct}% of your ${money(assets, currency)} stays in cash: the rest is already working for you.`
-          : `Solo el ${cashPct}% de tus ${money(assets, currency)} está en efectivo: el resto ya trabaja para ti.`,
+          ? `Only ${cashPct}% of your net worth is in cash. Remember to keep 6 months of essential expenses for emergencies.`
+          : `Solo el ${cashPct}% de tu patrimonio está en efectivo. Recuerda mantener 6 meses de gastos básicos para imprevistos.`,
     );
   }
 
