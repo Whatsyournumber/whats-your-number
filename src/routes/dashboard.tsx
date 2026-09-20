@@ -646,7 +646,7 @@ function Dashboard() {
         : priority === "patrimonio"
           ? t("Hasta dónde puede crecer tu patrimonio", "How far your wealth can grow")
           : priority === "gastos"
-            ? t("El capital que te da control total", "The capital that gives you total control")
+            ? t("El capital que necesitas para vivir libre del sistema", "The capital you need to live free from the system")
             : priority === "organizar"
               ? t("El número que ordena tu dinero", "The number that organizes your money")
               : t(`Libertad estimada a los ${plan.freedomAge} años`, `Freedom estimated at age ${plan.freedomAge}`);
@@ -881,7 +881,13 @@ function Dashboard() {
               </div>
               <Progress value={numberProgress} className="h-2" />
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
+              <div className="rounded-xl bg-elevated/60 p-3">
+                <p className="text-xs text-muted-foreground">{t("Monto mensual", "Monthly amount")}</p>
+                <p className="numeric mt-1 truncate text-lg font-semibold" title={`${fmt(targetNumber > 0 ? (targetNumber * swr) / 12 : 0)}${t("/mes", "/mo")}`}>
+                  {fmt(targetNumber > 0 ? (targetNumber * swr) / 12 : 0)}
+                </p>
+              </div>
               <div className="rounded-xl bg-elevated/60 p-3">
                 <p className="text-xs text-muted-foreground">{t("Años restantes", "Years left")}</p>
                 <p className="numeric mt-1 text-lg font-semibold">{numberYearsLeft}</p>
