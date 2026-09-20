@@ -1634,8 +1634,7 @@ export function ExpenseLog() {
                 </button>
               </div>
               <ul className="mt-4 space-y-3.5">
-                 {[...rows]
-                   .filter((r) => r.group !== "essentials")
+                 {[...visibleRows]
                    .sort((a, b) => b.pct - a.pct)
                    .map((r, index) => {
                    const expandedCat = expandedCategory === r.id;
