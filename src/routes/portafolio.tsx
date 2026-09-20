@@ -22,6 +22,7 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { useDailySeries, useMarketSeries, useQuotes, useSymbolReturns, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
+import { Label } from "@/components/ui/label";
 import { useProfile } from "@/hooks/use-profile";
 import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
