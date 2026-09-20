@@ -557,7 +557,7 @@ function Dashboard() {
     );
   })();
 
-  // "Ahorraste X%" con un decimal (coma en ES, punto en EN) frente al mínimo del 20%.
+  // Subtítulo de la tarjeta de tasa de ahorro, en una línea.
   const savingsRateHint = (() => {
     const pill = (text: string, good: boolean) => (
       <span className={cn("rounded-full px-2 py-0.5 font-semibold", good ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative")}>
@@ -578,12 +578,7 @@ function Dashboard() {
         </span>
       );
     }
-    const good = savingsRate >= 20;
-    return (
-      <span className="inline-flex items-center gap-1.5">
-        {t("Ahorraste", "You saved")} {pill(`${num(savingsRate, 1)}%`, good)} {t(good ? "· Por encima del" : "· Por debajo del", good ? "· Above the" : "· Below the")} {pill("20%", good)} {t("mínimo", "minimum")}
-      </span>
-    );
+    return <span>{t("Pudiera ahorrar al ritmo actual", "You could save at your current pace")}</span>;
   })();
 
 
