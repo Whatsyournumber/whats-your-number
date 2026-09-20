@@ -523,7 +523,7 @@ function PortafolioContent() {
     const cash = cashDetailed.reduce((s, h) => s + holdingValue(h, prices), 0);
     if (cash > 0)
       detailed.push({
-        holdingId: cashDetailed.length === 1 ? (cashDetailed[0]!.id as string | null) : null,
+        holdingId: (cashDetailed[0]?.id ?? null) as string | null,
         ticker: t("Efectivo", "Cash"),
         name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"),
         type: "Cash" as never,
@@ -637,6 +637,21 @@ function PortafolioContent() {
     });
     setEditId(id);
   };
+  const openFallbackEdit = (h: (typeof enriched)[number]) => {
+    const fallbackId = `fallback:${h.type}`;
+    setDraft({
+      kind: h.type === "Acción" ? "stock" : h.type === "Cripto" ? "crypto" : h.type === "Cash" ? "cash" : "etf",
+      label: h.ticker,
+      ticker: "",
+      quantity: "",
+      cost_basis: h.cost > 0 ? String(h.cost) : "",
+      manual_value: h.value > 0 ? String(h.value) : "",
+      monthly_contribution: "",
+      expected_return: String(Math.round(h.growth * 1000) / 10),
+      purchased_at: "",
+    });
+    setEditId(fallbackId);
+  };
   const openNew = () => {
     setEditId("new");
     setDraft({
@@ -675,11 +690,24 @@ function PortafolioContent() {
       purchased_at: draft.purchased_at || base.purchased_at || null,
     };
     try {
-      await saveAll(
-        editingHolding
-          ? holdings.map((h) => (h.id === updated.id ? updated : h))
-          : [...holdings, updated],
-      );
+      const isFallbackEdit = editId?.startsWith("fallback:") ?? false;
+      if (isFallbackEdit && holdings.length === 0) {
+        const migrated = fallback.map((row, index) => {
+          const kind: HoldingKind = row.type === "Acción" ? "stock" : row.type === "Cripto" ? "crypto" : row.type === "Cash" ? "cash" : "etf";
+          const item = newHolding(kind, row.ticker, index);
+          if (`fallback:${row.type}` !== editId) {
+            return { ...item, manual_value: row.value, cost_basis: row.cost, expected_return: row.growth * 100 };
+          }
+          return { ...updated, id: item.id, position: index };
+        });
+        await saveAll(migrated);
+      } else {
+        await saveAll(
+          editingHolding
+            ? holdings.map((h) => (h.id === updated.id ? updated : h))
+            : [...holdings, updated],
+        );
+      }
       toast.success(editingHolding ? t("Posición actualizada", "Position updated") : t("Activo añadido", "Asset added"));
       closeEdit();
     } catch {
@@ -1420,27 +1448,28 @@ function PortafolioContent() {
             )}
           </div>
 
-          {h.holdingId ? (
-            <div className="col-span-2 flex justify-end border-t border-border/40 pt-2 md:col-span-6">
+          <div className="col-span-2 flex justify-end border-t border-border/40 pt-2 md:col-span-6">
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (editId === h.holdingId) closeEdit();
-                  else openEdit(h.holdingId!);
+                  const rowEditId = h.holdingId ?? `fallback:${h.type}`;
+                  if (editId === rowEditId) closeEdit();
+                  else if (h.holdingId) openEdit(h.holdingId);
+                  else openFallbackEdit(h);
                 }}
                 className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full border border-border/60 px-3 py-1 text-[11px] text-muted-foreground transition hover:border-primary/40 hover:text-foreground",
-                  editId === h.holdingId && "border-primary/50 bg-primary/10 text-foreground",
+                  "inline-flex h-9 items-center gap-2 rounded-full border border-primary/50 bg-primary/10 px-4 text-sm font-medium text-foreground transition hover:bg-primary/20",
+                  editId === (h.holdingId ?? `fallback:${h.type}`) && "bg-primary/20",
                 )}
+                aria-label={t(`Editar ${h.ticker}`, `Edit ${h.ticker}`)}
               >
-                <Pencil className="h-3 w-3" />
-                {editId === h.holdingId ? t("Cerrar", "Close") : t("Editar", "Edit")}
+                <Pencil className="h-4 w-4" />
+                {editId === (h.holdingId ?? `fallback:${h.type}`) ? t("Cerrar", "Close") : t("Editar", "Edit")}
               </button>
-            </div>
-          ) : null}
+          </div>
 
-          {h.holdingId && editId === h.holdingId ? assetEditor(false) : null}
+          {editId === (h.holdingId ?? `fallback:${h.type}`) ? assetEditor(false) : null}
         </div>
 
         );
