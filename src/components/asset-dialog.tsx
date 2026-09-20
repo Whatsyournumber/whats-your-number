@@ -76,13 +76,34 @@ export function AssetDialog({
   const draftQuoteQuery = useQuotes(draftTicker.length >= 1 ? [draftTicker] : []);
   const draftQuote = (draftQuoteQuery.data?.quotes ?? []).find((q) => q.symbol.toUpperCase() === draftTicker);
 
-  const close = () => {
+  // Detectar cambios sin guardar para confirmar antes de salir.
+  const baseline = useRef<string | null>(editingHolding ? JSON.stringify(draftFrom(editingHolding)) : null);
+  const [confirmAction, setConfirmAction] = useState<"close" | "back" | null>(null);
+  const isDirty = draft !== null && baseline.current !== null && JSON.stringify(draft) !== baseline.current;
+
+  const forceClose = () => {
     setDraft(editingHolding ? draftFrom(editingHolding) : null);
+    baseline.current = editingHolding ? JSON.stringify(draftFrom(editingHolding)) : null;
     onOpenChange(false);
   };
+  const close = () => {
+    if (isDirty) {
+      setConfirmAction("close");
+      return;
+    }
+    forceClose();
+  };
+  const goBack = () => {
+    if (isDirty) {
+      setConfirmAction("back");
+      return;
+    }
+    setDraft(null);
+    baseline.current = null;
+  };
 
-  const selectNewKind = (kind: HoldingKind) =>
-    setDraft({
+  const selectNewKind = (kind: HoldingKind) => {
+    const fresh: Draft = {
       kind,
       label: "",
       ticker: "",
@@ -93,7 +114,10 @@ export function AssetDialog({
       expected_return: String(defaultReturn(kind)),
       linked_liability: "",
       purchased_at: new Date().toISOString().slice(0, 10),
-    });
+    };
+    setDraft(fresh);
+    baseline.current = JSON.stringify(fresh);
+  };
 
   const save = async () => {
     if (!draft) return;
