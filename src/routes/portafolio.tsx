@@ -12,6 +12,7 @@ import { KpiCard } from "@/components/kpi-card";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -1235,13 +1236,10 @@ function PortafolioContent() {
   const simResult = projPoints[projPoints.length - 1]!;
 
 
-  // Formulario en línea: edita el activo en su propia tarjeta (sin ventana emergente).
+  // Formulario dentro de una ventana emergente (popup).
   const assetEditor = (isNew: boolean) =>
     draft ? (
-      <div
-        className="col-span-2 mt-2 space-y-3 rounded-xl border border-border/60 bg-background/40 p-3 md:col-span-6"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="space-y-3">
         {isNew ? (
           <div className="flex flex-wrap gap-1.5">
             {([
@@ -1339,14 +1337,6 @@ function PortafolioContent() {
 
   const rows = (list: typeof enriched) => (
     <div className="space-y-2">
-      {editId === "new" ? (
-        <div className="grid grid-cols-2 gap-3 rounded-xl border border-primary/30 bg-elevated/60 p-3 md:grid-cols-6">
-          <div className="col-span-2 md:col-span-6">
-            <p className="text-sm font-medium">{t("Nuevo activo", "New asset")}</p>
-          </div>
-          {assetEditor(true)}
-        </div>
-      ) : null}
       {[...list].sort((a, b) => {
         const aC = a.type === "Cripto" ? 1 : 0;
         const bC = b.type === "Cripto" ? 1 : 0;
@@ -1452,33 +1442,34 @@ function PortafolioContent() {
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              const rowEditId = h.holdingId ?? `fallback:${h.type}`;
-              if (editId === rowEditId) closeEdit();
-              else if (h.holdingId) openEdit(h.holdingId);
+              if (h.holdingId) openEdit(h.holdingId);
               else openFallbackEdit(h);
             }}
             aria-label={t(`Editar ${h.ticker}`, `Edit ${h.ticker}`)}
             title={t("Editar", "Edit")}
-            className={cn(
-              "absolute right-2 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-md border border-border/40 text-muted-foreground/70 transition hover:border-primary/40 hover:bg-primary/10 hover:text-foreground",
-              editId === (h.holdingId ?? `fallback:${h.type}`) &&
-                "border-primary/50 bg-primary/15 text-primary",
-            )}
+            className="absolute right-2 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground/60 transition hover:bg-primary/10 hover:text-foreground"
           >
-            {editId === (h.holdingId ?? `fallback:${h.type}`) ? (
-              <X className="h-3.5 w-3.5" />
-            ) : (
-              <Pencil className="h-3.5 w-3.5" />
-            )}
+            <Pencil className="h-3.5 w-3.5" />
           </button>
-
-
-          {editId === (h.holdingId ?? `fallback:${h.type}`) ? assetEditor(false) : null}
         </div>
 
         );
       })}
     </div>
+  );
+
+  const assetEditDialog = (
+    <Dialog open={editId !== null} onOpenChange={(open) => (!open ? closeEdit() : null)}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{editId === "new" ? t("Nuevo activo", "New asset") : t("Editar activo", "Edit asset")}</DialogTitle>
+          <DialogDescription className="sr-only">
+            {t("Modifica los datos del activo y guarda los cambios.", "Edit the asset details and save your changes.")}
+          </DialogDescription>
+        </DialogHeader>
+        {assetEditor(editId === "new")}
+      </DialogContent>
+    </Dialog>
   );
 
   const calendarLabel = evoPoint ? evoPoint.label : t("Actual", "Current");
@@ -2026,7 +2017,7 @@ function PortafolioContent() {
         actions={
           <button
             type="button"
-            onClick={() => (editId === "new" ? closeEdit() : openNew())}
+            onClick={openNew}
             className="inline-flex items-center gap-1.5 rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
             aria-label={t("Añadir activo", "Add asset")}
           >
@@ -2051,7 +2042,7 @@ function PortafolioContent() {
             </TabsContent>
           ))}
         </Tabs>
-
+        {assetEditDialog}
 
         <div className="relative mt-2 overflow-hidden rounded-2xl border border-border/50 bg-elevated/50 px-4 py-3.5">
           <div className="grid grid-cols-2 items-center gap-3 md:grid-cols-6">
