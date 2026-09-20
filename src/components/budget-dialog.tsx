@@ -1,6 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CalendarDays, Check, Pencil, Plus, Trash2, X } from "lucide-react";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -43,12 +53,25 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
       base = base.map((l) => (l.id === "health" && !l.amount ? { ...l, id: "gym" } : l));
     }
     setDraft(base);
+    baseline.current = JSON.stringify(base);
     setAdding(false);
     setCustomName("");
     setCustomGroup("lifestyle");
     setEditingId(null);
     setEditingName("");
   }, [open, lines]);
+
+  // Confirmar antes de cerrar si hay cambios sin guardar.
+  const baseline = useRef<string | null>(null);
+  const [confirmClose, setConfirmClose] = useState(false);
+  const isDirty = baseline.current !== null && JSON.stringify(draft) !== baseline.current;
+  const requestOpenChange = (v: boolean) => {
+    if (!v && isDirty) {
+      setConfirmClose(true);
+      return;
+    }
+    onOpenChange(v);
+  };
 
   const label = (l: BudgetLine) => {
     const cat = findBudgetCategory(l.id);
