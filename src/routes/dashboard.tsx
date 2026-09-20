@@ -117,6 +117,13 @@ function lifestyleSubtitle(profile: ReturnType<typeof useProfile>["profile"], t:
   return t(`Estilo de vida ${style}, ${status.toLowerCase()}`, `${styleEn} lifestyle, ${statusEn}`);
 }
 
+/** "Para estilo de vida cómodo, no te alcanza" — cuando los ingresos no cubren la ciudad. */
+function lifestyleShortfallSubtitle(profile: ReturnType<typeof useProfile>["profile"], t: (es: string, en: string) => string) {
+  const style = lifestyles.find((l) => l.value === profile.lifestyle)?.label.toLowerCase() ?? "cómodo";
+  const styleEn = lifestyleLabelEn[profile.lifestyle] ?? "comfortable";
+  return t(`Para estilo de vida ${style}, no te alcanza`, `For a ${styleEn} lifestyle, it's not enough`);
+}
+
 function Dashboard() {
   const t = useT();
   const { lang } = useLanguage();
@@ -931,12 +938,14 @@ function Dashboard() {
               const years = yearsToTarget(right, left, g.monthly, portfolioRate);
 
               const isCityGoal = g.emoji === "🌍";
+              // Ciudad: verde solo si tus ingresos cubren el coste de vivir allí.
+              const cityReached = isCityGoal && (g.displayTarget ?? 1) > 0 && (g.displayCurrent ?? 0) >= (g.displayTarget ?? 1);
 
               let subtitle: string;
               if (isEmergency) {
                 subtitle = t("6 meses de tus gastos mensuales", "6 months of your monthly expenses");
               } else if (isCityGoal) {
-                subtitle = lifestyleSubtitle(profile, t);
+                subtitle = cityReached ? lifestyleSubtitle(profile, t) : lifestyleShortfallSubtitle(profile, t);
               } else if (pct >= 100) {
                 subtitle = t("Meta alcanzada", "Goal reached");
               } else if (g.note) {
@@ -987,7 +996,15 @@ function Dashboard() {
                 );
               }
 
-              const goalTextColor = pct >= 75 ? "text-positive" : pct >= 50 ? "text-warning" : "text-negative";
+              const goalTextColor = isCityGoal
+                ? cityReached
+                  ? "text-positive"
+                  : "text-negative"
+                : pct >= 75
+                  ? "text-positive"
+                  : pct >= 50
+                    ? "text-warning"
+                    : "text-negative";
               const goalHref = isCityGoal ? "/ciudades" : g.name === "Fondo de emergencia" ? "/mi-perfil" : "/retiro";
 
               return (
@@ -1007,7 +1024,11 @@ function Dashboard() {
                       <p className="text-sm text-muted-foreground">
                         {fmtCompact(left)} {t("de", "of")} {fmtCompact(right)}
                       </p>
-                      <Progress value={pct} indicatorClassName={goalBarColor(pct)} className="mt-1.5 h-1.5" />
+                      <Progress
+                        value={pct}
+                        indicatorClassName={isCityGoal ? (cityReached ? "bg-positive" : "bg-negative") : goalBarColor(pct)}
+                        className="mt-1.5 h-1.5"
+                      />
                       <p className="mt-1 truncate text-[11px] text-muted-foreground">{subtitle}</p>
                     </div>
                   </Link>
