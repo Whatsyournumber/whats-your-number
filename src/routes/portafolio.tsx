@@ -2042,7 +2042,7 @@ function PortafolioContent() {
             </TabsContent>
           ))}
         </Tabs>
-
+        {assetEditDialog}
 
         <div className="relative mt-2 overflow-hidden rounded-2xl border border-border/50 bg-elevated/50 px-4 py-3.5">
           <div className="grid grid-cols-2 items-center gap-3 md:grid-cols-6">
