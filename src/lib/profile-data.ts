@@ -225,7 +225,7 @@ export function buildDataset(p: Profile): Dataset {
     savingsRate: plan.savingsRate,
     netWorth: nw,
     totalAssets: assetsTotal,
-    totalLiabilities: p.liabilities,
+    totalLiabilities: totalLiabilities(p),
     assets,
     liabilities,
     plan,
