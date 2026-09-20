@@ -1336,7 +1336,7 @@ function PortafolioContent() {
             }
           }}
           className={cn(
-            "relative grid cursor-pointer grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 pb-10 transition hover:bg-elevated md:grid-cols-6",
+            "relative grid cursor-pointer grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 pr-10 transition hover:bg-elevated md:grid-cols-6",
             tk && focusTicker === tk && "ring-1 ring-[var(--color-chart-4)]/60",
           )}
         >
