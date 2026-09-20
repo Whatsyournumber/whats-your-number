@@ -607,6 +607,12 @@ function PortafolioContent() {
   const annualGain = gainPositions.reduce((s, h) => s + h.value * h.growth, 0);
   // Totales del tab activo en Posiciones (Todos = cartera completa).
   const [posTab, setPosTab] = useState<string>("Todos");
+  // Buscador de ticker en vivo dentro del editor de activos.
+  const [tickerOpen, setTickerOpen] = useState(false);
+  const [tickerQuery, setTickerQuery] = useState("");
+  const tickerSearch = useSymbolSearch(tickerOpen ? tickerQuery : "");
+  const tickerHits = (tickerSearch.data?.hits ?? []).slice(0, 6);
+
 
   // Edición de una posición desde la propia fila: guarda en mis datos (holdings).
   const [editId, setEditId] = useState<string | null>(null);
