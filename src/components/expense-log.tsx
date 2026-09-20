@@ -684,6 +684,7 @@ export function ExpenseLog() {
   const fileRef = useRef<HTMLInputElement | null>(null);
   const camRef = useRef<HTMLInputElement | null>(null);
   const latestExpensesRef = useRef<HTMLDivElement | null>(null);
+  const isMobile = useIsMobile();
 
   const openDraft = (source: "voice" | "receipt", parsed: {
     merchant: string;
