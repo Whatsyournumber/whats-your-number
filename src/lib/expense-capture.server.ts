@@ -46,45 +46,62 @@ function base64ToBytes(base64: string): Uint8Array<ArrayBuffer> {
 export async function transcribeExpenseAudio(apiKey: string, base64: string, mimeType: string) {
   const bytes = base64ToBytes(base64);
   const audioType = mimeType.startsWith("video/") ? "audio/webm" : mimeType || "audio/webm";
+  const fileName = `nota.${extFor(audioType)}`;
 
-  try {
-    const form = new FormData();
-    form.append("model", "google/gemini-3.5-transcribe");
-    form.append("file", new Blob([bytes as unknown as BlobPart], { type: audioType }), `nota.${extFor(audioType)}`);
+  const tryModel = async (model: string) => {
+    try {
+      const form = new FormData();
+      form.append("model", model);
+      form.append("file", new Blob([bytes as unknown as BlobPart], { type: audioType }), fileName);
 
-    const response = await fetch(`${GATEWAY}/audio/transcriptions`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}` },
-      body: form,
-    });
-    if (response.ok) {
+      const response = await fetch(`${GATEWAY}/audio/transcriptions`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${apiKey}` },
+        body: form,
+      });
+      if (!response.ok) {
+        console.error(`[voz] ${model} ${response.status}`, await response.text().catch(() => ""));
+        return "";
+      }
       const data = (await response.json()) as { text?: string };
-      const text = (data.text ?? "").trim();
-      if (text) return text;
+      return (data.text ?? "").trim();
+    } catch (error) {
+      console.error(`[voz] ${model} fallo`, error);
+      return "";
     }
-  } catch {
-    // seguimos con el plan B multimodal
-  }
+  };
 
-  // Plan B: el modelo multimodal escucha el audio directamente.
-  const gateway = createLovableAiGatewayProvider(apiKey);
-  const { text } = await generateText({
-    model: gateway("google/gemini-3.5-flash"),
-    messages: [
-      {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: "Transcribe literalmente este audio. Devuelve solo el texto, sin comillas ni comentarios. Si no hay voz, responde vacío.",
-          },
-          { type: "file", data: base64, mediaType: audioType },
-        ],
-      },
-    ],
-  });
-  return (text ?? "").trim();
+  const primary = await tryModel("google/gemini-3.5-transcribe");
+  if (primary) return primary;
+
+  const secondary = await tryModel("openai/gpt-4o-transcribe");
+  if (secondary) return secondary;
+
+  // Plan C: el modelo multimodal escucha el audio directamente.
+  try {
+    const gateway = createLovableAiGatewayProvider(apiKey);
+    const { text } = await generateText({
+      model: gateway("google/gemini-3.5-flash"),
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: "Transcribe literalmente este audio. Devuelve solo el texto, sin comillas ni comentarios. Si no hay voz, responde vacío.",
+            },
+            { type: "file", data: base64, mediaType: audioType },
+          ],
+        },
+      ],
+    });
+    return (text ?? "").trim();
+  } catch (error) {
+    console.error("[voz] multimodal fallo", error);
+    return "";
+  }
 }
+
 
 
 function prompt(categories: string[], currency: string, today: string) {
