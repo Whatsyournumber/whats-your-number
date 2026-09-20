@@ -673,6 +673,15 @@ function OnboardingPage() {
                             <div className="rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
                               <div className="space-y-2.5">
                                 <MoneyField
+                                  emoji="🏠"
+                                  label={t("Valor de la propiedad", "Property value")}
+                                  desc={t("Cuánto vale tu vivienda hoy", "What your home is worth today")}
+                                  currency={cur}
+                                  value={data.assets_property}
+                                  hint={t("Escribe aquí", "Type here")}
+                                  onChange={(v) => set("assets_property", v)}
+                                />
+                                <MoneyField
                                   emoji="🏦"
                                   label={t("Saldo pendiente", "Outstanding balance")}
                                   desc={t("Lo que aún debes al banco", "What you still owe the bank")}
