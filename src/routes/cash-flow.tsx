@@ -19,6 +19,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { useSyncedSetting } from "@/hooks/use-synced-setting";
 import { sameMerchant, useTransactions, type Tx } from "@/hooks/use-transactions";
+import { findBudgetCategory } from "@/lib/budget-categories";
 import { buildTravelDays, categorizeTxWithTravel } from "@/lib/categorize";
 import { money } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
