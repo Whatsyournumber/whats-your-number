@@ -749,7 +749,8 @@ export function ExpenseLog() {
   const sendReceiptFiles = async (files: File[]) => {
     if (files.length === 0) return;
     if (files.length === 1) {
-      void send("receipt", files[0]);
+      const only = files[0];
+      if (only) void send("receipt", only);
       return;
     }
     if (!user?.id) return;
