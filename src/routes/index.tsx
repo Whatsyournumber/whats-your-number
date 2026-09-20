@@ -50,7 +50,7 @@ function HighlightDesc({
   desc: string;
   highlight?: string | undefined;
   solid?: boolean;
-  tone?: "primary" | "positive";
+  tone?: "primary" | "positive" | undefined;
 }) {
   if (!highlight || !desc.includes(highlight)) return <>{desc}</>;
   const idx = desc.indexOf(highlight);
