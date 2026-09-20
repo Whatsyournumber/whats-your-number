@@ -154,12 +154,13 @@ export async function parseExpenseFromReceipt(
   categories: string[],
   currency: string,
   today: string,
+  lang: "es" | "en" = "es",
 ): Promise<ParsedReceipt> {
   const gateway = createLovableAiGatewayProvider(apiKey);
   const { output } = await generateText({
     model: gateway("google/gemini-3.5-flash"),
     system: [
-      prompt(categories, currency, today),
+      prompt(categories, currency, today, lang),
       "items: una línea por cada producto o servicio que aparezca en el ticket, con su nombre tal como está escrito, su importe pagado (positivo, con descuentos aplicados) y la categoría de la lista que mejor le corresponda.",
       "No incluyas subtotales, impuestos, propinas ni el total como items. Si el ticket no muestra el detalle, devuelve items vacío.",
     ].join(" "),
