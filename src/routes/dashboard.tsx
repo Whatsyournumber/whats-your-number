@@ -818,7 +818,7 @@ function Dashboard() {
 
       <div className="grid gap-4 lg:grid-cols-5">
         
-        <Panel title={t("Evolución de cuál tu número", "Evolution of your number")} description={t("Avance hacia tu número de retiro", "Advance toward your retirement number")} className="lg:col-span-2" bleedMobile>
+        <Panel title={t("Evolución de cuál tu número", "Evolution of your number")} description={t("Avance hacia tu número de retiro", "Advance toward your retirement number")} className="lg:col-span-3" bleedMobile>
           <ResponsiveContainer width="100%" height={280}>
             <AreaChart data={months} margin={chartMargin}>
               <defs>
