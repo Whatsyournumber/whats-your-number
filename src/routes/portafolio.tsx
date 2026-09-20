@@ -1375,7 +1375,7 @@ function PortafolioContent() {
             tk && focusTicker === tk && "ring-1 ring-[var(--color-chart-4)]/60",
           )}
         >
-          <div className="col-span-2 md:col-span-2">
+          <div className="col-span-2 pr-9 md:col-span-2">
             <p className="text-sm font-medium">{h.ticker}</p>
             <p className="truncate text-xs text-muted-foreground">{h.type === "Cripto" ? t("Cripto", "Crypto") : h.name}</p>
           </div>
