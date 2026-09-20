@@ -17,6 +17,7 @@ export const HOLDING_KINDS = [
   "other",
   "retirement",
   "property",
+  "reit",
   "future",
   "debt",
 ] as const;
@@ -77,6 +78,7 @@ export function defaultReturn(kind: HoldingKind): number {
   if (kind === "crypto") return 12;
   if (kind === "stock") return 9;
   if (kind === "property") return 4;
+  if (kind === "reit") return 8;
   if (kind === "bond") return 5;
   if (kind === "tbill") return 4;
   if (kind === "note") return 5;
