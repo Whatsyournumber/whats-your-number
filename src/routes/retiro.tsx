@@ -324,7 +324,7 @@ function RetiroContent() {
                 <span className="text-xs text-muted-foreground">
                   {isGoal
                     ? `${t("Capital para llegar a tu objetivo", "Capital to reach your goal")}${goalNote ? `: ${goalNote}` : ""}`
-                    : `${fmt(Math.round((plan.targetCapital * (swr / 100)) / 12))} ${t("al mes con", "per month at")} ${swr}%`}
+                    : `${fmt(Math.round((plan.targetCapital * (swr / 100)) / 12))}/${t("mes", "mo")}${profile.city ? ` ${t("para", "for")} ${profile.city}` : ""}`}
                 </span>
               </div>
             </>
