@@ -25,8 +25,14 @@ export const captureExpense = createServerFn({ method: "POST" })
     const mod = await import("./expense-capture.server");
 
     if (data.kind === "voice") {
-      const transcript = await mod.transcribeExpenseAudio(apiKey, data.data, data.mimeType);
-      if (!transcript) throw new Error("No escuchamos nada. Vuelve a grabar acercándote al micrófono.");
+      const transcript = await mod.transcribeExpenseAudio(apiKey, data.data, data.mimeType, data.lang);
+      if (!transcript)
+        throw new Error(
+          data.lang === "en"
+            ? "We didn't hear anything. Record again closer to the microphone."
+            : "No escuchamos nada. Vuelve a grabar acercándote al micrófono.",
+        );
+
       const expense = await mod.parseExpenseFromText(
         apiKey,
         transcript,
