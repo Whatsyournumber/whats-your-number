@@ -367,7 +367,9 @@ function Dashboard() {
         <span className="inline-flex min-w-0 items-center gap-1.5">
           <span className="shrink-0">
              <span className="sm:hidden">{t("Tu plan mensual es", "Your monthly plan is")}</span>
-             <span className="hidden sm:inline">{t("Tu plan de gastos mensual es", "Your monthly spending plan is")}</span>
+             {/* Versión corta solo para tablet. */}
+             <span className="hidden sm:inline lg:hidden">{t("Plan mensual", "Monthly plan")}</span>
+             <span className="hidden lg:inline">{t("Tu plan de gastos mensual es", "Your monthly spending plan is")}</span>
           </span>
           <span className="shrink-0 text-foreground">{fmt(spendTarget)}</span>
           <span className={cn("shrink-0 rounded-full px-2 py-0.5 font-semibold", spendPlanBadge)}>
@@ -589,9 +591,10 @@ function Dashboard() {
       <span className="inline-flex items-center gap-1.5">
         {t("Pudieras ahorrar", "You could save")} {pill(`${num(savingsRate, 1)}%`, good)}
         {good && (
-          <>
+          /* En tablet se resume a la primera parte para que no se corte. */
+          <span className="md:hidden lg:inline-flex items-center gap-1.5">
             {t("· Por encima del", "· Above the")} {pill("20%", true)} {t("mínimo", "minimum")}
-          </>
+          </span>
         )}
       </span>
     );

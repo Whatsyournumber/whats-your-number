@@ -117,15 +117,25 @@ export function TopCitiesPanel({
       }
 
       description={
-        homeCard
-          ? t(
-              "Donde vives hoy y ciudades similares con tu presupuesto que te acercan antes a tu número.",
-              "Where you live today plus similar cities within your budget that get you to your number sooner.",
-            )
-          : t(
-              "Calculado con tus ingresos, gastos y patrimonio: cuánto necesitas al mes y cuánto tardas en llegar a tu número.",
-              "Calculated from your income, expenses and net worth: monthly budget and time to reach your number.",
-            )
+        homeCard ? (
+          <>
+            <span className="md:hidden lg:inline">
+              {t(
+                "Donde vives hoy y ciudades similares con tu presupuesto que te acercan antes a tu número.",
+                "Where you live today plus similar cities within your budget that get you to your number sooner.",
+              )}
+            </span>
+            {/* Versión corta solo para tablet. */}
+            <span className="hidden md:inline lg:hidden">
+              {t("Ciudades similares que te acercan antes a tu número.", "Similar cities that get you to your number sooner.")}
+            </span>
+          </>
+        ) : (
+          t(
+            "Calculado con tus ingresos, gastos y patrimonio: cuánto necesitas al mes y cuánto tardas en llegar a tu número.",
+            "Calculated from your income, expenses and net worth: monthly budget and time to reach your number.",
+          )
+        )
       }
       actions={
         <Button asChild size="sm" variant="outline" className="rounded-full">
@@ -173,20 +183,35 @@ export function TopCitiesPanel({
                 </div>
               </div>
               <div className="space-y-2 p-3 text-[11px]">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">{t("Presupuesto mensual", "Monthly budget")}</span>
-                  <span className="numeric font-medium text-foreground">{fmtCity(r.cost)}</span>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="min-w-0 text-muted-foreground">
+                    <span className="md:hidden lg:inline">{t("Presupuesto mensual", "Monthly budget")}</span>
+                    <span className="hidden md:inline lg:hidden">{t("Presupuesto", "Budget")}</span>
+                  </span>
+                  <span className="numeric shrink-0 font-medium text-foreground">{fmtCity(r.cost)}</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">{t("Tu número allí", "Your number there")}</span>
-                  <span className="numeric font-medium text-foreground">{fmtCity(target)}</span>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="min-w-0 text-muted-foreground">
+                    <span className="md:hidden lg:inline">{t("Tu número allí", "Your number there")}</span>
+                    <span className="hidden md:inline lg:hidden">{t("Tu número", "Your number")}</span>
+                  </span>
+                  <span className="numeric shrink-0 font-medium text-foreground">{fmtCity(target)}</span>
                 </div>
                 <p className="text-muted-foreground">
-                  {years === 0
-                    ? t("Ya puedes vivir allí", "You can already live there")
-                    : years
-                      ? t(`${years} años ahorrando ${fmt(monthlySavings)}/mes`, `${years} yrs saving ${fmt(monthlySavings)}/mo`)
-                      : t("Aumenta tu ahorro para llegar", "Increase savings to get there")}
+                  <span className="md:hidden lg:inline">
+                    {years === 0
+                      ? t("Ya puedes vivir allí", "You can already live there")
+                      : years
+                        ? t(`${years} años ahorrando ${fmt(monthlySavings)}/mes`, `${years} yrs saving ${fmt(monthlySavings)}/mo`)
+                        : t("Aumenta tu ahorro para llegar", "Increase savings to get there")}
+                  </span>
+                  <span className="hidden md:inline lg:hidden">
+                    {years === 0
+                      ? t("Ya puedes vivir allí", "You can already live there")
+                      : years
+                        ? t(`${years} años para llegar`, `${years} yrs to get there`)
+                        : t("Aumenta tu ahorro", "Increase your savings")}
+                  </span>
                 </p>
               </div>
             </button>
