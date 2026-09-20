@@ -557,7 +557,7 @@ function Dashboard() {
     );
   })();
 
-  // "Ahorraste X%" con un decimal (coma en ES, punto en EN) frente al mínimo del 20%.
+  // Subtítulo de la tarjeta de tasa de ahorro, en una línea.
   const savingsRateHint = (() => {
     const pill = (text: string, good: boolean) => (
       <span className={cn("rounded-full px-2 py-0.5 font-semibold", good ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative")}>
