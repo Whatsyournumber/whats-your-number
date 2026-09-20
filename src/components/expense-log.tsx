@@ -1299,6 +1299,50 @@ export function ExpenseLog() {
               if (file) void send("receipt", file);
             }}
           />
+          {/* Archivos (incluye PDF) */}
+          <input
+            ref={docsRef}
+            type="file"
+            accept="image/*,application/pdf"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              e.target.value = "";
+              if (file) void send("receipt", file);
+            }}
+          />
+
+          {/* Selector de origen de la foto en móvil: cámara, Google Fotos, galería o archivos */}
+          <Dialog open={photoPickerOpen} onOpenChange={setPhotoPickerOpen}>
+            <DialogContent className="w-[calc(100vw-2rem)] max-w-sm rounded-2xl p-4 sm:hidden">
+              <DialogHeader>
+                <DialogTitle className="text-lg font-bold">{t("Seleccionar una acción", "Choose an action")}</DialogTitle>
+              </DialogHeader>
+              <div className="mt-1 space-y-1.5">
+                {(
+                  [
+                    { icon: Camera, es: "Tomar foto", en: "Take photo", pick: () => camRef.current?.click() },
+                    { icon: Image, es: "Google Fotos", en: "Google Photos", pick: () => fileRef.current?.click() },
+                    { icon: Image, es: "Galería", en: "Gallery", pick: () => fileRef.current?.click() },
+                    { icon: Upload, es: "Archivos", en: "Files", pick: () => docsRef.current?.click() },
+                  ] as const
+                ).map((o) => (
+                  <button
+                    key={o.es}
+                    type="button"
+                    onClick={() => {
+                      setPhotoPickerOpen(false);
+                      o.pick();
+                    }}
+                    className="flex min-h-14 w-full items-center gap-3 rounded-xl border border-border/60 px-4 text-left text-base font-medium transition-colors hover:bg-card"
+                  >
+                    <o.icon className="h-6 w-6 shrink-0 text-positive" />
+                    {t(o.es, o.en)}
+                  </button>
+                ))}
+              </div>
+            </DialogContent>
+          </Dialog>
           {recording && (
             <button
               type="button"
