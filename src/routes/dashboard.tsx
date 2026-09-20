@@ -513,8 +513,8 @@ function Dashboard() {
         {t("Faltan", "Short")} <span className="rounded-full bg-negative/12 px-2 py-0.5 font-semibold text-negative">{fmt(deficit)}</span>
         {planYears > 0
           ? t(
-              `/mes para tu plan de retiro en ${planYears} ${planYears === 1 ? "año" : "años"}`,
-              `/mo for your retirement plan in ${planYears} ${planYears === 1 ? "year" : "years"}`,
+              `/mes para tu plan de retiro en ${planYears}\u00a0${planYears === 1 ? "año" : "años"}`,
+              `/mo for your retirement plan in ${planYears}\u00a0${planYears === 1 ? "year" : "years"}`,
             )
           : t("/mes · necesitas extra", "/mo · you need extra")}
       </span>
