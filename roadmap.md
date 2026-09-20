@@ -38,4 +38,4 @@
 - [x] Tu Número: quitar el recuadro de Probabilidad y renombrar a "Monto mensual deseado"
 - [x] Tu Número: la barra de progreso usa la misma data que la barra de WhatsYournumber (capital invertible / tu número)
 - [x] Landing: tarjeta 02 con "tu libertad financiera" en verde
-- [ ] Landing: títulos de las 3 tarjetas en blanco
+- [x] Landing: títulos de las 3 tarjetas en blanco
