@@ -290,8 +290,17 @@ export function ExpenseLog() {
   const daysLeft = Math.max(1, periodDays - elapsedDays + 1);
 
   const categoryNames = useMemo(
-    () => [...new Set([...BASE_CATEGORIES, ...categories.rules.map((r) => r.name)])],
-    [categories.rules],
+    () => [
+      ...new Set([
+        ...BASE_CATEGORIES,
+        ...categories.rules.map((r) => r.name),
+        ...budgets.lines
+          .filter((line) => line.id.startsWith("custom:") && !line.id.startsWith("custom:fixed:"))
+          .map((line) => line.label?.trim() || line.id.slice(7))
+          .filter(Boolean),
+      ]),
+    ],
+    [budgets.lines, categories.rules],
   );
 
   const periodTx = useMemo(

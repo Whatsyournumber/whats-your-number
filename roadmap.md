@@ -44,3 +44,4 @@
 - [x] "Solicitar plan a la medida" en Precios lleva a /contacto con el plan preseleccionado
 - [x] Enlace "Contacto" en el pie de página (principal, niños y afiliados)
 - [ ] Enviar cada mensaje por correo a thecontentcclub@gmail.com — bloqueado: falta verificar el dominio de remitente (notify.whatsyour-number.com) en la configuración de correo
+- [x] Registro manual: incluir en el selector las categorías personalizadas creadas en el plan mensual
