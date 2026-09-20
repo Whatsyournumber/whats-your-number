@@ -47,17 +47,13 @@ export async function transcribeExpenseAudio(
   apiKey: string,
   base64: string,
   mimeType: string,
-  lang: "es" | "en" = "es",
 ) {
   const bytes = base64ToBytes(base64);
   const audioType = mimeType.startsWith("video/") ? "audio/webm" : mimeType || "audio/webm";
   const fileName = `nota.${extFor(audioType)}`;
 
-  // Solo aceptamos español o inglés: cualquier otro alfabeto (árabe, cirílico, CJK…)
-  // significa que el modelo alucinó y hay que probar el siguiente.
-  const NON_LATIN = /[Ѐ-ӿ֐-׿؀-ۿऀ-ॿ぀-ヿ가-힯一-鿿]/;
-  const looksValid = (text: string) => text.length > 0 && !NON_LATIN.test(text) && /[a-záéíóúñü]/i.test(text);
-
+  // La IA entiende cualquier idioma: transcribimos lo que se hable y luego
+  // parseExpenseFromText lo normaliza al idioma de la app (inglés o español).
   const tryModel = async (model: string) => {
     try {
       const form = new FormData();
@@ -76,8 +72,7 @@ export async function transcribeExpenseAudio(
         return "";
       }
       const data = (await response.json()) as { text?: string };
-      const text = (data.text ?? "").trim();
-      return looksValid(text) ? text : "";
+      return (data.text ?? "").trim();
     } catch (error) {
       console.error(`[voz] ${model} fallo`, error);
       return "";
@@ -102,7 +97,7 @@ export async function transcribeExpenseAudio(
             {
               type: "text",
               text:
-                "Transcribe literally this audio. The speaker talks in Spanish or English; transcribe in the language actually spoken. Return only the text, no quotes or comments. If the speech is in another language or there is no speech, return empty.",
+                "Transcribe literally this audio in the language actually spoken (it can be any language). Return only the text, no quotes or comments. If there is no speech, return empty.",
             },
 
             { type: "file", data: base64, mediaType: audioType },
@@ -110,8 +105,7 @@ export async function transcribeExpenseAudio(
         },
       ],
     });
-    const out = (text ?? "").trim();
-    return looksValid(out) ? out : "";
+    return (text ?? "").trim();
   } catch (error) {
     console.error("[voz] multimodal fallo", error);
     return "";
@@ -120,28 +114,32 @@ export async function transcribeExpenseAudio(
 
 
 
-function prompt(categories: string[], currency: string, today: string) {
+function prompt(categories: string[], currency: string, today: string, lang: "es" | "en" = "es") {
   return [
     "Eres un asistente que registra gastos personales.",
     `Hoy es ${today}. La moneda del usuario es ${currency}.`,
     `Devuelve la categoría ELEGIDA de esta lista exacta: ${categories.join(", ")}.`,
     "amount siempre positivo (el gasto). date en formato YYYY-MM-DD; si no se menciona usa hoy.",
     "merchant: el comercio o concepto corto, sin adjetivos.",
+    lang === "en"
+      ? "The input can be in ANY language: always write merchant (and any free text) in ENGLISH, translating it faithfully."
+      : "La entrada puede estar en CUALQUIER idioma: escribe merchant (y cualquier texto libre) en ESPAÑOL, traduciéndolo fielmente.",
   ].join(" ");
 }
 
-/** Interpreta una nota de voz ya transcrita y la convierte en un gasto. */
+/** Interpreta una nota de voz ya transcrita (en cualquier idioma) y la convierte en un gasto en el idioma de la app. */
 export async function parseExpenseFromText(
   apiKey: string,
   text: string,
   categories: string[],
   currency: string,
   today: string,
+  lang: "es" | "en" = "es",
 ): Promise<ParsedExpense> {
   const gateway = createLovableAiGatewayProvider(apiKey);
   const { output } = await generateText({
     model: gateway("google/gemini-3.5-flash"),
-    system: prompt(categories, currency, today),
+    system: prompt(categories, currency, today, lang),
     prompt: `Extrae el gasto de esta frase: "${text}"`,
     output: Output.object({ schema: expenseSchema }),
   });
@@ -156,12 +154,13 @@ export async function parseExpenseFromReceipt(
   categories: string[],
   currency: string,
   today: string,
+  lang: "es" | "en" = "es",
 ): Promise<ParsedReceipt> {
   const gateway = createLovableAiGatewayProvider(apiKey);
   const { output } = await generateText({
     model: gateway("google/gemini-3.5-flash"),
     system: [
-      prompt(categories, currency, today),
+      prompt(categories, currency, today, lang),
       "items: una línea por cada producto o servicio que aparezca en el ticket, con su nombre tal como está escrito, su importe pagado (positivo, con descuentos aplicados) y la categoría de la lista que mejor le corresponda.",
       "No incluyas subtotales, impuestos, propinas ni el total como items. Si el ticket no muestra el detalle, devuelve items vacío.",
     ].join(" "),

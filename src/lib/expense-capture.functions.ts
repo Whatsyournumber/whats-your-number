@@ -25,7 +25,7 @@ export const captureExpense = createServerFn({ method: "POST" })
     const mod = await import("./expense-capture.server");
 
     if (data.kind === "voice") {
-      const transcript = await mod.transcribeExpenseAudio(apiKey, data.data, data.mimeType, data.lang);
+      const transcript = await mod.transcribeExpenseAudio(apiKey, data.data, data.mimeType);
       if (!transcript)
         throw new Error(
           data.lang === "en"
@@ -39,6 +39,7 @@ export const captureExpense = createServerFn({ method: "POST" })
         categories,
         data.currency,
         data.today,
+        data.lang,
       );
       return { ...expense, items: [] as { name: string; amount: number; category: string }[], transcript };
     }
@@ -50,6 +51,7 @@ export const captureExpense = createServerFn({ method: "POST" })
       categories,
       data.currency,
       data.today,
+      data.lang,
     );
     return { ...expense, items: expense.items ?? [], transcript: "" };
   });
