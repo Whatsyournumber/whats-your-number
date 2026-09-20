@@ -933,19 +933,12 @@ function Dashboard() {
               const isCityGoal = g.emoji === "🌍";
 
               let subtitle: string;
-              if (isCityGoal) {
+              if (isEmergency) {
+                subtitle = t("6 meses de tus gastos mensuales", "6 months of your monthly expenses");
+              } else if (isCityGoal) {
                 subtitle = lifestyleSubtitle(profile, t);
               } else if (pct >= 100) {
-                if (g.name === "Fondo de emergencia") {
-                  const monthlyExpenses = Math.max(1, profile.monthly_expenses || d.expenses);
-                  const monthsCovered = Math.round(left / monthlyExpenses);
-                  subtitle = t(
-                    `Min 6 meses de tus gastos objetivo - ${monthsCovered} meses cubiertos`,
-                    `Min 6 months of your target expenses - ${monthsCovered} months covered`,
-                  );
-                } else {
-                  subtitle = t("Meta alcanzada", "Goal reached");
-                }
+                subtitle = t("Meta alcanzada", "Goal reached");
               } else if (g.note) {
                 subtitle = translateGoalNote(g.note, lang);
               } else if (remaining > 0 && years > 0 && years < 99) {
