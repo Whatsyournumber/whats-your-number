@@ -1612,6 +1612,33 @@ function PortafolioContent() {
         </DialogHeader>
         {editId === "new" && !draft ? assetKindSelector : assetEditor(editId === "new")}
       </DialogContent>
+      <AlertDialog open={discardConfirm !== null} onOpenChange={(open) => (!open ? setDiscardConfirm(null) : null)}>
+        <AlertDialogContent className="w-[calc(100vw-2rem)] max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("¿Salir sin guardar?", "Leave without saving?")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("Tienes cambios sin guardar. Si sales ahora, se perderán.", "You have unsaved changes. If you leave now, they will be lost.")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("Seguir editando", "Keep editing")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                const action = discardConfirm;
+                setDiscardConfirm(null);
+                if (action === "back") {
+                  setDraft(null);
+                  editBaseline.current = null;
+                } else {
+                  forceCloseEdit();
+                }
+              }}
+            >
+              {t("Descartar cambios", "Discard changes")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 
