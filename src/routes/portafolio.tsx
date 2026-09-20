@@ -604,6 +604,64 @@ function PortafolioContent() {
   const annualGain = gainPositions.reduce((s, h) => s + h.value * h.growth, 0);
   // Totales del tab activo en Posiciones (Todos = cartera completa).
   const [posTab, setPosTab] = useState<string>("Todos");
+
+  // Edición de una posición desde la propia fila: guarda en mis datos (holdings).
+  const [editId, setEditId] = useState<string | null>(null);
+  const [draft, setDraft] = useState<{
+    label: string;
+    ticker: string;
+    quantity: string;
+    cost_basis: string;
+    manual_value: string;
+    monthly_contribution: string;
+    expected_return: string;
+    purchased_at: string;
+  } | null>(null);
+  const editingHolding = holdings.find((h) => h.id === editId) ?? null;
+  const openEdit = (id: string) => {
+    const h = holdings.find((x) => x.id === id);
+    if (!h) return;
+    setDraft({
+      label: h.label ?? "",
+      ticker: h.ticker ?? "",
+      quantity: h.quantity ? String(h.quantity) : "",
+      cost_basis: h.cost_basis ? String(h.cost_basis) : "",
+      manual_value: h.manual_value ? String(h.manual_value) : "",
+      monthly_contribution: h.monthly_contribution ? String(h.monthly_contribution) : "",
+      expected_return: h.expected_return ? String(h.expected_return) : "",
+      purchased_at: (h.purchased_at ?? "").slice(0, 10),
+    });
+    setEditId(id);
+  };
+  const closeEdit = () => {
+    setEditId(null);
+    setDraft(null);
+  };
+  const numOr = (v: string, fallbackValue = 0) => {
+    const n = Number(String(v).replace(",", "."));
+    return Number.isFinite(n) ? n : fallbackValue;
+  };
+  const saveEdit = async () => {
+    if (!editingHolding || !draft) return;
+    const updated = {
+      ...editingHolding,
+      label: draft.label.trim() || editingHolding.label,
+      ticker: draft.ticker.trim().toUpperCase() || null,
+      quantity: numOr(draft.quantity),
+      cost_basis: numOr(draft.cost_basis),
+      manual_value: numOr(draft.manual_value),
+      monthly_contribution: numOr(draft.monthly_contribution),
+      expected_return: numOr(draft.expected_return, editingHolding.expected_return),
+      purchased_at: draft.purchased_at || editingHolding.purchased_at || null,
+    };
+    try {
+      await saveAll(holdings.map((h) => (h.id === updated.id ? updated : h)));
+      toast.success(t("Posición actualizada", "Position updated"));
+      closeEdit();
+    } catch {
+      toast.error(t("No pudimos guardar. Inténtalo de nuevo.", "We couldn't save. Please try again."));
+    }
+  };
   const tabList = posTab === "Todos" ? enriched : enriched.filter((h) => h.type === posTab);
   const tabValue = tabList.reduce((s, h) => s + h.value, 0);
   const tabAnnualGain = tabList.filter((h) => !gainExcludedTypes.has(h.type)).reduce((s, h) => s + h.value * h.growth, 0);
