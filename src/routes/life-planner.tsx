@@ -32,7 +32,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
 import { Label } from "@/components/ui/label";
+import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useT } from "@/hooks/use-language";
+import { useQuotes } from "@/hooks/use-market";
 import { useLifeGoals, type LifeGoal } from "@/hooks/use-life-goals";
 import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { useProfile } from "@/hooks/use-profile";
@@ -125,16 +127,25 @@ function LifePlannerContent() {
   };
 
   const target = data.plan.targetCapital;
-  // Solo patrimonio líquido/invertible: las propiedades no cuentan para llegar al número.
-  const liquid =
-    (profile.assets_cash ?? 0) +
-    (profile.assets_bank ?? 0) +
-    (profile.assets_retirement ?? 0) +
-    (profile.assets_etf ?? 0) +
-    (profile.assets_stocks ?? 0) +
-    (profile.assets_crypto ?? 0) -
-    (profile.liabilities ?? 0);
-  const start = Math.max(0, liquid);
+  // Mismo punto de partida que WhatsYournumber: capital invertible (sin propiedades
+  // ni deudas), con precios de mercado en vivo cuando hay detalle de activos.
+  const { holdings } = useHoldings();
+  const holdingSymbols = holdings
+    .filter((h) => h.ticker && (h.quantity > 0 || h.cost_basis > 0 || h.manual_value > 0))
+    .map((h) => h.ticker!);
+  const holdingQuotes = useQuotes(holdingSymbols);
+  const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
+  const investable = holdings.length
+    ? holdings
+        .filter((h) => h.kind !== "property" && h.kind !== "debt")
+        .reduce((s, h) => s + holdingValue(h, prices), 0)
+    : (profile.assets_cash ?? 0) +
+      (profile.assets_bank ?? 0) +
+      (profile.assets_retirement ?? 0) +
+      (profile.assets_etf ?? 0) +
+      (profile.assets_stocks ?? 0) +
+      (profile.assets_crypto ?? 0);
+  const start = Math.max(0, investable);
   // Todo el dinero que entra (ahorro y ventas tipo exit) capitaliza al menos al 7% anual.
   const annualReturn = Math.max(7, profile.expected_return || 7);
   const savings = data.savings;
