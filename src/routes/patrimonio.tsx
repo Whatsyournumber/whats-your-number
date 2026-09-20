@@ -341,7 +341,16 @@ function PatrimonioContent() {
     assets_stocks: { name: t("Acciones", "Stocks"), color: "var(--color-chart-4)" },
   };
   const liveAssetsBase = hasDetail
-    ? assets.map((a) => (LIVE_KINDS[a.key] ? { ...a, value: sumKinds(LIVE_KINDS[a.key]!) } : a)).filter((a) => a.value > 0)
+    ? assets
+        .map((a) => {
+          const kinds = LIVE_KINDS[a.key];
+          if (!kinds) return a;
+          // Solo reemplaza el total del perfil cuando hay posiciones de ese rubro;
+          // si no hay detalle (p. ej. la vivienda del onboarding), conserva el perfil.
+          const hasKind = holdings.some((h) => kinds.includes(h.kind));
+          return hasKind ? { ...a, value: sumKinds(kinds) } : a;
+        })
+        .filter((a) => a.value > 0)
     : assets;
   // Rubros con valor real pero ausentes del perfil (p. ej. acciones añadidas directamente): se agregan.
   const liveAssets = hasDetail

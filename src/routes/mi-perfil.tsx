@@ -27,7 +27,7 @@ import { translateOption } from "@/lib/i18n-data";
 
 import { useProfile, type Profile } from "@/hooks/use-profile";
 import { useAuth } from "@/hooks/use-auth";
-import { seedHoldingsFromTotals, useHoldings, wealthTotals, type Holding } from "@/hooks/use-holdings";
+import { HOME_HOLDING_NOTE, newHolding, seedHoldingsFromTotals, useHoldings, wealthTotals, type Holding } from "@/hooks/use-holdings";
 import {
   childrenOptions,
   cities,
@@ -151,7 +151,31 @@ function MiPerfil() {
   // Detalle del patrimonio: si nunca lo editaste, lo sembramos con los totales del perfil.
   useEffect(() => {
     if (dirty || loadingHoldings) return;
-    setWealth(holdings.length ? holdings : seedHoldingsFromTotals(profile));
+    let base = holdings.length ? holdings : seedHoldingsFromTotals(profile);
+    // La vivienda del onboarding debe verse aquí aunque ya tengas otros activos:
+    // el valor como propiedad (activo) y la hipoteca ligada (pasivo).
+    const homeMortgage = profile.housing === "hipoteca" ? Math.max(0, Math.round(profile.mortgage_balance || 0)) : 0;
+    const homeValue = Math.max(0, Math.round(profile.assets_property || 0));
+    if (!base.some((h) => h.kind === "property") && (homeValue > 0 || homeMortgage > 0)) {
+      base = [
+        ...base,
+        {
+          ...newHolding("property", t("Mi vivienda", "My home"), base.length),
+          manual_value: homeValue,
+          cost_basis: homeValue,
+          linked_liability: homeMortgage,
+          note: HOME_HOLDING_NOTE,
+        },
+      ];
+    }
+    const otherDebts = Math.max(0, Math.round(profile.liabilities || 0) - homeMortgage);
+    if (!base.some((h) => h.kind === "debt") && otherDebts > 0) {
+      base = [
+        ...base,
+        { ...newHolding("debt", t("Deudas", "Debts"), base.length), manual_value: otherDebts, expected_return: 0 },
+      ];
+    }
+    setWealth(base);
   }, [holdings, loadingHoldings, profile, dirty]);
 
   // Abrir directo en la sección de patrimonio (#patrimonio).

@@ -158,7 +158,12 @@ export function seedHoldingsFromTotals(p: {
   assets_property: number;
   liabilities: number;
   expected_return: number;
+  housing?: string;
+  mortgage_balance?: number;
 }): Holding[] {
+  // La hipoteca de la vivienda queda ligada a la propiedad, no duplicada en Deudas.
+  const homeMortgage = p.housing === "hipoteca" ? Math.max(0, Math.round(p.mortgage_balance ?? 0)) : 0;
+  const otherDebts = Math.max(0, Math.round(p.liabilities) - homeMortgage);
   const rows: [HoldingKind, string, number][] = [
     ["cash", "Efectivo", p.assets_cash],
     ["bank", "Cuentas bancarias", p.assets_bank],
@@ -167,15 +172,75 @@ export function seedHoldingsFromTotals(p: {
     ["stock", "Acciones", p.assets_stocks],
     ["crypto", "Cripto", p.assets_crypto],
     ["property", "Propiedad", p.assets_property],
-    ["debt", "Deudas", p.liabilities],
+    ["debt", "Deudas", otherDebts],
   ];
   return rows
-    .filter(([, , v]) => v > 0)
+    .filter(([kind, , v]) => v > 0 || (kind === "property" && homeMortgage > 0))
     .map(([kind, label, v], i) => ({
       ...newHolding(kind, label, i),
       manual_value: Math.round(v),
+      ...(kind === "property" ? { linked_liability: homeMortgage, note: HOME_HOLDING_NOTE } : {}),
       expected_return: ["crypto", "stock", "property"].includes(kind) ? defaultReturn(kind) : p.expected_return || 7,
     }));
+}
+
+/** Marca interna de la vivienda creada desde el onboarding. */
+export const HOME_HOLDING_NOTE = "onboarding:vivienda";
+
+/**
+ * Garantiza que la vivienda del onboarding exista como activo real:
+ * el valor en Propiedades (activo) y el saldo de la hipoteca ligado (pasivo).
+ * Si ya hay propiedades creadas a mano y ninguna marcada, no toca nada.
+ */
+export async function syncHomeHolding(
+  supabaseClient: any,
+  userId: string,
+  p: { housing?: string; assets_property?: number | null; mortgage_balance?: number | null },
+  label: string,
+): Promise<void> {
+  const owns = p.housing === "hipoteca" || p.housing === "pagada";
+  const value = Math.max(0, Math.round(p.assets_property ?? 0));
+  const mortgage = p.housing === "hipoteca" ? Math.max(0, Math.round(p.mortgage_balance ?? 0)) : 0;
+  if (!owns || (value <= 0 && mortgage <= 0)) {
+    await supabaseClient.from("holdings").delete().eq("user_id", userId).eq("note", HOME_HOLDING_NOTE);
+    return;
+  }
+  const { data: marked } = await supabaseClient
+    .from("holdings")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("note", HOME_HOLDING_NOTE)
+    .maybeSingle();
+  if (marked) {
+    await supabaseClient
+      .from("holdings")
+      .update({ manual_value: value, cost_basis: value, linked_liability: mortgage })
+      .eq("id", marked.id);
+    return;
+  }
+  const { count } = await supabaseClient
+    .from("holdings")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("kind", "property");
+  if ((count ?? 0) > 0) return; // ya gestiona sus propiedades a mano
+  await supabaseClient.from("holdings").insert({
+    user_id: userId,
+    kind: "property",
+    label,
+    ticker: null,
+    quantity: 0,
+    cost_basis: value,
+    manual_value: value,
+    monthly_contribution: 0,
+    expected_return: 4,
+    linked_liability: mortgage,
+    monthly_income: 0,
+    target_year: null,
+    probability: 100,
+    note: HOME_HOLDING_NOTE,
+    position: 999,
+  });
 }
 
 /** Aporte mensual total declarado en inversiones + retiro. */
