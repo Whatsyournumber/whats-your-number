@@ -853,7 +853,7 @@ function Dashboard() {
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title={numberTitle} description={numberDescription}>
+        <Panel title={numberTitle} description={numberDescription} className="lg:col-span-2">
           <div className="space-y-4">
             <div>
               <p className="text-xs text-muted-foreground">{numberLabel}</p>
