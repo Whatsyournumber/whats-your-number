@@ -31,6 +31,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useLanguage, useT } from "@/hooks/use-language";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets, type BudgetLine } from "@/hooks/use-spend-budgets";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
