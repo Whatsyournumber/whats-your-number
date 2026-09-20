@@ -287,8 +287,8 @@ function RetiroContent() {
             )
         : priority === "gastos"
           ? t(
-              "Controla tus gastos y mira cuánto capital necesitas para vivir de tus inversiones.",
-              "Control your spending and see how much capital you need to live off your investments.",
+              "Descubre cuánto necesitas para vivir de tus inversiones y alcanzar tu libertad financiera.",
+              "Discover how much you need to live off your investments and reach financial freedom.",
             )
           : priority === "patrimonio"
             ? t(
