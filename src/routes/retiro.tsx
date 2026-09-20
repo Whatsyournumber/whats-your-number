@@ -217,8 +217,10 @@ function RetiroContent() {
     }
     return 0; // inalcanzable en 100 años con este aporte
   })();
-  const aporteRetireYear =
-    monthsToNumber > 0 ? new Date().getFullYear() + Math.ceil(monthsToNumber / 12) : 0;
+  const aporteYearsToRetire = monthsToNumber > 0 ? Math.ceil(monthsToNumber / 12) : 0;
+  const aporteYearsToRetireLabel = `${aporteYearsToRetire} ${
+    aporteYearsToRetire === 1 ? t("año", "year") : t("años", "years")
+  }`;
 
   // Realismo: lo que de verdad te sobra hoy con tus gastos reales (fijos + variables importados).
   const capacity = Math.max(0, d.income - d.expenses);
