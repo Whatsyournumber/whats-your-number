@@ -32,7 +32,3 @@
 - [x] Foto de recibo: mostrar carga, confirmar solo categoría y monto, y enseñar el desglose tras guardar
 - [x] Últimos gastos: agrupar el recibo como una compra expandible con sus productos
 - [x] Plan mensual: renombrar grupos a Gastos fijos mensuales/Gastos variables y llevar los fijos automáticamente al objetivo por categoría
-
-## Dashboard
-- [x] Cajas de Tu Número: títulos "Monto mensual", "Años restantes", "Probabilidad" en una sola línea (ES/EN, móvil/tablet/desktop)
-- [x] Tarjetas de "Principales": resumir a título, subtítulo y monto (sin 4 líneas de texto)
