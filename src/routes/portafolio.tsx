@@ -12,6 +12,7 @@ import { KpiCard } from "@/components/kpi-card";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -1235,13 +1236,10 @@ function PortafolioContent() {
   const simResult = projPoints[projPoints.length - 1]!;
 
 
-  // Formulario en línea: edita el activo en su propia tarjeta (sin ventana emergente).
+  // Formulario dentro de una ventana emergente (popup).
   const assetEditor = (isNew: boolean) =>
     draft ? (
-      <div
-        className="col-span-2 mt-2 space-y-3 rounded-xl border border-border/60 bg-background/40 p-3 md:col-span-6"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="space-y-3">
         {isNew ? (
           <div className="flex flex-wrap gap-1.5">
             {([
