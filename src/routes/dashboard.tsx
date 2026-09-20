@@ -36,6 +36,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { sameMerchant, useTransactions, type Tx } from "@/hooks/use-transactions";
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
+import { BUDGET_CATEGORIES } from "@/lib/budget-categories";
 import { useIndexReturns } from "@/hooks/use-index-returns";
 import { holdingValue, useHoldings, wealthTotals } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
@@ -152,6 +153,32 @@ function Dashboard() {
     if (sum > 0) return sum;
     return hasSpendTarget && spendTarget > 0 ? spendTarget : 0;
   }, [budgetLines, hasSpendTarget, spendTarget]);
+  // Gastos fijos del plan (categorías esenciales con día de cobro): son gasto
+  // real del mes aunque todavía no se registre ninguna compra.
+  const planFixed = useMemo(() => {
+    const list = budgetLines.filter((l) => {
+      const cat = BUDGET_CATEGORIES.find((c) => c.id === l.id);
+      const group = cat?.group ?? l.group;
+      return Number(l.amount) > 0 && (l.dueDay ?? 0) >= 1 && group === "essentials";
+    });
+    const aliases = new Set<string>();
+    for (const line of list) {
+      const cat = BUDGET_CATEGORIES.find((c) => c.id === line.id);
+      for (const word of [line.label, cat?.es, cat?.en, ...(line.keywords ?? []), ...(cat?.aliases ?? [])]) {
+        const clean = (word ?? "").trim().toLowerCase();
+        if (clean.length > 2) aliases.add(clean);
+      }
+    }
+    return {
+      total: list.reduce((sum, line) => sum + Number(line.amount), 0),
+      // Evita contar dos veces el mismo gasto fijo suelto y su línea del plan.
+      isDuplicate: (name: string) => {
+        const clean = name.replace(/^\p{Extended_Pictographic}\s*/u, "").trim().toLowerCase();
+        if (clean.length < 3) return false;
+        return [...aliases].some((alias) => clean === alias || clean.includes(alias) || alias.includes(clean));
+      },
+    };
+  }, [budgetLines]);
   const { live: indexLive } = useIndexReturns();
   const { holdings } = useHoldings();
   const holdingSymbols = holdings
@@ -274,8 +301,8 @@ function Dashboard() {
       // plan (ahorro e inversión no cuentan como gasto). Los variables se suman
       // a medida que la persona los registra.
       const fixedOnly = fixed.items
-        .filter((item) => bucketFor(item.name) !== "savings")
-        .reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
+        .filter((item) => bucketFor(item.name) !== "savings" && !planFixed.isDuplicate(item.name))
+        .reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0) + planFixed.total;
       const fallbackInvest = d.cashFlow.buckets[2]?.amount ?? 0;
       const fallbackFree = Math.max(0, d.income - d.cashFlow.buckets.reduce((sum, bucket) => sum + bucket.amount, 0));
       const fallbackExpenses = d.cashFlow.buckets[0]!.amount + d.cashFlow.buckets[1]!.amount;
@@ -299,9 +326,12 @@ function Dashboard() {
       (row) => row.amount === Math.abs(Number(tx.amount)).toFixed(2) && (sameMerchant(row.name, tx.merchant) || sameMerchant(row.name, tx.description)),
     );
     const travelDays = buildTravelDays(monthTransactions as Tx[], rules);
-    let needs = fixed.items.filter((item) => bucketFor(item.name) === "needs").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
-    let wants = fixed.items.filter((item) => bucketFor(item.name) === "wants").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
-    let savings = fixed.items.filter((item) => bucketFor(item.name) === "savings").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
+    // Los gastos fijos del plan (con día de cobro) siempre cuentan como gasto
+    // del mes; los fijos sueltos solo si no repiten una línea del plan.
+    const looseFixed = fixed.items.filter((item) => !planFixed.isDuplicate(item.name));
+    let needs = looseFixed.filter((item) => bucketFor(item.name) === "needs").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0) + planFixed.total;
+    let wants = looseFixed.filter((item) => bucketFor(item.name) === "wants").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
+    let savings = looseFixed.filter((item) => bucketFor(item.name) === "savings").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
     const retirementFund = holdings
       .filter((holding) => holding.kind === "retirement")
       .reduce((sum, holding) => sum + Math.max(0, Number(holding.monthly_contribution) || 0), 0);
@@ -324,7 +354,7 @@ function Dashboard() {
       expenses: needs + wants,
       savings: savings + Math.max(0, totalIncome - needs - wants - savings),
     };
-  }, [activeKey, budgetLines, d.cashFlow.buckets, d.income, fixed.items, holdings, moneyBuckets, rules, transactions]);
+  }, [activeKey, budgetLines, d.cashFlow.buckets, d.income, fixed.items, holdings, moneyBuckets, planFixed, rules, transactions]);
   const monthlySavings = monthlyDistribution.savings;
   const monthlyExpenses = monthlyDistribution.expenses;
   const spendPlanUsed = hasSpendTarget && spendTarget > 0
