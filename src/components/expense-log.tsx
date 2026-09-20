@@ -1415,7 +1415,7 @@ export function ExpenseLog() {
                 <div className="grid grid-cols-3 gap-2.5">
                   {(
                     [
-                      { Icon: GooglePhotosIcon, es: "Google Imágenes", en: "Google Images", pick: () => fileRef.current?.click() },
+                      { Icon: GooglePhotosIcon, es: "Imágenes", en: "Images", pick: () => fileRef.current?.click() },
                       { Icon: GalleryIcon, es: "Galería", en: "Gallery", pick: () => fileRef.current?.click() },
                       { Icon: FolderIcon, es: "Archivos", en: "Files", pick: () => docsRef.current?.click() },
                     ] as const
@@ -1436,6 +1436,13 @@ export function ExpenseLog() {
                     </button>
                   ))}
                 </div>
+
+                <p className="pt-1 text-center text-[11px] leading-snug text-muted-foreground">
+                  {t(
+                    "Puedes seleccionar varios gastos al mismo tiempo",
+                    "You can select several expenses at the same time",
+                  )}
+                </p>
               </div>
             </DialogContent>
           </Dialog>
