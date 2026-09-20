@@ -388,7 +388,7 @@ function PatrimonioContent() {
   ).slice().sort((a, b) => b.value - a.value);
 
   const totalAssetsAll = hasDetail ? assetRows.reduce((s, a) => s + a.value, 0) : d.totalAssets + futureTotal;
-  const netWorthAll = totalAssetsAll - d.totalLiabilities;
+  const netWorthAll = totalAssetsAll - liabilitiesTotal;
 
   // Aportes/compras de activos agrupados por el mes real en que se registraron.
   const holdingContributions = (() => {
@@ -449,7 +449,7 @@ function PatrimonioContent() {
   const selNetWorth = months[selIdx]?.netWorth ?? netWorthAll;
   const selPrev = selIdx > 0 ? (months[selIdx - 1]?.netWorth ?? 0) : 0;
   const growthMonth = selPrev !== 0 ? ((selNetWorth - selPrev) / Math.abs(selPrev)) * 100 : 0;
-  const selAssets = selNetWorth + d.totalLiabilities;
+  const selAssets = selNetWorth + liabilitiesTotal;
 
   // Comparación contra benchmarks: patrimonio e índice indexados a % desde el primer mes.
   const benchSymbol = benchmark === "nasdaq" ? "^NDX" : benchmark === "world" ? "URTH" : "^GSPC";
@@ -592,7 +592,7 @@ function PatrimonioContent() {
         <KpiCard
           label={t("Pasivos", "Liabilities")}
           labelSm={t("Deudas", "Debts")}
-          value={fmt(d.totalLiabilities)}
+          value={fmt(liabilitiesTotal)}
           inverse
           index={2}
         />
@@ -801,7 +801,7 @@ function PatrimonioContent() {
           </Button>
         </Panel>
 
-        <Panel title={t("Pasivos", "Liabilities")} description={fmt(d.totalLiabilities)}>
+        <Panel title={t("Pasivos", "Liabilities")} description={fmt(liabilitiesTotal)}>
           <div className="space-y-2">
             {liabilityRows.map((l) => (
               <div key={l.id} className="flex items-center gap-2 rounded-xl bg-elevated/60 p-3">
@@ -820,7 +820,7 @@ function PatrimonioContent() {
           <div className="mt-4 rounded-xl border border-dashed border-border p-4">
             <p className="text-xs text-muted-foreground">{t("Ratio deuda / activos", "Debt / asset ratio")}</p>
             <p className="numeric mt-1 text-2xl font-semibold">
-              {totalAssetsAll > 0 ? ((d.totalLiabilities / totalAssetsAll) * 100).toFixed(1) : "0.0"}%
+              {totalAssetsAll > 0 ? ((liabilitiesTotal / totalAssetsAll) * 100).toFixed(1) : "0.0"}%
             </p>
             <p className="mt-1 text-xs text-muted-foreground">{t("Bajo el 40% se considera saludable", "Below 40% is considered healthy")}</p>
           </div>
