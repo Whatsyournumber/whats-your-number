@@ -645,10 +645,17 @@ function PortafolioContent() {
   const draftTicker = (draft?.ticker ?? "").trim().toUpperCase();
   const draftQuoteQuery = useQuotes(draftTicker.length >= 1 ? [draftTicker] : []);
   const draftQuote = (draftQuoteQuery.data?.quotes ?? []).find((q) => q.symbol.toUpperCase() === draftTicker);
+  // Detectar cambios sin guardar para confirmar antes de salir del editor.
+  const editBaseline = useRef<string | null>(null);
+  const [discardConfirm, setDiscardConfirm] = useState<"close" | "back" | null>(null);
+  const startDraft = (d: NonNullable<typeof draft>) => {
+    setDraft(d);
+    editBaseline.current = JSON.stringify(d);
+  };
   const openEdit = (id: string) => {
     const h = holdings.find((x) => x.id === id);
     if (!h) return;
-    setDraft({
+    startDraft({
       kind: h.kind,
       label: h.label ?? "",
       ticker: h.ticker ?? "",
@@ -665,7 +672,7 @@ function PortafolioContent() {
   const openFallbackEdit = (h: (typeof enriched)[number]) => {
     const fallbackId = `fallback:${h.type}`;
     const kind: HoldingKind = h.type === "Acción" ? "stock" : h.type === "Cripto" ? "crypto" : h.type === "Cash" ? "cash" : "etf";
-    setDraft({
+    startDraft({
       kind,
       label: h.ticker,
       ticker: "",
@@ -683,9 +690,10 @@ function PortafolioContent() {
   const openNew = () => {
     setEditId("new");
     setDraft(null);
+    editBaseline.current = null;
   };
   const selectNewKind = (kind: HoldingKind) =>
-    setDraft({
+    startDraft({
       kind,
       label: "",
       ticker: "",
@@ -697,9 +705,26 @@ function PortafolioContent() {
       linked_liability: "",
       purchased_at: new Date().toISOString().slice(0, 10),
     });
-  const closeEdit = () => {
+  const editDirty = draft !== null && editBaseline.current !== null && JSON.stringify(draft) !== editBaseline.current;
+  const forceCloseEdit = () => {
     setEditId(null);
     setDraft(null);
+    editBaseline.current = null;
+  };
+  const closeEdit = () => {
+    if (editDirty) {
+      setDiscardConfirm("close");
+      return;
+    }
+    forceCloseEdit();
+  };
+  const backToKinds = () => {
+    if (editDirty) {
+      setDiscardConfirm("back");
+      return;
+    }
+    setDraft(null);
+    editBaseline.current = null;
   };
   const numOr = (v: string, fallbackValue = 0) => {
     const n = Number(String(v).replace(",", "."));
