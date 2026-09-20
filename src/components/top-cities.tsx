@@ -54,24 +54,37 @@ export function TopCitiesPanel({
         all.find((r) => norm(profile.city as string).includes(norm(r.city.name)))
       : undefined;
 
-    // 2) Ciudades parecidas: presupuesto similar o menor y que te acerquen antes a tu número.
+    // 2) Ciudades parecidas: mismo continente, países distintos, presupuesto
+    // similar o menor y que te acerquen antes a tu número.
     const rest = all.filter((r) => r.city.id !== home?.city.id);
-    let similar: CityScore[];
     if (home) {
       const homeYears = home.yearsToRetire ?? Number.POSITIVE_INFINITY;
-      const faster = rest.filter((r) => {
+      // Solo ciudades del mismo continente y de otro país.
+      const sameContinent = rest.filter(
+        (r) => r.city.region === home.city.region && r.city.country !== home.city.country,
+      );
+      const faster = sameContinent.filter((r) => {
         const y = r.yearsToRetire ?? Number.POSITIVE_INFINITY;
         return r.cost <= home.cost * 1.1 && y <= homeYears;
       });
-      const pool = faster.length > 0 ? faster : rest.filter((r) => r.cost <= home.cost * 1.25);
-      similar = (pool.length > 0 ? pool : rest)
+      const pool = faster.length > 0 ? faster : sameContinent.filter((r) => r.cost <= home.cost * 1.25);
+      const sorted = (pool.length > 0 ? pool : sameContinent.length > 0 ? sameContinent : rest)
+        .slice()
         .sort((a, b) => {
           const ya = a.yearsToRetire ?? Number.POSITIVE_INFINITY;
           const yb = b.yearsToRetire ?? Number.POSITIVE_INFINITY;
           if (ya !== yb) return ya - yb;
           return Math.abs(a.cost - home.cost) - Math.abs(b.cost - home.cost);
-        })
-        .slice(0, 2);
+        });
+      // Como mucho una ciudad por país para que las tarjetas sean variadas.
+      const similar: CityScore[] = [];
+      const seenCountries = new Set<string>([home.city.country]);
+      for (const r of sorted) {
+        if (seenCountries.has(r.city.country)) continue;
+        seenCountries.add(r.city.country);
+        similar.push(r);
+        if (similar.length === 2) break;
+      }
       return [home, ...similar];
     }
 
