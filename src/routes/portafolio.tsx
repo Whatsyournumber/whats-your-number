@@ -815,9 +815,16 @@ function PortafolioContent() {
   const benchSeries = normalize12(series[benchSymbol] ?? []);
   const spy = normalize12(series["SPY"] ?? []);
   const btc = normalize12(series["BTC-USD"] ?? []);
-  const equityValue = profile.assets_etf + profile.assets_retirement + profile.assets_stocks;
-  const cryptoValue = profile.assets_crypto;
-  const cashValue = profile.assets_cash + profile.assets_bank;
+  // Peso real de la cartera: primero las posiciones guardadas; si aún no hay,
+  // los totales del onboarding (Mis datos).
+  const posCrypto = enriched.filter((h) => h.type === "Cripto").reduce((s, h) => s + h.value, 0);
+  const posCash = enriched.filter((h) => h.type === "Cash").reduce((s, h) => s + h.value, 0);
+  const posEquity = Math.max(0, totalValue - posCrypto - posCash);
+  const equityValue = totalValue > 0
+    ? posEquity
+    : profile.assets_etf + profile.assets_retirement + profile.assets_stocks;
+  const cryptoValue = totalValue > 0 ? posCrypto : profile.assets_crypto;
+  const cashValue = totalValue > 0 ? posCash : profile.assets_cash + profile.assets_bank;
   const base = equityValue + cryptoValue + cashValue;
   const wEq = base ? equityValue / base : 1;
   const wCr = base ? cryptoValue / base : 0;
