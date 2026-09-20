@@ -312,6 +312,48 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_messages: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          forwarded: boolean
+          id: string
+          lang: string
+          message: string
+          name: string
+          plan: string | null
+          source: string
+          topic: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          forwarded?: boolean
+          id?: string
+          lang?: string
+          message: string
+          name: string
+          plan?: string | null
+          source?: string
+          topic?: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          forwarded?: boolean
+          id?: string
+          lang?: string
+          message?: string
+          name?: string
+          plan?: string | null
+          source?: string
+          topic?: string
+        }
+        Relationships: []
+      }
       custom_fixed_expenses: {
         Row: {
           amount: number
