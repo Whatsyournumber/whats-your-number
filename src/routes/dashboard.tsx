@@ -866,8 +866,6 @@ function Dashboard() {
               >
                 {fmt(targetNumber)}
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">{numberHint}</p>
-
               {usingDemo && (
                 <p className="mt-1 text-[11px] text-muted-foreground/80">
                   {t("Calculado con tu demo. Edita tus datos para afinarlo.", "Based on your demo. Edit your data to refine it.")}
