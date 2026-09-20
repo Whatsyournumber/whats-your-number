@@ -1464,7 +1464,11 @@ function PortafolioContent() {
     <Dialog open={editId !== null} onOpenChange={(open) => (!open ? closeEdit() : null)}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{editId === "new" ? t("Nuevo activo", "New asset") : t("Editar activo", "Edit asset")}</DialogTitle>
+          <DialogTitle>
+            {editId === "new"
+              ? t("Nuevo activo", "New asset")
+              : t(`Editar ${draft?.label?.trim() || "activo"}`, `Edit ${draft?.label?.trim() || "asset"}`)}
+          </DialogTitle>
           <DialogDescription className="sr-only">
             {t("Modifica los datos del activo y guarda los cambios.", "Edit the asset details and save your changes.")}
           </DialogDescription>
