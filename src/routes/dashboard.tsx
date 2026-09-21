@@ -1046,7 +1046,8 @@ function Dashboard() {
                 subtitle = t("En camino", "On track");
               }
 
-              const sp500Rate = indexLive['sp500']?.cagr10y ?? indexLive['sp500']?.ytdPct ?? 10;
+              // S&P 500 real a 12 meses (misma serie que /portafolio); CAGR como respaldo.
+              const sp500Rate = sp500YearReturn ?? indexLive['sp500']?.cagr10y ?? indexLive['sp500']?.ytdPct ?? 10;
 
               const goalBarColor = (value: number) =>
                 value >= 75 ? "bg-positive" : value >= 50 ? "bg-warning" : "bg-negative";
