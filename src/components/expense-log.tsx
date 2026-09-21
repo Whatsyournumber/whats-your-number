@@ -1966,13 +1966,21 @@ export function ExpenseLog() {
                               <button
                                 type="button"
                                 onClick={() => {
-                                  const keys = selectedItems.includes(it.key) ? selectedItems : [it.key];
-                                  setMoveItem({ keys, label: keys.length > 1 ? t(`${keys.length} gastos`, `${keys.length} expenses`) : it.label, from: r.id });
+                                  const tx = expenseTx.find((x) => x.id === it.key);
+                                  if (tx) {
+                                    openEditTx(tx as Tx);
+                                    return;
+                                  }
+                                  const fixedItem = expenseFixedItems.find((i) => i.id === it.key);
+                                  if (fixedItem) {
+                                    if ((fixedItem as { planId?: string }).planId) setPlanOpen(true);
+                                    else openEditRecurring(fixedItem);
+                                  }
                                 }}
                                 className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                                aria-label={t("Cambiar de categoría", "Change category")}
+                                aria-label={t("Editar gasto", "Edit expense")}
                               >
-                                <ArrowLeftRight className="h-3.5 w-3.5" />
+                                <Pencil className="h-3.5 w-3.5" />
                               </button>
                             </li>
                           ))}
