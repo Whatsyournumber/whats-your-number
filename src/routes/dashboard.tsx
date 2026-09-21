@@ -640,7 +640,13 @@ function Dashboard() {
   })();
 
 
-  const insights = buildInsights(plan, profile, profile, d.currency, lang);
+  const insights = buildInsights(plan, profile, profile, d.currency, lang, {
+    cash: liveCash,
+    assets: liveGrossAssets,
+    target: targetNumber > 0 ? targetNumber : undefined,
+    progressPct: numberProgress,
+    freedomAge: targetNumber > 0 ? freedomAgeLive : null,
+  });
   const firstName = (profile.full_name || "").trim().split(" ")[0];
 
   // El título, subtítulo y textos del panel cambian según el objetivo elegido.
