@@ -779,10 +779,14 @@ function PortafolioContent() {
   const tabList = posTab === "Todos" ? enriched : enriched.filter((h) => h.type === posTab);
   const tabValue = tabList.reduce((s, h) => s + h.value, 0);
   const tabAnnualGain = tabList.filter((h) => !gainExcludedTypes.has(h.type)).reduce((s, h) => s + h.value * h.growth, 0);
-  const tabWeightedReturn = tabValue ? tabList.reduce((sum, holding) => sum + holding.ret * holding.value, 0) / tabValue : 0;
+  const tabReturnRows = tabList.filter((holding) => holding.ret !== 0);
+  const tabReturnBase = tabReturnRows.reduce((sum, holding) => sum + holding.value, 0);
+  const tabWeightedReturn = tabReturnBase
+    ? tabReturnRows.reduce((sum, holding) => sum + holding.ret * holding.value, 0) / tabReturnBase
+    : 0;
   const top = [...enriched].sort((a, b) => b.value - a.value)[0];
   const concentration = top && totalValue ? (top.value / totalValue) * 100 : 0;
-  const netAnnual = (totalValue * weightedReturn) / 100;
+  const netAnnual = (returnBase * weightedReturn) / 100;
   const passiveMonthly = dividends / 12;
   // Nivel de riesgo del portafolio: volatilidad + concentración (solo posiciones de inversión).
   const riskScore = riskWeight * 100 * 0.6 + Math.max(0, concentration - 30) * 0.6;
