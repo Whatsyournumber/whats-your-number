@@ -1055,14 +1055,15 @@ function Dashboard() {
                         <p className="text-sm text-muted-foreground">
                           {noInvestments
                             ? <>{fmtCompact(portfolioValue)} {t("invertidos", "invested")}</>
-                            : <>{fmtCompact(portfolioValue)} {t(`al ${portfolioReturn.toFixed(0)}%`, `at ${portfolioReturn.toFixed(0)}%`)}</>}
+                            : <>{fmtCompact(portfolioValue)} {t(`al ${portfolioReturn.toFixed(1)}%`, `at ${portfolioReturn.toFixed(1)}%`)}</>}
                         </p>
                         <Progress value={progress} indicatorClassName={goalBarColor(progress)} className="mt-1.5 h-1.5" />
                         <p className="mt-1 truncate text-[11px] text-muted-foreground">
                           {noInvestments
                             ? t("Comienza a invertir el 20% de tus ingresos", "Start investing 20% of your income")
-                            : t(`vs ${sp500Rate.toFixed(0)}% S&P 500`, `vs ${sp500Rate.toFixed(0)}% S&P 500`)}
+                            : t(`vs ${sp500Rate.toFixed(1)}% S&P 500`, `vs ${sp500Rate.toFixed(1)}% S&P 500`)}
                         </p>
+
                       </div>
                     </Link>
                   </li>
