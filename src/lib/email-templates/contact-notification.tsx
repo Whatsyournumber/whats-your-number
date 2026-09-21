@@ -74,7 +74,7 @@ export const template = {
   subject: (data: Record<string, any>) =>
     `Nuevo mensaje de contacto · ${data['name'] || 'WhatsYourNumber'}`,
   displayName: 'Mensaje de contacto',
-  to: 'thecontentcclub@gmail.com',
+  to: 'wyn.welcome@gmail.com',
   previewData: {
     name: 'Oscar Alvarez',
     email: 'oscar@example.com',
