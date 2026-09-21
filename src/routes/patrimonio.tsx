@@ -332,19 +332,17 @@ function PatrimonioContent() {
     ["property", "bond", "structured", "future"].includes(r.kind),
   );
   const visibleAnnual = Math.round(totalGainRows.reduce((s, r) => s + r.annual, 0));
-  // Rentabilidad total ponderada por el peso (valor actual) de esos mismos rubros.
-  const yieldingBase = totalGainRows.reduce((s, r) => s + r.value, 0);
-  const visibleRate = yieldingBase ? (visibleAnnual / yieldingBase) * 100 : 0;
+  // Rentabilidad promedio ponderada: cada activo aporta según su valor dentro
+  // del total visible. Efectivo y activos sin retorno cuentan con una tasa de 0%.
+  const visibleRate = visibleTotal
+    ? visibleRows.reduce((sum, row) => sum + row.rate * row.value, 0) / visibleTotal
+    : 0;
 
-  // Rentabilidad global del patrimonio (KPI superior): mismos rubros generadores de renta,
-  // calculada sobre TODO el portfolio para que coincida con la fila Total en "Todos".
-  // Incluye acciones (su renta ya se calcula vs precio de compra); cripto y ETF quedan fuera por decisión de producto.
-  const overallGainRows = detailRows.filter((r) =>
-    ["property", "bond", "structured", "future", "stock"].includes(r.kind),
-  );
-  const overallAnnual = Math.round(overallGainRows.reduce((s, r) => s + r.annual, 0));
-  const overallYieldingBase = overallGainRows.reduce((s, r) => s + r.value, 0);
-  const overallRate = overallYieldingBase ? (overallAnnual / overallYieldingBase) * 100 : null;
+  // El indicador superior usa exactamente el mismo cálculo sobre todos los activos.
+  const overallValue = detailRows.reduce((sum, row) => sum + row.value, 0);
+  const overallRate = overallValue
+    ? detailRows.reduce((sum, row) => sum + row.rate * row.value, 0) / overallValue
+    : null;
 
 
 
@@ -648,7 +646,7 @@ function PatrimonioContent() {
           hint={
             overallRate === null
               ? t("sin activos con renta aún", "no income assets yet")
-              : t("anual sobre activos con renta", "annual on income assets")
+              : t("promedio ponderado de tus activos", "weighted average of your assets")
           }
           index={3}
         />
