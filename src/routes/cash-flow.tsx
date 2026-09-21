@@ -320,17 +320,16 @@ function CashFlow() {
   const saveAmount = investAmount + freeAmount;
 
 
-  const needsBreakdown = hasPlanNeeds
-    ? planBuckets.needs
-    : hasReal
-      ? [
-          ...fixedNeeds
-            .filter((item) => Number(item.amount) > 0)
-            .map((item) => ({ label: item.name.replace(/^\p{Extended_Pictographic}\s*/u, ""), amount: Number(item.amount) })),
-          ...(retirementFundNeeds > 0 ? [{ label: t("Fondo de retiro", "Retirement fund"), amount: retirementFundNeeds }] : []),
-          ...[...spend.needsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
-        ].sort((a, b) => b.amount - a.amount)
-      : [];
+  const needsBreakdown = hasReal
+    ? [
+        ...fixedNeeds
+          .filter((item) => Number(item.amount) > 0)
+          .map((item) => ({ label: item.name.replace(/^\p{Extended_Pictographic}\s*/u, ""), amount: Number(item.amount) })),
+        ...(retirementFundNeeds > 0 ? [{ label: t("Fondo de retiro", "Retirement fund"), amount: retirementFundNeeds }] : []),
+        ...[...spend.needsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
+      ].sort((a, b) => b.amount - a.amount)
+    : planBuckets.needs;
+
   const realWantsBreakdown = hasReal
     ? [
         ...fixedWants.filter((item) => Number(item.amount) > 0).map((item) => ({ label: cleanCategoryName(item.name), amount: Number(item.amount) })),
