@@ -84,19 +84,35 @@ export function useTransactions() {
       if (error) throw error;
       const rows = (data ?? []).map((t) => ({ ...t, amount: Number(t.amount) }));
       // El mismo movimiento puede llegar con nombres distintos desde varios EEFF
-      // ("SUM*ISTAWOOD SRL" vs "Istawood"). Con la misma fecha y el mismo monto
-      // se considera duplicado si los nombres apuntan al mismo comercio.
-      const kept = new Map<string, string[]>();
+      // ("SUM*ISTAWOOD SRL" vs "Istawood") y con fecha de cargo distinta (1-3 días).
+      // Regla: mismo importe + mismo comercio y
+      //  - misma fecha (aunque venga del mismo archivo), o
+      //  - fechas a menos de 4 días si vienen de archivos distintos
+      //    (EEFF solapados, o recibo manual + cargo del banco).
+      // Dentro de un mismo archivo, cargos repetidos en días distintos son reales
+      // (p. ej. peajes o suscripciones), así que no se descartan.
+      type Kept = { day: number; merchant: string; statement: string };
+      const kept = new Map<string, Kept[]>();
+      const dayOf = (date: string | null) => (date ? Math.round(new Date(date).getTime() / 86_400_000) : NaN);
       const unique = rows.filter((t) => {
         const amount = Math.abs(Number(t.amount)).toFixed(2);
-        const bucket = `${t.tx_date}|${amount}`;
-        const names = kept.get(bucket) ?? [];
-        if (names.some((n) => sameMerchant(n, t.merchant))) return false;
-        names.push(t.merchant ?? "");
-        kept.set(bucket, names);
+        const day = dayOf(t.tx_date);
+        const statement = t.statement_id ?? "";
+        const seen = kept.get(amount) ?? [];
+        const isDuplicate = seen.some((k) => {
+          if (!sameMerchant(k.merchant, t.merchant)) return false;
+          if (Number.isNaN(day) || Number.isNaN(k.day)) return k.day === day;
+          const gap = Math.abs(k.day - day);
+          if (gap === 0) return true;
+          return gap <= 3 && k.statement !== statement;
+        });
+        if (isDuplicate) return false;
+        seen.push({ day, merchant: t.merchant ?? "", statement });
+        kept.set(amount, seen);
         return true;
       });
       return unique as Tx[];
+
     },
   });
 
