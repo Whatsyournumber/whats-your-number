@@ -196,15 +196,15 @@ function Dashboard() {
 
   // Patrimonio vivo: cuando hay detalle de activos se recalcula con precios de
   // mercado en tiempo real (mismo total que /patrimonio); si no, se usa el perfil.
+  const wealthT = holdings.length ? wealthTotals(holdings, prices) : null;
   const liveNetWorth = (() => {
-    if (!holdings.length) return d.netWorth;
-    const wt = wealthTotals(holdings, prices);
+    if (!wealthT) return d.netWorth;
     const futureTotal = holdings
       .filter((h) => h.kind === "future")
       .reduce((s, h) => s + Math.round(holdingValue(h, prices) * (h.probability / 100)), 0);
     const assets =
-      wt.assets_cash + wt.assets_bank + wt.assets_retirement + wt.assets_etf + wt.assets_stocks + wt.assets_crypto + wt.assets_property + futureTotal;
-    return assets - wt.liabilities;
+      wealthT.assets_cash + wealthT.assets_bank + wealthT.assets_retirement + wealthT.assets_etf + wealthT.assets_stocks + wealthT.assets_crypto + wealthT.assets_property + futureTotal;
+    return assets - wealthT.liabilities;
   })();
 
   // Aportes/compras de activos agrupados por el mes real en que se registraron,
