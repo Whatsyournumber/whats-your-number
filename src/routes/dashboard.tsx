@@ -44,7 +44,7 @@ import { marketReturnPct } from "@/lib/holding-return";
 import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { useSyncedSetting } from "@/hooks/use-synced-setting";
 import { cn } from "@/lib/utils";
-import { buildInsights, lifestyles, minMonthlyForRetirement, num } from "@/lib/onboarding";
+import { lifestyles, minMonthlyForRetirement, num } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 import { readDemoSnapshot, type DemoSnapshot } from "@/lib/demo-snapshot";
@@ -651,13 +651,6 @@ function Dashboard() {
   })();
 
 
-  const planInsights = buildInsights(plan, profile, profile, d.currency, lang, {
-    cash: liveCash,
-    assets: liveGrossAssets,
-    progressPct: numberProgress,
-    freedomAge: targetNumber > 0 ? freedomAgeLive : null,
-    ...(targetNumber > 0 ? { target: targetNumber } : {}),
-  });
   const cityGoal = d.goals.find((goal) => goal.emoji === "🌍");
   const emergencyGoal = d.goals.find((goal) => goal.name === "Fondo de emergencia");
   const emergencyTarget = spendPlanMonthlyTotal > 0
@@ -669,16 +662,20 @@ function Dashboard() {
   const cityCost = cityGoal?.displayTarget ?? cityGoal?.target ?? plan.desiredIncome;
   const cityIncome = cityGoal?.displayCurrent ?? cityGoal?.current ?? d.income;
   const cityGap = Math.max(0, cityCost - cityIncome);
-  const numberInsight = planInsights.find((text) => /objetivo|goal/i.test(text))
-    ?? t(
-      `Has alcanzado el ${Math.round(numberProgress)}% de tu número de ${fmt(targetNumber)}. A este ritmo llegarías a los ${freedomAgeLive} años.`,
-      `You have reached ${Math.round(numberProgress)}% of your ${fmt(targetNumber)} number. At this pace, you would get there at age ${freedomAgeLive}.`,
-    );
+  const insightExtraSaving = Math.max(0, Math.round(monthlySavings * 0.1));
+  const acceleratedYears = insightExtraSaving > 0
+    ? yearsToTarget(targetNumber, numberProgressBase, monthlyContribution + insightExtraSaving, profile.expected_return || 7)
+    : numberYearsLeft;
+  const insightYearsSaved = Math.max(0, Math.round(numberYearsLeft - acceleratedYears));
+  const numberInsight = t(
+    `A este ritmo alcanzarías tu WhatsYournumber de ${fmt(targetNumber)} a los ${freedomAgeLive} años: llevas el ${Math.round(numberProgress)}% y ahorras el ${Math.round(savingsRate)}% (${fmt(monthlySavings)}/mes). Sumar ${fmt(insightExtraSaving)} más al mes adelantaría tu objetivo ${insightYearsSaved > 0 ? `unos ${insightYearsSaved} ${insightYearsSaved === 1 ? "año" : "años"}` : "y aumentaría tu margen"}.`,
+    `At this pace, you would reach your ${fmt(targetNumber)} WhatsYournumber at age ${freedomAgeLive}: you are ${Math.round(numberProgress)}% there and save ${Math.round(savingsRate)}% (${fmt(monthlySavings)}/month). Adding ${fmt(insightExtraSaving)} more each month would ${insightYearsSaved > 0 ? `bring your goal forward by about ${insightYearsSaved} ${insightYearsSaved === 1 ? "year" : "years"}` : "increase your margin"}.`,
+  );
   const expenseInsight = spendTarget > 0
     ? monthlyExpenses <= spendTarget
       ? t(
-          `Has gastado ${fmt(monthlyExpenses)} de tu presupuesto mensual de ${fmt(spendTarget)}. Te quedan ${fmt(Math.max(0, spendTarget - monthlyExpenses))} para terminar el mes dentro del plan.`,
-          `You have spent ${fmt(monthlyExpenses)} of your ${fmt(spendTarget)} monthly budget. You have ${fmt(Math.max(0, spendTarget - monthlyExpenses))} left to finish the month on plan.`,
+          `Este mes llevas ${fmt(monthlyExpenses)} gastados, el ${spendPlanUsed}% de tu presupuesto de ${fmt(spendTarget)}. Puedes gastar hasta ${fmt(Math.max(0, spendTarget - monthlyExpenses))} más y mantenerte dentro de tu plan.`,
+          `You have spent ${fmt(monthlyExpenses)} this month, ${spendPlanUsed}% of your ${fmt(spendTarget)} budget. You can spend up to ${fmt(Math.max(0, spendTarget - monthlyExpenses))} more and stay within your plan.`,
         )
       : t(
           `Has gastado ${fmt(monthlyExpenses)} este mes, ${fmt(monthlyExpenses - spendTarget)} por encima de tu presupuesto de ${fmt(spendTarget)}.`,
@@ -691,23 +688,30 @@ function Dashboard() {
   const emergencyInsight = emergencyTarget > 0
     ? emergencyGap > 0
       ? t(
-          `Tu fondo de emergencia tiene ${fmt(emergencyCurrent)} de los ${fmt(emergencyTarget)} que necesitas para cubrir 6 meses de gastos. Te faltan ${fmt(emergencyGap)}.`,
-          `Your emergency fund has ${fmt(emergencyCurrent)} of the ${fmt(emergencyTarget)} needed to cover 6 months of expenses. You need ${fmt(emergencyGap)} more.`,
+          `Tu fondo de emergencia tiene ${fmt(emergencyCurrent)} de los ${fmt(emergencyTarget)} necesarios para cubrir 6 meses de gastos. Te faltan ${fmt(emergencyGap)} para protegerte ante imprevistos, una reparación o un despido.`,
+          `Your emergency fund has ${fmt(emergencyCurrent)} of the ${fmt(emergencyTarget)} needed to cover 6 months of expenses. You need ${fmt(emergencyGap)} more to protect yourself from unexpected costs, repairs or job loss.`,
         )
       : t(
-          `Tu fondo de emergencia ya cubre 6 meses de gastos: tienes ${fmt(emergencyCurrent)} frente a una meta de ${fmt(emergencyTarget)}.`,
-          `Your emergency fund now covers 6 months of expenses: you have ${fmt(emergencyCurrent)} against a ${fmt(emergencyTarget)} target.`,
+          `Tu fondo de emergencia ya cubre 6 meses de gastos: tienes ${fmt(emergencyCurrent)} frente a una meta de ${fmt(emergencyTarget)}, un colchón para imprevistos o un despido.`,
+          `Your emergency fund now covers 6 months of expenses: you have ${fmt(emergencyCurrent)} against a ${fmt(emergencyTarget)} target, giving you a cushion for unexpected costs or job loss.`,
         )
     : t("Completa tu plan de gastos para calcular un fondo de emergencia de 6 meses.", "Complete your spending plan to calculate a 6-month emergency fund.");
+  const cityLifestyle = lifestyles.find((item) => item.value === profile.lifestyle)?.label.toLowerCase() ?? t("cómodo", "comfortable");
+  const cityHousehold = (() => {
+    const children = profile.children === "3+" ? 3 : Number(profile.children) || 0;
+    if (children > 0) return t(`con ${children} ${children === 1 ? "hijo" : "hijos"}`, `with ${children} ${children === 1 ? "child" : "children"}`);
+    if (profile.plans_children === "Sí") return t("con un hijo planificado", "with a planned child");
+    return t("sin hijos", "without children");
+  })();
   const cityInsight = cityCost > 0
     ? cityGap > 0
       ? t(
-          `Para vivir en ${cityName} con el estilo de vida elegido necesitas ${fmt(cityCost)} al mes. Hoy te faltan ${fmt(cityGap)} mensuales.`,
-          `To live in ${cityName} with your chosen lifestyle, you need ${fmt(cityCost)} per month. You are currently ${fmt(cityGap)} short each month.`,
+          `Para vivir en ${cityName} con un estilo de vida ${cityLifestyle} y ${cityHousehold} necesitas ${fmt(cityCost)} al mes. Con tus ingresos actuales te faltan ${fmt(cityGap)} mensuales.`,
+          `To live in ${cityName} with a ${cityLifestyle} lifestyle and ${cityHousehold}, you need ${fmt(cityCost)} per month. Your current income leaves you ${fmt(cityGap)} short each month.`,
         )
       : t(
-          `Tus ingresos de ${fmt(cityIncome)} cubren el costo estimado de ${fmt(cityCost)} al mes para vivir en ${cityName}.`,
-          `Your ${fmt(cityIncome)} income covers the estimated ${fmt(cityCost)} monthly cost of living in ${cityName}.`,
+          `Para vivir en ${cityName} con un estilo de vida ${cityLifestyle} y ${cityHousehold} necesitas ${fmt(cityCost)} al mes. Tus ingresos de ${fmt(cityIncome)} cubren ese nivel de vida.`,
+          `To live in ${cityName} with a ${cityLifestyle} lifestyle and ${cityHousehold}, you need ${fmt(cityCost)} per month. Your ${fmt(cityIncome)} income covers that lifestyle.`,
         )
     : t("Elige una ciudad para calcular cuánto necesitas al mes para vivir allí.", "Choose a city to calculate how much you need each month to live there.");
   const insights = [numberInsight, expenseInsight, emergencyInsight, cityInsight];
