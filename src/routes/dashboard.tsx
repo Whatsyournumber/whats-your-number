@@ -187,6 +187,15 @@ function Dashboard() {
     .map((h) => h.ticker!);
   const holdingQuotes = useQuotes(holdingSymbols);
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
+  // Series reales (misma fuente que /portafolio): precio del día de compra y S&P 500 a 12m.
+  const holdingTickers = holdings.filter((h) => h.ticker).map((h) => h.ticker!.toUpperCase());
+  const marketSeries = useMarketSeries(["^GSPC", ...holdingTickers]).data?.series ?? {};
+  const holdingSeries = Object.fromEntries(
+    Object.entries(marketSeries).filter(([symbol]) => symbol !== "^GSPC"),
+  );
+  const sp500Series = marketSeries["^GSPC"] ?? [];
+  const sp500YearReturn = sp500Series.length ? sp500Series[sp500Series.length - 1]!.value : null;
+  const holdingDaily = useDailySeries(holdingTickers).data?.series ?? {};
 
   // Patrimonio vivo: cuando hay detalle de activos se recalcula con precios de
   // mercado en tiempo real (mismo total que /patrimonio); si no, se usa el perfil.
