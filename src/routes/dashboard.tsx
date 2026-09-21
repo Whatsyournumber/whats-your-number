@@ -39,7 +39,8 @@ import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { BUDGET_CATEGORIES } from "@/lib/budget-categories";
 import { useIndexReturns } from "@/hooks/use-index-returns";
 import { holdingValue, useHoldings, wealthTotals } from "@/hooks/use-holdings";
-import { useQuotes } from "@/hooks/use-market";
+import { useDailySeries, useMarketSeries, useQuotes } from "@/hooks/use-market";
+import { marketReturnPct } from "@/lib/holding-return";
 import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { useSyncedSetting } from "@/hooks/use-synced-setting";
 import { cn } from "@/lib/utils";
@@ -186,6 +187,12 @@ function Dashboard() {
     .map((h) => h.ticker!);
   const holdingQuotes = useQuotes(holdingSymbols);
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
+  // Series reales (misma fuente que /portafolio): precio del día de compra y S&P 500 a 12m.
+  const holdingTickers = holdings.filter((h) => h.ticker).map((h) => h.ticker!.toUpperCase());
+  const holdingSeries = useMarketSeries(holdingTickers).data?.series ?? {};
+  const sp500Series = useMarketSeries(["^GSPC"]).data?.series?.["^GSPC"] ?? [];
+  const sp500YearReturn = sp500Series.length ? sp500Series[sp500Series.length - 1]!.value : null;
+  const holdingDaily = useDailySeries(holdingTickers).data?.series ?? {};
 
   // Patrimonio vivo: cuando hay detalle de activos se recalcula con precios de
   // mercado en tiempo real (mismo total que /patrimonio); si no, se usa el perfil.
@@ -222,8 +229,9 @@ function Dashboard() {
   );
 
   // Métricas reales del portafolio (mismo cálculo que /portafolio).
+  const portfolioBaseRate = Math.max(0, profile.expected_return || 7) / 100;
   const portfolioPositions = holdings
-    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit", "future", "retirement", "cash", "bank", "money_market"].includes(h.kind))
+    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit", "future", "retirement"].includes(h.kind))
     .map((h) => {
       const value = holdingValue(h, prices);
       const tk = h.ticker?.toUpperCase();
@@ -231,15 +239,31 @@ function Dashboard() {
       let marketGrowth: number | null = null;
       if (tk && marketCost > 0 && value > 0) marketGrowth = (value - marketCost) / marketCost;
       else if (tk && dayChange[tk] !== undefined) marketGrowth = dayChange[tk] / 100;
-      const growth = marketGrowth !== null ? marketGrowth : (h.expected_return || 7) / 100;
+      const growth = marketGrowth !== null ? Math.max(0, marketGrowth) : Math.max(0, h.expected_return || 7) / 100;
       const cost = h.cost_basis > 0 ? h.cost_basis : Math.round(value / (1 + growth));
-      const ret = cost > 0 ? ((value - cost) / cost) * 100 : growth * 100;
+      // Rentabilidad real: precio de mercado de hoy vs precio del día de compra.
+      const priceRet = tk ? marketReturnPct(h, prices[tk] ?? null, holdingSeries[tk] ?? null, holdingDaily[tk] ?? null) : null;
+      const ret = priceRet !== null ? priceRet : cost > 0 ? ((value - cost) / cost) * 100 : 0;
       return { value, cost, ret, kind: h.kind };
     })
     .filter((h) => h.value > 0);
+  // Efectivo agregado en una sola fila, igual que en /portafolio.
+  const portfolioCash = holdings
+    .filter((h) => ["cash", "bank", "money_market"].includes(h.kind))
+    .reduce((sum, h) => sum + holdingValue(h, prices), 0);
+  if (portfolioCash > 0) portfolioPositions.push({ value: portfolioCash, cost: portfolioCash, ret: 0, kind: "cash" });
+  // Sin activos cargados: totales del onboarding (Mis datos), igual que en /portafolio.
+  const fallbackPositions = [
+    { value: profile.assets_etf, ret: portfolioBaseRate * 100 },
+    { value: profile.assets_stocks, ret: portfolioBaseRate * 130 },
+    { value: profile.assets_crypto, ret: portfolioBaseRate * 200 },
+    { value: profile.assets_cash + profile.assets_bank, ret: 0 },
+  ].filter((h) => h.value > 0);
+  const positions = portfolioPositions.length ? portfolioPositions : fallbackPositions;
+  const portfolioValue = positions.reduce((sum, h) => sum + h.value, 0);
   // Rentabilidad del portafolio: promedio ponderado de los activos que SÍ tienen
   // rentabilidad (mismo cálculo que /portafolio, para que ambas páginas coincidan).
-  const returnRows = portfolioPositions.filter((h) => Math.abs(h.ret) >= 0.05);
+  const returnRows = positions.filter((h) => Math.abs(h.ret) >= 0.05);
   const returnBase = returnRows.reduce((sum, h) => sum + h.value, 0);
   const portfolioReturn = returnBase
     ? returnRows.reduce((sum, h) => sum + h.ret * h.value, 0) / returnBase
@@ -420,9 +444,8 @@ function Dashboard() {
     const rows = holdings.filter((holding) => bucket.kinds.includes(holding.kind));
     return total + (rows.length > 0 ? rows.reduce((sum, holding) => sum + holdingValue(holding, prices), 0) : bucket.fallback);
   }, 0);
-  // La tarjeta Cartera usa exactamente el mismo capital invertible que Tu Número
-  // y el tab de Retiro: todos los activos financieros, sin inmuebles ni deudas.
-  const portfolioValue = investableAssets;
+  // La tarjeta Cartera usa exactamente los mismos datos que el tab de Cartera
+  // (portfolioValue y portfolioReturn calculados arriba con las posiciones reales).
   const retireAgeChosen = d.retirement.retireAge;
   const retireYearsLeft = retireAgeChosen > d.retirement.currentAge ? retireAgeChosen - d.retirement.currentAge : 0;
   const minRetirementMonthly = minMonthlyForRetirement({
@@ -1023,7 +1046,8 @@ function Dashboard() {
                 subtitle = t("En camino", "On track");
               }
 
-              const sp500Rate = indexLive['sp500']?.cagr10y ?? indexLive['sp500']?.ytdPct ?? 10;
+              // S&P 500 real a 12 meses (misma serie que /portafolio); CAGR como respaldo.
+              const sp500Rate = sp500YearReturn ?? indexLive['sp500']?.cagr10y ?? indexLive['sp500']?.ytdPct ?? 10;
 
               const goalBarColor = (value: number) =>
                 value >= 75 ? "bg-positive" : value >= 50 ? "bg-warning" : "bg-negative";
