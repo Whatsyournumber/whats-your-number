@@ -290,7 +290,6 @@ function CashFlow() {
     return { needs, wants, needsAmount: sum(needs), wantsAmount: sum(wants) };
   }, [budgetLines, lang, categoryBuckets, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term]);
 
-  const hasPlanNeeds = planBuckets.needsAmount > 0;
 
   // Cuando hay movimientos, toda la distribución sale exclusivamente del mes corriente.
   // No se suman presupuestos, metas ni gastos fijos estimados del perfil.
