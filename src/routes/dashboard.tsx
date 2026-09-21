@@ -1036,7 +1036,7 @@ function Dashboard() {
                   : sp500Rate > 0
                     ? Math.min(100, Math.max(0, (portfolioReturn / sp500Rate) * 100))
                     : 0;
-                const diffText = noInvestments ? "0%" : `${diff >= 0 ? "+" : ""}${diff.toFixed(0)}%`;
+                const diffText = noInvestments ? "0%" : `${diff >= 0 ? "+" : ""}${diff.toFixed(1)}%`;
                 const diffColor = noInvestments ? "text-muted-foreground" : diff >= 0 ? "text-positive" : "text-negative";
                 return (
                   <li key={g.name}>
