@@ -229,8 +229,9 @@ function Dashboard() {
   );
 
   // Métricas reales del portafolio (mismo cálculo que /portafolio).
+  const portfolioBaseRate = Math.max(0, profile.expected_return || 7) / 100;
   const portfolioPositions = holdings
-    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit", "future", "retirement", "cash", "bank", "money_market"].includes(h.kind))
+    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit", "future", "retirement"].includes(h.kind))
     .map((h) => {
       const value = holdingValue(h, prices);
       const tk = h.ticker?.toUpperCase();
@@ -238,15 +239,31 @@ function Dashboard() {
       let marketGrowth: number | null = null;
       if (tk && marketCost > 0 && value > 0) marketGrowth = (value - marketCost) / marketCost;
       else if (tk && dayChange[tk] !== undefined) marketGrowth = dayChange[tk] / 100;
-      const growth = marketGrowth !== null ? marketGrowth : (h.expected_return || 7) / 100;
+      const growth = marketGrowth !== null ? Math.max(0, marketGrowth) : Math.max(0, h.expected_return || 7) / 100;
       const cost = h.cost_basis > 0 ? h.cost_basis : Math.round(value / (1 + growth));
-      const ret = cost > 0 ? ((value - cost) / cost) * 100 : growth * 100;
+      // Rentabilidad real: precio de mercado de hoy vs precio del día de compra.
+      const priceRet = tk ? marketReturnPct(h, prices[tk] ?? null, holdingSeries[tk] ?? null, holdingDaily[tk] ?? null) : null;
+      const ret = priceRet !== null ? priceRet : cost > 0 ? ((value - cost) / cost) * 100 : 0;
       return { value, cost, ret, kind: h.kind };
     })
     .filter((h) => h.value > 0);
+  // Efectivo agregado en una sola fila, igual que en /portafolio.
+  const portfolioCash = holdings
+    .filter((h) => ["cash", "bank", "money_market"].includes(h.kind))
+    .reduce((sum, h) => sum + holdingValue(h, prices), 0);
+  if (portfolioCash > 0) portfolioPositions.push({ value: portfolioCash, cost: portfolioCash, ret: 0, kind: "cash" });
+  // Sin activos cargados: totales del onboarding (Mis datos), igual que en /portafolio.
+  const fallbackPositions = [
+    { value: profile.assets_etf, ret: portfolioBaseRate * 100 },
+    { value: profile.assets_stocks, ret: portfolioBaseRate * 130 },
+    { value: profile.assets_crypto, ret: portfolioBaseRate * 200 },
+    { value: profile.assets_cash + profile.assets_bank, ret: 0 },
+  ].filter((h) => h.value > 0);
+  const positions = portfolioPositions.length ? portfolioPositions : fallbackPositions;
+  const portfolioValue = positions.reduce((sum, h) => sum + h.value, 0);
   // Rentabilidad del portafolio: promedio ponderado de los activos que SÍ tienen
   // rentabilidad (mismo cálculo que /portafolio, para que ambas páginas coincidan).
-  const returnRows = portfolioPositions.filter((h) => Math.abs(h.ret) >= 0.05);
+  const returnRows = positions.filter((h) => Math.abs(h.ret) >= 0.05);
   const returnBase = returnRows.reduce((sum, h) => sum + h.value, 0);
   const portfolioReturn = returnBase
     ? returnRows.reduce((sum, h) => sum + h.ret * h.value, 0) / returnBase
