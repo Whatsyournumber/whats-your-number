@@ -290,15 +290,15 @@ function CashFlow() {
     return { needs, wants, needsAmount: sum(needs), wantsAmount: sum(wants) };
   }, [budgetLines, lang, categoryBuckets, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term]);
 
-  const hasPlanNeeds = planBuckets.needsAmount > 0;
 
   // Cuando hay movimientos, toda la distribución sale exclusivamente del mes corriente.
   // No se suman presupuestos, metas ni gastos fijos estimados del perfil.
-  const fixedAmount = hasPlanNeeds
-    ? planBuckets.needsAmount
-    : hasReal
-      ? fixedNeedsAmount + retirementFundNeeds + spend.needs
-      : 0;
+  // Al empezar (sin movimientos) se usa el plan del onboarding; en cuanto hay
+  // gastos reales registrados, Necesidades suma lo realmente gastado.
+  const fixedAmount = hasReal
+    ? fixedNeedsAmount + retirementFundNeeds + spend.needs
+    : planBuckets.needsAmount;
+
   // Deseos e inversiones parten de 0 hasta que se registran gastos reales;
   // el plan del onboarding solo sirve de referencia en los tooltips.
   const lifestyleAmount = hasReal ? fixedWantsAmount + retirementFundWants + spend.wants : 0;
@@ -319,17 +319,16 @@ function CashFlow() {
   const saveAmount = investAmount + freeAmount;
 
 
-  const needsBreakdown = hasPlanNeeds
-    ? planBuckets.needs
-    : hasReal
-      ? [
-          ...fixedNeeds
-            .filter((item) => Number(item.amount) > 0)
-            .map((item) => ({ label: item.name.replace(/^\p{Extended_Pictographic}\s*/u, ""), amount: Number(item.amount) })),
-          ...(retirementFundNeeds > 0 ? [{ label: t("Fondo de retiro", "Retirement fund"), amount: retirementFundNeeds }] : []),
-          ...[...spend.needsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
-        ].sort((a, b) => b.amount - a.amount)
-      : [];
+  const needsBreakdown = hasReal
+    ? [
+        ...fixedNeeds
+          .filter((item) => Number(item.amount) > 0)
+          .map((item) => ({ label: item.name.replace(/^\p{Extended_Pictographic}\s*/u, ""), amount: Number(item.amount) })),
+        ...(retirementFundNeeds > 0 ? [{ label: t("Fondo de retiro", "Retirement fund"), amount: retirementFundNeeds }] : []),
+        ...[...spend.needsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
+      ].sort((a, b) => b.amount - a.amount)
+    : planBuckets.needs;
+
   const realWantsBreakdown = hasReal
     ? [
         ...fixedWants.filter((item) => Number(item.amount) > 0).map((item) => ({ label: cleanCategoryName(item.name), amount: Number(item.amount) })),
@@ -437,14 +436,14 @@ function CashFlow() {
           label={t("Ahorro / inversiones", "Savings / investments")}
           value={fmt(saveAmount)}
           hint={`${((saveAmount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-          tooltip={<BreakdownTooltip items={saveBreakdown} fmt={fmt} total={saveAmount} />}
+          tooltip={<BreakdownTooltip items={saveBreakdown} fmt={fmt} total={saveAmount} showAmounts={hasReal} />}
           index={2}
         />
         <KpiCard
           label={t("Deseos / lifestyle", "Wants / lifestyle")}
           value={fmt(buckets[1]!.amount)}
           hint={`${((buckets[1]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-          tooltip={<BreakdownTooltip items={wantsBreakdown} fmt={fmt} total={buckets[1]!.amount} />}
+          tooltip={<BreakdownTooltip items={wantsBreakdown} fmt={fmt} total={buckets[1]!.amount} showAmounts={hasReal} />}
           index={3}
         />
       </div>
