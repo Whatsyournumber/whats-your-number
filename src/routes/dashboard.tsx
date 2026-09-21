@@ -236,7 +236,6 @@ function Dashboard() {
       return { value, cost, kind: h.kind };
     })
     .filter((h) => h.value > 0);
-  const portfolioValue = portfolioPositions.reduce((s, h) => s + h.value, 0);
   // El rendimiento mostrado excluye cripto y ETF para reflejar la ganancia operativa neta.
   const gainPositions = portfolioPositions.filter((h) => h.kind !== "crypto" && h.kind !== "etf");
   const yieldingPositions = gainPositions.filter((h) => h.cost > 0 && h.value !== h.cost);
@@ -418,6 +417,9 @@ function Dashboard() {
     const rows = holdings.filter((holding) => bucket.kinds.includes(holding.kind));
     return total + (rows.length > 0 ? rows.reduce((sum, holding) => sum + holdingValue(holding, prices), 0) : bucket.fallback);
   }, 0);
+  // La tarjeta Cartera usa exactamente el mismo capital invertible que Tu Número
+  // y el tab de Retiro: todos los activos financieros, sin inmuebles ni deudas.
+  const portfolioValue = investableAssets;
   const retireAgeChosen = d.retirement.retireAge;
   const retireYearsLeft = retireAgeChosen > d.retirement.currentAge ? retireAgeChosen - d.retirement.currentAge : 0;
   const minRetirementMonthly = minMonthlyForRetirement({
