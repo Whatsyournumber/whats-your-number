@@ -436,14 +436,14 @@ function CashFlow() {
           label={t("Ahorro / inversiones", "Savings / investments")}
           value={fmt(saveAmount)}
           hint={`${((saveAmount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-          tooltip={<BreakdownTooltip items={saveBreakdown} fmt={fmt} total={saveAmount} />}
+          tooltip={<BreakdownTooltip items={saveBreakdown} fmt={fmt} total={saveAmount} showAmounts={hasReal} />}
           index={2}
         />
         <KpiCard
           label={t("Deseos / lifestyle", "Wants / lifestyle")}
           value={fmt(buckets[1]!.amount)}
           hint={`${((buckets[1]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-          tooltip={<BreakdownTooltip items={wantsBreakdown} fmt={fmt} total={buckets[1]!.amount} />}
+          tooltip={<BreakdownTooltip items={wantsBreakdown} fmt={fmt} total={buckets[1]!.amount} showAmounts={hasReal} />}
           index={3}
         />
       </div>
