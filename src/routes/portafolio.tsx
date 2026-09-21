@@ -1831,7 +1831,7 @@ function PortafolioContent() {
                 ? t(`${evoPoint.label} · vs ${benchName}`, `${evoPoint.label} · vs ${benchName}`)
                 : shownBench !== null
                   ? t(`vs ${benchName} 12m`, `vs ${benchName} 12m`)
-                  : t("Promedio ponderado real", "Real weighted average")}
+                  : t("Promedio ponderado de activos con rentabilidad", "Weighted average of assets with a return")}
             </span>
           </div>
         </motion.div>
