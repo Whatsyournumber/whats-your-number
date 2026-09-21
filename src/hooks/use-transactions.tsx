@@ -91,27 +91,45 @@ export function useTransactions() {
       //    (EEFF solapados, o recibo manual + cargo del banco).
       // Dentro de un mismo archivo, cargos repetidos en días distintos son reales
       // (p. ej. peajes o suscripciones), así que no se descartan.
-      type Kept = { day: number; merchant: string; statement: string };
-      const kept = new Map<string, Kept[]>();
+      // El mismo gasto puede venir con importe ligeramente distinto (propina, redondeo,
+      // apunte manual de 170 vs cargo real de 171,11), así que se admite una tolerancia.
+      type Kept = { day: number; merchant: string; statement: string; amount: number };
+      const kept = new Map<number, Kept[]>();
       const dayOf = (date: string | null) => (date ? Math.round(new Date(date).getTime() / 86_400_000) : NaN);
-      const unique = rows.filter((t) => {
-        const amount = Math.abs(Number(t.amount)).toFixed(2);
+      const isManual = (t: (typeof rows)[number]) => !t.statement_id || /gasto manual|manual expense/i.test(t.description ?? "");
+      // Los cargos del banco mandan: el apunte manual es el que se descarta si coinciden.
+      const ordered = [...rows].sort((a, b) => Number(isManual(a)) - Number(isManual(b)));
+      const closeAmount = (a: number, b: number) => Math.abs(a - b) <= Math.max(1.5, Math.max(a, b) * 0.02);
+      const dropped = new Set<string>();
+      ordered.forEach((t) => {
+        const amount = Math.abs(Number(t.amount));
         const day = dayOf(t.tx_date);
         const statement = t.statement_id ?? "";
-        const seen = kept.get(amount) ?? [];
+        const bucket = Math.round(amount / 10);
+        const seen = [bucket - 1, bucket, bucket + 1].flatMap((b) => kept.get(b) ?? []);
         const isDuplicate = seen.some((k) => {
           if (!sameMerchant(k.merchant, t.merchant)) return false;
+          const sameFile = k.statement === statement;
+          // Dentro del mismo archivo solo cuenta el importe idéntico: dos consumos
+          // parecidos el mismo día en el mismo sitio son cargos reales distintos.
+          if (sameFile ? k.amount.toFixed(2) !== amount.toFixed(2) : !closeAmount(k.amount, amount)) return false;
           if (Number.isNaN(day) || Number.isNaN(k.day)) return k.day === day;
           const gap = Math.abs(k.day - day);
           if (gap === 0) return true;
-          return gap <= 3 && k.statement !== statement;
+          return gap <= 3 && !sameFile;
         });
-        if (isDuplicate) return false;
-        seen.push({ day, merchant: t.merchant ?? "", statement });
-        kept.set(amount, seen);
-        return true;
+
+        if (isDuplicate) {
+          dropped.add(t.id);
+          return;
+        }
+        const list = kept.get(bucket) ?? [];
+        list.push({ day, merchant: t.merchant ?? "", statement, amount });
+        kept.set(bucket, list);
       });
+      const unique = rows.filter((t) => !dropped.has(t.id));
       return unique as Tx[];
+
 
     },
   });
