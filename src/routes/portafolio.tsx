@@ -780,7 +780,7 @@ function PortafolioContent() {
   const tabList = posTab === "Todos" ? enriched : enriched.filter((h) => h.type === posTab);
   const tabValue = tabList.reduce((s, h) => s + h.value, 0);
   const tabAnnualGain = tabList.filter((h) => !gainExcludedTypes.has(h.type)).reduce((s, h) => s + h.value * h.growth, 0);
-  const tabReturnRows = tabList.filter((holding) => holding.ret !== 0);
+  const tabReturnRows = tabList.filter((holding) => hasReturn(holding.ret));
   const tabReturnBase = tabReturnRows.reduce((sum, holding) => sum + holding.value, 0);
   const tabWeightedReturn = tabReturnBase
     ? tabReturnRows.reduce((sum, holding) => sum + holding.ret * holding.value, 0) / tabReturnBase
