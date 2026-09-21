@@ -517,21 +517,6 @@ function Dashboard() {
       : yearsToTarget(baseTargetNumber, baseNumberNetWorth, baseMonthlyContribution, profile.expected_return || 7);
   const usingDemo = !primary && plan.targetCapital <= 0 && baseTargetNumber > 0;
 
-  // Datos reales para los insights: efectivo y activos brutos con el mismo
-  // respaldo por tipo que el resto de tarjetas (cartera si hay posiciones de
-  // ese tipo; si no, Mis datos), y la edad de libertad de WhatsYournumber.
-  const liveCash = (() => {
-    const cashRows = holdings.filter((h) => h.kind === "cash");
-    const bankRows = holdings.filter((h) => ["bank", "money_market"].includes(h.kind));
-    const cash = cashRows.length ? cashRows.reduce((s, h) => s + holdingValue(h, prices), 0) : profile.assets_cash;
-    const bank = bankRows.length ? bankRows.reduce((s, h) => s + holdingValue(h, prices), 0) : profile.assets_bank;
-    return cash + bank;
-  })();
-  const liveProperty = (() => {
-    const rows = holdings.filter((h) => h.kind === "property");
-    return rows.length ? rows.reduce((s, h) => s + holdingValue(h, prices), 0) : profile.assets_property;
-  })();
-  const liveGrossAssets = investableAssets + liveProperty;
   const freedomAgeLive = d.retirement.currentAge + Math.max(0, Math.round(numberYearsLeft));
 
   const [mortgage, setMortgage] = useState({ balance: 0, rate: 0, term: 0 });
