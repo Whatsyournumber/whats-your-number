@@ -223,7 +223,7 @@ function Dashboard() {
 
   // Métricas reales del portafolio (mismo cálculo que /portafolio).
   const portfolioPositions = holdings
-    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit", "cash", "bank", "money_market"].includes(h.kind))
+    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit", "future", "retirement", "cash", "bank", "money_market"].includes(h.kind))
     .map((h) => {
       const value = holdingValue(h, prices);
       const tk = h.ticker?.toUpperCase();
