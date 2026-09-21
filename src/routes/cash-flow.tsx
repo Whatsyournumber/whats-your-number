@@ -294,11 +294,12 @@ function CashFlow() {
 
   // Cuando hay movimientos, toda la distribución sale exclusivamente del mes corriente.
   // No se suman presupuestos, metas ni gastos fijos estimados del perfil.
-  const fixedAmount = hasPlanNeeds
-    ? planBuckets.needsAmount
-    : hasReal
-      ? fixedNeedsAmount + retirementFundNeeds + spend.needs
-      : 0;
+  // Al empezar (sin movimientos) se usa el plan del onboarding; en cuanto hay
+  // gastos reales registrados, Necesidades suma lo realmente gastado.
+  const fixedAmount = hasReal
+    ? fixedNeedsAmount + retirementFundNeeds + spend.needs
+    : planBuckets.needsAmount;
+
   // Deseos e inversiones parten de 0 hasta que se registran gastos reales;
   // el plan del onboarding solo sirve de referencia en los tooltips.
   const lifestyleAmount = hasReal ? fixedWantsAmount + retirementFundWants + spend.wants : 0;
