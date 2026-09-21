@@ -597,10 +597,14 @@ function PortafolioContent() {
   const dividends = enriched.reduce((s, h) => s + h.dividends, 0);
 
   // ---- Análisis basado en tu data real ----
-  // La rentabilidad general es el promedio ponderado de la rentabilidad que
-  // muestra cada activo, usando su valor actual dentro del total de la cartera.
-  const weightedReturn = totalValue
-    ? enriched.reduce((sum, holding) => sum + holding.ret * holding.value, 0) / totalValue
+  // La rentabilidad general es el promedio ponderado de los activos que SÍ muestran
+  // rentabilidad (un retorno de 0,0% —efectivo o stablecoin— queda fuera del promedio).
+  // Cada activo pesa según el dinero que representa.
+  const hasReturn = (ret: number) => Math.abs(ret) >= 0.05;
+  const returnRows = enriched.filter((holding) => hasReturn(holding.ret));
+  const returnBase = returnRows.reduce((sum, holding) => sum + holding.value, 0);
+  const weightedReturn = returnBase
+    ? returnRows.reduce((sum, holding) => sum + holding.ret * holding.value, 0) / returnBase
     : 0;
   // Valor futuro: proyección al edad de retiro con el retorno ponderado del portafolio.
   const yearsToRetire = Math.max(1, (profile.retire_age || 60) - (profile.age ?? 30));
@@ -776,10 +780,14 @@ function PortafolioContent() {
   const tabList = posTab === "Todos" ? enriched : enriched.filter((h) => h.type === posTab);
   const tabValue = tabList.reduce((s, h) => s + h.value, 0);
   const tabAnnualGain = tabList.filter((h) => !gainExcludedTypes.has(h.type)).reduce((s, h) => s + h.value * h.growth, 0);
-  const tabWeightedReturn = tabValue ? tabList.reduce((sum, holding) => sum + holding.ret * holding.value, 0) / tabValue : 0;
+  const tabReturnRows = tabList.filter((holding) => hasReturn(holding.ret));
+  const tabReturnBase = tabReturnRows.reduce((sum, holding) => sum + holding.value, 0);
+  const tabWeightedReturn = tabReturnBase
+    ? tabReturnRows.reduce((sum, holding) => sum + holding.ret * holding.value, 0) / tabReturnBase
+    : 0;
   const top = [...enriched].sort((a, b) => b.value - a.value)[0];
   const concentration = top && totalValue ? (top.value / totalValue) * 100 : 0;
-  const netAnnual = (totalValue * weightedReturn) / 100;
+  const netAnnual = (returnBase * weightedReturn) / 100;
   const passiveMonthly = dividends / 12;
   // Nivel de riesgo del portafolio: volatilidad + concentración (solo posiciones de inversión).
   const riskScore = riskWeight * 100 * 0.6 + Math.max(0, concentration - 30) * 0.6;
@@ -1823,7 +1831,7 @@ function PortafolioContent() {
                 ? t(`${evoPoint.label} · vs ${benchName}`, `${evoPoint.label} · vs ${benchName}`)
                 : shownBench !== null
                   ? t(`vs ${benchName} 12m`, `vs ${benchName} 12m`)
-                  : t("Promedio ponderado real", "Real weighted average")}
+                  : t("Promedio ponderado de activos con rentabilidad", "Weighted average of assets with a return")}
             </span>
           </div>
         </motion.div>

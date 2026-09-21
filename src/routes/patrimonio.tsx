@@ -332,17 +332,20 @@ function PatrimonioContent() {
     ["property", "bond", "structured", "future"].includes(r.kind),
   );
   const visibleAnnual = Math.round(totalGainRows.reduce((s, r) => s + r.annual, 0));
-  // Rentabilidad promedio ponderada: cada activo aporta según su valor dentro
-  // del total visible. Efectivo y activos sin retorno cuentan con una tasa de 0%.
-  const visibleRate = visibleTotal
-    ? visibleRows.reduce((sum, row) => sum + row.rate * row.value, 0) / visibleTotal
-    : 0;
+  // Rentabilidad promedio ponderada: solo cuentan los activos que SÍ muestran rentabilidad
+  // (un activo cuyo retorno es 0,0% —efectivo, stablecoins, sin dato— queda fuera).
+  // Cada activo pesa según el dinero que representa dentro del total.
+  const hasReturn = (rate: number) => Math.abs(rate) >= 0.05;
+  const weightedRateOf = (rows: typeof detailRows) => {
+    const withReturn = rows.filter((row) => hasReturn(row.rate));
+    const base = withReturn.reduce((sum, row) => sum + row.value, 0);
+    return base ? withReturn.reduce((sum, row) => sum + row.rate * row.value, 0) / base : 0;
+  };
+  const visibleRate = weightedRateOf(visibleRows);
 
   // El indicador superior usa exactamente el mismo cálculo sobre todos los activos.
   const overallValue = detailRows.reduce((sum, row) => sum + row.value, 0);
-  const overallRate = overallValue
-    ? detailRows.reduce((sum, row) => sum + row.rate * row.value, 0) / overallValue
-    : null;
+  const overallRate = overallValue ? weightedRateOf(detailRows) : null;
 
 
 
@@ -646,7 +649,7 @@ function PatrimonioContent() {
           hint={
             overallRate === null
               ? t("sin activos con renta aún", "no income assets yet")
-              : t("promedio ponderado de tus activos", "weighted average of your assets")
+              : t("promedio ponderado de tus activos con rentabilidad", "weighted average of assets with a return")
           }
           index={3}
         />
