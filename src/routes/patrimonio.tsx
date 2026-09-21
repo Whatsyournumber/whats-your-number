@@ -332,11 +332,12 @@ function PatrimonioContent() {
     ["property", "bond", "structured", "future"].includes(r.kind),
   );
   const visibleAnnual = Math.round(totalGainRows.reduce((s, r) => s + r.annual, 0));
-  // Rentabilidad promedio ponderada: solo cuentan los activos que SÍ tienen rentabilidad.
-  // Cada uno pesa según el dinero que representa; el efectivo y los activos sin renta
-  // se excluyen del promedio (no arrastran la media hacia abajo).
+  // Rentabilidad promedio ponderada: solo cuentan los activos que SÍ muestran rentabilidad
+  // (un activo cuyo retorno es 0,0% —efectivo, stablecoins, sin dato— queda fuera).
+  // Cada activo pesa según el dinero que representa dentro del total.
+  const hasReturn = (rate: number) => Math.abs(rate) >= 0.05;
   const weightedRateOf = (rows: typeof detailRows) => {
-    const withReturn = rows.filter((row) => row.rate !== 0);
+    const withReturn = rows.filter((row) => hasReturn(row.rate));
     const base = withReturn.reduce((sum, row) => sum + row.value, 0);
     return base ? withReturn.reduce((sum, row) => sum + row.rate * row.value, 0) / base : 0;
   };

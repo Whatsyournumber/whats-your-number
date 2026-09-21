@@ -597,10 +597,11 @@ function PortafolioContent() {
   const dividends = enriched.reduce((s, h) => s + h.dividends, 0);
 
   // ---- Análisis basado en tu data real ----
-  // La rentabilidad general es el promedio ponderado de los activos que SÍ tienen
-  // rentabilidad, usando el valor de cada uno como peso. Los que no generan renta
-  // (efectivo, activos sin retorno) quedan fuera del promedio.
-  const returnRows = enriched.filter((holding) => holding.ret !== 0);
+  // La rentabilidad general es el promedio ponderado de los activos que SÍ muestran
+  // rentabilidad (un retorno de 0,0% —efectivo o stablecoin— queda fuera del promedio).
+  // Cada activo pesa según el dinero que representa.
+  const hasReturn = (ret: number) => Math.abs(ret) >= 0.05;
+  const returnRows = enriched.filter((holding) => hasReturn(holding.ret));
   const returnBase = returnRows.reduce((sum, holding) => sum + holding.value, 0);
   const weightedReturn = returnBase
     ? returnRows.reduce((sum, holding) => sum + holding.ret * holding.value, 0) / returnBase
