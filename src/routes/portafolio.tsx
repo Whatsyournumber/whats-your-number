@@ -597,8 +597,10 @@ function PortafolioContent() {
   const dividends = enriched.reduce((s, h) => s + h.dividends, 0);
 
   // ---- Análisis basado en tu data real ----
+  // La rentabilidad general es el promedio ponderado de la rentabilidad que
+  // muestra cada activo, usando su valor actual dentro del total de la cartera.
   const weightedReturn = totalValue
-    ? enriched.reduce((s, h) => s + h.growth * 100 * h.value, 0) / totalValue
+    ? enriched.reduce((sum, holding) => sum + holding.ret * holding.value, 0) / totalValue
     : 0;
   // Valor futuro: proyección al edad de retiro con el retorno ponderado del portafolio.
   const yearsToRetire = Math.max(1, (profile.retire_age || 60) - (profile.age ?? 30));
