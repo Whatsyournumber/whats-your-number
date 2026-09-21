@@ -660,6 +660,28 @@ function Dashboard() {
   });
   const firstName = (profile.full_name || "").trim().split(" ")[0];
 
+  // Orden fijo del resumen: Tu Número, gastos del mes, fondo de emergencia y ciudad.
+  const expenseGoalBase = d.goals[0];
+  const expenseGoal = expenseGoalBase
+    ? {
+        ...expenseGoalBase,
+        name: "Gastos del mes",
+        emoji: "🧾",
+        current: monthlyExpenses,
+        target: spendTarget > 0 ? spendTarget : monthlyExpenses,
+        displayCurrent: monthlyExpenses,
+        displayTarget: spendTarget > 0 ? spendTarget : monthlyExpenses,
+        progressPct: spendTarget > 0 ? Math.min(100, (monthlyExpenses / spendTarget) * 100) : 0,
+        note: "",
+      }
+    : null;
+  const orderedGoals = [
+    d.goals.find((goal) => goal.name === "Your Number"),
+    expenseGoal,
+    d.goals.find((goal) => goal.name === "Fondo de emergencia"),
+    d.goals.find((goal) => goal.emoji === "🌍"),
+  ].filter((goal): goal is NonNullable<typeof goal> => Boolean(goal));
+
   // El título, subtítulo y textos del panel cambian según el objetivo elegido.
   const goalMode = plan.mode;
   const priority = (profile as { priority?: string }).priority || "libertad";
@@ -1005,9 +1027,10 @@ function Dashboard() {
           }
         >
           <ul className="space-y-1">
-            {d.goals.map((g) => {
+            {orderedGoals.map((g) => {
               const isEmergency = g.name === "Fondo de emergencia";
               const isYourNumber = g.name === "Your Number";
+              const isMonthlyExpenses = g.name === "Gastos del mes";
               // El fondo de emergencia = 6 meses de tu plan de gasto mensual; sin plan, se usa el gasto del perfil.
               const targetBase = isYourNumber
                 ? targetNumber
@@ -1051,7 +1074,11 @@ function Dashboard() {
               const cityReached = isCityGoal && (g.displayTarget ?? 1) > 0 && (g.displayCurrent ?? 0) >= (g.displayTarget ?? 1);
 
               let subtitle: string;
-              if (isEmergency) {
+              if (isMonthlyExpenses) {
+                subtitle = spendTarget > 0
+                  ? t(`${spendPlanUsed}% de tu presupuesto mensual`, `${spendPlanUsed}% of your monthly budget`)
+                  : t("Gastado en lo que va de mes", "Spent so far this month");
+              } else if (isEmergency) {
                 subtitle = t("6 meses de tus gastos mensuales", "6 months of your monthly expenses");
               } else if (isCityGoal) {
                 subtitle = cityReached ? lifestyleSubtitle(profile, t) : lifestyleShortfallSubtitle(profile, t);
@@ -1126,7 +1153,13 @@ function Dashboard() {
                   : pct >= 50
                     ? "text-warning"
                     : "text-negative";
-              const goalHref = isCityGoal ? "/ciudades" : g.name === "Fondo de emergencia" ? "/mi-perfil" : "/retiro";
+              const goalHref = isCityGoal
+                ? "/ciudades"
+                : isMonthlyExpenses
+                  ? "/registro-gastos"
+                  : g.name === "Fondo de emergencia"
+                    ? "/mi-perfil"
+                    : "/retiro";
 
               return (
                 <li key={g.name}>
@@ -1136,7 +1169,9 @@ function Dashboard() {
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="min-w-0 truncate font-medium">{translateGoalName(g.name, lang)}</span>
+                        <span className="min-w-0 truncate font-medium">
+                          {isMonthlyExpenses ? t("Gastos del mes", "Monthly spending") : translateGoalName(g.name, lang)}
+                        </span>
                         <span className={cn("numeric ml-auto shrink-0 text-sm font-semibold", goalTextColor)}>
                           {pct.toFixed(0)}%
                         </span>
