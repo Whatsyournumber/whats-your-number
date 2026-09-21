@@ -651,13 +651,66 @@ function Dashboard() {
   })();
 
 
-  const insights = buildInsights(plan, profile, profile, d.currency, lang, {
+  const planInsights = buildInsights(plan, profile, profile, d.currency, lang, {
     cash: liveCash,
     assets: liveGrossAssets,
     progressPct: numberProgress,
     freedomAge: targetNumber > 0 ? freedomAgeLive : null,
     ...(targetNumber > 0 ? { target: targetNumber } : {}),
   });
+  const cityGoal = d.goals.find((goal) => goal.emoji === "🌍");
+  const emergencyGoal = d.goals.find((goal) => goal.name === "Fondo de emergencia");
+  const emergencyTarget = spendPlanMonthlyTotal > 0
+    ? Math.round(spendPlanMonthlyTotal * 6)
+    : (emergencyGoal?.displayTarget ?? emergencyGoal?.target ?? 0);
+  const emergencyCurrent = emergencyGoal?.displayCurrent ?? emergencyGoal?.current ?? 0;
+  const emergencyGap = Math.max(0, emergencyTarget - emergencyCurrent);
+  const cityName = profile.city || t("tu ciudad elegida", "your chosen city");
+  const cityCost = cityGoal?.displayTarget ?? cityGoal?.target ?? plan.desiredIncome;
+  const cityIncome = cityGoal?.displayCurrent ?? cityGoal?.current ?? d.income;
+  const cityGap = Math.max(0, cityCost - cityIncome);
+  const numberInsight = planInsights.find((text) => /objetivo|goal/i.test(text))
+    ?? t(
+      `Has alcanzado el ${Math.round(numberProgress)}% de tu número de ${fmt(targetNumber)}. A este ritmo llegarías a los ${freedomAgeLive} años.`,
+      `You have reached ${Math.round(numberProgress)}% of your ${fmt(targetNumber)} number. At this pace, you would get there at age ${freedomAgeLive}.`,
+    );
+  const expenseInsight = spendTarget > 0
+    ? monthlyExpenses <= spendTarget
+      ? t(
+          `Has gastado ${fmt(monthlyExpenses)} de tu presupuesto mensual de ${fmt(spendTarget)}. Te quedan ${fmt(Math.max(0, spendTarget - monthlyExpenses))} para terminar el mes dentro del plan.`,
+          `You have spent ${fmt(monthlyExpenses)} of your ${fmt(spendTarget)} monthly budget. You have ${fmt(Math.max(0, spendTarget - monthlyExpenses))} left to finish the month on plan.`,
+        )
+      : t(
+          `Has gastado ${fmt(monthlyExpenses)} este mes, ${fmt(monthlyExpenses - spendTarget)} por encima de tu presupuesto de ${fmt(spendTarget)}.`,
+          `You have spent ${fmt(monthlyExpenses)} this month, ${fmt(monthlyExpenses - spendTarget)} above your ${fmt(spendTarget)} budget.`,
+        )
+    : t(
+        `Has gastado ${fmt(monthlyExpenses)} en lo que va de mes. Define tu presupuesto mensual para medir cuánto te queda disponible.`,
+        `You have spent ${fmt(monthlyExpenses)} so far this month. Set your monthly budget to track how much remains.`,
+      );
+  const emergencyInsight = emergencyTarget > 0
+    ? emergencyGap > 0
+      ? t(
+          `Tu fondo de emergencia tiene ${fmt(emergencyCurrent)} de los ${fmt(emergencyTarget)} que necesitas para cubrir 6 meses de gastos. Te faltan ${fmt(emergencyGap)}.`,
+          `Your emergency fund has ${fmt(emergencyCurrent)} of the ${fmt(emergencyTarget)} needed to cover 6 months of expenses. You need ${fmt(emergencyGap)} more.`,
+        )
+      : t(
+          `Tu fondo de emergencia ya cubre 6 meses de gastos: tienes ${fmt(emergencyCurrent)} frente a una meta de ${fmt(emergencyTarget)}.`,
+          `Your emergency fund now covers 6 months of expenses: you have ${fmt(emergencyCurrent)} against a ${fmt(emergencyTarget)} target.`,
+        )
+    : t("Completa tu plan de gastos para calcular un fondo de emergencia de 6 meses.", "Complete your spending plan to calculate a 6-month emergency fund.");
+  const cityInsight = cityCost > 0
+    ? cityGap > 0
+      ? t(
+          `Para vivir en ${cityName} con el estilo de vida elegido necesitas ${fmt(cityCost)} al mes. Hoy te faltan ${fmt(cityGap)} mensuales.`,
+          `To live in ${cityName} with your chosen lifestyle, you need ${fmt(cityCost)} per month. You are currently ${fmt(cityGap)} short each month.`,
+        )
+      : t(
+          `Tus ingresos de ${fmt(cityIncome)} cubren el costo estimado de ${fmt(cityCost)} al mes para vivir en ${cityName}.`,
+          `Your ${fmt(cityIncome)} income covers the estimated ${fmt(cityCost)} monthly cost of living in ${cityName}.`,
+        )
+    : t("Elige una ciudad para calcular cuánto necesitas al mes para vivir allí.", "Choose a city to calculate how much you need each month to live there.");
+  const insights = [numberInsight, expenseInsight, emergencyInsight, cityInsight];
   const firstName = (profile.full_name || "").trim().split(" ")[0];
 
   // Orden fijo del resumen: Tu Número, gastos del mes, fondo de emergencia y ciudad.
