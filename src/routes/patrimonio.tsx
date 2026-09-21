@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useT, useLanguage } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
-import { holdingValue, useHoldings } from "@/hooks/use-holdings";
+import { holdingValue, useHoldings, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { useDailySeries, useMarketSeries, useQuotes } from "@/hooks/use-market";
 import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
@@ -214,7 +214,37 @@ function PatrimonioContent() {
       other: t("Otro", "Other"),
     })[kind] ?? t("Activo", "Asset");
 
-  const detailRows = holdings
+  // Algunos totales vienen del perfil aunque todavía no tengan una posición
+  // individual en holdings. También deben verse en el detalle inferior.
+  const profileFallbackHoldings: Holding[] = (
+    [
+      ["crypto", t("Cripto", "Crypto"), profile.assets_crypto],
+      ["retirement", t("Fondo de retiro", "Retirement fund"), profile.assets_retirement],
+      ["cash", t("Efectivo", "Cash"), profile.assets_cash],
+    ] satisfies Array<[HoldingKind, string, number]>
+  )
+    .filter(([kind, , value]) => value > 0 && !holdings.some((holding) => holding.kind === kind))
+    .map(([kind, label, value], position) => ({
+      id: `profile-${kind}`,
+      kind,
+      label,
+      ticker: null,
+      quantity: 0,
+      cost_basis: value,
+      manual_value: value,
+      monthly_contribution: 0,
+      expected_return: kind === "crypto" ? 12 : kind === "retirement" ? 7 : 0,
+      linked_liability: 0,
+      monthly_income: 0,
+      target_year: null,
+      probability: 100,
+      note: "profile:fallback",
+      position: holdings.length + position,
+      created_at: null,
+      purchased_at: null,
+    }));
+
+  const detailRows = [...holdings, ...profileFallbackHoldings]
     .filter((h) => h.kind !== "debt")
     .map((h) => {
       const raw = holdingValue(h, prices);
@@ -903,14 +933,16 @@ function PatrimonioContent() {
                 const subtitle = extraMeta ? `${r.sub} · ${extraMeta}` : r.sub;
                 return (
                   <div key={r.id} className="relative grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
-                    <button
-                      type="button"
-                      aria-label={t(`Editar ${r.label}`, `Edit ${r.label}`)}
-                      onClick={() => setEditAssetId(r.id)}
-                      className="absolute right-2 top-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full border border-transparent text-muted-foreground/70 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-foreground"
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                    </button>
+                    {!r.id.startsWith("profile-") ? (
+                      <button
+                        type="button"
+                        aria-label={t(`Editar ${r.label}`, `Edit ${r.label}`)}
+                        onClick={() => setEditAssetId(r.id)}
+                        className="absolute right-2 top-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full border border-transparent text-muted-foreground/70 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-foreground"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </button>
+                    ) : null}
                     <div className="col-span-2 min-w-0 pr-8 md:col-span-2">
                       <p className="truncate text-sm font-medium">{r.ticker || r.label}</p>
                       <p className="truncate text-xs text-muted-foreground">{subtitle}</p>
