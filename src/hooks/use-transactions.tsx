@@ -108,14 +108,17 @@ export function useTransactions() {
         const bucket = Math.round(amount / 10);
         const seen = [bucket - 1, bucket, bucket + 1].flatMap((b) => kept.get(b) ?? []);
         const isDuplicate = seen.some((k) => {
-          if (!closeAmount(k.amount, amount)) return false;
           if (!sameMerchant(k.merchant, t.merchant)) return false;
+          const sameFile = k.statement === statement;
+          // Dentro del mismo archivo solo cuenta el importe idéntico: dos consumos
+          // parecidos el mismo día en el mismo sitio son cargos reales distintos.
+          if (sameFile ? k.amount.toFixed(2) !== amount.toFixed(2) : !closeAmount(k.amount, amount)) return false;
           if (Number.isNaN(day) || Number.isNaN(k.day)) return k.day === day;
           const gap = Math.abs(k.day - day);
-          // Importe exacto y mismo día dentro del mismo archivo: es el mismo cargo repetido.
           if (gap === 0) return true;
-          return gap <= 3 && k.statement !== statement;
+          return gap <= 3 && !sameFile;
         });
+
         if (isDuplicate) {
           dropped.add(t.id);
           return;
