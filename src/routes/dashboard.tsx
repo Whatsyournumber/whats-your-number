@@ -189,11 +189,8 @@ function Dashboard() {
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
   // Series reales (misma fuente que /portafolio): precio del día de compra y S&P 500 a 12m.
   const holdingTickers = holdings.filter((h) => h.ticker).map((h) => h.ticker!.toUpperCase());
-  const marketSeries = useMarketSeries(["^GSPC", ...holdingTickers]).data?.series ?? {};
-  const holdingSeries = Object.fromEntries(
-    Object.entries(marketSeries).filter(([symbol]) => symbol !== "^GSPC"),
-  );
-  const sp500Series = marketSeries["^GSPC"] ?? [];
+  const holdingSeries = useMarketSeries(holdingTickers).data?.series ?? {};
+  const sp500Series = useMarketSeries(["^GSPC"]).data?.series?.["^GSPC"] ?? [];
   const sp500YearReturn = sp500Series.length ? sp500Series[sp500Series.length - 1]!.value : null;
   const holdingDaily = useDailySeries(holdingTickers).data?.series ?? {};
 
