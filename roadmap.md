@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Registro de gastos
+- [x] Panel: ordenar metas como Tu Número, Gastos del mes, Fondo de emergencia y Vivir en la ciudad
 - [x] Alinear "Limita tus gastos mensuales" con "Gasto del período" y subir los números grandes
 - [x] Alertas de presupuesto cerrables con una X (recordar por cuenta cuáles se cerraron)
 - [x] Alinear tarjeta registro-gastos: centrar columnas, mismo ancho visual izquierda/derecha
