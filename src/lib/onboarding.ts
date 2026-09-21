@@ -581,6 +581,14 @@ export function buildInsights(
   life: LifeData,
   currency: string,
   lang: "es" | "en" = "es",
+  /** Datos vivos del panel (cartera con precios reales); si faltan, se usa el perfil. */
+  live?: {
+    cash?: number;
+    assets?: number;
+    target?: number;
+    progressPct?: number;
+    freedomAge?: number | null;
+  },
 ) {
   const en = lang === "en";
   const out: string[] = [];
