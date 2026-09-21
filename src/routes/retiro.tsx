@@ -79,18 +79,21 @@ function RetiroContent() {
   const [editingContribution, setEditingContribution] = useState(false);
   const [draftContribution, setDraftContribution] = useState(0);
 
-  // Solo activos que generan retorno (excluye propiedades). Viene del detalle de "Mis datos".
-  const investableFallback =
-    profile.assets_cash +
-    profile.assets_bank +
-    profile.assets_retirement +
-    profile.assets_etf +
-    profile.assets_stocks +
-    profile.assets_crypto;
-  const investableFromHoldings = holdings
-    .filter((h) => h.kind !== "property" && h.kind !== "debt")
-    .reduce((s, h) => s + holdingValue(h, prices), 0);
-  const investable = holdings.length ? investableFromHoldings : investableFallback;
+  // Todas las inversiones y la liquidez, excluyendo únicamente inmuebles y deudas.
+  // Si un rubro todavía solo existe en Mis datos, lo incorporamos sin duplicar
+  // los rubros que ya tienen posiciones detalladas.
+  const investableBuckets = [
+    { kinds: ["cash"], fallback: profile.assets_cash },
+    { kinds: ["bank", "money_market"], fallback: profile.assets_bank },
+    { kinds: ["retirement"], fallback: profile.assets_retirement },
+    { kinds: ["etf", "other", "bond", "tbill", "note", "structured", "reit", "future"], fallback: profile.assets_etf },
+    { kinds: ["stock"], fallback: profile.assets_stocks },
+    { kinds: ["crypto"], fallback: profile.assets_crypto },
+  ];
+  const investable = investableBuckets.reduce((total, bucket) => {
+    const rows = holdings.filter((holding) => bucket.kinds.includes(holding.kind));
+    return total + (rows.length > 0 ? rows.reduce((sum, holding) => sum + holdingValue(holding, prices), 0) : bucket.fallback);
+  }, 0);
 
   const progressPct = plan.targetCapital > 0 ? Math.max(0, (investable / plan.targetCapital) * 100) : 0;
   const pctBar = Math.min(100, progressPct);
