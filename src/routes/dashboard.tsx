@@ -403,16 +403,21 @@ function Dashboard() {
 
   // Mínimo mensual para llegar a tu número a la edad de retiro que elegiste
   // en el onboarding (S&P 500 · 10%, interés compuesto mensual).
-  const investableAssets = holdings.length
-    ? holdings
-        .filter((h) => h.kind !== "property" && h.kind !== "debt")
-        .reduce((s, h) => s + holdingValue(h, prices), 0)
-    : profile.assets_cash +
-      profile.assets_bank +
-      profile.assets_retirement +
-      profile.assets_etf +
-      profile.assets_stocks +
-      profile.assets_crypto;
+  // Todas las inversiones y la liquidez, excluyendo únicamente inmuebles y
+  // deudas. Completa cada rubro con Mis datos cuando aún no tiene posiciones
+  // detalladas, igual que el cálculo de Retiro.
+  const investableBuckets = [
+    { kinds: ["cash"], fallback: profile.assets_cash },
+    { kinds: ["bank", "money_market"], fallback: profile.assets_bank },
+    { kinds: ["retirement"], fallback: profile.assets_retirement },
+    { kinds: ["etf", "other", "bond", "tbill", "note", "structured", "reit", "future"], fallback: profile.assets_etf },
+    { kinds: ["stock"], fallback: profile.assets_stocks },
+    { kinds: ["crypto"], fallback: profile.assets_crypto },
+  ];
+  const investableAssets = investableBuckets.reduce((total, bucket) => {
+    const rows = holdings.filter((holding) => bucket.kinds.includes(holding.kind));
+    return total + (rows.length > 0 ? rows.reduce((sum, holding) => sum + holdingValue(holding, prices), 0) : bucket.fallback);
+  }, 0);
   const retireAgeChosen = d.retirement.retireAge;
   const retireYearsLeft = retireAgeChosen > d.retirement.currentAge ? retireAgeChosen - d.retirement.currentAge : 0;
   const minRetirementMonthly = minMonthlyForRetirement({
@@ -738,7 +743,7 @@ function Dashboard() {
           <KpiCard
             label={t("Patrimonio neto", "Net worth")}
             value={fmt(current.netWorth)}
-            {...(hasHistory ? { delta: delta(current.netWorth, previous.netWorth) } : {})}
+            {...(hasHistory && targetNumber <= 0 ? { delta: delta(current.netWorth, previous.netWorth) } : {})}
             {...(targetNumber > 0
               ? {
                   hint: (
