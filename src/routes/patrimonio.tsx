@@ -142,6 +142,7 @@ function PatrimonioContent() {
   const [evoMonth, setEvoMonth] = useState<string | null>(null);
   const [addAsset, setAddAsset] = useState(false);
   const [editAssetId, setEditAssetId] = useState<string | null>(null);
+  const [editFallbackAsset, setEditFallbackAsset] = useState<Holding | null>(null);
   const [benchmark, setBenchmark] = useState<"none" | "sp500" | "nasdaq" | "world">("none");
   const seriesQuery = useMarketSeries(["^GSPC", "^NDX", "URTH"]);
 
@@ -933,16 +934,18 @@ function PatrimonioContent() {
                 const subtitle = extraMeta ? `${r.sub} · ${extraMeta}` : r.sub;
                 return (
                   <div key={r.id} className="relative grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
-                    {!r.id.startsWith("profile-") ? (
-                      <button
-                        type="button"
-                        aria-label={t(`Editar ${r.label}`, `Edit ${r.label}`)}
-                        onClick={() => setEditAssetId(r.id)}
-                        className="absolute right-2 top-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full border border-transparent text-muted-foreground/70 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-foreground"
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </button>
-                    ) : null}
+                    <button
+                      type="button"
+                      aria-label={t(`Editar ${r.label}`, `Edit ${r.label}`)}
+                      onClick={() => {
+                        const fallback = profileFallbackHoldings.find((holding) => holding.id === r.id);
+                        if (fallback) setEditFallbackAsset(fallback);
+                        else setEditAssetId(r.id);
+                      }}
+                      className="absolute right-2 top-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full border border-transparent text-muted-foreground/70 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-foreground"
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </button>
                     <div className="col-span-2 min-w-0 pr-8 md:col-span-2">
                       <p className="truncate text-sm font-medium">{r.ticker || r.label}</p>
                       <p className="truncate text-xs text-muted-foreground">{subtitle}</p>
@@ -1046,6 +1049,13 @@ function PatrimonioContent() {
       {addAsset ? <AssetDialog open onOpenChange={setAddAsset} /> : null}
       {editAssetId ? (
         <AssetDialog open holdingId={editAssetId} onOpenChange={(o) => !o && setEditAssetId(null)} />
+      ) : null}
+      {editFallbackAsset ? (
+        <AssetDialog
+          open
+          fallbackHolding={editFallbackAsset}
+          onOpenChange={(o) => !o && setEditFallbackAsset(null)}
+        />
       ) : null}
     </PageShell>
 

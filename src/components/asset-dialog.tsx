@@ -58,14 +58,17 @@ export function AssetDialog({
   open,
   onOpenChange,
   holdingId = null,
+  fallbackHolding = null,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   holdingId?: string | null;
+  fallbackHolding?: Holding | null;
 }) {
   const t = useT();
   const { holdings, saveAll, saving } = useHoldings();
-  const editingHolding = holdingId ? (holdings.find((h) => h.id === holdingId) ?? null) : null;
+  const persistedHolding = holdingId ? (holdings.find((h) => h.id === holdingId) ?? null) : null;
+  const editingHolding = persistedHolding ?? fallbackHolding;
   const isNew = !editingHolding;
   const [draft, setDraft] = useState<Draft | null>(editingHolding ? draftFrom(editingHolding) : null);
   const [tickerOpen, setTickerOpen] = useState(false);
@@ -121,7 +124,7 @@ export function AssetDialog({
 
   const save = async () => {
     if (!draft) return;
-    const base = editingHolding ?? newHolding(draft.kind, "", holdings.length);
+    const base = persistedHolding ?? newHolding(draft.kind, fallbackHolding?.label ?? "", holdings.length);
     const updated: Holding = {
       ...base,
       kind: draft.kind,
@@ -136,7 +139,7 @@ export function AssetDialog({
       purchased_at: draft.purchased_at || base.purchased_at || null,
     };
     try {
-      await saveAll(editingHolding ? holdings.map((h) => (h.id === updated.id ? updated : h)) : [...holdings, updated]);
+      await saveAll(persistedHolding ? holdings.map((h) => (h.id === updated.id ? updated : h)) : [...holdings, updated]);
       toast.success(editingHolding ? t("Activo actualizado", "Asset updated") : t("Activo añadido", "Asset added"));
       forceClose();
     } catch {
