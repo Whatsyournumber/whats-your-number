@@ -517,6 +517,12 @@ function Dashboard() {
       : yearsToTarget(baseTargetNumber, baseNumberNetWorth, baseMonthlyContribution, profile.expected_return || 7);
   const usingDemo = !primary && plan.targetCapital <= 0 && baseTargetNumber > 0;
 
+  // Datos reales para los insights: efectivo real (cartera o perfil), activos
+  // brutos y la misma edad de libertad que la tarjeta WhatsYournumber.
+  const liveCash = wealthT ? wealthT.assets_cash + wealthT.assets_bank : profile.assets_cash + profile.assets_bank;
+  const liveGrossAssets = liveNetWorth + (wealthT ? wealthT.liabilities : profile.liabilities);
+  const freedomAgeLive = d.retirement.currentAge + Math.max(0, Math.round(numberYearsLeft));
+
   const [mortgage, setMortgage] = useState({ balance: 0, rate: 0, term: 0 });
   useEffect(() => {
     let stored = { balance: 0, rate: 0, term: 0 };
