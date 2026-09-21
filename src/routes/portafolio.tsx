@@ -484,7 +484,7 @@ function PortafolioContent() {
             : ("ETF" as const);
 
   const detailed = holdings
-    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit"].includes(h.kind))
+    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit", "future", "retirement"].includes(h.kind))
     .map((h) => {
       const value = holdingValue(h, prices);
       // Retorno derivado del mercado: plusvalía real (valor hoy − costo) cuando hay ticker + costo;

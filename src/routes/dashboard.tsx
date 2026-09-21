@@ -223,7 +223,7 @@ function Dashboard() {
 
   // Métricas reales del portafolio (mismo cálculo que /portafolio).
   const portfolioPositions = holdings
-    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "cash", "bank", "money_market"].includes(h.kind))
+    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit", "future", "retirement", "cash", "bank", "money_market"].includes(h.kind))
     .map((h) => {
       const value = holdingValue(h, prices);
       const tk = h.ticker?.toUpperCase();
@@ -236,7 +236,6 @@ function Dashboard() {
       return { value, cost, kind: h.kind };
     })
     .filter((h) => h.value > 0);
-  const portfolioValue = portfolioPositions.reduce((s, h) => s + h.value, 0);
   // El rendimiento mostrado excluye cripto y ETF para reflejar la ganancia operativa neta.
   const gainPositions = portfolioPositions.filter((h) => h.kind !== "crypto" && h.kind !== "etf");
   const yieldingPositions = gainPositions.filter((h) => h.cost > 0 && h.value !== h.cost);
@@ -418,6 +417,9 @@ function Dashboard() {
     const rows = holdings.filter((holding) => bucket.kinds.includes(holding.kind));
     return total + (rows.length > 0 ? rows.reduce((sum, holding) => sum + holdingValue(holding, prices), 0) : bucket.fallback);
   }, 0);
+  // La tarjeta Cartera usa exactamente el mismo capital invertible que Tu Número
+  // y el tab de Retiro: todos los activos financieros, sin inmuebles ni deudas.
+  const portfolioValue = investableAssets;
   const retireAgeChosen = d.retirement.retireAge;
   const retireYearsLeft = retireAgeChosen > d.retirement.currentAge ? retireAgeChosen - d.retirement.currentAge : 0;
   const minRetirementMonthly = minMonthlyForRetirement({
@@ -956,11 +958,18 @@ function Dashboard() {
           <ul className="space-y-1">
             {d.goals.map((g) => {
               const isEmergency = g.name === "Fondo de emergencia";
+              const isYourNumber = g.name === "Your Number";
               // El fondo de emergencia = 6 meses de tu plan de gasto mensual; sin plan, se usa el gasto del perfil.
-              const targetBase = isEmergency && spendPlanMonthlyTotal > 0 ? Math.round(spendPlanMonthlyTotal * 6) : g.target;
-              const left = g.displayCurrent ?? g.current;
-              const right = g.displayTarget ?? targetBase;
-              const pct = g.progressPct ?? (targetBase > 0 ? Math.min(100, (left / targetBase) * 100) : 0);
+              const targetBase = isYourNumber
+                ? targetNumber
+                : isEmergency && spendPlanMonthlyTotal > 0
+                  ? Math.round(spendPlanMonthlyTotal * 6)
+                  : g.target;
+              const left = isYourNumber ? numberProgressBase : (g.displayCurrent ?? g.current);
+              const right = isYourNumber ? targetNumber : (g.displayTarget ?? targetBase);
+              const pct = isYourNumber
+                ? numberProgress
+                : (g.progressPct ?? (targetBase > 0 ? Math.min(100, (left / targetBase) * 100) : 0));
               const remaining = Math.max(0, right - left);
               const portfolioRate = (() => {
                 // El rendimiento de la cartera excluye cripto y ETF para reflejar la ganancia operativa neta.
