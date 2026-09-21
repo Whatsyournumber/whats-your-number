@@ -650,13 +650,15 @@ export function buildInsights(
     }
   }
 
-  if (assets > 0) {
-    const cashPct = Math.round((liquid / assets) * 100);
+  const insightAssets = live?.assets ?? assets;
+  const insightCash = live?.cash ?? liquid;
+  if (insightAssets > 0) {
+    const cashPct = Math.round((insightCash / insightAssets) * 100);
     out.push(
       cashPct >= 25
         ? en
-          ? `${cashPct}% of your ${money(assets, currency)} sits in cash. Consider whether that mix fits your goals and risk tolerance.`
-          : `El ${cashPct}% de tus ${money(assets, currency)} está en efectivo. Considera si esa distribución encaja con tus objetivos y tu tolerancia al riesgo.`
+          ? `${cashPct}% of your ${money(insightAssets, currency)} sits in cash. Consider whether that mix fits your goals and risk tolerance.`
+          : `El ${cashPct}% de tus ${money(insightAssets, currency)} está en efectivo. Considera si esa distribución encaja con tus objetivos y tu tolerancia al riesgo.`
         : en
           ? `Only ${cashPct}% of your net worth is in cash. Remember to keep 6 months of essential expenses for emergencies.`
           : `Solo el ${cashPct}% de tu patrimonio está en efectivo. Recuerda mantener 6 meses de gastos básicos para imprevistos.`,
@@ -673,10 +675,15 @@ export function buildInsights(
   }
 
   if (income > 0 && savings > 0) {
+    // Con data viva: tu número real, la edad de la tarjeta WhatsYournumber y
+    // el mismo porcentaje de la barra; sin ella, la proyección del plan.
+    const goalAmount = live?.target && live.target > 0 ? live.target : plan.projected;
+    const goalAge = live?.freedomAge ?? plan.freedomAge;
+    const goalPct = live?.progressPct !== undefined ? Math.round(live.progressPct) : Math.round(plan.progress);
     out.push(
       en
-        ? `At this pace you'd reach your goal at age ${plan.freedomAge} with ${money(plan.projected, currency)} (${Math.round(plan.progress)}% of the way there).`
-        : `A este ritmo alcanzarías tu objetivo a los ${plan.freedomAge} años con ${money(plan.projected, currency)} (llevas el ${Math.round(plan.progress)}%).`,
+        ? `At this pace you'd reach your goal of ${money(goalAmount, currency)} at age ${goalAge} (you're ${goalPct}% of the way there).`
+        : `A este ritmo alcanzarías tu objetivo de ${money(goalAmount, currency)} a los ${goalAge} años (llevas el ${goalPct}%).`,
     );
   }
 
