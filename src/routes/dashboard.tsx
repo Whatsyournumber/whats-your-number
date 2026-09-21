@@ -444,9 +444,8 @@ function Dashboard() {
     const rows = holdings.filter((holding) => bucket.kinds.includes(holding.kind));
     return total + (rows.length > 0 ? rows.reduce((sum, holding) => sum + holdingValue(holding, prices), 0) : bucket.fallback);
   }, 0);
-  // La tarjeta Cartera usa exactamente el mismo capital invertible que Tu Número
-  // y el tab de Retiro: todos los activos financieros, sin inmuebles ni deudas.
-  const portfolioValue = investableAssets;
+  // La tarjeta Cartera usa exactamente los mismos datos que el tab de Cartera
+  // (portfolioValue y portfolioReturn calculados arriba con las posiciones reales).
   const retireAgeChosen = d.retirement.retireAge;
   const retireYearsLeft = retireAgeChosen > d.retirement.currentAge ? retireAgeChosen - d.retirement.currentAge : 0;
   const minRetirementMonthly = minMonthlyForRetirement({
