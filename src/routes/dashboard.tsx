@@ -196,15 +196,15 @@ function Dashboard() {
 
   // Patrimonio vivo: cuando hay detalle de activos se recalcula con precios de
   // mercado en tiempo real (mismo total que /patrimonio); si no, se usa el perfil.
+  const wealthT = holdings.length ? wealthTotals(holdings, prices) : null;
   const liveNetWorth = (() => {
-    if (!holdings.length) return d.netWorth;
-    const wt = wealthTotals(holdings, prices);
+    if (!wealthT) return d.netWorth;
     const futureTotal = holdings
       .filter((h) => h.kind === "future")
       .reduce((s, h) => s + Math.round(holdingValue(h, prices) * (h.probability / 100)), 0);
     const assets =
-      wt.assets_cash + wt.assets_bank + wt.assets_retirement + wt.assets_etf + wt.assets_stocks + wt.assets_crypto + wt.assets_property + futureTotal;
-    return assets - wt.liabilities;
+      wealthT.assets_cash + wealthT.assets_bank + wealthT.assets_retirement + wealthT.assets_etf + wealthT.assets_stocks + wealthT.assets_crypto + wealthT.assets_property + futureTotal;
+    return assets - wealthT.liabilities;
   })();
 
   // Aportes/compras de activos agrupados por el mes real en que se registraron,
@@ -517,6 +517,23 @@ function Dashboard() {
       : yearsToTarget(baseTargetNumber, baseNumberNetWorth, baseMonthlyContribution, profile.expected_return || 7);
   const usingDemo = !primary && plan.targetCapital <= 0 && baseTargetNumber > 0;
 
+  // Datos reales para los insights: efectivo y activos brutos con el mismo
+  // respaldo por tipo que el resto de tarjetas (cartera si hay posiciones de
+  // ese tipo; si no, Mis datos), y la edad de libertad de WhatsYournumber.
+  const liveCash = (() => {
+    const cashRows = holdings.filter((h) => h.kind === "cash");
+    const bankRows = holdings.filter((h) => ["bank", "money_market"].includes(h.kind));
+    const cash = cashRows.length ? cashRows.reduce((s, h) => s + holdingValue(h, prices), 0) : profile.assets_cash;
+    const bank = bankRows.length ? bankRows.reduce((s, h) => s + holdingValue(h, prices), 0) : profile.assets_bank;
+    return cash + bank;
+  })();
+  const liveProperty = (() => {
+    const rows = holdings.filter((h) => h.kind === "property");
+    return rows.length ? rows.reduce((s, h) => s + holdingValue(h, prices), 0) : profile.assets_property;
+  })();
+  const liveGrossAssets = investableAssets + liveProperty;
+  const freedomAgeLive = d.retirement.currentAge + Math.max(0, Math.round(numberYearsLeft));
+
   const [mortgage, setMortgage] = useState({ balance: 0, rate: 0, term: 0 });
   useEffect(() => {
     let stored = { balance: 0, rate: 0, term: 0 };
@@ -634,7 +651,13 @@ function Dashboard() {
   })();
 
 
-  const insights = buildInsights(plan, profile, profile, d.currency, lang);
+  const insights = buildInsights(plan, profile, profile, d.currency, lang, {
+    cash: liveCash,
+    assets: liveGrossAssets,
+    progressPct: numberProgress,
+    freedomAge: targetNumber > 0 ? freedomAgeLive : null,
+    ...(targetNumber > 0 ? { target: targetNumber } : {}),
+  });
   const firstName = (profile.full_name || "").trim().split(" ")[0];
 
   // El título, subtítulo y textos del panel cambian según el objetivo elegido.
