@@ -233,15 +233,18 @@ function Dashboard() {
       else if (tk && dayChange[tk] !== undefined) marketGrowth = dayChange[tk] / 100;
       const growth = marketGrowth !== null ? marketGrowth : (h.expected_return || 7) / 100;
       const cost = h.cost_basis > 0 ? h.cost_basis : Math.round(value / (1 + growth));
-      return { value, cost, kind: h.kind };
+      const ret = cost > 0 ? ((value - cost) / cost) * 100 : growth * 100;
+      return { value, cost, ret, kind: h.kind };
     })
     .filter((h) => h.value > 0);
-  // El rendimiento mostrado excluye cripto y ETF para reflejar la ganancia operativa neta.
-  const gainPositions = portfolioPositions.filter((h) => h.kind !== "crypto" && h.kind !== "etf");
-  const yieldingPositions = gainPositions.filter((h) => h.cost > 0 && h.value !== h.cost);
-  const yieldingCost = yieldingPositions.reduce((s, h) => s + h.cost, 0);
-  const yieldingGain = yieldingPositions.reduce((s, h) => s + (h.value - h.cost), 0);
-  const portfolioReturn = yieldingCost ? (yieldingGain / yieldingCost) * 100 : 0;
+  // Rentabilidad del portafolio: promedio ponderado de los activos que SÍ tienen
+  // rentabilidad (mismo cálculo que /portafolio, para que ambas páginas coincidan).
+  const returnRows = portfolioPositions.filter((h) => Math.abs(h.ret) >= 0.05);
+  const returnBase = returnRows.reduce((sum, h) => sum + h.value, 0);
+  const portfolioReturn = returnBase
+    ? returnRows.reduce((sum, h) => sum + h.ret * h.value, 0) / returnBase
+    : 0;
+
 
   // Sin históricos importados (EEFF) la serie empieza en el mes en que se creó la
   // cuenta: no inventamos meses anteriores a que la persona empezara a usar la app.
