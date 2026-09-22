@@ -314,6 +314,8 @@ function OnboardingPage() {
     if (step === 5) return !!life.lifestyle && !!life.travel_frequency;
     if (step === 6) return !!life.city;
     if (step === 7) return !!life.housing;
+    // Salario y plan de gastos mensual son obligatorios para construir el número.
+    if (step === 9) return data.income_salary > 0 && totalSpendPlan(data) > 0;
     return true;
   };
 
