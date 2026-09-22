@@ -314,8 +314,6 @@ function OnboardingPage() {
     if (step === 5) return !!life.lifestyle && !!life.travel_frequency;
     if (step === 6) return !!life.city;
     if (step === 7) return !!life.housing;
-    // Salario y plan de gastos mensual son obligatorios.
-    if (step === 9) return data.income_salary > 0 && totalSpendPlan(data) > 0;
     return true;
   };
 
@@ -873,8 +871,8 @@ function OnboardingPage() {
                   <SubQuestion
                     title={
                       household
-                        ? t("Tus ingresos mensuales *", "Your monthly income *")
-                        : t("Ingresos y flujo mensual *", "Income and monthly flow *")
+                        ? t("Tus ingresos mensuales (mandatorio)", "Your monthly income (required)")
+                        : t("Ingresos y flujo mensual (mandatorio)", "Income and monthly flow (required)")
                     }
                   />
                   <div className="mt-4 space-y-2.5">
@@ -1069,8 +1067,8 @@ function OnboardingPage() {
                   <SubQuestion
                     title={
                       household
-                        ? t("Tu plan de gastos mensuales (en pareja) *", "Your monthly spending plan (as a couple) *")
-                        : t("Tu plan de gastos mensuales *", "Your monthly spending plan *")
+                        ? t("Tu plan de gastos mensuales (en pareja, mandatorio)", "Your monthly spending plan (as a couple, required)")
+                        : t("Tu plan de gastos mensuales (mandatorio)", "Your monthly spending plan (required)")
                     }
                   />
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
