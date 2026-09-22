@@ -2101,7 +2101,7 @@ export function ExpenseLog() {
                     </TooltipTrigger>
                   </DropdownMenuTrigger>
                   <TooltipContent side="bottom">
-                    {t("Agregar gastos diarios", "Add daily expenses")}
+                    {t("Agrega tus gastos diarios", "Add your daily expenses")}
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
