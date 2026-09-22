@@ -13,9 +13,9 @@ const EMPTY: LearnedRule[] = [];
  * Se sincroniza con la cuenta para que sea igual en móvil, tablet y ordenador.
  */
 export function useCategoryRules() {
-  const { value: rules, save: persist } = useSyncedSetting<LearnedRule[]>(KEY, EMPTY, {
-    legacyKeys: [KEY],
-  });
+  // Sin migración de la clave antigua sin cuenta: esas reglas eran compartidas
+  // entre cuentas del mismo navegador y contaminaban categorías de otra persona.
+  const { value: rules, save: persist } = useSyncedSetting<LearnedRule[]>(KEY, EMPTY);
 
   const learn = useCallback(
     (match: string | null | undefined, category: string) => {
