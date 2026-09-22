@@ -1921,6 +1921,18 @@ export function SummaryScreen({
 
 
   const city = (life.city || "").trim();
+  const investableAssets = Math.max(
+    0,
+    data.assets_cash +
+      data.assets_bank +
+      data.assets_retirement +
+      data.assets_etf +
+      data.assets_stocks +
+      data.assets_crypto,
+  );
+  const numberProgress = plan.targetCapital > 0
+    ? Math.min(100, Math.max(0, (investableAssets / plan.targetCapital) * 100))
+    : 0;
   const numberNote =
     plan.mode === "home"
       ? t("La entrada que necesitas para tu primera vivienda.", "The down payment you need for your first home.")
@@ -1936,8 +1948,8 @@ export function SummaryScreen({
               `The capital that lets you live on ${money(plan.desiredIncome, currency)} a month.`,
             );
   const freedomNote = t(
-    `Tu meta eran los ${plan.retireAge} años.`,
-    `Your goal was age ${plan.retireAge}.`,
+    `Retiro estimado a los ${plan.retireAge} años.`,
+    `Estimated retirement at age ${plan.retireAge}.`,
   );
 
   // 4 accionables claros, calculados con los datos del onboarding.
@@ -2037,13 +2049,15 @@ export function SummaryScreen({
           <div className="shrink-0 sm:text-right">
             <p className="numeric text-xl font-semibold text-primary sm:text-2xl">
               {plan.mode === "freedom"
-                ? `${plan.freedomAge} ${t("años", "yrs")}`
+                ? `${plan.yearsLeft} ${t("años", "yrs")}`
                 : plan.monthsToGoal > 0
                   ? `${Math.max(1, Math.ceil(plan.monthsToGoal / 12))} ${t("años", "yrs")}`
                   : t("Listo", "Ready")}
             </p>
             <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
-              📅 {t("Libertad financiera", "Financial freedom")}
+              📅 {plan.mode === "freedom"
+                ? t("Años restantes para retirarte", "Years until retirement")
+                : t("Tiempo estimado", "Estimated time")}
             </p>
             <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{freedomNote}</p>
           </div>
@@ -2051,12 +2065,12 @@ export function SummaryScreen({
         <div className="mt-2.5">
           <div className="flex items-center justify-between text-[10px] text-muted-foreground">
             <span>📈 {t("Progreso hacia tu Número", "Progress to your Number")}</span>
-            <span className="numeric text-foreground">{plan.progress.toFixed(1)}%</span>
+            <span className="numeric text-foreground">{numberProgress.toFixed(1)}%</span>
           </div>
           <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-muted">
             <motion.div
               initial={{ width: 0 }}
-              animate={{ width: `${Math.max(1, plan.progress)}%` }}
+              animate={{ width: `${Math.max(1, numberProgress)}%` }}
               transition={{ duration: 1, ease: "easeOut" }}
               className="h-full rounded-full bg-primary"
             />
