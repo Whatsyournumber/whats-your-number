@@ -1,4 +1,4 @@
-import { SPEND_PLAN_FIELDS, totalSpendPlan, type OnboardingData, type SpendPlanKey } from "@/lib/onboarding";
+import { SPEND_PLAN_FIELDS, type OnboardingData, type SpendPlanKey } from "@/lib/onboarding";
 
 /**
  * Pasa el plan de gastos del onboarding al plan de gastos personalizado

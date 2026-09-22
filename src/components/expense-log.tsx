@@ -385,14 +385,15 @@ export function ExpenseLog() {
   }, [expenseFixedItems, daysInMonth]);
 
   /** Plan del onboarding: las categorías y montos que la persona declaró al registrarse. */
-  const onboardingLines = useMemo<BudgetLine[]>(
-    () =>
-      SPEND_PLAN_FIELDS.filter((f) => (Number(profile[f.key]) || 0) > 0).map((f) => ({
-        id: f.budgetId,
-        amount: Number(profile[f.key]) || 0,
-      })),
-    [profile],
-  );
+  const onboardingLines = useMemo<BudgetLine[]>(() => {
+    // Varias categorías del onboarding pueden compartir budgetId: se suman.
+    const byId = new Map<string, number>();
+    for (const f of SPEND_PLAN_FIELDS) {
+      const amt = Number(profile[f.key]) || 0;
+      if (amt > 0) byId.set(f.budgetId, (byId.get(f.budgetId) ?? 0) + amt);
+    }
+    return [...byId.entries()].map(([id, amount]) => ({ id, amount }));
+  }, [profile]);
 
   // Si la cuenta todavía no tiene plan guardado, se copia el del onboarding
   // para que Registro de gastos y Análisis de gastos muestren el mismo objetivo.
