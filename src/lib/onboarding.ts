@@ -783,7 +783,7 @@ export const SPEND_PLAN_FIELDS = [
   { key: "fixed_transport", group: "lifestyle", fixed: false, budgetId: "transport", emoji: "\u{1F697}", es: "Transporte", en: "Transport" },
   { key: "fixed_insurance", group: "essentials", fixed: true, budgetId: "insurance", emoji: "\u{1F6E1}\uFE0F", es: "Seguros", en: "Insurance" },
   { key: "fixed_education", group: "essentials", fixed: true, budgetId: "education", emoji: "\u{1F393}", es: "Educaci\u00f3n", en: "Education" },
-  { key: "fixed_family", group: "lifestyle", fixed: false, kids: true, budgetId: "family", emoji: "\u{1F9F8}", es: "Ni\u00f1os", en: "Kids" },
+  { key: "fixed_family", group: "lifestyle", fixed: false, kids: true, budgetId: "family", emoji: "\u{1F468}\u200D\u{1F469}\u200D\u{1F467}", es: "Familia", en: "Family" },
 
   { key: "fixed_restaurants", group: "lifestyle", fixed: false, budgetId: "restaurants", emoji: "\u{1F37D}\uFE0F", es: "Restaurantes", en: "Restaurants" },
   { key: "fixed_delivery", group: "lifestyle", fixed: false, budgetId: "delivery", emoji: "\u{1F6F5}", es: "Delivery", en: "Delivery" },
@@ -791,7 +791,11 @@ export const SPEND_PLAN_FIELDS = [
   { key: "fixed_nightlife", group: "lifestyle", fixed: false, budgetId: "nightlife", emoji: "\u{1F389}", es: "Ocio", en: "Nightlife" },
   { key: "fixed_shopping", group: "lifestyle", fixed: false, budgetId: "shopping", emoji: "\u{1F6CD}\uFE0F", es: "Compras", en: "Shopping" },
   { key: "fixed_gym", group: "essentials", fixed: true, budgetId: "gym", emoji: "\u{1F3CB}\uFE0F", es: "Gimnasio", en: "Gym" },
-  { key: "fixed_subscriptions", group: "essentials", fixed: true, budgetId: "apps", emoji: "\u{1F4F1}", es: "Suscripciones", en: "Subscriptions" },
+  { key: "fixed_subscriptions", group: "essentials", fixed: true, budgetId: "apps", emoji: "\u{1F4F1}", es: "Suscripciones / apps", en: "Subscriptions / apps" },
+  { key: "fixed_health", group: "lifestyle", fixed: false, budgetId: "health", emoji: "\u{1F48A}", es: "Salud", en: "Health" },
+  // La columna fixed_professional se usa como Transporte variable (del día a día)
+  // en el plan del onboarding; comparte budgetId con el transporte fijo y se suman.
+  { key: "fixed_professional", group: "lifestyle", fixed: false, budgetId: "transport", emoji: "\u{1F695}", es: "Transporte", en: "Transport" },
 
   { key: "fixed_other", group: "other", fixed: false, budgetId: "other", emoji: "\u{1F9FE}", es: "Otros", en: "Other" },
 ] as const satisfies readonly {
