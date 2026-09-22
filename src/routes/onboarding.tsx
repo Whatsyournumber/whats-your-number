@@ -330,8 +330,8 @@ function OnboardingPage() {
     if (step === 5) return !!life.lifestyle && !!life.travel_frequency;
     if (step === 6) return !!life.city;
     if (step === 7) return !!life.housing;
-    // Salario y plan de gastos mensual son obligatorios para construir el número.
-    if (step === 9) return data.income_salary > 0 && totalSpendPlan(data) > 0;
+    // Salario y las 5 categorías del plan de gastos son obligatorios para construir el número.
+    if (step === 9) return data.income_salary > 0 && filledSpendCount >= ONBOARDING_SPEND_KEYS.length;
     return true;
   };
 
@@ -1091,7 +1091,7 @@ function OnboardingPage() {
                       planMissing ? "border-destructive" : "border-border",
                     )}
                   >
-                    <p className={cn("font-display text-lg font-medium", planMissing && "text-destructive")}>
+                    <p className="font-display text-lg font-medium">
                       {household
                         ? t("Tu plan de gastos mensuales (en pareja, mandatorio)", "Your monthly spending plan (as a couple, required)")
                         : t("Tu plan de gastos mensuales (mandatorio)", "Your monthly spending plan (required)")}
@@ -1099,7 +1099,10 @@ function OnboardingPage() {
                   </div>
                   {planMissing && (
                     <p role="alert" className="-mt-2 mb-3 text-center text-sm font-medium text-destructive">
-                      {t("Debes llenar este campo", "You must fill in this field")}
+                      {t(
+                        `Debes llenar ${ONBOARDING_SPEND_KEYS.length} categorías mínimo`,
+                        `You must fill in at least ${ONBOARDING_SPEND_KEYS.length} categories`,
+                      )}
                     </p>
                   )}
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
