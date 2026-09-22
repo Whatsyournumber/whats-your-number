@@ -52,4 +52,5 @@
 - [x] Últimos gastos: subtítulo igual que "Gastos por categoría" (letra pequeña, bajo el título, alineado)
 - [x] Últimos gastos: subtítulo corto "Tus gastos del día a día" / "Your day-to-day expenses" (sin "del más reciente al más antiguo")
 - [x] Gastos fijos (Próximos pagos): el + avisa "Agrega solo gastos recurrentes" al pasar el cursor o tocar
-- [ ] Onboarding: subtítulo del plan → "Crea tu presupuesto mensual por categoría: llena mínimo 5 categorías" + nota de poder cambiarlas/editarlas
+- [x] Onboarding: subtítulo "Crea tu presupuesto mensual por categoría: llena mínimo 5 categorías y luego podrás cambiarlas o editarlas"
+- [x] Onboarding: el aviso rojo marca solo la caja del encabezado (título en letra normal) con "Debes llenar 5 categorías mínimo"
