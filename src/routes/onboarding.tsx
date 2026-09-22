@@ -68,6 +68,7 @@ import {
   type LifeData,
   type OnboardingData,
   currencies,
+  currencyDisplay,
 } from "@/lib/onboarding";
 import { useFxRates } from "@/hooks/use-fx-rates";
 
@@ -874,13 +875,13 @@ function OnboardingPage() {
                       <p className="truncate text-[11px] leading-tight text-muted-foreground/80">{t("Donde verás tus importes", "Where your amounts appear")}</p>
                     </div>
                     <select
-                      className="h-8 max-w-[9.5rem] shrink-0 truncate rounded-full border-0 bg-transparent px-0 text-sm font-medium focus:outline-none focus:ring-0"
+                      className="h-8 shrink-0 rounded-full border-0 bg-transparent px-0 text-sm font-medium focus:outline-none focus:ring-0"
                       value={cur}
                       onChange={(e) => set("currency", e.target.value)}
                     >
                       {currencies.map((c) => (
                         <option key={c.code} value={c.code}>
-                          {c.code} · {t(c.label, CURRENCY_EN[c.code] ?? c.label)}
+                          {currencyDisplay(c.code, c.symbol)}
                         </option>
                       ))}
                     </select>
