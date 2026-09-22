@@ -430,11 +430,8 @@ export function StatementImporter({
               <Upload className="h-6 w-6 text-muted-foreground" />
             )}
             <p className="mt-3 text-sm font-medium">{t("Arrastra tus archivos aquí", "Drag your files here")}</p>
-            <p className="mt-1 whitespace-nowrap text-xs text-muted-foreground">
-              {t(
-                "Extraemos fecha, comercio, descripción, monto y moneda, máx. 15 MB",
-                "We extract date, merchant, description, amount and currency, max. 15 MB",
-              )}
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t("Extraemos fecha, comercio y monto · máx. 15 MB", "We extract date, merchant and amount · max. 15 MB")}
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               <Button size="sm" className="gap-2 rounded-full" onClick={() => inputRef.current?.click()} disabled={uploading || freeLimitReached}>
