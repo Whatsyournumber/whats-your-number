@@ -151,7 +151,7 @@ function Configuracion() {
               "Created from Expenses: when you move a transaction to another category, it's saved here and applied next time.",
             )}
           >
-            {learned.rules.length === 0 ? (
+            {myRules.length === 0 ? (
               <div className="rounded-xl border border-dashed border-border/70 px-4 py-6 text-center">
                 <p className="text-sm text-muted-foreground">
                   {t("Aún no tienes reglas. Arrastra un movimiento a otra categoría en Gastos para crear la primera.", "No rules yet. Drag a transaction to another category in Expenses to create the first one.")}
@@ -162,7 +162,7 @@ function Configuracion() {
               </div>
             ) : (
               <div className="space-y-2">
-                {learned.rules.map((r) => (
+                {myRules.map((r) => (
                   <div key={r.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2.5 sm:gap-3">
                     <code className="max-w-[55%] truncate rounded-md bg-muted px-2 py-1 text-xs">{r.match}</code>
                     <span className="text-xs text-muted-foreground">→</span>
