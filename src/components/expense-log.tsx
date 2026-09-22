@@ -2068,8 +2068,21 @@ export function ExpenseLog() {
                 );
               })}
             </ul>
+            {expenseTx.length > Math.max(visibleRows.length, 6) && (
+              <button
+                type="button"
+                onClick={() => setShowAllLatest((v) => !v)}
+                className="mt-3 w-full rounded-full border border-border py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                {showAllLatest
+                  ? t("Ver menos", "Show less")
+                  : t("Ver más", "Show more")}
+              </button>
+            )}
+            </>
           )}
         </div>
+          </div>
       </div>
 
       <Dialog open={Boolean(draft)} onOpenChange={(open) => !open && setDraft(null)}>
