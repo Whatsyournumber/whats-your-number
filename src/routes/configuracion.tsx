@@ -38,7 +38,7 @@ function Configuracion() {
   const custom = useCategories();
   const budgets = useSpendBudgets();
   const profile = useProfile();
-  const currency = profile.currency || "EUR";
+  const currency = profile.profile?.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
 
   /** Las categorías del propio usuario: su plan mensual + las que creó a mano. */
