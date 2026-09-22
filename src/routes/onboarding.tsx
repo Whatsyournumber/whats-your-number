@@ -295,8 +295,10 @@ function OnboardingPage() {
   );
 
   // El aviso de campos obligatorios se marca solo en la caja del encabezado del plan.
-  const filledSpendCount = ONBOARDING_SPEND_KEYS.filter((k) => (data[k] ?? 0) > 0).length;
-  const spendPlanMissing = filledSpendCount < ONBOARDING_SPEND_KEYS.length;
+  const filledSpendCount =
+    ONBOARDING_SPEND_KEYS.filter((k) => (data[k] ?? 0) > 0).length +
+    customCats.filter((c) => c.amount > 0 && c.name.trim()).length;
+  const spendPlanMissing = filledSpendCount < MIN_SPEND_CATEGORIES;
   const planMissing = showRequiredErrors && spendPlanMissing;
 
   const go = (dir: 1 | -1) => {
@@ -323,7 +325,13 @@ function OnboardingPage() {
     setStep(SUMMARY_STEP);
     void persist({ completed: true, completed_at: new Date().toISOString(), desired_retirement_income: desiredIncome });
     // El plan del onboarding queda listo como plan de gastos personalizado.
-    seedSpendPlanFromOnboarding(user?.id ?? null, data);
+    seedSpendPlanFromOnboarding(
+      user?.id ?? null,
+      data,
+      customCats
+        .filter((c) => c.amount > 0 && c.name.trim())
+        .map((c) => ({ id: `custom:${norm(c.name)}`, label: c.name.trim(), amount: c.amount })),
+    );
     // Sin prueba automática: toda cuenta nueva entra en el plan gratis.
   };
 
@@ -354,7 +362,7 @@ function OnboardingPage() {
     if (step === 6) return !!life.city;
     if (step === 7) return !!life.housing;
     // Salario y las 5 categorías del plan de gastos son obligatorios para construir el número.
-    if (step === 9) return data.income_salary > 0 && filledSpendCount >= ONBOARDING_SPEND_KEYS.length;
+    if (step === 9) return data.income_salary > 0 && filledSpendCount >= MIN_SPEND_CATEGORIES;
     return true;
   };
 
