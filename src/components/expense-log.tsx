@@ -648,6 +648,7 @@ export function ExpenseLog() {
 
   const [draft, setDraft] = useState<Draft | null>(null);
   const [expandedTx, setExpandedTx] = useState<string | null>(null);
+  const [showAllLatest, setShowAllLatest] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   // Gasto que se está moviendo a otra categoría desde el desglose.
   const [moveItem, setMoveItem] = useState<{ keys: string[]; label: string; from: string } | null>(null);
@@ -1800,6 +1801,8 @@ export function ExpenseLog() {
             </div>
           )}
 
+          {/* En escritorio, Últimos gastos va al lado de Gastos por categoría. */}
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-2 lg:items-start">
           {rows.length > 0 && (
             <div
               ref={categoryCardRef}
@@ -2008,8 +2011,10 @@ export function ExpenseLog() {
               {t("Aún no registras gastos en este periodo.", "No expenses logged in this period yet.")}
             </p>
           ) : (
+            <>
             <ul className="divide-y divide-border/60">
-              {expenseTx.slice(0, 6).map((x) => {
+              {/* Por defecto se muestran tantas líneas como categorías visibles; "Ver más" las enseña todas. */}
+              {(showAllLatest ? expenseTx : expenseTx.slice(0, Math.max(visibleRows.length, 6))).map((x) => {
                 const receiptItems = receiptItemsFrom(x.description);
                 const expanded = expandedTx === x.id;
                 return (
@@ -2063,8 +2068,21 @@ export function ExpenseLog() {
                 );
               })}
             </ul>
+            {expenseTx.length > Math.max(visibleRows.length, 6) && (
+              <button
+                type="button"
+                onClick={() => setShowAllLatest((v) => !v)}
+                className="mt-3 w-full rounded-full border border-border py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                {showAllLatest
+                  ? t("Ver menos", "Show less")
+                  : t("Ver más", "Show more")}
+              </button>
+            )}
+            </>
           )}
         </div>
+          </div>
       </div>
 
       <Dialog open={Boolean(draft)} onOpenChange={(open) => !open && setDraft(null)}>
