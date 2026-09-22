@@ -979,13 +979,18 @@ export function ExpenseLog() {
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button
-              type="button"
-              aria-label={t("Añadir gasto", "Add expense")}
-              className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/20 sm:hidden"
-            >
-              <Plus className="h-6 w-6" />
-            </button>
+            <span className="relative shrink-0 sm:hidden">
+              <button
+                type="button"
+                aria-label={t("Añadir gasto", "Add expense")}
+                className="grid h-12 w-12 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/20"
+              >
+                <Plus className="h-6 w-6" />
+              </button>
+              <span className="pointer-events-none absolute right-[calc(100%+10px)] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-lg">
+                {t("Agrega tus gastos diarios", "Add your daily expenses")}
+              </span>
+            </span>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-80 p-2">
             <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setManualOpen(true)}>
