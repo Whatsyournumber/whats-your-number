@@ -980,7 +980,7 @@ export function ExpenseLog() {
               >
                 <Plus className="h-6 w-6" />
               </button>
-              <span className="pointer-events-none absolute right-[calc(100%+10px)] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-lg">
+              <span className="pointer-events-none absolute right-0 top-[calc(100%+10px)] whitespace-nowrap rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-lg">
                 {t("Agrega tus gastos diarios", "Add your daily expenses")}
               </span>
             </span>
