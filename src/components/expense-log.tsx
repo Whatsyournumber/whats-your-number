@@ -2086,23 +2086,51 @@ export function ExpenseLog() {
                 {t("Tus gastos del día a día, del más reciente al más antiguo", "Your day-to-day expenses, newest first")}
               </p>
             </div>
-            <TooltipProvider delayDuration={150}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={() => setManualOpen(true)}
-                    className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    aria-label={t("Agregar gastos diarios", "Add daily expenses")}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  {t("Agregar gastos diarios", "Add daily expenses")}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <DropdownMenu>
+              <TooltipProvider delayDuration={150}>
+                <Tooltip>
+                  <DropdownMenuTrigger asChild>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                        aria-label={t("Agregar gastos diarios", "Add daily expenses")}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+                    </TooltipTrigger>
+                  </DropdownMenuTrigger>
+                  <TooltipContent side="bottom">
+                    {t("Agregar gastos diarios", "Add daily expenses")}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <DropdownMenuContent align="end" className="w-80 p-2">
+                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setManualOpen(true)}>
+                  <PencilLine className="mr-2.5 h-6 w-6 text-positive" />
+                  {t("Manual", "Manual")}
+                </DropdownMenuItem>
+                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => (recording ? stopRecording() : startRecording(true))}>
+                  {recording ? <Square className="mr-2.5 h-6 w-6 text-negative" /> : <Mic className="mr-2.5 h-6 w-6 text-positive" />}
+                  {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
+                </DropdownMenuItem>
+                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => camRef.current?.click()}>
+                  <Camera className="mr-2.5 h-6 w-6 text-positive" />
+                  {t("Tomar foto", "Take photo")}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="min-h-16 rounded-lg px-3.5 text-[17px]"
+                  onSelect={() => (isMobile ? setPhotoPickerOpen(true) : fileRef.current?.click())}
+                >
+                  <Upload className="mr-2.5 h-6 w-6 text-positive" />
+                  {t("Sube foto o captura", "Upload photo or screenshot")}
+                </DropdownMenuItem>
+                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={openNewRecurring}>
+                  <Repeat className="mr-2.5 h-6 w-6 text-positive" />
+                  {t("Recurrente", "Recurring")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           {expenseTx.length === 0 ? (
             <p className="text-sm text-muted-foreground">
