@@ -650,6 +650,13 @@ export function ExpenseLog() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [expandedTx, setExpandedTx] = useState<string | null>(null);
   const [latestOpen, setLatestOpen] = useState(false);
+  const [addTipOpen, setAddTipOpen] = useState(false);
+  useEffect(() => {
+    // Show the "+" tooltip briefly on load (mobile has no hover), then on hover/focus as usual.
+    setAddTipOpen(true);
+    const id = window.setTimeout(() => setAddTipOpen(false), 3500);
+    return () => window.clearTimeout(id);
+  }, []);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   // Gasto que se está moviendo a otra categoría desde el desglose.
   const [moveItem, setMoveItem] = useState<{ keys: string[]; label: string; from: string } | null>(null);
@@ -2087,8 +2094,8 @@ export function ExpenseLog() {
               </p>
             </div>
             <DropdownMenu>
-              <TooltipProvider delayDuration={150}>
-                <Tooltip>
+              <TooltipProvider delayDuration={100}>
+                <Tooltip open={addTipOpen} onOpenChange={setAddTipOpen}>
                   <DropdownMenuTrigger asChild>
                     <TooltipTrigger asChild>
                       <button
