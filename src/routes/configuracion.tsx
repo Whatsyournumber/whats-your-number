@@ -105,33 +105,41 @@ function Configuracion() {
 
         <TabsContent value="categorias" className="space-y-4">
           <Panel title={t("Categorías, subcategorías y presupuestos", "Categories, subcategories and budgets")}>
-            <div className="grid gap-3 md:grid-cols-2">
-              {categories.map((c) => (
-                <div key={c.key} className="rounded-xl bg-elevated/60 p-4">
-                  <div className="flex items-center gap-2">
-                    <span>{c.emoji}</span>
-                    <p className="text-sm font-medium">{c.name}</p>
-                    <span className="numeric ml-auto text-xs text-muted-foreground">{t("Presupuesto", "Budget")} {fmt(c.budget)}</span>
+            {myCategories.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-border/70 px-4 py-6 text-center">
+                <p className="text-sm text-muted-foreground">
+                  {t("Aún no tienes categorías. Crea tu plan mensual en Registro de gastos.", "No categories yet. Create your monthly plan in Expense log.")}
+                </p>
+                <Button asChild size="sm" variant="outline" className="mt-3 rounded-full">
+                  <Link to="/registro-gastos">{t("Ir a Registro de gastos", "Go to Expense log")}</Link>
+                </Button>
+              </div>
+            ) : (
+              <div className="grid gap-3 md:grid-cols-2">
+                {myCategories.map((c) => (
+                  <div key={c.key} className="rounded-xl bg-elevated/60 p-4">
+                    <div className="flex items-center gap-2">
+                      <span>{c.emoji}</span>
+                      <p className="text-sm font-medium">{c.name}</p>
+                      {c.budget > 0 ? (
+                        <span className="numeric ml-auto text-xs text-muted-foreground">
+                          {t("Presupuesto", "Budget")} {fmt(c.budget)}
+                        </span>
+                      ) : null}
+                    </div>
+                    {c.chips.length ? (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {c.chips.map((s) => (
+                          <span key={s} className="rounded-lg bg-muted px-2 py-1 text-[11px] text-muted-foreground">
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {c.subcategories.map((s) => (
-                      <span key={s.name} className="rounded-lg bg-muted px-2 py-1 text-[11px] text-muted-foreground">
-                        {s.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Panel>
-          <Panel title={t("Comercios conocidos", "Known merchants")}>
-            <div className="flex flex-wrap gap-2">
-              {topMerchants.map((m) => (
-                <Badge key={m.name} variant="outline" className="rounded-full">
-                  {m.name}
-                </Badge>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </Panel>
         </TabsContent>
 
