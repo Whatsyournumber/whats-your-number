@@ -2094,7 +2094,7 @@ export function ExpenseLog() {
                       <button
                         type="button"
                         className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        aria-label={t("Agregar gastos diarios", "Add daily expenses")}
+                        aria-label={t("Agrega tus gastos diarios", "Add your daily expenses")}
                       >
                         <Plus className="h-4 w-4" />
                       </button>
