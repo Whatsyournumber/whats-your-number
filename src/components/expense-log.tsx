@@ -988,6 +988,7 @@ export function ExpenseLog() {
               {t("Agrega tus gastos diarios", "Add your daily expenses")}
             </TooltipContent>
           </Tooltip>
+          </TooltipProvider>
           <DropdownMenuContent align="end" className="w-80 p-2">
             <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setManualOpen(true)}>
               <PencilLine className="mr-2.5 h-6 w-6 text-positive" />
