@@ -2011,8 +2011,10 @@ export function ExpenseLog() {
               {t("Aún no registras gastos en este periodo.", "No expenses logged in this period yet.")}
             </p>
           ) : (
+            <>
             <ul className="divide-y divide-border/60">
-              {expenseTx.slice(0, 6).map((x) => {
+              {/* Por defecto se muestran tantas líneas como categorías visibles; "Ver más" las enseña todas. */}
+              {(showAllLatest ? expenseTx : expenseTx.slice(0, Math.max(visibleRows.length, 6))).map((x) => {
                 const receiptItems = receiptItemsFrom(x.description);
                 const expanded = expandedTx === x.id;
                 return (
