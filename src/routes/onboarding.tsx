@@ -372,7 +372,7 @@ function OnboardingPage() {
                 transition={{ duration: 0.5, ease: "easeOut" }}
               />
             </div>
-            <span className="numeric w-16 text-right text-[11px] text-muted-foreground">
+            <span className="numeric w-16 shrink-0 whitespace-nowrap text-right text-[11px] text-muted-foreground">
               {saving ? t("Guardando…", "Saving…") : isSummary ? "" : `${step} / ${QUESTIONS}`}
             </span>
             <LanguageToggle />
