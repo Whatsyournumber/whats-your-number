@@ -2094,8 +2094,8 @@ export function ExpenseLog() {
               </p>
             </div>
             <DropdownMenu>
-              <TooltipProvider delayDuration={150}>
-                <Tooltip>
+              <TooltipProvider delayDuration={100}>
+                <Tooltip open={addTipOpen} onOpenChange={setAddTipOpen}>
                   <DropdownMenuTrigger asChild>
                     <TooltipTrigger asChild>
                       <button
