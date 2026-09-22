@@ -271,8 +271,10 @@ function OnboardingPage() {
     [data, desiredIncome],
   );
 
-  // El aviso de campos obligatorios se marca en el encabezado del plan, en su caja.
-  const planMissing = showRequiredErrors && totalSpendPlan(data) <= 0;
+  // El aviso de campos obligatorios se marca solo en la caja del encabezado del plan.
+  const filledSpendCount = ONBOARDING_SPEND_KEYS.filter((k) => (data[k] ?? 0) > 0).length;
+  const spendPlanMissing = filledSpendCount < ONBOARDING_SPEND_KEYS.length;
+  const planMissing = showRequiredErrors && spendPlanMissing;
 
   const go = (dir: 1 | -1) => {
     const next = Math.min(SUMMARY_STEP, Math.max(1, step + dir));
@@ -283,7 +285,6 @@ function OnboardingPage() {
 
   const build = () => {
     const salaryMissing = data.income_salary <= 0;
-    const spendPlanMissing = totalSpendPlan(data) <= 0;
     if (salaryMissing || spendPlanMissing) {
       setShowRequiredErrors(true);
       const firstInvalid = salaryMissing ? salaryFieldRef.current : spendPlanRef.current;
