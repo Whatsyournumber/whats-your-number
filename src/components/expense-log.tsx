@@ -1873,8 +1873,13 @@ export function ExpenseLog() {
               ref={categoryCardRef}
               className="scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6"
             >
-              <div className="flex items-center justify-between gap-2">
-                <h3 className="text-lg font-semibold">{t("Gastos por categoría", "Spending by category")}</h3>
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <h3 className="text-lg font-semibold">{t("Gastos por categoría", "Spending by category")}</h3>
+                  <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                    {t("Gastos variables mensuales", "Monthly variable expenses")}
+                  </p>
+                </div>
 
                 <TooltipProvider delayDuration={150}>
                   <Tooltip>
@@ -1897,15 +1902,10 @@ export function ExpenseLog() {
               <ul className="mt-4 space-y-3.5">
                  {[...visibleRows]
                    .sort((a, b) => b.pct - a.pct)
-                   .map((r, index) => {
+                   .map((r) => {
                    const expandedCat = expandedCategory === r.id;
                    return (
                      <Fragment key={r.id}>
-                       {index === 0 ? (
-                         <li className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                           {t("Gastos variables mensuales", "Monthly variable expenses")}
-                         </li>
-                       ) : null}
                        <li
                         ref={(el) => {
                           rowRefs.current[r.id] = el;
@@ -2079,11 +2079,11 @@ export function ExpenseLog() {
 
 
         <div ref={latestExpensesRef} className="scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6">
-          <div className="mb-3 flex items-start justify-between gap-2">
+          <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <p className="text-lg font-semibold">{t("Últimos gastos", "Latest expenses")}</p>
-              <p className="text-lg font-normal text-muted-foreground">
-                {t("Tus gastos del día a día, del más reciente al más antiguo", "Your day-to-day expenses, newest first")}
+              <h3 className="text-lg font-semibold">{t("Últimos gastos", "Latest expenses")}</h3>
+              <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                {t("Del más reciente al más antiguo", "Newest first")}
               </p>
             </div>
             <DropdownMenu>
@@ -2133,13 +2133,13 @@ export function ExpenseLog() {
             </DropdownMenu>
           </div>
           {expenseTx.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
+            <p className="mt-4 text-sm text-muted-foreground">
               {t("Aún no registras gastos en este periodo.", "No expenses logged in this period yet.")}
             </p>
           ) : (
             <>
             {/* Mismo número de líneas que las categorías visibles; "Ver más" abre el popup con todo. */}
-            <ul className="divide-y divide-border/60">
+            <ul className="mt-4 divide-y divide-border/60">
               {expenseTx.slice(0, Math.max(visibleRows.length, 6)).map(renderLatestTx)}
             </ul>
             {expenseTx.length > Math.max(visibleRows.length, 6) && (

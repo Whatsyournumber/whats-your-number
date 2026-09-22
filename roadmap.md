@@ -49,3 +49,4 @@
 - [x] Cada mensaje del formulario llega por correo a wyn.welcome@gmail.com (dominio de envío verificado)
 - [x] Registro manual: incluir en el selector las categorías personalizadas creadas en el plan mensual
 - [x] Últimos gastos: botón + con aviso "Agregar gastos diarios" y subtítulo bajo el título
+- [x] Últimos gastos: subtítulo igual que "Gastos por categoría" (letra pequeña, bajo el título, alineado)
