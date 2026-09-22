@@ -105,19 +105,24 @@ export function useTransactions() {
         const amount = Math.abs(Number(t.amount));
         const day = dayOf(t.tx_date);
         const statement = t.statement_id ?? "";
+        const manual = isManual(t);
         const bucket = Math.round(amount / 10);
         const seen = [bucket - 1, bucket, bucket + 1].flatMap((b) => kept.get(b) ?? []);
         const isDuplicate = seen.some((k) => {
           if (!sameMerchant(k.merchant, t.merchant)) return false;
           const sameFile = k.statement === statement;
-          // Dentro del mismo archivo solo cuenta el importe idéntico: dos consumos
-          // parecidos el mismo día en el mismo sitio son cargos reales distintos.
-          if (sameFile ? k.amount.toFixed(2) !== amount.toFixed(2) : !closeAmount(k.amount, amount)) return false;
+          // La tolerancia de importe/fecha solo aplica al par "apunte manual + cargo del banco"
+          // (p. ej. 170 anotado a mano vs 171,11 cobrado dos días después).
+          // Entre dos EEFF distintos, o dentro del mismo archivo, se exige importe idéntico:
+          // dos compras parecidas en el mismo comercio esa semana son gastos reales distintos.
+          const fuzzy = !sameFile && (manual || k.manual);
+          if (fuzzy ? !closeAmount(k.amount, amount) : k.amount.toFixed(2) !== amount.toFixed(2)) return false;
           if (Number.isNaN(day) || Number.isNaN(k.day)) return k.day === day;
           const gap = Math.abs(k.day - day);
-          if (gap === 0) return true;
-          return gap <= 3 && !sameFile;
+          if (gap === 0) return !sameFile || !fuzzy;
+          return gap <= 3 && fuzzy;
         });
+
 
         if (isDuplicate) {
           dropped.add(t.id);
