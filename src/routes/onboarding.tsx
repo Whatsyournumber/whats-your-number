@@ -1107,8 +1107,8 @@ function OnboardingPage() {
                   )}
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                     {t(
-                      "Anota tu gasto mensual aproximado en cada categoría: luego podrás editarlo y agregar.",
-                      "Note your approximate monthly spend per category: you can edit and add more later.",
+                      `Crea tu presupuesto mensual por categoría: llena mínimo ${ONBOARDING_SPEND_KEYS.length} categorías y luego podrás cambiarlas o editarlas.`,
+                      `Create your monthly budget by category: fill in at least ${ONBOARDING_SPEND_KEYS.length} categories and you can change or edit them later.`,
                     )}
                   </p>
                   <div className="mt-4 space-y-2.5">
