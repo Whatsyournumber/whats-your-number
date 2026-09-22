@@ -9,9 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { categories, excludedTypes, fmt, topMerchants } from "@/lib/data";
+import { excludedTypes } from "@/lib/data";
 import { useCategoryRules } from "@/hooks/use-category-rules";
-import { useT } from "@/hooks/use-language";
+import { useCategories } from "@/hooks/use-categories";
+import { useSpendBudgets } from "@/hooks/use-spend-budgets";
+import { useProfile } from "@/hooks/use-profile";
+import { useLanguage, useT } from "@/hooks/use-language";
+import { findBudgetCategory } from "@/lib/budget-categories";
+import { money } from "@/lib/onboarding";
 
 export const Route = createFileRoute("/configuracion")({
   head: () => ({
