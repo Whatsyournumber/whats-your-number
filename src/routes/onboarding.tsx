@@ -125,28 +125,6 @@ const HOUSING_EN: Record<string, string> = {
   ns: "Prefer not to answer",
 };
 
-const CURRENCY_EN: Record<string, string> = {
-  EUR: "Euro",
-  USD: "US Dollar",
-  GBP: "British Pound",
-  CHF: "Swiss Franc",
-  MXN: "Mexican Peso",
-  COP: "Colombian Peso",
-  CLP: "Chilean Peso",
-  ARS: "Argentine Peso",
-  UYU: "Uruguayan Peso",
-  PEN: "Peruvian Sol",
-  BRL: "Brazilian Real",
-  CAD: "Canadian Dollar",
-  DOP: "Dominican Peso",
-  GTQ: "Quetzal",
-  CRC: "Costa Rican Colón",
-  PYG: "Guarani",
-  BOB: "Boliviano",
-  HNL: "Lempira",
-  NIO: "Córdoba",
-  VES: "Bolívar",
-};
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
