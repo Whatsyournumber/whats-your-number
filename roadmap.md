@@ -59,3 +59,5 @@
 ## Onboarding
 - [x] Móvil: subtítulos del paso de dinero en una sola línea (Moneda, Análisis, campos de importe)
 - [x] Móvil: selector de moneda compacto (código + símbolo) para que no se recorte
+
+- [ ] Corregir números y textos de la tarjeta final de Tu Número en onboarding.
