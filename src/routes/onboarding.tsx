@@ -873,8 +873,8 @@ function OnboardingPage() {
                   <SubQuestion
                     title={
                       household
-                        ? t("Tus ingresos mensuales", "Your monthly income")
-                        : t("Ingresos y flujo mensual", "Income and monthly flow")
+                        ? t("Tus ingresos mensuales *", "Your monthly income *")
+                        : t("Ingresos y flujo mensual *", "Income and monthly flow *")
                     }
                   />
                   <div className="mt-4 space-y-2.5">
@@ -1069,8 +1069,8 @@ function OnboardingPage() {
                   <SubQuestion
                     title={
                       household
-                        ? t("Tu plan de gastos mensuales (en pareja)", "Your monthly spending plan (as a couple)")
-                        : t("Tu plan de gastos mensuales", "Your monthly spending plan")
+                        ? t("Tu plan de gastos mensuales (en pareja) *", "Your monthly spending plan (as a couple) *")
+                        : t("Tu plan de gastos mensuales *", "Your monthly spending plan *")
                     }
                   />
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
