@@ -900,6 +900,61 @@ export function ExpenseLog() {
     }
   };
 
+  /** Fila de "Últimos gastos", reutilizada en la tarjeta y en el popup con todo el historial. */
+  const renderLatestTx = (x: (typeof expenseTx)[number]) => {
+    const receiptItems = receiptItemsFrom(x.description);
+    const expanded = expandedTx === x.id;
+    return (
+      <li key={x.id} className="py-2.5">
+        <div className="flex items-center gap-3">
+          {receiptItems.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setExpandedTx(expanded ? null : x.id)}
+              className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              aria-label={expanded ? t("Ocultar productos", "Hide items") : t("Ver productos", "View items")}
+              aria-expanded={expanded}
+            >
+              <ChevronDown className={cn("h-4 w-4 transition-transform", expanded && "rotate-180")} />
+            </button>
+          )}
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium">{x.merchant}</p>
+            <p className="text-[11px] text-muted-foreground">
+              {translateCategory(x.category || categorizeTx(x as Tx, categories.rules), lang)}
+              {receiptItems.length > 0 ? ` · ${receiptItems.length} ${t("productos", "items")}` : ""}
+            </p>
+          </div>
+          <span className="shrink-0 text-[11px] text-muted-foreground">
+            {x.tx_date ? format(parseISO(x.tx_date), "d MMM", { locale }) : ""}
+          </span>
+          <span className="shrink-0 text-sm font-semibold text-rose-300">-{fmt(Math.abs(x.amount))}</span>
+          <button
+            type="button"
+            onClick={() => openEditTx(x as Tx)}
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            aria-label={t("Editar gasto", "Edit expense")}
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </button>
+        </div>
+        {expanded && receiptItems.length > 0 && (
+          <ul className="ml-10 mt-2 divide-y divide-border/40 rounded-lg bg-muted/20 px-3">
+            {receiptItems.map((item, index) => (
+              <li key={`${item.name}-${index}`} className="flex items-center gap-3 py-2">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm">{item.name}</p>
+                  <p className="text-[11px] text-muted-foreground">{translateCategory(item.category, lang)}</p>
+                </div>
+                <span className="numeric shrink-0 text-sm font-medium">{fmt(item.amount)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </li>
+    );
+  };
+
   return (
     <section className="space-y-4">
       <div className="sticky top-14 z-30 -mx-4 flex items-center justify-between gap-3 border-b border-border bg-background/95 px-4 py-4 shadow-sm backdrop-blur-xl sm:static sm:mx-0 sm:items-start sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none sm:backdrop-blur-none">
