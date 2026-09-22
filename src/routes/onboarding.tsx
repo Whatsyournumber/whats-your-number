@@ -9,6 +9,7 @@ import {
   Loader2,
   LogOut,
   Pencil,
+  Plus,
   Search,
   Sparkles,
 } from "lucide-react";
@@ -19,14 +20,29 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { SPEND_PLAN_FIELDS, totalSpendPlan, type SpendPlanKey } from "@/lib/onboarding";
 
-/** Las 5 categorías del plan de gastos que se piden en el onboarding. */
-const ONBOARDING_SPEND_KEYS: SpendPlanKey[] = [
+/** Categorías base del plan de gastos del onboarding, agrupadas. */
+const ONBOARDING_FIXED_KEYS: SpendPlanKey[] = [
   "fixed_housing",
   "fixed_utilities",
-  "fixed_groceries",
+  "fixed_insurance",
   "fixed_transport",
+  "fixed_subscriptions",
+];
+const ONBOARDING_VARIABLE_KEYS: SpendPlanKey[] = [
+  "fixed_groceries",
+  "fixed_restaurants",
+  "fixed_delivery",
+  "fixed_professional",
+  "fixed_travel",
+  "fixed_nightlife",
+  "fixed_shopping",
+  "fixed_health",
+  "fixed_family",
   "fixed_other",
 ];
+const ONBOARDING_SPEND_KEYS: SpendPlanKey[] = [...ONBOARDING_FIXED_KEYS, ...ONBOARDING_VARIABLE_KEYS];
+/** Mínimo de categorías con monto para poder construir tu número. */
+const MIN_SPEND_CATEGORIES = 5;
 import { seedSpendPlanFromOnboarding } from "@/lib/spend-plan-seed";
 import { syncHomeHolding } from "@/hooks/use-holdings";
 import { StatementImporter } from "@/components/statement-importer";
@@ -256,6 +272,14 @@ function OnboardingPage() {
     });
   const setL = <K extends keyof LifeData>(key: K, value: LifeData[K]) => setLife((l) => ({ ...l, [key]: value }));
 
+  // Categorías personalizadas que la persona agrega a su plan en el onboarding.
+  const [customCats, setCustomCats] = useState<{ id: string; name: string; amount: number }[]>([]);
+  const addCustomCat = () =>
+    setCustomCats((cats) => [...cats, { id: `cc-${Date.now()}-${cats.length}`, name: "", amount: 0 }]);
+  const setCustomCat = (id: string, patch: Partial<{ name: string; amount: number }>) =>
+    setCustomCats((cats) => cats.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+  const customCatsTotal = customCats.reduce((s, c) => s + (c.amount || 0), 0);
+
   const cur = data.currency || defaultCurrency();
   const hasPartner = life.marital_status === "Casado" || life.marital_status === "En pareja";
   // Análisis de hogar: pedimos ingresos y gastos de las dos personas.
@@ -272,8 +296,10 @@ function OnboardingPage() {
   );
 
   // El aviso de campos obligatorios se marca solo en la caja del encabezado del plan.
-  const filledSpendCount = ONBOARDING_SPEND_KEYS.filter((k) => (data[k] ?? 0) > 0).length;
-  const spendPlanMissing = filledSpendCount < ONBOARDING_SPEND_KEYS.length;
+  const filledSpendCount =
+    ONBOARDING_SPEND_KEYS.filter((k) => (data[k] ?? 0) > 0).length +
+    customCats.filter((c) => c.amount > 0 && c.name.trim()).length;
+  const spendPlanMissing = filledSpendCount < MIN_SPEND_CATEGORIES;
   const planMissing = showRequiredErrors && spendPlanMissing;
 
   const go = (dir: 1 | -1) => {
@@ -300,7 +326,13 @@ function OnboardingPage() {
     setStep(SUMMARY_STEP);
     void persist({ completed: true, completed_at: new Date().toISOString(), desired_retirement_income: desiredIncome });
     // El plan del onboarding queda listo como plan de gastos personalizado.
-    seedSpendPlanFromOnboarding(user?.id ?? null, data);
+    seedSpendPlanFromOnboarding(
+      user?.id ?? null,
+      data,
+      customCats
+        .filter((c) => c.amount > 0 && c.name.trim())
+        .map((c) => ({ id: `custom:${norm(c.name)}`, label: c.name.trim(), amount: c.amount })),
+    );
     // Sin prueba automática: toda cuenta nueva entra en el plan gratis.
   };
 
@@ -331,7 +363,7 @@ function OnboardingPage() {
     if (step === 6) return !!life.city;
     if (step === 7) return !!life.housing;
     // Salario y las 5 categorías del plan de gastos son obligatorios para construir el número.
-    if (step === 9) return data.income_salary > 0 && filledSpendCount >= ONBOARDING_SPEND_KEYS.length;
+    if (step === 9) return data.income_salary > 0 && filledSpendCount >= MIN_SPEND_CATEGORIES;
     return true;
   };
 
@@ -1100,19 +1132,22 @@ function OnboardingPage() {
                   {planMissing && (
                     <p role="alert" className="-mt-2 mb-3 text-center text-sm font-medium text-destructive">
                       {t(
-                        `Debes llenar ${ONBOARDING_SPEND_KEYS.length} categorías mínimo`,
-                        `You must fill in at least ${ONBOARDING_SPEND_KEYS.length} categories`,
+                        `Debes llenar ${MIN_SPEND_CATEGORIES} categorías mínimo`,
+                        `You must fill in at least ${MIN_SPEND_CATEGORIES} categories`,
                       )}
                     </p>
                   )}
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                     {t(
-                      `Crea tu presupuesto mensual por categoría: llena mínimo ${ONBOARDING_SPEND_KEYS.length} categorías y luego podrás cambiarlas o editarlas.`,
-                      `Create your monthly budget by category: fill in at least ${ONBOARDING_SPEND_KEYS.length} categories and you can change or edit them later.`,
+                      `Crea tu presupuesto mensual por categoría: llena mínimo ${MIN_SPEND_CATEGORIES} categorías y luego podrás cambiarlas o editarlas.`,
+                      `Create your monthly budget by category: fill in at least ${MIN_SPEND_CATEGORIES} categories and you can change or edit them later.`,
                     )}
                   </p>
-                  <div className="mt-4 space-y-2.5">
-                    {SPEND_PLAN_FIELDS.filter((f) => ONBOARDING_SPEND_KEYS.includes(f.key)).map((f) => (
+                  <p className="mt-5 mb-2 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                    {t("Gastos fijos", "Fixed expenses")}
+                  </p>
+                  <div className="space-y-2.5">
+                    {SPEND_PLAN_FIELDS.filter((f) => ONBOARDING_FIXED_KEYS.includes(f.key)).map((f) => (
                       <MoneyField
                         key={f.key}
                         emoji={f.emoji}
@@ -1123,9 +1158,63 @@ function OnboardingPage() {
                       />
                     ))}
                   </div>
+                  <p className="mt-5 mb-2 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                    {t("Gastos variables", "Variable expenses")}
+                  </p>
+                  <div className="space-y-2.5">
+                    {SPEND_PLAN_FIELDS.filter((f) => ONBOARDING_VARIABLE_KEYS.includes(f.key)).map((f) => (
+                      <MoneyField
+                        key={f.key}
+                        emoji={f.emoji}
+                        label={t(f.es, f.en)}
+                        currency={cur}
+                        value={data[f.key]}
+                        onChange={(v) => setFixed(f.key, v)}
+                      />
+                    ))}
+                    {customCats.map((c) => (
+                      <div
+                        key={c.id}
+                        className="flex items-center gap-3.5 rounded-2xl border border-border bg-elevated/50 px-5 py-4 transition-colors focus-within:border-primary/60"
+                      >
+                        <span className="text-lg">✨</span>
+                        <input
+                          type="text"
+                          value={c.name}
+                          placeholder={t("Nombre de la categoría", "Category name")}
+                          onChange={(e) => setCustomCat(c.id, { name: e.target.value })}
+                          className="min-w-0 flex-1 bg-transparent text-sm font-medium outline-none placeholder:font-normal placeholder:text-muted-foreground/60"
+                        />
+                        <span className="ml-auto flex items-center gap-1.5">
+                          <input
+                            type="number"
+                            inputMode="decimal"
+                            min={0}
+                            step="any"
+                            value={c.amount || ""}
+                            placeholder={t("Escribe aquí", "Type here")}
+                            onWheel={(e) => e.currentTarget.blur()}
+                            onChange={(e) => {
+                              const n = Number(e.target.value || 0);
+                              setCustomCat(c.id, { amount: Number.isFinite(n) ? Math.max(0, n) : 0 });
+                            }}
+                            className="numeric w-28 max-sm:w-24 border-b border-dashed border-border bg-transparent text-right text-base font-semibold outline-none transition-colors focus:border-primary/60 placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/50"
+                          />
+                          <span className="text-xs text-muted-foreground">{cur}</span>
+                        </span>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={addCustomCat}
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-border px-5 py-3.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                    >
+                      <Plus className="h-4 w-4" /> {t("Añadir categoría", "Add category")}
+                    </button>
+                  </div>
                   <div className="mt-4 flex items-center justify-between rounded-2xl border border-border/60 bg-elevated/40 px-5 py-3">
                     <span className="text-sm text-muted-foreground">{t("Gastos totales aprox", "Approximate total expenses")}</span>
-                    <span className="numeric text-lg font-semibold">{money(totalSpendPlan(data), cur)}{t("/mes", "/mo")}</span>
+                    <span className="numeric text-lg font-semibold">{money(totalSpendPlan(data) + customCatsTotal, cur)}{t("/mes", "/mo")}</span>
                   </div>
                 </div>
 
