@@ -2039,14 +2039,14 @@ export function SummaryScreen({
         </p>
       </div>
 
-      <div className="surface px-5 py-4 sm:px-6 sm:py-5">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+      <div className="surface px-5 py-5 sm:px-6 sm:py-5">
+        <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:justify-between sm:gap-2 sm:text-left">
           <div className="min-w-0">
             <p className="numeric text-2xl font-semibold sm:text-3xl">{money(plan.targetCapital, currency)}</p>
             <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-primary">🎯 Your Number</p>
             <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{numberNote}</p>
           </div>
-          <div className="shrink-0 sm:text-right">
+          <div className="w-full shrink-0 border-t border-border/60 pt-4 sm:w-auto sm:border-0 sm:pt-0 sm:text-right">
             <p className="numeric text-xl font-semibold text-primary sm:text-2xl">
               {plan.mode === "freedom"
                 ? `${plan.yearsLeft} ${t("años", "yrs")}`
@@ -2062,7 +2062,7 @@ export function SummaryScreen({
             <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{freedomNote}</p>
           </div>
         </div>
-        <div className="mt-2.5">
+        <div className="mt-4 sm:mt-2.5">
           <div className="flex items-center justify-between text-[10px] text-muted-foreground">
             <span>📈 {t("Progreso hacia tu Número", "Progress to your Number")}</span>
             <span className="numeric text-foreground">{numberProgress.toFixed(1)}%</span>
