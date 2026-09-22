@@ -2078,11 +2078,11 @@ export function ExpenseLog() {
           )}
 
 
-        <div ref={latestExpensesRef} className="scroll-mt-4 rounded-2xl border border-border bg-card p-4">
+        <div ref={latestExpensesRef} className="scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6">
           <div className="mb-3 flex items-start justify-between gap-2">
             <div className="min-w-0">
               <p className="text-lg font-semibold">{t("Últimos gastos", "Latest expenses")}</p>
-              <p className="mt-0.5 text-xs leading-4 text-muted-foreground">
+              <p className="text-lg font-normal text-muted-foreground">
                 {t("Tus gastos del día a día, del más reciente al más antiguo", "Your day-to-day expenses, newest first")}
               </p>
             </div>
