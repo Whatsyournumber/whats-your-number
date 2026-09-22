@@ -939,7 +939,7 @@ function OnboardingPage() {
                     </div>
                     <MoneyField
                       emoji="🎯"
-                      label={t("Bonos / variables", "Bonuses / variable pay")}
+                      label={t("Bonos / variables", "Bonuses / variable")}
                       desc={t("Promedio mensual", "Monthly average")}
                       currency={cur}
                       value={data.income_bonus}
@@ -1476,7 +1476,7 @@ function MoneyField({
               onChange(Number.isFinite(n) ? Math.max(0, n) : 0);
             }}
             className={cn(
-              "numeric w-28 max-sm:w-24 border-b border-dashed bg-transparent text-right text-base font-semibold outline-none transition-colors focus:border-primary/60 placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/50",
+              "numeric w-28 max-sm:w-20 border-b border-dashed bg-transparent text-right text-base font-semibold outline-none transition-colors focus:border-primary/60 placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/50",
               error ? "border-destructive" : "border-border",
             )}
           />
