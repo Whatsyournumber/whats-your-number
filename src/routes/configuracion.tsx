@@ -9,9 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { categories, excludedTypes, fmt, topMerchants } from "@/lib/data";
+import { excludedTypes } from "@/lib/data";
 import { useCategoryRules } from "@/hooks/use-category-rules";
-import { useT } from "@/hooks/use-language";
+import { useCategories } from "@/hooks/use-categories";
+import { useSpendBudgets } from "@/hooks/use-spend-budgets";
+import { useProfile } from "@/hooks/use-profile";
+import { useLanguage, useT } from "@/hooks/use-language";
+import { findBudgetCategory } from "@/lib/budget-categories";
+import { money } from "@/lib/onboarding";
 
 export const Route = createFileRoute("/configuracion")({
   head: () => ({
@@ -28,7 +33,44 @@ export const Route = createFileRoute("/configuracion")({
 
 function Configuracion() {
   const t = useT();
+  const { lang } = useLanguage();
   const learned = useCategoryRules();
+  const custom = useCategories();
+  const budgets = useSpendBudgets();
+  const profile = useProfile();
+  const currency = profile.profile?.currency || "EUR";
+  const fmt = (n: number) => money(Math.round(n), currency);
+
+  /** Las categorías del propio usuario: su plan mensual + las que creó a mano. */
+  const myCategories = [
+    ...budgets.lines.map((line) => {
+      const base = findBudgetCategory(line.id);
+      const label = line.label?.trim() || (base ? (lang === "en" ? base.en : base.es) : line.id.replace(/^custom:(fixed:)?/, ""));
+      return {
+        key: line.id,
+        emoji: line.emoji || base?.emoji || "📦",
+        name: label,
+        budget: Number(line.amount) || 0,
+        chips: (line.keywords ?? []).filter(Boolean),
+      };
+    }),
+    ...custom.items
+      .filter((i) => i.name.trim())
+      .map((i) => ({
+        key: `cat:${i.id}`,
+        emoji: "✨",
+        name: i.name.trim(),
+        budget: 0,
+        chips: i.keywords.split(",").map((k) => k.trim()).filter(Boolean),
+      })),
+  ];
+
+  const myCategoryNames = new Set(myCategories.map((c) => c.name.toLowerCase()));
+  /** Solo reglas que apuntan a categorías que existen en esta cuenta. */
+  const myRules = learned.rules.filter(
+    (r) => myCategoryNames.size === 0 || myCategoryNames.has(r.category.trim().toLowerCase()),
+  );
+
   return (
     <PageShell>
       <PageHeader eyebrow={t("Sistema", "System")} title={t("Importar gastos", "Import expenses")} subtitle={t("Importa tus estados de cuenta, cuentas y reglas de clasificación.", "Upload your statements, accounts and classification rules.")} />
@@ -63,33 +105,41 @@ function Configuracion() {
 
         <TabsContent value="categorias" className="space-y-4">
           <Panel title={t("Categorías, subcategorías y presupuestos", "Categories, subcategories and budgets")}>
-            <div className="grid gap-3 md:grid-cols-2">
-              {categories.map((c) => (
-                <div key={c.key} className="rounded-xl bg-elevated/60 p-4">
-                  <div className="flex items-center gap-2">
-                    <span>{c.emoji}</span>
-                    <p className="text-sm font-medium">{c.name}</p>
-                    <span className="numeric ml-auto text-xs text-muted-foreground">{t("Presupuesto", "Budget")} {fmt(c.budget)}</span>
+            {myCategories.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-border/70 px-4 py-6 text-center">
+                <p className="text-sm text-muted-foreground">
+                  {t("Aún no tienes categorías. Crea tu plan mensual en Registro de gastos.", "No categories yet. Create your monthly plan in Expense log.")}
+                </p>
+                <Button asChild size="sm" variant="outline" className="mt-3 rounded-full">
+                  <Link to="/registro-gastos">{t("Ir a Registro de gastos", "Go to Expense log")}</Link>
+                </Button>
+              </div>
+            ) : (
+              <div className="grid gap-3 md:grid-cols-2">
+                {myCategories.map((c) => (
+                  <div key={c.key} className="rounded-xl bg-elevated/60 p-4">
+                    <div className="flex items-center gap-2">
+                      <span>{c.emoji}</span>
+                      <p className="text-sm font-medium">{c.name}</p>
+                      {c.budget > 0 ? (
+                        <span className="numeric ml-auto text-xs text-muted-foreground">
+                          {t("Presupuesto", "Budget")} {fmt(c.budget)}
+                        </span>
+                      ) : null}
+                    </div>
+                    {c.chips.length ? (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {c.chips.map((s) => (
+                          <span key={s} className="rounded-lg bg-muted px-2 py-1 text-[11px] text-muted-foreground">
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {c.subcategories.map((s) => (
-                      <span key={s.name} className="rounded-lg bg-muted px-2 py-1 text-[11px] text-muted-foreground">
-                        {s.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Panel>
-          <Panel title={t("Comercios conocidos", "Known merchants")}>
-            <div className="flex flex-wrap gap-2">
-              {topMerchants.map((m) => (
-                <Badge key={m.name} variant="outline" className="rounded-full">
-                  {m.name}
-                </Badge>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </Panel>
         </TabsContent>
 
@@ -101,7 +151,7 @@ function Configuracion() {
               "Created from Expenses: when you move a transaction to another category, it's saved here and applied next time.",
             )}
           >
-            {learned.rules.length === 0 ? (
+            {myRules.length === 0 ? (
               <div className="rounded-xl border border-dashed border-border/70 px-4 py-6 text-center">
                 <p className="text-sm text-muted-foreground">
                   {t("Aún no tienes reglas. Arrastra un movimiento a otra categoría en Gastos para crear la primera.", "No rules yet. Drag a transaction to another category in Expenses to create the first one.")}
@@ -112,7 +162,7 @@ function Configuracion() {
               </div>
             ) : (
               <div className="space-y-2">
-                {learned.rules.map((r) => (
+                {myRules.map((r) => (
                   <div key={r.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2.5 sm:gap-3">
                     <code className="max-w-[55%] truncate rounded-md bg-muted px-2 py-1 text-xs">{r.match}</code>
                     <span className="text-xs text-muted-foreground">→</span>
