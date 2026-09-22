@@ -648,6 +648,7 @@ export function ExpenseLog() {
 
   const [draft, setDraft] = useState<Draft | null>(null);
   const [expandedTx, setExpandedTx] = useState<string | null>(null);
+  const [showAllLatest, setShowAllLatest] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   // Gasto que se está moviendo a otra categoría desde el desglose.
   const [moveItem, setMoveItem] = useState<{ keys: string[]; label: string; from: string } | null>(null);
