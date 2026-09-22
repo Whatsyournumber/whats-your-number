@@ -46,5 +46,6 @@
 - [x] Mensajes guardados en el buzón interno contact_messages (solo accesible para el equipo)
 - [x] "Solicitar plan a la medida" en Precios lleva a /contacto con el plan preseleccionado
 - [x] Enlace "Contacto" en el pie de página (principal, niños y afiliados)
-- [ ] Enviar cada mensaje por correo a thecontentcclub@gmail.com — bloqueado: falta verificar el dominio de remitente (notify.whatsyour-number.com) en la configuración de correo
+- [x] Cada mensaje del formulario llega por correo a wyn.welcome@gmail.com (dominio de envío verificado)
 - [x] Registro manual: incluir en el selector las categorías personalizadas creadas en el plan mensual
+- [x] Últimos gastos: botón + con aviso "Agregar gastos diarios" y subtítulo bajo el título
