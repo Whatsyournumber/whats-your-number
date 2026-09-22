@@ -1087,7 +1087,13 @@ function OnboardingPage() {
                         ? t("Tu plan de gastos mensuales (en pareja, mandatorio)", "Your monthly spending plan (as a couple, required)")
                         : t("Tu plan de gastos mensuales (mandatorio)", "Your monthly spending plan (required)")
                     }
+                    error={showRequiredErrors && totalSpendPlan(data) <= 0}
                   />
+                  {showRequiredErrors && totalSpendPlan(data) <= 0 && (
+                    <p role="alert" className="-mt-2 mb-3 text-center text-sm font-medium text-destructive">
+                      {t("Debes llenar este campo", "You must fill in this field")}
+                    </p>
+                  )}
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                     {t(
                       "Anota tu gasto mensual aproximado en cada categoría: luego podrás editarlo y agregar.",
@@ -1103,19 +1109,9 @@ function OnboardingPage() {
                         currency={cur}
                         value={data[f.key]}
                         onChange={(v) => setFixed(f.key, v)}
-                        error={
-                          showRequiredErrors &&
-                          totalSpendPlan(data) <= 0 &&
-                          f.key === ONBOARDING_SPEND_KEYS[0]
-                        }
                       />
                     ))}
                   </div>
-                  {showRequiredErrors && totalSpendPlan(data) <= 0 && (
-                    <p role="alert" className="mt-2 text-sm font-medium text-destructive">
-                      {t("Debes llenar este campo", "You must fill in this field")}
-                    </p>
-                  )}
                   <div className="mt-4 flex items-center justify-between rounded-2xl border border-border/60 bg-elevated/40 px-5 py-3">
                     <span className="text-sm text-muted-foreground">{t("Gastos totales aprox", "Approximate total expenses")}</span>
                     <span className="numeric text-lg font-semibold">{money(totalSpendPlan(data), cur)}{t("/mes", "/mo")}</span>
@@ -1231,8 +1227,12 @@ function Reveal({ children }: { children: React.ReactNode }) {
   );
 }
 
-function SubQuestion({ title }: { title: string }) {
-  return <p className="mt-9 mb-4 text-center font-display text-lg font-medium">{title}</p>;
+function SubQuestion({ title, error = false }: { title: string; error?: boolean }) {
+  return (
+    <p className={cn("mt-9 mb-4 text-center font-display text-lg font-medium", error && "text-destructive")}>
+      {title}
+    </p>
+  );
 }
 
 function BigNumber({ value, suffix }: { value: number; suffix: string }) {
