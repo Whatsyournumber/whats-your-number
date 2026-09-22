@@ -17,7 +17,16 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { SPEND_PLAN_FIELDS, SPEND_PLAN_GROUPS, totalSpendPlan, type SpendPlanKey } from "@/lib/onboarding";
+import { SPEND_PLAN_FIELDS, totalSpendPlan, type SpendPlanKey } from "@/lib/onboarding";
+
+/** Las 5 categorías del plan de gastos que se piden en el onboarding. */
+const ONBOARDING_SPEND_KEYS: SpendPlanKey[] = [
+  "fixed_housing",
+  "fixed_utilities",
+  "fixed_groceries",
+  "fixed_transport",
+  "fixed_other",
+];
 import { seedSpendPlanFromOnboarding } from "@/lib/spend-plan-seed";
 import { syncHomeHolding } from "@/hooks/use-holdings";
 import { StatementImporter } from "@/components/statement-importer";
@@ -248,9 +257,6 @@ function OnboardingPage() {
   const hasPartner = life.marital_status === "Casado" || life.marital_status === "En pareja";
   // Análisis de hogar: pedimos ingresos y gastos de las dos personas.
   const household = hasPartner && life.analysis_scope === "pareja";
-  // La fila de Niños solo aparece si hay pareja, hijos o planes de tenerlos.
-  const showKidsSpend =
-    hasPartner || (life.children !== "" && life.children !== "0") || life.plans_children === "Sí";
   // Las tasas del día alimentan la conversión del objetivo estimado.
   const { updatedAt: fxUpdatedAt } = useFxRates();
   const desiredIncome = useMemo(
@@ -308,6 +314,8 @@ function OnboardingPage() {
     if (step === 5) return !!life.lifestyle && !!life.travel_frequency;
     if (step === 6) return !!life.city;
     if (step === 7) return !!life.housing;
+    // Salario y plan de gastos mensual son obligatorios.
+    if (step === 9) return data.income_salary > 0 && totalSpendPlan(data) > 0;
     return true;
   };
 
@@ -865,8 +873,8 @@ function OnboardingPage() {
                   <SubQuestion
                     title={
                       household
-                        ? t("Tus ingresos mensuales", "Your monthly income")
-                        : t("Ingresos y flujo mensual", "Income and monthly flow")
+                        ? t("Tus ingresos mensuales *", "Your monthly income *")
+                        : t("Ingresos y flujo mensual *", "Income and monthly flow *")
                     }
                   />
                   <div className="mt-4 space-y-2.5">
@@ -1061,8 +1069,8 @@ function OnboardingPage() {
                   <SubQuestion
                     title={
                       household
-                        ? t("Tu plan de gastos mensuales (en pareja)", "Your monthly spending plan (as a couple)")
-                        : t("Tu plan de gastos mensuales", "Your monthly spending plan")
+                        ? t("Tu plan de gastos mensuales (en pareja) *", "Your monthly spending plan (as a couple) *")
+                        : t("Tu plan de gastos mensuales *", "Your monthly spending plan *")
                     }
                   />
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
@@ -1071,31 +1079,18 @@ function OnboardingPage() {
                       "Note your approximate monthly spend per category: you can edit and add more later.",
                     )}
                   </p>
-                  {SPEND_PLAN_GROUPS.map((g) => {
-                    const rows = SPEND_PLAN_FIELDS.filter(
-                      (f) => f.group === g.id && (!("kids" in f && f.kids) || showKidsSpend),
-                    );
-                    if (!rows.length) return null;
-                    return (
-                      <div key={g.id} className="mt-6">
-                        <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                          {t(g.es, g.en)}
-                        </p>
-                        <div className="mt-2.5 space-y-2.5">
-                          {rows.map((f) => (
-                            <MoneyField
-                              key={f.key}
-                              emoji={f.emoji}
-                              label={t(f.es, f.en)}
-                              currency={cur}
-                              value={data[f.key]}
-                              onChange={(v) => setFixed(f.key, v)}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
+                  <div className="mt-4 space-y-2.5">
+                    {SPEND_PLAN_FIELDS.filter((f) => ONBOARDING_SPEND_KEYS.includes(f.key)).map((f) => (
+                      <MoneyField
+                        key={f.key}
+                        emoji={f.emoji}
+                        label={t(f.es, f.en)}
+                        currency={cur}
+                        value={data[f.key]}
+                        onChange={(v) => setFixed(f.key, v)}
+                      />
+                    ))}
+                  </div>
                   <div className="mt-4 flex items-center justify-between rounded-2xl border border-border/60 bg-elevated/40 px-5 py-3">
                     <span className="text-sm text-muted-foreground">{t("Gastos totales aprox", "Approximate total expenses")}</span>
                     <span className="numeric text-lg font-semibold">{money(totalSpendPlan(data), cur)}{t("/mes", "/mo")}</span>
