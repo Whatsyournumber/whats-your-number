@@ -971,6 +971,7 @@ export function ExpenseLog() {
           </p>
         </div>
         <DropdownMenu>
+          <TooltipProvider delayDuration={150}>
           <Tooltip>
             <TooltipTrigger asChild>
               <DropdownMenuTrigger asChild>
