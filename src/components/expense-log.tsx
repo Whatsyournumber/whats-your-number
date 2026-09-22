@@ -2079,7 +2079,31 @@ export function ExpenseLog() {
 
 
         <div ref={latestExpensesRef} className="scroll-mt-4 rounded-2xl border border-border bg-card p-4">
-          <p className="mb-3 text-lg font-semibold">{t("Últimos gastos", "Latest expenses")}</p>
+          <div className="mb-3 flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-lg font-semibold">{t("Últimos gastos", "Latest expenses")}</p>
+              <p className="mt-0.5 text-xs leading-4 text-muted-foreground">
+                {t("Tus gastos del día a día, del más reciente al más antiguo", "Your day-to-day expenses, newest first")}
+              </p>
+            </div>
+            <TooltipProvider delayDuration={150}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={() => setManualOpen(true)}
+                    className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    aria-label={t("Agregar gastos diarios", "Add daily expenses")}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  {t("Agregar gastos diarios", "Add daily expenses")}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           {expenseTx.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               {t("Aún no registras gastos en este periodo.", "No expenses logged in this period yet.")}
