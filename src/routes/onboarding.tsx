@@ -1071,31 +1071,18 @@ function OnboardingPage() {
                       "Note your approximate monthly spend per category: you can edit and add more later.",
                     )}
                   </p>
-                  {SPEND_PLAN_GROUPS.map((g) => {
-                    const rows = SPEND_PLAN_FIELDS.filter(
-                      (f) => f.group === g.id && (!("kids" in f && f.kids) || showKidsSpend),
-                    );
-                    if (!rows.length) return null;
-                    return (
-                      <div key={g.id} className="mt-6">
-                        <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                          {t(g.es, g.en)}
-                        </p>
-                        <div className="mt-2.5 space-y-2.5">
-                          {rows.map((f) => (
-                            <MoneyField
-                              key={f.key}
-                              emoji={f.emoji}
-                              label={t(f.es, f.en)}
-                              currency={cur}
-                              value={data[f.key]}
-                              onChange={(v) => setFixed(f.key, v)}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
+                  <div className="mt-4 space-y-2.5">
+                    {SPEND_PLAN_FIELDS.filter((f) => ONBOARDING_SPEND_KEYS.includes(f.key)).map((f) => (
+                      <MoneyField
+                        key={f.key}
+                        emoji={f.emoji}
+                        label={t(f.es, f.en)}
+                        currency={cur}
+                        value={data[f.key]}
+                        onChange={(v) => setFixed(f.key, v)}
+                      />
+                    ))}
+                  </div>
                   <div className="mt-4 flex items-center justify-between rounded-2xl border border-border/60 bg-elevated/40 px-5 py-3">
                     <span className="text-sm text-muted-foreground">{t("Gastos totales aprox", "Approximate total expenses")}</span>
                     <span className="numeric text-lg font-semibold">{money(totalSpendPlan(data), cur)}{t("/mes", "/mo")}</span>
