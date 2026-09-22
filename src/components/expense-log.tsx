@@ -29,6 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NumberInput } from "@/components/ui/number-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
 import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
@@ -1148,9 +1149,18 @@ export function ExpenseLog() {
                 {t("Tu plan de gasto mensual", "Your monthly spending plan")}
               </h3>
               {period === "month" && (
-                <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} className="shrink-0 text-muted-foreground transition-colors hover:text-foreground">
-                  <Pencil className="h-4 w-4" />
-                </button>
+                <TooltipProvider delayDuration={150}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} className="shrink-0 text-muted-foreground transition-colors hover:text-foreground">
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      {t("Agrega o edita una categoría", "Add or edit a category")}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
             </div>
 
@@ -1866,14 +1876,23 @@ export function ExpenseLog() {
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-lg font-semibold">{t("Gastos por categoría", "Spending by category")}</h3>
 
-                <button
-                  type="button"
-                  onClick={() => setPlanOpen(true)}
-                  className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                  aria-label={t("Editar plan de gastos", "Edit spending plan")}
-                >
-                  <Pencil className="h-3.5 w-3.5" />
-                </button>
+                <TooltipProvider delayDuration={150}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        onClick={() => setPlanOpen(true)}
+                        className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                        aria-label={t("Editar plan de gastos", "Edit spending plan")}
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      {t("Agrega o edita una categoría", "Add or edit a category")}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               <ul className="mt-4 space-y-3.5">
                  {[...visibleRows]
