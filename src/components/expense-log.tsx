@@ -2133,13 +2133,13 @@ export function ExpenseLog() {
             </DropdownMenu>
           </div>
           {expenseTx.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
+            <p className="mt-4 text-sm text-muted-foreground">
               {t("Aún no registras gastos en este periodo.", "No expenses logged in this period yet.")}
             </p>
           ) : (
             <>
             {/* Mismo número de líneas que las categorías visibles; "Ver más" abre el popup con todo. */}
-            <ul className="divide-y divide-border/60">
+            <ul className="mt-4 divide-y divide-border/60">
               {expenseTx.slice(0, Math.max(visibleRows.length, 6)).map(renderLatestTx)}
             </ul>
             {expenseTx.length > Math.max(visibleRows.length, 6) && (
