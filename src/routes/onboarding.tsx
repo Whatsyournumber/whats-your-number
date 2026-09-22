@@ -1103,6 +1103,7 @@ function OnboardingPage() {
                         currency={cur}
                         value={data[f.key]}
                         onChange={(v) => setFixed(f.key, v)}
+                        error={showRequiredErrors && totalSpendPlan(data) <= 0 && (data[f.key] ?? 0) <= 0}
                       />
                     ))}
                   </div>
