@@ -20,7 +20,8 @@ export function seedSpendPlanFromOnboarding(
   const add = (id: string, amount: number, label?: string) => {
     if (amount <= 0) return;
     const prev = byId.get(id);
-    byId.set(id, { id, label: label ?? prev?.label, amount: (prev?.amount ?? 0) + amount });
+    const next = { id, amount: (prev?.amount ?? 0) + amount, ...(label ?? prev?.label ? { label: (label ?? prev?.label)! } : {}) };
+    byId.set(id, next);
   };
   for (const f of SPEND_PLAN_FIELDS) add(f.budgetId, Number(data[f.key]) || 0);
   for (const l of extraLines) add(l.id, Number(l.amount) || 0, l.label);
