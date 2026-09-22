@@ -68,6 +68,7 @@ import {
   type LifeData,
   type OnboardingData,
   currencies,
+  currencyDisplay,
 } from "@/lib/onboarding";
 import { useFxRates } from "@/hooks/use-fx-rates";
 
@@ -124,28 +125,6 @@ const HOUSING_EN: Record<string, string> = {
   ns: "Prefer not to answer",
 };
 
-const CURRENCY_EN: Record<string, string> = {
-  EUR: "Euro",
-  USD: "US Dollar",
-  GBP: "British Pound",
-  CHF: "Swiss Franc",
-  MXN: "Mexican Peso",
-  COP: "Colombian Peso",
-  CLP: "Chilean Peso",
-  ARS: "Argentine Peso",
-  UYU: "Uruguayan Peso",
-  PEN: "Peruvian Sol",
-  BRL: "Brazilian Real",
-  CAD: "Canadian Dollar",
-  DOP: "Dominican Peso",
-  GTQ: "Quetzal",
-  CRC: "Costa Rican Colón",
-  PYG: "Guarani",
-  BOB: "Boliviano",
-  HNL: "Lempira",
-  NIO: "Córdoba",
-  VES: "Bolívar",
-};
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
@@ -735,7 +714,7 @@ function OnboardingPage() {
                                 <MoneyField
                                   emoji="🏠"
                                   label={t("Valor de la propiedad", "Property value")}
-                                  desc={t("Cuánto vale tu vivienda hoy", "What your home is worth today")}
+                                  desc={t("Valor de tu vivienda", "Current home value")}
                                   currency={cur}
                                   value={data.assets_property}
                                   hint={t("Escribe aquí", "Type here")}
@@ -744,7 +723,7 @@ function OnboardingPage() {
                                 <MoneyField
                                   emoji="🏦"
                                   label={t("Saldo pendiente", "Outstanding balance")}
-                                  desc={t("Lo que aún debes al banco", "What you still owe the bank")}
+                                  desc={t("Deuda con el banco", "Bank debt")}
                                   currency={cur}
                                   value={data.mortgage_balance}
                                   hint={t("Escribe aquí", "Type here")}
@@ -762,7 +741,7 @@ function OnboardingPage() {
                                 <MoneyField
                                   emoji="📅"
                                   label={t("Plazo restante", "Remaining term")}
-                                  desc={t("Años que te faltan por pagar", "Years left to pay")}
+                                  desc={t("Años por pagar", "Years left to pay")}
                                   currency={t("años", "years")}
                                   value={data.mortgage_term}
                                   hint={t("Escribe aquí", "Type here")}
@@ -778,7 +757,7 @@ function OnboardingPage() {
                               <MoneyField
                                 emoji="🏢"
                                 label={t("Alquiler mensual", "Monthly rent")}
-                                desc={t("Lo que pagas de alquiler cada mes", "What you pay in rent each month")}
+                                desc={t("Alquiler mensual", "Monthly rent payment")}
                                 currency={cur}
                                 value={data.fixed_housing}
                                 hint={t("Escribe aquí", "Type here")}
@@ -868,19 +847,19 @@ function OnboardingPage() {
                 </p>
 
                 <div className="mt-8 space-y-1">
-                  <div className="flex items-center justify-between gap-4 py-2">
-                    <div>
+                  <div className="flex items-center justify-between gap-3 py-2">
+                    <div className="min-w-0">
                       <p className="text-sm font-medium">{t("Moneda", "Currency")}</p>
-                      <p className="text-[11px] leading-tight text-muted-foreground/80">{t("En la que verás todos tus importes", "The one you'll see all your amounts in")}</p>
+                      <p className="truncate text-[11px] leading-tight text-muted-foreground/80">{t("Donde verás tus importes", "Where your amounts appear")}</p>
                     </div>
                     <select
-                      className="h-8 rounded-full border-0 bg-transparent px-0 text-sm font-medium focus:outline-none focus:ring-0"
+                      className="h-8 shrink-0 rounded-full border-0 bg-transparent px-0 text-sm font-medium focus:outline-none focus:ring-0"
                       value={cur}
                       onChange={(e) => set("currency", e.target.value)}
                     >
                       {currencies.map((c) => (
                         <option key={c.code} value={c.code}>
-                          {c.code} · {t(c.label, CURRENCY_EN[c.code] ?? c.label)}
+                          {currencyDisplay(c.code, c.symbol)}
                         </option>
                       ))}
                     </select>
@@ -888,20 +867,20 @@ function OnboardingPage() {
 
                   {hasPartner && (
                     <div className="flex items-center justify-between gap-4 border-t border-border/20 py-2">
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-sm font-medium">{t("Análisis de", "Analysis for")}</p>
-                        <p className="text-[11px] leading-tight text-muted-foreground/80">
-                          {t("Solo tuyo o el hogar completo", "Just yours or the full household")}
+                        <p className="truncate text-[11px] leading-tight text-muted-foreground/80">
+                          {t("Tuyo o del hogar", "Yours or household")}
                         </p>
                       </div>
-                      <div className="flex gap-1 rounded-full p-1">
+                      <div className="flex shrink-0 gap-1 rounded-full p-1">
                         {analysisScopeOptions.map((o) => (
                           <button
                             key={o.value}
                             type="button"
                             onClick={() => setL("analysis_scope", o.value)}
                             className={cn(
-                              "rounded-full px-3 py-1 text-xs font-medium transition",
+                              "whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium transition",
                               life.analysis_scope === o.value
                                 ? "bg-primary/15 text-foreground"
                                 : "text-muted-foreground hover:text-foreground",
@@ -930,7 +909,7 @@ function OnboardingPage() {
                       <MoneyField
                         emoji="🪙"
                         label={t("Salario mensual", "Monthly salary")}
-                        desc={t("Neto, después de impuestos", "Net, after taxes")}
+                        desc={t("Neto tras impuestos", "Net, after tax")}
                         currency={cur}
                         value={data.income_salary}
                         onChange={(v) => set("income_salary", v)}
@@ -939,7 +918,7 @@ function OnboardingPage() {
                     </div>
                     <MoneyField
                       emoji="🎯"
-                      label={t("Bonos / variables", "Bonuses / variable pay")}
+                      label={t("Bonos / variables", "Bonuses / variable")}
                       desc={t("Promedio mensual", "Monthly average")}
                       currency={cur}
                       value={data.income_bonus}
@@ -948,7 +927,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="🏘"
                       label={t("Alquileres", "Rental income")}
-                      desc={t("Rentas que recibes cada mes", "Rent you receive each month")}
+                      desc={t("Rentas mensuales", "Rent you receive")}
                       currency={cur}
                       value={data.income_rent}
                       onChange={(v) => set("income_rent", v)}
@@ -956,7 +935,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="✨"
                       label={t("Otros ingresos", "Other income")}
-                      desc={t("Dividendos, side projects…", "Dividends, side projects…")}
+                      desc={t("Dividendos y extras", "Dividends and extras")}
                       currency={cur}
                       value={data.income_other}
                       onChange={(v) => set("income_other", v)}
@@ -969,15 +948,15 @@ function OnboardingPage() {
                     <SubQuestion title={t("Ingresos y gastos de tu pareja", "Your partner's income and expenses")} />
                     <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                       {t(
-                        "Los sumamos a los tuyos para calcular el número del hogar.",
-                        "We add them to yours to calculate your household number.",
+                        "Los sumamos a los tuyos para el número del hogar.",
+                        "We add them to yours for your household number.",
                       )}
                     </p>
                     <div className="mt-4 space-y-2.5">
                       <MoneyField
                         emoji="🪙"
                         label={t("Salario mensual de tu pareja", "Partner's monthly salary")}
-                        desc={t("Neto, después de impuestos", "Net, after taxes")}
+                        desc={t("Neto tras impuestos", "Net, after tax")}
                         currency={cur}
                         value={data.income_partner_salary ?? 0}
                         onChange={(v) => set("income_partner_salary", v)}
@@ -985,7 +964,7 @@ function OnboardingPage() {
                       <MoneyField
                         emoji="✨"
                         label={t("Otros ingresos de tu pareja", "Partner's other income")}
-                        desc={t("Bonos, alquileres, dividendos…", "Bonuses, rent, dividends…")}
+                        desc={t("Bonos y dividendos", "Bonuses, dividends")}
                         currency={cur}
                         value={data.income_partner_other ?? 0}
                         onChange={(v) => set("income_partner_other", v)}
@@ -993,7 +972,7 @@ function OnboardingPage() {
                       <MoneyField
                         emoji="💳"
                         label={t("Gastos mensuales de tu pareja", "Partner's monthly expenses")}
-                        desc={t("Los que no están en tus gastos fijos", "The ones not included in your fixed expenses")}
+                        desc={t("Fuera de tus fijos", "Not in fixed costs")}
                         currency={cur}
                         value={data.expenses_partner ?? 0}
                         onChange={(v) => set("expenses_partner", v)}
@@ -1014,7 +993,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="💵"
                       label={t("Efectivo", "Cash")}
-                      desc={t("Dinero disponible fuera del banco", "Money available outside the bank")}
+                      desc={t("Efectivo disponible", "Available cash")}
                       currency={cur}
                       value={data.assets_cash}
                       onChange={(v) => set("assets_cash", v)}
@@ -1030,7 +1009,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="🏦"
                       label={t("Fondo de retiro", "Retirement fund")}
-                      desc={t("Pensión, AFP, 401k…", "Pension, 401k…")}
+                      desc={t("Pensión, AFP, 401k", "Pension, 401k")}
                       currency={cur}
                       value={data.assets_retirement}
                       onChange={(v) => set("assets_retirement", v)}
@@ -1038,7 +1017,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="📈"
                       label={t("ETFs / fondos", "ETFs / funds")}
-                      desc={t("Fondos indexados y ETFs", "Index funds and ETFs")}
+                      desc={t("Fondos indexados", "Index funds, ETFs")}
                       currency={cur}
                       value={data.assets_etf}
                       onChange={(v) => set("assets_etf", v)}
@@ -1046,7 +1025,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="📊"
                       label={t("Acciones", "Stocks")}
-                      desc={t("Acciones individuales", "Individual stocks")}
+                      desc={t("Listadas en bolsa", "Individual stocks")}
                       currency={cur}
                       value={data.assets_stocks}
                       onChange={(v) => set("assets_stocks", v)}
@@ -1054,7 +1033,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="₿"
                       label={t("Criptomonedas", "Cryptocurrencies")}
-                      desc={t("Valor aproximado actual", "Current approximate value")}
+                      desc={t("Valor aproximado", "Approximate value")}
                       currency={cur}
                       value={data.assets_crypto}
                       onChange={(v) => set("assets_crypto", v)}
@@ -1062,7 +1041,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="🏠"
                       label={t("Bienes inmuebles", "Real estate")}
-                      desc={t("Valor de tus propiedades", "Value of your properties")}
+                      desc={t("Tus propiedades", "Your properties")}
                       currency={cur}
                       value={data.assets_property}
                       onChange={(v) => set("assets_property", v)}
@@ -1083,7 +1062,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="💳"
                       label={t("Deudas", "Debts")}
-                      desc={t("Préstamos, tarjetas y otras deudas", "Loans, cards and other debts")}
+                      desc={t("Préstamos y tarjetas", "Loans and cards")}
                       currency={cur}
                       value={data.liabilities}
                       onChange={(v) => set("liabilities", v)}
@@ -1091,7 +1070,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="🏦"
                       label={t("Hipoteca: saldo pendiente", "Mortgage: outstanding balance")}
-                      desc={t("Lo que aún debes al banco", "What you still owe the bank")}
+                      desc={t("Deuda con el banco", "Bank debt")}
                       currency={cur}
                       value={data.mortgage_balance}
                       onChange={(v) => set("mortgage_balance", v)}
@@ -1107,7 +1086,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="📅"
                       label={t("Hipoteca: plazo restante", "Mortgage: remaining term")}
-                      desc={t("Años que te faltan por pagar", "Years left to pay")}
+                      desc={t("Años por pagar", "Years left to pay")}
                       currency={t("años", "years")}
                       value={data.mortgage_term}
                       onChange={(v) => set("mortgage_term", v)}
@@ -1476,7 +1455,7 @@ function MoneyField({
               onChange(Number.isFinite(n) ? Math.max(0, n) : 0);
             }}
             className={cn(
-              "numeric w-28 max-sm:w-24 border-b border-dashed bg-transparent text-right text-base font-semibold outline-none transition-colors focus:border-primary/60 placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/50",
+              "numeric w-28 max-sm:w-20 border-b border-dashed bg-transparent text-right text-base font-semibold outline-none transition-colors focus:border-primary/60 placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/50",
               error ? "border-destructive" : "border-border",
             )}
           />

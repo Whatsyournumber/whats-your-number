@@ -55,3 +55,7 @@
 - [x] Onboarding: subtítulo "Crea tu presupuesto mensual por categoría: llena mínimo 5 categorías y luego podrás cambiarlas o editarlas"
 - [x] Onboarding: el aviso rojo marca solo la caja del encabezado (título en letra normal) con "Debes llenar 5 categorías mínimo"
 - [x] Plan del onboarding: base de 5 fijos + 10 variables, mínimo 5 llenas, "+ Añadir categoría" personalizada
+
+## Onboarding
+- [x] Móvil: subtítulos del paso de dinero en una sola línea (Moneda, Análisis, campos de importe)
+- [x] Móvil: selector de moneda compacto (código + símbolo) para que no se recorte

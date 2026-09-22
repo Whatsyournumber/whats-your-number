@@ -481,8 +481,8 @@ export const goals = [
 export const maritalOptions = ["Soltero", "En pareja", "Casado", "Divorciado"];
 /** Con pareja/casado el usuario elige si el análisis es solo suyo o del hogar. */
 export const analysisScopeOptions = [
-  { value: "individual", label: "Solo mis números", en: "Just my numbers" },
-  { value: "pareja", label: "Con mi pareja", en: "With my partner" },
+  { value: "individual", label: "Solo los míos", en: "Just mine" },
+  { value: "pareja", label: "Con mi pareja", en: "With partner" },
 ];
 
 export const childrenOptions = ["0", "1", "2", "3+"];
