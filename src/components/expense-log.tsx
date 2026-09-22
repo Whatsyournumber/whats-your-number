@@ -971,20 +971,24 @@ export function ExpenseLog() {
           </p>
         </div>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <span className="relative shrink-0 sm:hidden">
-              <button
-                type="button"
-                aria-label={t("Añadir gasto", "Add expense")}
-                className="grid h-12 w-12 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/20"
-              >
-                <Plus className="h-6 w-6" />
-              </button>
-              <span className="pointer-events-none absolute right-0 top-[calc(100%+10px)] whitespace-nowrap rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-lg">
-                {t("Agrega tus gastos diarios", "Add your daily expenses")}
-              </span>
-            </span>
-          </DropdownMenuTrigger>
+          <TooltipProvider delayDuration={150}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={t("Añadir gasto", "Add expense")}
+                  className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/20 sm:hidden"
+                >
+                  <Plus className="h-6 w-6" />
+                </button>
+              </DropdownMenuTrigger>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" align="end" sideOffset={8} className="text-sm font-medium">
+              {t("Agrega tus gastos diarios", "Add your daily expenses")}
+            </TooltipContent>
+          </Tooltip>
+          </TooltipProvider>
           <DropdownMenuContent align="end" className="w-80 p-2">
             <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setManualOpen(true)}>
               <PencilLine className="mr-2.5 h-6 w-6 text-positive" />
