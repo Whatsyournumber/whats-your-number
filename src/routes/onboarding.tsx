@@ -735,7 +735,7 @@ function OnboardingPage() {
                                 <MoneyField
                                   emoji="🏠"
                                   label={t("Valor de la propiedad", "Property value")}
-                                  desc={t("Cuánto vale tu vivienda hoy", "What your home is worth today")}
+                                  desc={t("Valor de tu vivienda", "Current home value")}
                                   currency={cur}
                                   value={data.assets_property}
                                   hint={t("Escribe aquí", "Type here")}
@@ -744,7 +744,7 @@ function OnboardingPage() {
                                 <MoneyField
                                   emoji="🏦"
                                   label={t("Saldo pendiente", "Outstanding balance")}
-                                  desc={t("Lo que aún debes al banco", "What you still owe the bank")}
+                                  desc={t("Deuda con el banco", "Bank debt")}
                                   currency={cur}
                                   value={data.mortgage_balance}
                                   hint={t("Escribe aquí", "Type here")}
@@ -762,7 +762,7 @@ function OnboardingPage() {
                                 <MoneyField
                                   emoji="📅"
                                   label={t("Plazo restante", "Remaining term")}
-                                  desc={t("Años que te faltan por pagar", "Years left to pay")}
+                                  desc={t("Años por pagar", "Years left to pay")}
                                   currency={t("años", "years")}
                                   value={data.mortgage_term}
                                   hint={t("Escribe aquí", "Type here")}
@@ -778,7 +778,7 @@ function OnboardingPage() {
                               <MoneyField
                                 emoji="🏢"
                                 label={t("Alquiler mensual", "Monthly rent")}
-                                desc={t("Lo que pagas de alquiler cada mes", "What you pay in rent each month")}
+                                desc={t("Alquiler mensual", "Monthly rent payment")}
                                 currency={cur}
                                 value={data.fixed_housing}
                                 hint={t("Escribe aquí", "Type here")}
@@ -868,13 +868,13 @@ function OnboardingPage() {
                 </p>
 
                 <div className="mt-8 space-y-1">
-                  <div className="flex items-center justify-between gap-4 py-2">
-                    <div>
+                  <div className="flex items-center justify-between gap-3 py-2">
+                    <div className="min-w-0">
                       <p className="text-sm font-medium">{t("Moneda", "Currency")}</p>
-                      <p className="text-[11px] leading-tight text-muted-foreground/80">{t("En la que verás todos tus importes", "The one you'll see all your amounts in")}</p>
+                      <p className="truncate text-[11px] leading-tight text-muted-foreground/80">{t("Donde verás tus importes", "Where your amounts appear")}</p>
                     </div>
                     <select
-                      className="h-8 rounded-full border-0 bg-transparent px-0 text-sm font-medium focus:outline-none focus:ring-0"
+                      className="h-8 max-w-[9.5rem] shrink-0 truncate rounded-full border-0 bg-transparent px-0 text-sm font-medium focus:outline-none focus:ring-0"
                       value={cur}
                       onChange={(e) => set("currency", e.target.value)}
                     >
@@ -888,20 +888,20 @@ function OnboardingPage() {
 
                   {hasPartner && (
                     <div className="flex items-center justify-between gap-4 border-t border-border/20 py-2">
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-sm font-medium">{t("Análisis de", "Analysis for")}</p>
-                        <p className="text-[11px] leading-tight text-muted-foreground/80">
-                          {t("Solo tuyo o el hogar completo", "Just yours or the full household")}
+                        <p className="truncate text-[11px] leading-tight text-muted-foreground/80">
+                          {t("Tuyo o del hogar", "Yours or household")}
                         </p>
                       </div>
-                      <div className="flex gap-1 rounded-full p-1">
+                      <div className="flex shrink-0 gap-1 rounded-full p-1">
                         {analysisScopeOptions.map((o) => (
                           <button
                             key={o.value}
                             type="button"
                             onClick={() => setL("analysis_scope", o.value)}
                             className={cn(
-                              "rounded-full px-3 py-1 text-xs font-medium transition",
+                              "whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium transition",
                               life.analysis_scope === o.value
                                 ? "bg-primary/15 text-foreground"
                                 : "text-muted-foreground hover:text-foreground",
