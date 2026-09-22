@@ -50,3 +50,4 @@
 - [x] Registro manual: incluir en el selector las categorías personalizadas creadas en el plan mensual
 - [x] Últimos gastos: botón + con aviso "Agregar gastos diarios" y subtítulo bajo el título
 - [x] Últimos gastos: subtítulo igual que "Gastos por categoría" (letra pequeña, bajo el título, alineado)
+- [x] Últimos gastos: subtítulo corto "Tus gastos del día a día" / "Your day-to-day expenses" (sin "del más reciente al más antiguo")
