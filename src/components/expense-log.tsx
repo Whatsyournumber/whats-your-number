@@ -650,13 +650,6 @@ export function ExpenseLog() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [expandedTx, setExpandedTx] = useState<string | null>(null);
   const [latestOpen, setLatestOpen] = useState(false);
-  const [addTipOpen, setAddTipOpen] = useState(false);
-  useEffect(() => {
-    // Show the "+" tooltip briefly on load (mobile has no hover), then on hover/focus as usual.
-    setAddTipOpen(true);
-    const id = window.setTimeout(() => setAddTipOpen(false), 3500);
-    return () => window.clearTimeout(id);
-  }, []);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   // Gasto que se está moviendo a otra categoría desde el desglose.
   const [moveItem, setMoveItem] = useState<{ keys: string[]; label: string; from: string } | null>(null);
@@ -979,13 +972,18 @@ export function ExpenseLog() {
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button
-              type="button"
-              aria-label={t("Añadir gasto", "Add expense")}
-              className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/20 sm:hidden"
-            >
-              <Plus className="h-6 w-6" />
-            </button>
+            <span className="relative shrink-0 sm:hidden">
+              <button
+                type="button"
+                aria-label={t("Añadir gasto", "Add expense")}
+                className="grid h-12 w-12 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/20"
+              >
+                <Plus className="h-6 w-6" />
+              </button>
+              <span className="pointer-events-none absolute right-0 top-[calc(100%+10px)] whitespace-nowrap rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-lg">
+                {t("Agrega tus gastos diarios", "Add your daily expenses")}
+              </span>
+            </span>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-80 p-2">
             <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setManualOpen(true)}>
@@ -2095,7 +2093,7 @@ export function ExpenseLog() {
             </div>
             <DropdownMenu>
               <TooltipProvider delayDuration={100}>
-                <Tooltip open={addTipOpen} onOpenChange={setAddTipOpen}>
+                <Tooltip>
                   <DropdownMenuTrigger asChild>
                     <TooltipTrigger asChild>
                       <button
