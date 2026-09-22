@@ -19,14 +19,29 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { SPEND_PLAN_FIELDS, totalSpendPlan, type SpendPlanKey } from "@/lib/onboarding";
 
-/** Las 5 categorías del plan de gastos que se piden en el onboarding. */
-const ONBOARDING_SPEND_KEYS: SpendPlanKey[] = [
+/** Categorías base del plan de gastos del onboarding, agrupadas. */
+const ONBOARDING_FIXED_KEYS: SpendPlanKey[] = [
   "fixed_housing",
   "fixed_utilities",
-  "fixed_groceries",
+  "fixed_insurance",
   "fixed_transport",
+  "fixed_subscriptions",
+];
+const ONBOARDING_VARIABLE_KEYS: SpendPlanKey[] = [
+  "fixed_groceries",
+  "fixed_restaurants",
+  "fixed_delivery",
+  "fixed_professional",
+  "fixed_travel",
+  "fixed_nightlife",
+  "fixed_shopping",
+  "fixed_health",
+  "fixed_family",
   "fixed_other",
 ];
+const ONBOARDING_SPEND_KEYS: SpendPlanKey[] = [...ONBOARDING_FIXED_KEYS, ...ONBOARDING_VARIABLE_KEYS];
+/** Mínimo de categorías con monto para poder construir tu número. */
+const MIN_SPEND_CATEGORIES = 5;
 import { seedSpendPlanFromOnboarding } from "@/lib/spend-plan-seed";
 import { syncHomeHolding } from "@/hooks/use-holdings";
 import { StatementImporter } from "@/components/statement-importer";
@@ -255,6 +270,14 @@ function OnboardingPage() {
       return next;
     });
   const setL = <K extends keyof LifeData>(key: K, value: LifeData[K]) => setLife((l) => ({ ...l, [key]: value }));
+
+  // Categorías personalizadas que la persona agrega a su plan en el onboarding.
+  const [customCats, setCustomCats] = useState<{ id: string; name: string; amount: number }[]>([]);
+  const addCustomCat = () =>
+    setCustomCats((cats) => [...cats, { id: `cc-${Date.now()}-${cats.length}`, name: "", amount: 0 }]);
+  const setCustomCat = (id: string, patch: Partial<{ name: string; amount: number }>) =>
+    setCustomCats((cats) => cats.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+  const customCatsTotal = customCats.reduce((s, c) => s + (c.amount || 0), 0);
 
   const cur = data.currency || defaultCurrency();
   const hasPartner = life.marital_status === "Casado" || life.marital_status === "En pareja";
