@@ -9,6 +9,7 @@ import {
   Loader2,
   LogOut,
   Pencil,
+  Plus,
   Search,
   Sparkles,
 } from "lucide-react";
@@ -1131,19 +1132,22 @@ function OnboardingPage() {
                   {planMissing && (
                     <p role="alert" className="-mt-2 mb-3 text-center text-sm font-medium text-destructive">
                       {t(
-                        `Debes llenar ${ONBOARDING_SPEND_KEYS.length} categorías mínimo`,
-                        `You must fill in at least ${ONBOARDING_SPEND_KEYS.length} categories`,
+                        `Debes llenar ${MIN_SPEND_CATEGORIES} categorías mínimo`,
+                        `You must fill in at least ${MIN_SPEND_CATEGORIES} categories`,
                       )}
                     </p>
                   )}
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                     {t(
-                      `Crea tu presupuesto mensual por categoría: llena mínimo ${ONBOARDING_SPEND_KEYS.length} categorías y luego podrás cambiarlas o editarlas.`,
-                      `Create your monthly budget by category: fill in at least ${ONBOARDING_SPEND_KEYS.length} categories and you can change or edit them later.`,
+                      `Crea tu presupuesto mensual por categoría: llena mínimo ${MIN_SPEND_CATEGORIES} categorías y luego podrás cambiarlas o editarlas.`,
+                      `Create your monthly budget by category: fill in at least ${MIN_SPEND_CATEGORIES} categories and you can change or edit them later.`,
                     )}
                   </p>
-                  <div className="mt-4 space-y-2.5">
-                    {SPEND_PLAN_FIELDS.filter((f) => ONBOARDING_SPEND_KEYS.includes(f.key)).map((f) => (
+                  <p className="mt-5 mb-2 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                    {t("Gastos fijos", "Fixed expenses")}
+                  </p>
+                  <div className="space-y-2.5">
+                    {SPEND_PLAN_FIELDS.filter((f) => ONBOARDING_FIXED_KEYS.includes(f.key)).map((f) => (
                       <MoneyField
                         key={f.key}
                         emoji={f.emoji}
@@ -1154,9 +1158,63 @@ function OnboardingPage() {
                       />
                     ))}
                   </div>
+                  <p className="mt-5 mb-2 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                    {t("Gastos variables", "Variable expenses")}
+                  </p>
+                  <div className="space-y-2.5">
+                    {SPEND_PLAN_FIELDS.filter((f) => ONBOARDING_VARIABLE_KEYS.includes(f.key)).map((f) => (
+                      <MoneyField
+                        key={f.key}
+                        emoji={f.emoji}
+                        label={t(f.es, f.en)}
+                        currency={cur}
+                        value={data[f.key]}
+                        onChange={(v) => setFixed(f.key, v)}
+                      />
+                    ))}
+                    {customCats.map((c) => (
+                      <div
+                        key={c.id}
+                        className="flex items-center gap-3.5 rounded-2xl border border-border bg-elevated/50 px-5 py-4 transition-colors focus-within:border-primary/60"
+                      >
+                        <span className="text-lg">✨</span>
+                        <input
+                          type="text"
+                          value={c.name}
+                          placeholder={t("Nombre de la categoría", "Category name")}
+                          onChange={(e) => setCustomCat(c.id, { name: e.target.value })}
+                          className="min-w-0 flex-1 bg-transparent text-sm font-medium outline-none placeholder:font-normal placeholder:text-muted-foreground/60"
+                        />
+                        <span className="ml-auto flex items-center gap-1.5">
+                          <input
+                            type="number"
+                            inputMode="decimal"
+                            min={0}
+                            step="any"
+                            value={c.amount || ""}
+                            placeholder={t("Escribe aquí", "Type here")}
+                            onWheel={(e) => e.currentTarget.blur()}
+                            onChange={(e) => {
+                              const n = Number(e.target.value || 0);
+                              setCustomCat(c.id, { amount: Number.isFinite(n) ? Math.max(0, n) : 0 });
+                            }}
+                            className="numeric w-28 max-sm:w-24 border-b border-dashed border-border bg-transparent text-right text-base font-semibold outline-none transition-colors focus:border-primary/60 placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/50"
+                          />
+                          <span className="text-xs text-muted-foreground">{cur}</span>
+                        </span>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={addCustomCat}
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-border px-5 py-3.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                    >
+                      <Plus className="h-4 w-4" /> {t("Añadir categoría", "Add category")}
+                    </button>
+                  </div>
                   <div className="mt-4 flex items-center justify-between rounded-2xl border border-border/60 bg-elevated/40 px-5 py-3">
                     <span className="text-sm text-muted-foreground">{t("Gastos totales aprox", "Approximate total expenses")}</span>
-                    <span className="numeric text-lg font-semibold">{money(totalSpendPlan(data), cur)}{t("/mes", "/mo")}</span>
+                    <span className="numeric text-lg font-semibold">{money(totalSpendPlan(data) + customCatsTotal, cur)}{t("/mes", "/mo")}</span>
                   </div>
                 </div>
 
