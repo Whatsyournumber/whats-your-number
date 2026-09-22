@@ -93,7 +93,7 @@ export function useTransactions() {
       // (p. ej. peajes o suscripciones), así que no se descartan.
       // El mismo gasto puede venir con importe ligeramente distinto (propina, redondeo,
       // apunte manual de 170 vs cargo real de 171,11), así que se admite una tolerancia.
-      type Kept = { day: number; merchant: string; statement: string; amount: number };
+      type Kept = { day: number; merchant: string; statement: string; amount: number; manual: boolean };
       const kept = new Map<number, Kept[]>();
       const dayOf = (date: string | null) => (date ? Math.round(new Date(date).getTime() / 86_400_000) : NaN);
       const isManual = (t: (typeof rows)[number]) => !t.statement_id || /gasto manual|manual expense/i.test(t.description ?? "");
@@ -105,26 +105,31 @@ export function useTransactions() {
         const amount = Math.abs(Number(t.amount));
         const day = dayOf(t.tx_date);
         const statement = t.statement_id ?? "";
+        const manual = isManual(t);
         const bucket = Math.round(amount / 10);
         const seen = [bucket - 1, bucket, bucket + 1].flatMap((b) => kept.get(b) ?? []);
         const isDuplicate = seen.some((k) => {
           if (!sameMerchant(k.merchant, t.merchant)) return false;
           const sameFile = k.statement === statement;
-          // Dentro del mismo archivo solo cuenta el importe idéntico: dos consumos
-          // parecidos el mismo día en el mismo sitio son cargos reales distintos.
-          if (sameFile ? k.amount.toFixed(2) !== amount.toFixed(2) : !closeAmount(k.amount, amount)) return false;
+          // La tolerancia de importe/fecha solo aplica al par "apunte manual + cargo del banco"
+          // (p. ej. 170 anotado a mano vs 171,11 cobrado dos días después).
+          // Entre dos EEFF distintos, o dentro del mismo archivo, se exige importe idéntico:
+          // dos compras parecidas en el mismo comercio esa semana son gastos reales distintos.
+          const fuzzy = !sameFile && (manual || k.manual);
+          if (fuzzy ? !closeAmount(k.amount, amount) : k.amount.toFixed(2) !== amount.toFixed(2)) return false;
           if (Number.isNaN(day) || Number.isNaN(k.day)) return k.day === day;
           const gap = Math.abs(k.day - day);
           if (gap === 0) return true;
           return gap <= 3 && !sameFile;
         });
 
+
         if (isDuplicate) {
           dropped.add(t.id);
           return;
         }
         const list = kept.get(bucket) ?? [];
-        list.push({ day, merchant: t.merchant ?? "", statement, amount });
+        list.push({ day, merchant: t.merchant ?? "", statement, amount, manual });
         kept.set(bucket, list);
       });
       const unique = rows.filter((t) => !dropped.has(t.id));
