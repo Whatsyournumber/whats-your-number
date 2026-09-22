@@ -166,7 +166,10 @@ function OnboardingPage() {
   const [ready, setReady] = useState(false);
   const [saving, setSaving] = useState(false);
   const [customReturn, setCustomReturn] = useState(false);
+  const [showRequiredErrors, setShowRequiredErrors] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const salaryFieldRef = useRef<HTMLDivElement | null>(null);
+  const spendPlanRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth", search: { mode: "signup" } });
@@ -276,6 +279,15 @@ function OnboardingPage() {
 
 
   const build = () => {
+    const salaryMissing = data.income_salary <= 0;
+    const spendPlanMissing = totalSpendPlan(data) <= 0;
+    if (salaryMissing || spendPlanMissing) {
+      setShowRequiredErrors(true);
+      const firstInvalid = salaryMissing ? salaryFieldRef.current : spendPlanRef.current;
+      firstInvalid?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    setShowRequiredErrors(false);
     setStep(BUILD_STEP);
     void persist({ current_step: QUESTIONS, desired_retirement_income: desiredIncome });
   };
@@ -878,14 +890,17 @@ function OnboardingPage() {
                     }
                   />
                   <div className="mt-4 space-y-2.5">
-                    <MoneyField
-                      emoji="🪙"
-                      label={t("Salario mensual", "Monthly salary")}
-                      desc={t("Neto, después de impuestos", "Net, after taxes")}
-                      currency={cur}
-                      value={data.income_salary}
-                      onChange={(v) => set("income_salary", v)}
-                    />
+                    <div ref={salaryFieldRef}>
+                      <MoneyField
+                        emoji="🪙"
+                        label={t("Salario mensual", "Monthly salary")}
+                        desc={t("Neto, después de impuestos", "Net, after taxes")}
+                        currency={cur}
+                        value={data.income_salary}
+                        onChange={(v) => set("income_salary", v)}
+                        error={showRequiredErrors && data.income_salary <= 0}
+                      />
+                    </div>
                     <MoneyField
                       emoji="🎯"
                       label={t("Bonos / variables", "Bonuses / variable pay")}
@@ -951,7 +966,7 @@ function OnboardingPage() {
                   </div>
                 )}
 
-                <div className="mt-8">
+                <div ref={spendPlanRef} className="mt-8 scroll-mt-24">
                   <SubQuestion
                     title={
                       household
@@ -1091,6 +1106,11 @@ function OnboardingPage() {
                       />
                     ))}
                   </div>
+                  {showRequiredErrors && totalSpendPlan(data) <= 0 && (
+                    <p role="alert" className="mt-2 text-sm font-medium text-destructive">
+                      {t("Debes llenar este campo", "You must fill in this field")}
+                    </p>
+                  )}
                   <div className="mt-4 flex items-center justify-between rounded-2xl border border-border/60 bg-elevated/40 px-5 py-3">
                     <span className="text-sm text-muted-foreground">{t("Gastos totales aprox", "Approximate total expenses")}</span>
                     <span className="numeric text-lg font-semibold">{money(totalSpendPlan(data), cur)}{t("/mes", "/mo")}</span>
@@ -1310,6 +1330,7 @@ function MoneyField({
   onChange,
   currency,
   hint,
+  error = false,
 }: {
   label: string;
   desc?: string;
@@ -1318,34 +1339,51 @@ function MoneyField({
   onChange: (v: number) => void;
   currency: string;
   hint?: string;
+  error?: boolean;
 }) {
   const t = useT();
   return (
-    <label className="flex items-center gap-3.5 rounded-2xl border border-border bg-elevated/50 px-5 py-4 transition-colors focus-within:border-primary/60">
-      <span className="text-lg">{emoji}</span>
-      <div className="min-w-0">
-        <p className="text-sm font-medium">{label}</p>
-        {desc && <p className="mt-0.5 text-xs text-muted-foreground">{desc}</p>}
-      </div>
-      <span className="ml-auto flex items-center gap-1.5">
-        <input
-          type="number"
-          inputMode="decimal"
-          min={0}
-          step="any"
-          value={value || ""}
-          placeholder={hint ?? t("Escribe aquí", "Type here")}
-          // La rueda del ratón sobre un input numérico cambiaba el importe sin querer.
-          onWheel={(e) => e.currentTarget.blur()}
-          onChange={(e) => {
-            const n = Number(e.target.value || 0);
-            onChange(Number.isFinite(n) ? Math.max(0, n) : 0);
-          }}
-          className="numeric w-28 max-sm:w-24 border-b border-dashed border-border bg-transparent text-right text-base font-semibold outline-none transition-colors focus:border-primary/60 placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/50"
-        />
-        <span className="text-xs text-muted-foreground">{currency}</span>
-      </span>
-    </label>
+    <div>
+      <label
+        className={cn(
+          "flex items-center gap-3.5 rounded-2xl border bg-elevated/50 px-5 py-4 transition-colors focus-within:border-primary/60",
+          error ? "border-destructive" : "border-border",
+        )}
+      >
+        <span className="text-lg">{emoji}</span>
+        <div className="min-w-0">
+          <p className="text-sm font-medium">{label}</p>
+          {desc && <p className="mt-0.5 text-xs text-muted-foreground">{desc}</p>}
+        </div>
+        <span className="ml-auto flex items-center gap-1.5">
+          <input
+            type="number"
+            inputMode="decimal"
+            min={0}
+            step="any"
+            value={value || ""}
+            aria-invalid={error}
+            placeholder={hint ?? t("Escribe aquí", "Type here")}
+            // La rueda del ratón sobre un input numérico cambiaba el importe sin querer.
+            onWheel={(e) => e.currentTarget.blur()}
+            onChange={(e) => {
+              const n = Number(e.target.value || 0);
+              onChange(Number.isFinite(n) ? Math.max(0, n) : 0);
+            }}
+            className={cn(
+              "numeric w-28 max-sm:w-24 border-b border-dashed bg-transparent text-right text-base font-semibold outline-none transition-colors focus:border-primary/60 placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/50",
+              error ? "border-destructive" : "border-border",
+            )}
+          />
+          <span className="text-xs text-muted-foreground">{currency}</span>
+        </span>
+      </label>
+      {error && (
+        <p role="alert" className="mt-2 text-sm font-medium text-destructive">
+          {t("Debes llenar este campo", "You must fill in this field")}
+        </p>
+      )}
+    </div>
   );
 }
 
