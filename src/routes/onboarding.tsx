@@ -930,7 +930,7 @@ function OnboardingPage() {
                       <MoneyField
                         emoji="🪙"
                         label={t("Salario mensual", "Monthly salary")}
-                        desc={t("Neto, después de impuestos", "Net, after taxes")}
+                        desc={t("Neto tras impuestos", "Net, after tax")}
                         currency={cur}
                         value={data.income_salary}
                         onChange={(v) => set("income_salary", v)}
@@ -948,7 +948,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="🏘"
                       label={t("Alquileres", "Rental income")}
-                      desc={t("Rentas que recibes cada mes", "Rent you receive each month")}
+                      desc={t("Rentas mensuales", "Rent you receive")}
                       currency={cur}
                       value={data.income_rent}
                       onChange={(v) => set("income_rent", v)}
@@ -956,7 +956,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="✨"
                       label={t("Otros ingresos", "Other income")}
-                      desc={t("Dividendos, side projects…", "Dividends, side projects…")}
+                      desc={t("Dividendos y extras", "Dividends and extras")}
                       currency={cur}
                       value={data.income_other}
                       onChange={(v) => set("income_other", v)}
@@ -969,15 +969,15 @@ function OnboardingPage() {
                     <SubQuestion title={t("Ingresos y gastos de tu pareja", "Your partner's income and expenses")} />
                     <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                       {t(
-                        "Los sumamos a los tuyos para calcular el número del hogar.",
-                        "We add them to yours to calculate your household number.",
+                        "Los sumamos a los tuyos para el número del hogar.",
+                        "We add them to yours for your household number.",
                       )}
                     </p>
                     <div className="mt-4 space-y-2.5">
                       <MoneyField
                         emoji="🪙"
                         label={t("Salario mensual de tu pareja", "Partner's monthly salary")}
-                        desc={t("Neto, después de impuestos", "Net, after taxes")}
+                        desc={t("Neto tras impuestos", "Net, after tax")}
                         currency={cur}
                         value={data.income_partner_salary ?? 0}
                         onChange={(v) => set("income_partner_salary", v)}
@@ -985,7 +985,7 @@ function OnboardingPage() {
                       <MoneyField
                         emoji="✨"
                         label={t("Otros ingresos de tu pareja", "Partner's other income")}
-                        desc={t("Bonos, alquileres, dividendos…", "Bonuses, rent, dividends…")}
+                        desc={t("Bonos y dividendos", "Bonuses, dividends")}
                         currency={cur}
                         value={data.income_partner_other ?? 0}
                         onChange={(v) => set("income_partner_other", v)}
@@ -993,7 +993,7 @@ function OnboardingPage() {
                       <MoneyField
                         emoji="💳"
                         label={t("Gastos mensuales de tu pareja", "Partner's monthly expenses")}
-                        desc={t("Los que no están en tus gastos fijos", "The ones not included in your fixed expenses")}
+                        desc={t("Fuera de tus fijos", "Not in fixed costs")}
                         currency={cur}
                         value={data.expenses_partner ?? 0}
                         onChange={(v) => set("expenses_partner", v)}
@@ -1014,7 +1014,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="💵"
                       label={t("Efectivo", "Cash")}
-                      desc={t("Dinero disponible fuera del banco", "Money available outside the bank")}
+                      desc={t("Efectivo disponible", "Available cash")}
                       currency={cur}
                       value={data.assets_cash}
                       onChange={(v) => set("assets_cash", v)}
@@ -1030,7 +1030,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="🏦"
                       label={t("Fondo de retiro", "Retirement fund")}
-                      desc={t("Pensión, AFP, 401k…", "Pension, 401k…")}
+                      desc={t("Pensión, AFP, 401k", "Pension, 401k")}
                       currency={cur}
                       value={data.assets_retirement}
                       onChange={(v) => set("assets_retirement", v)}
@@ -1038,7 +1038,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="📈"
                       label={t("ETFs / fondos", "ETFs / funds")}
-                      desc={t("Fondos indexados y ETFs", "Index funds and ETFs")}
+                      desc={t("Fondos indexados", "Index funds, ETFs")}
                       currency={cur}
                       value={data.assets_etf}
                       onChange={(v) => set("assets_etf", v)}
@@ -1046,7 +1046,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="📊"
                       label={t("Acciones", "Stocks")}
-                      desc={t("Acciones individuales", "Individual stocks")}
+                      desc={t("Listadas en bolsa", "Individual stocks")}
                       currency={cur}
                       value={data.assets_stocks}
                       onChange={(v) => set("assets_stocks", v)}
@@ -1054,7 +1054,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="₿"
                       label={t("Criptomonedas", "Cryptocurrencies")}
-                      desc={t("Valor aproximado actual", "Current approximate value")}
+                      desc={t("Valor aproximado", "Approximate value")}
                       currency={cur}
                       value={data.assets_crypto}
                       onChange={(v) => set("assets_crypto", v)}
@@ -1062,7 +1062,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="🏠"
                       label={t("Bienes inmuebles", "Real estate")}
-                      desc={t("Valor de tus propiedades", "Value of your properties")}
+                      desc={t("Tus propiedades", "Your properties")}
                       currency={cur}
                       value={data.assets_property}
                       onChange={(v) => set("assets_property", v)}
@@ -1083,7 +1083,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="💳"
                       label={t("Deudas", "Debts")}
-                      desc={t("Préstamos, tarjetas y otras deudas", "Loans, cards and other debts")}
+                      desc={t("Préstamos y tarjetas", "Loans and cards")}
                       currency={cur}
                       value={data.liabilities}
                       onChange={(v) => set("liabilities", v)}
@@ -1091,7 +1091,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="🏦"
                       label={t("Hipoteca: saldo pendiente", "Mortgage: outstanding balance")}
-                      desc={t("Lo que aún debes al banco", "What you still owe the bank")}
+                      desc={t("Deuda con el banco", "Bank debt")}
                       currency={cur}
                       value={data.mortgage_balance}
                       onChange={(v) => set("mortgage_balance", v)}
@@ -1107,7 +1107,7 @@ function OnboardingPage() {
                     <MoneyField
                       emoji="📅"
                       label={t("Hipoteca: plazo restante", "Mortgage: remaining term")}
-                      desc={t("Años que te faltan por pagar", "Years left to pay")}
+                      desc={t("Años por pagar", "Years left to pay")}
                       currency={t("años", "years")}
                       value={data.mortgage_term}
                       onChange={(v) => set("mortgage_term", v)}
