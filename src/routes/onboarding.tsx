@@ -966,7 +966,7 @@ function OnboardingPage() {
                   </div>
                 )}
 
-                <div ref={spendPlanRef} className="mt-8 scroll-mt-24">
+                <div className="mt-8">
                   <SubQuestion
                     title={
                       household
@@ -1035,7 +1035,7 @@ function OnboardingPage() {
                   </div>
                 </div>
 
-                <div className="mt-8">
+                <div ref={spendPlanRef} className="mt-8 scroll-mt-24">
                   <SubQuestion
                     title={
                       household
