@@ -271,6 +271,9 @@ function OnboardingPage() {
     [data, desiredIncome],
   );
 
+  // El aviso de campos obligatorios se marca en el encabezado del plan, en su caja.
+  const planMissing = showRequiredErrors && totalSpendPlan(data) <= 0;
+
   const go = (dir: 1 | -1) => {
     const next = Math.min(SUMMARY_STEP, Math.max(1, step + dir));
     setStep(next);
@@ -1081,15 +1084,19 @@ function OnboardingPage() {
 
 
                 <div ref={spendPlanRef} className="mt-8 scroll-mt-24">
-                  <SubQuestion
-                    title={
-                      household
+                  <div
+                    className={cn(
+                      "mt-9 mb-4 rounded-2xl border bg-elevated/50 px-5 py-4 text-center transition-colors focus-within:border-primary/60",
+                      planMissing ? "border-destructive" : "border-border",
+                    )}
+                  >
+                    <p className={cn("font-display text-lg font-medium", planMissing && "text-destructive")}>
+                      {household
                         ? t("Tu plan de gastos mensuales (en pareja, mandatorio)", "Your monthly spending plan (as a couple, required)")
-                        : t("Tu plan de gastos mensuales (mandatorio)", "Your monthly spending plan (required)")
-                    }
-                    error={showRequiredErrors && totalSpendPlan(data) <= 0}
-                  />
-                  {showRequiredErrors && totalSpendPlan(data) <= 0 && (
+                        : t("Tu plan de gastos mensuales (mandatorio)", "Your monthly spending plan (required)")}
+                    </p>
+                  </div>
+                  {planMissing && (
                     <p role="alert" className="-mt-2 mb-3 text-center text-sm font-medium text-destructive">
                       {t("Debes llenar este campo", "You must fill in this field")}
                     </p>
