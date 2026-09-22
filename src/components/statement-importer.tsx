@@ -511,7 +511,7 @@ export function StatementImporter({
           {statementsQuery.isLoading ? (
             <p className="text-sm text-muted-foreground">{t("Cargando…", "Loading…")}</p>
           ) : statements.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("Aún no has subido ningún estado de cuenta.", "You haven't uploaded any statements yet.")}</p>
+            <p className="text-sm text-muted-foreground">{t("Aún no has subido estados de cuenta.", "No statements uploaded yet.")}</p>
           ) : (
             <div className="space-y-2">
               {statements.map((s) => (
@@ -563,7 +563,7 @@ export function StatementImporter({
 
         <Panel title={t("Movimientos extraídos", "Extracted transactions")} description={t("Clasificados automáticamente por la IA", "Automatically classified by AI")}>
           {transactions.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("Sube un archivo para ver tus movimientos aquí.", "Upload a file to see your transactions here.")}</p>
+            <p className="text-sm text-muted-foreground">{t("Sube un archivo para ver movimientos.", "Upload a file to see transactions.")}</p>
           ) : (
             <div className="max-h-[420px] space-y-2 overflow-y-auto pr-1">
               {transactions.map((tx) => (
