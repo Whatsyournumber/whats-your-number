@@ -33,7 +33,44 @@ export const Route = createFileRoute("/configuracion")({
 
 function Configuracion() {
   const t = useT();
+  const { lang } = useLanguage();
   const learned = useCategoryRules();
+  const custom = useCategories();
+  const budgets = useSpendBudgets();
+  const profile = useProfile();
+  const currency = profile.currency || "EUR";
+  const fmt = (n: number) => money(Math.round(n), currency);
+
+  /** Las categorías del propio usuario: su plan mensual + las que creó a mano. */
+  const myCategories = [
+    ...budgets.lines.map((line) => {
+      const base = findBudgetCategory(line.id);
+      const label = line.label?.trim() || (base ? (lang === "en" ? base.en : base.es) : line.id.replace(/^custom:(fixed:)?/, ""));
+      return {
+        key: line.id,
+        emoji: line.emoji || base?.emoji || "📦",
+        name: label,
+        budget: Number(line.amount) || 0,
+        chips: (line.keywords ?? []).filter(Boolean),
+      };
+    }),
+    ...custom.items
+      .filter((i) => i.name.trim())
+      .map((i) => ({
+        key: `cat:${i.id}`,
+        emoji: "✨",
+        name: i.name.trim(),
+        budget: 0,
+        chips: i.keywords.split(",").map((k) => k.trim()).filter(Boolean),
+      })),
+  ];
+
+  const myCategoryNames = new Set(myCategories.map((c) => c.name.toLowerCase()));
+  /** Solo reglas que apuntan a categorías que existen en esta cuenta. */
+  const myRules = learned.rules.filter(
+    (r) => myCategoryNames.size === 0 || myCategoryNames.has(r.category.trim().toLowerCase()),
+  );
+
   return (
     <PageShell>
       <PageHeader eyebrow={t("Sistema", "System")} title={t("Importar gastos", "Import expenses")} subtitle={t("Importa tus estados de cuenta, cuentas y reglas de clasificación.", "Upload your statements, accounts and classification rules.")} />
