@@ -4,7 +4,9 @@ import { useSyncedSetting } from "@/hooks/use-synced-setting";
 
 export type LearnedRule = { id: string; match: string; category: string; createdAt: string };
 
-const KEY = "whatsyournumber:learned-rules";
+// v2: la v1 quedó contaminada entre cuentas del mismo navegador (reglas
+// compartidas sembradas en la nube de cada cuenta). Nueva clave = borrón limpio.
+const KEY = "whatsyournumber:learned-rules:v2";
 const EMPTY: LearnedRule[] = [];
 
 /**
