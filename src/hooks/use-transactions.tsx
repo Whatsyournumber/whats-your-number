@@ -119,7 +119,7 @@ export function useTransactions() {
           if (fuzzy ? !closeAmount(k.amount, amount) : k.amount.toFixed(2) !== amount.toFixed(2)) return false;
           if (Number.isNaN(day) || Number.isNaN(k.day)) return k.day === day;
           const gap = Math.abs(k.day - day);
-          if (gap === 0) return !sameFile || !fuzzy;
+          if (gap === 0) return true;
           return gap <= 3 && !sameFile;
         });
 
