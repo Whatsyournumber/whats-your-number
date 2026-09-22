@@ -1813,14 +1813,23 @@ export function ExpenseLog() {
               <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
                 <div className="flex items-center justify-between gap-2">
                   <h3 className="text-base font-semibold">{t("Gastos fijos (Próximos pagos)", "Fixed expenses (Upcoming payments)")}</h3>
-                  <button
-                    type="button"
-                    onClick={openNewRecurring}
-                    className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    aria-label={t("Añadir gasto recurrente", "Add recurring expense")}
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                  </button>
+                  <TooltipProvider delayDuration={100}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={openNewRecurring}
+                          className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          aria-label={t("Agrega solo gastos recurrentes", "Add recurring expenses only")}
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        {t("Agrega solo gastos recurrentes", "Add recurring expenses only")}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
                 {upcoming.length === 0 ? (
                   <p className="mt-4 text-sm text-muted-foreground">
