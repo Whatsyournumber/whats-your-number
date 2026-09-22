@@ -1873,8 +1873,13 @@ export function ExpenseLog() {
               ref={categoryCardRef}
               className="scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6"
             >
-              <div className="flex items-center justify-between gap-2">
-                <h3 className="text-lg font-semibold">{t("Gastos por categoría", "Spending by category")}</h3>
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <h3 className="text-lg font-semibold">{t("Gastos por categoría", "Spending by category")}</h3>
+                  <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                    {t("Gastos variables mensuales", "Monthly variable expenses")}
+                  </p>
+                </div>
 
                 <TooltipProvider delayDuration={150}>
                   <Tooltip>
@@ -1897,15 +1902,10 @@ export function ExpenseLog() {
               <ul className="mt-4 space-y-3.5">
                  {[...visibleRows]
                    .sort((a, b) => b.pct - a.pct)
-                   .map((r, index) => {
+                   .map((r) => {
                    const expandedCat = expandedCategory === r.id;
                    return (
                      <Fragment key={r.id}>
-                       {index === 0 ? (
-                         <li className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                           {t("Gastos variables mensuales", "Monthly variable expenses")}
-                         </li>
-                       ) : null}
                        <li
                         ref={(el) => {
                           rowRefs.current[r.id] = el;
