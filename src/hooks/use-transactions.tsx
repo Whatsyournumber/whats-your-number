@@ -93,7 +93,7 @@ export function useTransactions() {
       // (p. ej. peajes o suscripciones), así que no se descartan.
       // El mismo gasto puede venir con importe ligeramente distinto (propina, redondeo,
       // apunte manual de 170 vs cargo real de 171,11), así que se admite una tolerancia.
-      type Kept = { day: number; merchant: string; statement: string; amount: number };
+      type Kept = { day: number; merchant: string; statement: string; amount: number; manual: boolean };
       const kept = new Map<number, Kept[]>();
       const dayOf = (date: string | null) => (date ? Math.round(new Date(date).getTime() / 86_400_000) : NaN);
       const isManual = (t: (typeof rows)[number]) => !t.statement_id || /gasto manual|manual expense/i.test(t.description ?? "");
@@ -120,7 +120,7 @@ export function useTransactions() {
           if (Number.isNaN(day) || Number.isNaN(k.day)) return k.day === day;
           const gap = Math.abs(k.day - day);
           if (gap === 0) return !sameFile || !fuzzy;
-          return gap <= 3 && fuzzy;
+          return gap <= 3 && !sameFile;
         });
 
 
@@ -129,7 +129,7 @@ export function useTransactions() {
           return;
         }
         const list = kept.get(bucket) ?? [];
-        list.push({ day, merchant: t.merchant ?? "", statement, amount });
+        list.push({ day, merchant: t.merchant ?? "", statement, amount, manual });
         kept.set(bucket, list);
       });
       const unique = rows.filter((t) => !dropped.has(t.id));
