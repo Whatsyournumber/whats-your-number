@@ -648,7 +648,7 @@ export function ExpenseLog() {
 
   const [draft, setDraft] = useState<Draft | null>(null);
   const [expandedTx, setExpandedTx] = useState<string | null>(null);
-  const [showAllLatest, setShowAllLatest] = useState(false);
+  const [latestOpen, setLatestOpen] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   // Gasto que se está moviendo a otra categoría desde el desglose.
   const [moveItem, setMoveItem] = useState<{ keys: string[]; label: string; from: string } | null>(null);
@@ -1809,7 +1809,7 @@ export function ExpenseLog() {
               className="scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6"
             >
               <div className="flex items-center justify-between gap-2">
-                <h3 className="text-base font-semibold">{t("Gastos por categoría", "Spending by category")}</h3>
+                <h3 className="text-lg font-semibold">{t("Gastos por categoría", "Spending by category")}</h3>
 
                 <button
                   type="button"
