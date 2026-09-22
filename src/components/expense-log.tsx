@@ -2083,7 +2083,7 @@ export function ExpenseLog() {
             <div className="min-w-0">
               <h3 className="text-lg font-semibold">{t("Últimos gastos", "Latest expenses")}</h3>
               <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                {t("Tus gastos del día a día, del más reciente al más antiguo", "Your day-to-day expenses, newest first")}
+                {t("Tus gastos del día a día", "Your day-to-day expenses")}
               </p>
             </div>
             <DropdownMenu>
