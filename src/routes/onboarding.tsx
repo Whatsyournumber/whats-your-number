@@ -17,7 +17,16 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { SPEND_PLAN_FIELDS, SPEND_PLAN_GROUPS, totalSpendPlan, type SpendPlanKey } from "@/lib/onboarding";
+import { SPEND_PLAN_FIELDS, totalSpendPlan, type SpendPlanKey } from "@/lib/onboarding";
+
+/** Las 5 categorías del plan de gastos que se piden en el onboarding. */
+const ONBOARDING_SPEND_KEYS: SpendPlanKey[] = [
+  "fixed_housing",
+  "fixed_utilities",
+  "fixed_groceries",
+  "fixed_transport",
+  "fixed_other",
+];
 import { seedSpendPlanFromOnboarding } from "@/lib/spend-plan-seed";
 import { syncHomeHolding } from "@/hooks/use-holdings";
 import { StatementImporter } from "@/components/statement-importer";
@@ -248,9 +257,6 @@ function OnboardingPage() {
   const hasPartner = life.marital_status === "Casado" || life.marital_status === "En pareja";
   // Análisis de hogar: pedimos ingresos y gastos de las dos personas.
   const household = hasPartner && life.analysis_scope === "pareja";
-  // La fila de Niños solo aparece si hay pareja, hijos o planes de tenerlos.
-  const showKidsSpend =
-    hasPartner || (life.children !== "" && life.children !== "0") || life.plans_children === "Sí";
   // Las tasas del día alimentan la conversión del objetivo estimado.
   const { updatedAt: fxUpdatedAt } = useFxRates();
   const desiredIncome = useMemo(
@@ -308,6 +314,8 @@ function OnboardingPage() {
     if (step === 5) return !!life.lifestyle && !!life.travel_frequency;
     if (step === 6) return !!life.city;
     if (step === 7) return !!life.housing;
+    // Salario y plan de gastos mensual son obligatorios.
+    if (step === 9) return data.income_salary > 0 && totalSpendPlan(data) > 0;
     return true;
   };
 
