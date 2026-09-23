@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowLeft, CalendarIcon, Info, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
+import { ArrowLeft, CalendarIcon, Info, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, Trash2, TrendingUp, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
@@ -777,6 +777,16 @@ function PortafolioContent() {
       toast.error(t("No pudimos guardar. Inténtalo de nuevo.", "We couldn't save. Please try again."));
     }
   };
+  const deleteEdit = async () => {
+    if (!editingHolding) return;
+    try {
+      await saveAll(holdings.filter((h) => h.id !== editingHolding.id));
+      toast.success(t("Activo eliminado", "Asset deleted"));
+      forceCloseEdit();
+    } catch {
+      toast.error(t("No pudimos eliminar. Inténtalo de nuevo.", "We couldn't delete it. Please try again."));
+    }
+  };
   const tabList = posTab === "Todos" ? enriched : enriched.filter((h) => h.type === posTab);
   const tabValue = tabList.reduce((s, h) => s + h.value, 0);
   const tabAnnualGain = tabList.filter((h) => !gainExcludedTypes.has(h.type)).reduce((s, h) => s + h.value * h.growth, 0);
@@ -1472,6 +1482,19 @@ function PortafolioContent() {
               : ""}
           </p>
           <div className="flex shrink-0 gap-2">
+            {editingHolding ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                onClick={() => void deleteEdit()}
+                disabled={saving}
+                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                {t("Eliminar", "Delete")}
+              </Button>
+            ) : null}
             <Button type="button" size="sm" variant="ghost" onClick={closeEdit}>
               {t("Cancelar", "Cancel")}
             </Button>
@@ -1510,11 +1533,11 @@ function PortafolioContent() {
             }
           }}
           className={cn(
-            "relative grid cursor-pointer grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 transition hover:bg-elevated md:grid-cols-6",
+            "relative grid cursor-pointer grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 transition hover:bg-elevated lg:grid-cols-6",
             tk && focusTicker === tk && "ring-1 ring-[var(--color-chart-4)]/60",
           )}
         >
-          <div className="col-span-2 pr-9 md:col-span-2">
+          <div className="col-span-2 pr-9 lg:col-span-2">
             <p className="text-sm font-medium">{h.ticker}</p>
             <p className="truncate text-xs text-muted-foreground">{h.type === "Cripto" ? t("Cripto", "Crypto") : h.name}</p>
           </div>

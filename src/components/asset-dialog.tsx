@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -144,6 +144,17 @@ export function AssetDialog({
       forceClose();
     } catch {
       toast.error(t("No pudimos guardar. Inténtalo de nuevo.", "We couldn't save. Please try again."));
+    }
+  };
+
+  const remove = async () => {
+    if (!persistedHolding) return;
+    try {
+      await saveAll(holdings.filter((h) => h.id !== persistedHolding.id));
+      toast.success(t("Activo eliminado", "Asset deleted"));
+      forceClose();
+    } catch {
+      toast.error(t("No pudimos eliminar. Inténtalo de nuevo.", "We couldn't delete it. Please try again."));
     }
   };
 
@@ -348,6 +359,19 @@ export function AssetDialog({
                   : ""}
               </p>
               <div className="flex shrink-0 gap-2">
+                {persistedHolding ? (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => void remove()}
+                    disabled={saving}
+                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    {t("Eliminar", "Delete")}
+                  </Button>
+                ) : null}
                 <Button type="button" size="sm" variant="ghost" onClick={close}>
                   {t("Cancelar", "Cancel")}
                 </Button>
