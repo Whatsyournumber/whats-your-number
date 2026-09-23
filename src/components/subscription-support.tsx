@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useServerFn } from '@tanstack/react-start'
-import { Check, FileText, ImagePlus, Loader2, MessageSquareText, Send, ShieldCheck, Timer, X } from 'lucide-react'
+import { BotOff, Check, FileText, ImagePlus, Loader2, MessageSquareText, Send, ShieldCheck, Timer, X } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Panel } from '@/components/page'
@@ -121,10 +121,11 @@ export function SubscriptionSupport() {
                   {t('Cuéntanos qué necesitas. Nuestro equipo te responderá lo antes posible.', "Tell us what you need. Our team will reply as soon as possible.")}
                 </p>
               </div>
-              <div className="mt-6 grid grid-cols-2 gap-2.5 text-xs sm:mt-8 sm:grid-cols-3 sm:gap-3">
+              <div className="mt-6 grid grid-cols-2 gap-2.5 text-xs sm:mt-8 sm:gap-3">
                 <SupportPromise icon={MessageSquareText} label={t('Soporte real', 'Real support')} />
                 <SupportPromise icon={Timer} label={t('Respuesta rápida', 'Fast response')} />
                 <SupportPromise icon={ShieldCheck} label={t('Atención segura', 'Secure support')} className="hidden sm:flex" />
+                <SupportPromise icon={BotOff} label={t('Sin bots', 'No bots')} className="hidden sm:flex" />
               </div>
 
             </div>

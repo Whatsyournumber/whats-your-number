@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { LockKeyhole, ShieldCheck } from "lucide-react";
 
 import { PageShell } from "@/components/page";
 import { PromoCodeRedeem } from "@/components/promo-code-redeem";
@@ -33,18 +32,6 @@ function SuscripcionPage() {
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
             {t("Tu plan, pagos y facturas en un solo lugar.", "Your plan, payments and invoices in one place.")}
           </p>
-        </div>
-        <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 sm:max-w-xs">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary">
-            <LockKeyhole className="h-5 w-5" />
-          </span>
-          <div>
-            <p className="text-sm font-medium">{t("Tu información está segura", "Your information is secure")}</p>
-            <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
-              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-              {t("Pagos protegidos y cifrados", "Protected and encrypted payments")}
-            </p>
-          </div>
         </div>
       </header>
       <PromoCodeRedeem />
