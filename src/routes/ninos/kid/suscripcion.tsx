@@ -4,6 +4,7 @@ import { Card } from "@/components/mfn-ui";
 import { KidPage, PageTitle } from "@/components/kid-page";
 import { PromoCodeRedeem } from "@/components/promo-code-redeem";
 import { SubscriptionManager } from "@/components/subscription-manager";
+import { SubscriptionSupport } from "@/components/subscription-support";
 import { useI18n } from "@/lib/mfn-i18n";
 
 export const Route = createFileRoute("/ninos/kid/suscripcion")({
@@ -38,10 +39,13 @@ function KidSubscription() {
       />
       <div className="grid gap-4">
         <Card>
+          <PromoCodeRedeem />
+        </Card>
+        <Card>
           <SubscriptionManager />
         </Card>
         <Card>
-          <PromoCodeRedeem />
+          <SubscriptionSupport />
         </Card>
       </div>
     </>
