@@ -284,19 +284,7 @@ export function AppTour() {
           <p className="relative mt-1.5 text-sm font-medium text-foreground">
             {t("En menos de 1 minuto estarás listo.", "You'll be ready in under a minute.")}
           </p>
-          <div className="relative mt-4 flex items-start gap-3 rounded-2xl bg-positive/5 px-3.5 py-3 text-left ring-1 ring-positive/15">
-            <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10 text-positive ring-1 ring-positive/25">
-              <LayoutDashboard className="h-4 w-4" />
-            </span>
-            <p className="text-[13px] leading-snug text-muted-foreground">
-              {t(
-                "Patrimonio, ingresos, gastos, ahorro, hipoteca y tu número de libertad financiera de un vistazo.",
-                "Net worth, income, spending, savings, mortgage and your financial-freedom number at a glance.",
-              )}
-            </p>
-          </div>
           <div className="relative mt-6 grid grid-cols-3">
-
             {welcomePoints.map(([Icon, label], i) => (
               <div
                 key={label}
