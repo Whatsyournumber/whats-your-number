@@ -52,7 +52,7 @@ export function SubscriptionManager() {
   const benefits = tier === "free"
     ? [t("Registro de gastos", "Expense tracking"), t("Presupuesto mensual", "Monthly budget"), t("Asistente IA", "AI assistant")]
     : tier === "pro"
-      ? [t("Análisis de gastos con IA", "AI spending analysis"), t("Simulador de hipoteca", "Mortgage simulator"), t("Portafolio e inversiones", "Portfolio and investments"), "Life Planner"]
+      ? [t("Análisis de gastos con IA", "AI spending analysis"), t("Simulador de hipoteca", "Mortgage simulator"), t("Portafolio e inversiones", "Portfolio & investments"), "Life Planner"]
       : [t("Todo lo incluido en Pro", "Everything in Pro"), t("Perfiles familiares", "Family profiles"), t("Planificación en pareja", "Couples planning"), t("Soporte prioritario", "Priority support")];
 
   const portal = async (target: PortalTarget) => {
@@ -120,10 +120,11 @@ export function SubscriptionManager() {
         </div>
       </div>
 
-      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 border-b border-border pb-4">
+      <div className="mt-3 grid grid-cols-2 items-start gap-x-3 gap-y-2.5 border-b border-border pb-4 sm:gap-x-6">
         {benefits.map((benefit) => (
-          <span key={benefit} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <CheckCircle2 className="h-4 w-4 text-primary" />{benefit}
+          <span key={benefit} className="flex min-w-0 items-center gap-1 text-[11px] leading-tight text-muted-foreground sm:gap-1.5 sm:text-xs">
+            <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-primary sm:h-4 sm:w-4" />
+            <span className="min-w-0 break-words">{benefit}</span>
           </span>
         ))}
       </div>
