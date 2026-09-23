@@ -39,11 +39,11 @@ const STEPS: Step[] = [
   {
     url: "/dashboard", icon: LayoutDashboard, minPlan: "free",
     es: ["Tu Dashboard", "El resumen de tu situación financiera, en un solo lugar.",
-      "Patrimonio, ingresos, gastos, ahorro e hipoteca de un vistazo.",
+      "Patrimonio, ingresos, gastos, ahorro, hipoteca y tu Número de libertad financiera de un vistazo.",
       "Toca cualquier tarjeta para ir directo a su sección.",
       "Tus metas e insights se actualizan con cada gasto que registras."],
     en: ["Your Dashboard", "The summary of your financial situation, in one place.",
-      "Net worth, income, expenses, savings and mortgage at a glance.",
+      "Net worth, income, expenses, savings, mortgage and your Financial Freedom Number at a glance.",
       "Tap any card to jump straight to its section.",
       "Your goals and insights update with every expense you log."],
   },
