@@ -20,6 +20,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { initGeoCurrency } from "@/lib/geo";
 import { ensureLiveRates } from "@/lib/fx";
 import { AppSidebar } from "@/components/app-sidebar";
+import { AppTour } from "@/components/app-tour";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { AskAiSearch } from "@/components/ask-ai-search";
 import { ConsentBanner } from "@/components/consent-banner";
@@ -345,6 +346,7 @@ function AppShell() {
             <Outlet />
           </main>
           <MobileBottomNav />
+          <AppTour />
         </div>
       </div>
     </SidebarProvider>

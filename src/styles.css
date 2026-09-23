@@ -667,3 +667,10 @@ input[type="number"] {
     animation: none !important;
   }
 }
+
+[data-tour-active="true"] {
+  outline: 2px solid var(--color-positive, currentColor);
+  outline-offset: 2px;
+  border-radius: 0.6rem;
+  box-shadow: 0 0 18px color-mix(in oklab, var(--color-positive, #22c55e) 55%, transparent);
+}
