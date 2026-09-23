@@ -262,13 +262,13 @@ export function AppTour() {
     ];
     return (
       <div className="fixed inset-0 z-[100] grid place-items-center bg-background/60 p-4 backdrop-blur-[2px]">
-        <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-positive/40 bg-card p-6 pt-7 text-center shadow-2xl shadow-positive/15">
+        <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-positive/40 bg-card p-5 pt-6 text-center shadow-2xl shadow-positive/15 sm:p-6 sm:pt-7">
           <div className="pointer-events-none absolute -top-24 left-1/2 h-40 w-72 -translate-x-1/2 rounded-full bg-positive/15 blur-3xl" />
           <span className="numeric absolute right-5 top-4 text-xs font-medium text-muted-foreground">1 / {total}</span>
           <div className="relative flex justify-center">
-            <BrandMark className="h-16 w-16" />
+            <BrandMark className="h-12 w-12 sm:h-16 sm:w-16" />
           </div>
-          <h2 className="relative mt-3 font-display text-[26px] font-semibold leading-tight">
+          <h2 className="relative mt-2.5 font-display text-[21px] font-semibold leading-tight sm:text-[26px]">
             {firstName ? (
               <>
                 {t("¡Bienvenido,", "Welcome,")} <span className="text-positive">{firstName}!</span>
@@ -278,35 +278,35 @@ export function AppTour() {
             )}
           </h2>
           <div className="relative mt-2.5 flex justify-center">{planBadge}</div>
-          <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground">
+          <p className="relative mt-2.5 text-[13px] leading-relaxed text-muted-foreground sm:mt-3 sm:text-sm">
             {t("Vamos a hacer un tour rápido para que aproveches al máximo WhatsYourNumber.", "Let's take a quick tour so you get the most out of WhatsYourNumber.")}
           </p>
-          <p className="relative mt-1.5 text-sm font-medium text-foreground">
+          <p className="relative mt-1.5 text-[13px] font-medium text-foreground sm:text-sm">
             {t("En menos de 1 minuto estarás listo.", "You'll be ready in under a minute.")}
           </p>
-          <div className="relative mt-6 grid grid-cols-3">
+          <div className="relative mt-4 grid grid-cols-3 sm:mt-6">
             {welcomePoints.map(([Icon, label], i) => (
               <div
                 key={label}
                 className={cn(
-                  "flex flex-col items-center gap-2.5 px-1.5 text-[11px] leading-tight text-muted-foreground",
+                  "flex flex-col items-center gap-2 px-1 text-[10px] leading-tight text-muted-foreground sm:gap-2.5 sm:px-1.5 sm:text-[11px]",
                   i > 0 && "border-l border-foreground/10",
                 )}
               >
-                <span className="grid h-11 w-11 place-items-center rounded-full bg-positive/10 text-positive ring-1 ring-positive/25">
-                  <Icon className="h-5 w-5" />
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-positive/10 text-positive ring-1 ring-positive/25 sm:h-11 sm:w-11">
+                  <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                 </span>
                 <span className="max-w-[94px]">{label}</span>
               </div>
             ))}
           </div>
           <Button
-            className="relative mt-6 w-full gap-2 rounded-2xl py-5 text-[15px]"
+            className="relative mt-5 w-full gap-2 rounded-2xl py-4 text-sm sm:mt-6 sm:py-5 sm:text-[15px]"
             onClick={() => { if (isMobile) setOpenMobile(false); setStep(1); }}
           >
             {t("Comenzar tour", "Start tour")} <ArrowRight className="h-4 w-4" />
           </Button>
-          <button className="relative mt-3 text-sm text-muted-foreground transition-colors hover:text-foreground" onClick={close}>
+          <button className="relative mt-2.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground sm:mt-3 sm:text-sm" onClick={close}>
             {t("Omitir tour", "Skip tour")}
           </button>
         </div>
