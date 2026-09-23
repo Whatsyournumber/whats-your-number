@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useRouterState } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, ChartPie, Compass, Globe2, Home, LayoutDashboard, Lightbulb, Map, ReceiptText, Scale, Sparkles, Sprout, Target, TrendingUp, UserRound, Wallet, X } from "lucide-react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import {
+  ArrowLeft, ArrowRight, ChartPie, Check, Compass, Crown, Globe2, Home, LayoutDashboard,
+  Lightbulb, Map, MousePointerClick, ReceiptText, Scale, Sparkles, Sprout, Target,
+  TrendingUp, UserRound, Users, Wallet, X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
 import { useAuth } from "@/hooks/use-auth";
 import { useSidebar } from "@/components/ui/sidebar";
+import { planMeetsTier, useSubscription, type PlanTier } from "@/hooks/use-subscription";
 
 const PENDING_KEY = "yn.tour.pending";
 const doneKey = (uid: string) => `yn.tour.done:${uid}`;
@@ -18,27 +23,157 @@ export function queueAppTour() {
   }
 }
 
-type Step = { url: string; icon: typeof Compass; es: [string, string, string]; en: [string, string, string] };
+// es/en: [título, intro, punto 1, punto 2, punto 3]
+type Step = {
+  url: string;
+  icon: typeof Compass;
+  minPlan: PlanTier;
+  es: [string, string, string, string, string];
+  en: [string, string, string, string, string];
+};
 
 const STEPS: Step[] = [
-  { url: "/dashboard", icon: LayoutDashboard, es: ["Tu Dashboard", "Aquí tienes un resumen de tu situación financiera: patrimonio, ingresos, gastos, ahorro e hipoteca. Todo lo importante, en un solo lugar.", "Toca cada tarjeta para ir directo a su sección."], en: ["Your Dashboard", "A summary of your financial situation: net worth, income, expenses, savings and mortgage. Everything important in one place.", "Tap any card to jump straight to its section."] },
-  { url: "/registro-gastos", icon: ReceiptText, es: ["Registra tus gastos", "Añade tus gastos por voz, foto del recibo o manualmente. Solo toma unos segundos y tendrás un análisis automático.", "Prueba el botón + de arriba: la IA clasifica cada gasto en tu plan."], en: ["Track your expenses", "Add expenses by voice, receipt photo or manually. It takes seconds and you get an automatic analysis.", "Try the + button above: AI sorts every expense into your plan."] },
-  { url: "/gastos", icon: ChartPie, es: ["Análisis de Gastos", "Analiza tus gastos mensuales por categoría, compáralos con tu presupuesto y detecta dónde se te va el dinero.", "Las alertas te avisan cuando una categoría supera tu plan."], en: ["Spending Analysis", "Analyze your monthly spending by category, compare it with your budget and spot where your money goes.", "Alerts warn you when a category exceeds your plan."] },
-  { url: "/cash-flow", icon: Scale, es: ["Distribución del dinero", "Ve cómo se reparte tu dinero entre necesidades, deseos y ahorro, y si vas por buen camino con la regla 50/30/20.", "Pasa el cursor sobre cada bloque para ver el detalle por categoría."], en: ["Money Distribution", "See how your money splits between needs, wants and savings, and whether you're on track with the 50/30/20 rule.", "Hover each block to see the breakdown by category."] },
-  { url: "/retiro", icon: Target, es: ["WhatsYourNumber", "Calcula cuánto patrimonio necesitas para vivir la vida que quieres y cuándo podrás alcanzarlo.", "Mueve el monto mensual deseado y verás tu número cambiar al instante."], en: ["WhatsYourNumber", "Calculate how much wealth you need to live the life you want and when you'll reach it.", "Adjust your desired monthly amount and watch your number change instantly."] },
-  { url: "/hipoteca", icon: Home, es: ["Análisis de hipoteca", "Simula la compra de vivienda, compara escenarios y ve cómo afecta a tu número y tu libertad financiera.", "Compra vs alquiler: compara ambos caminos con tus datos reales."], en: ["Mortgage analysis", "Simulate buying a home, compare scenarios and see how it affects your number and financial freedom.", "Buy vs rent: compare both paths with your real data."] },
-  { url: "/patrimonio", icon: Wallet, es: ["Patrimonio", "Visualiza todo tu patrimonio: cuentas bancarias, inversiones, cripto, propiedades y más, con su evolución mes a mes.", "Edita cualquier activo con el lápiz para mantenerlo al día."], en: ["Net Worth", "See all your wealth: bank accounts, investments, crypto, properties and more, with month-by-month evolution.", "Edit any asset with the pencil to keep it up to date."] },
-  { url: "/portafolio", icon: TrendingUp, es: ["Portafolio", "Analiza la distribución de tus inversiones, su rendimiento real frente al S&P 500 y cómo optimizar tu portafolio.", "Escribe el ticker de una acción o cripto y traemos su precio en tiempo real."], en: ["Portfolio", "Analyze your investment allocation, real performance vs the S&P 500 and how to optimize your portfolio.", "Type a stock or crypto ticker and we fetch its live price."] },
-  { url: "/ciudades", icon: Globe2, es: ["Lifestyle Simulator", "Descubre ciudades donde tu dinero rinde más y llegarías antes a tu libertad financiera.", "Compara tu ciudad con destinos del mismo continente y presupuesto."], en: ["Lifestyle Simulator", "Discover cities where your money goes further and you'd reach financial freedom sooner.", "Compare your city with destinations on the same continent and budget."] },
-  { url: "/life-planner", icon: Map, es: ["Life Planner", "Simula decisiones de vida —mudarte, cambiar de trabajo, tener hijos— y ve cómo suben o bajan tu número y tu fecha de retiro.", "Cada decisión recalcula tu número partiendo de tu situación actual."], en: ["Life Planner", "Simulate life decisions —moving, changing jobs, having kids— and see how your number and retirement date change.", "Every decision recalculates your number from your current situation."] },
-  { url: "/mi-perfil", icon: UserRound, es: ["Mis datos", "Gestiona tu información: ingresos, gasto objetivo, familia, perfil de riesgo y más. Cuanto más completo, mejores recomendaciones.", "Todo lo que edites aquí actualiza el resto de la app al momento."], en: ["My data", "Manage your info: income, target spending, family, risk profile and more. The more complete, the better the recommendations.", "Everything you edit here updates the rest of the app instantly."] },
-  { url: "/advisor", icon: Sparkles, es: ["Asistente IA", "Pregúntale cualquier cosa sobre tus finanzas. Analiza tus datos, encuentra oportunidades y te da recomendaciones personalizadas.", "Prueba: ¿cuánto ahorro al mes? o ¿cómo va mi fondo de emergencia?"], en: ["AI Assistant", "Ask anything about your finances. It analyzes your data, finds opportunities and gives personalized advice.", "Try: how much do I save per month? or how is my emergency fund?"] },
+  {
+    url: "/dashboard", icon: LayoutDashboard, minPlan: "free",
+    es: ["Tu Dashboard", "El resumen de tu situación financiera, en un solo lugar.",
+      "Patrimonio, ingresos, gastos, ahorro e hipoteca de un vistazo.",
+      "Toca cualquier tarjeta para ir directo a su sección.",
+      "Tus metas e insights se actualizan con cada gasto que registras."],
+    en: ["Your Dashboard", "The summary of your financial situation, in one place.",
+      "Net worth, income, expenses, savings and mortgage at a glance.",
+      "Tap any card to jump straight to its section.",
+      "Your goals and insights update with every expense you log."],
+  },
+  {
+    url: "/registro-gastos", icon: ReceiptText, minPlan: "free",
+    es: ["Registra tus gastos", "Anotar un gasto toma segundos.",
+      "Por voz, foto del recibo o manualmente con el botón +.",
+      "La IA clasifica cada gasto en tu plan automáticamente.",
+      "Importa estados de cuenta y detectamos duplicados por ti."],
+    en: ["Track your expenses", "Logging an expense takes seconds.",
+      "By voice, receipt photo or manually with the + button.",
+      "AI sorts every expense into your plan automatically.",
+      "Import bank statements and we detect duplicates for you."],
+  },
+  {
+    url: "/gastos", icon: ChartPie, minPlan: "free",
+    es: ["Análisis de Gastos", "Descubre dónde se va tu dinero cada mes.",
+      "Compara cada categoría con tu presupuesto mensual.",
+      "Las alertas te avisan cuando una categoría se pasa del plan.",
+      "Ve tu evolución mes a mes desde que empezaste."],
+    en: ["Spending Analysis", "Find out where your money goes each month.",
+      "Compare each category with your monthly budget.",
+      "Alerts warn you when a category exceeds your plan.",
+      "See your month-by-month evolution since you started."],
+  },
+  {
+    url: "/cash-flow", icon: Scale, minPlan: "free",
+    es: ["Distribución del dinero", "La regla 50/30/20 aplicada a tus números reales.",
+      "Necesidades, deseos y ahorro, comparados con tu plan.",
+      "Pasa el cursor sobre cada bloque para ver el detalle.",
+      "Al empezar usa tu plan; luego usa tus gastos reales."],
+    en: ["Money Distribution", "The 50/30/20 rule applied to your real numbers.",
+      "Needs, wants and savings, compared with your plan.",
+      "Hover each block to see the breakdown by category.",
+      "It starts from your plan, then uses your real spending."],
+  },
+  {
+    url: "/retiro", icon: Target, minPlan: "pro",
+    es: ["WhatsYourNumber", "El capital que necesitas para vivir de tus inversiones.",
+      "Mueve el monto mensual deseado y tu número cambia al instante.",
+      "Ve tu año de retiro estimado y cuánto aportar cada mes.",
+      "Simula tasas de retiro del 4% al 12% para comparar escenarios."],
+    en: ["WhatsYourNumber", "The capital you need to live off your investments.",
+      "Adjust your desired monthly amount and your number updates instantly.",
+      "See your estimated retirement year and monthly contribution.",
+      "Simulate withdrawal rates from 4% to 12% to compare scenarios."],
+  },
+  {
+    url: "/hipoteca", icon: Home, minPlan: "free",
+    es: ["Análisis de hipoteca", "Compra vs alquiler, con tus datos reales.",
+      "Simula entrada, plazo e interés y compara escenarios.",
+      "Ve cómo cada opción afecta a tu número y tu libertad.",
+      "Tu propiedad y su deuda se suman a tu patrimonio."],
+    en: ["Mortgage analysis", "Buy vs rent, with your real data.",
+      "Simulate down payment, term and interest to compare scenarios.",
+      "See how each option affects your number and your freedom.",
+      "Your property and its debt are added to your net worth."],
+  },
+  {
+    url: "/patrimonio", icon: Wallet, minPlan: "free",
+    es: ["Patrimonio", "Todo lo que tienes y lo que debes, en una vista.",
+      "Cuentas, inversiones, cripto, propiedades y deudas.",
+      "Edita cualquier activo con el lápiz para mantenerlo al día.",
+      "Sigue la evolución de tu patrimonio mes a mes."],
+    en: ["Net Worth", "Everything you own and owe, in one view.",
+      "Accounts, investments, crypto, properties and debts.",
+      "Edit any asset with the pencil to keep it up to date.",
+      "Track your net worth evolution month by month."],
+  },
+  {
+    url: "/portafolio", icon: TrendingUp, minPlan: "pro",
+    es: ["Portafolio", "Tus inversiones comparadas con el mercado.",
+      "Escribe el ticker y traemos el precio en tiempo real.",
+      "Rentabilidad real ponderada frente al S&P 500.",
+      "Acciones, ETF, cripto, REITs, fondo de retiro y efectivo."],
+    en: ["Portfolio", "Your investments compared with the market.",
+      "Type a ticker and we fetch its live price.",
+      "Real weighted performance vs the S&P 500.",
+      "Stocks, ETFs, crypto, REITs, retirement fund and cash."],
+  },
+  {
+    url: "/ciudades", icon: Globe2, minPlan: "pro",
+    es: ["Lifestyle Simulator", "Ciudades donde tu dinero rinde más.",
+      "Compara tu ciudad con destinos del mismo continente.",
+      "Filtra por presupuesto, estilo de vida e hijos.",
+      "Ve en cuántas llegarías antes a tu libertad financiera."],
+    en: ["Lifestyle Simulator", "Cities where your money goes further.",
+      "Compare your city with destinations on the same continent.",
+      "Filter by budget, lifestyle and kids.",
+      "See where you'd reach financial freedom sooner."],
+  },
+  {
+    url: "/life-planner", icon: Map, minPlan: "pro",
+    es: ["Life Planner", "Simula decisiones de vida antes de tomarlas.",
+      "Mudarte, cambiar de trabajo, tener hijos y más.",
+      "Cada decisión recalcula tu número al instante.",
+      "Todo parte de tu situación real, no de cero."],
+    en: ["Life Planner", "Simulate life decisions before making them.",
+      "Moving, changing jobs, having kids and more.",
+      "Every decision recalculates your number instantly.",
+      "Everything starts from your real situation, not from scratch."],
+  },
+  {
+    url: "/mi-perfil", icon: UserRound, minPlan: "free",
+    es: ["Mis datos", "Cuanto más completo, mejores recomendaciones.",
+      "Ingresos, gasto objetivo, familia y perfil de riesgo.",
+      "Todo lo que edites actualiza el resto de la app al momento.",
+      "Con el plan Familiar gestionas los perfiles de tu hogar."],
+    en: ["My data", "The more complete, the better the recommendations.",
+      "Income, target spending, family and risk profile.",
+      "Everything you edit updates the rest of the app instantly.",
+      "With the Family plan you manage your household profiles."],
+  },
+  {
+    url: "/advisor", icon: Sparkles, minPlan: "pro",
+    es: ["Asistente IA", "Tu CFO personal, disponible 24/7.",
+      "Analiza tus datos y encuentra oportunidades de ahorro.",
+      "Prueba: ¿cuánto ahorro al mes? o ¿cómo va mi fondo de emergencia?",
+      "Recuerda tus conversaciones para darte seguimiento."],
+    en: ["AI Assistant", "Your personal CFO, available 24/7.",
+      "It analyzes your data and finds savings opportunities.",
+      "Try: how much do I save per month? or how is my emergency fund?",
+      "It remembers your conversations to follow up with you."],
+  },
 ];
 const TOTAL = STEPS.length + 1;
+
+const BULLET_ICONS = [MousePointerClick, Lightbulb, Check];
 
 export function AppTour() {
   const t = useT();
   const { user } = useAuth();
+  const { tier, isPromo } = useSubscription();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const { isMobile, setOpenMobile } = useSidebar();
@@ -84,14 +219,32 @@ export function AppTour() {
 
   if (step === null) return null;
 
+  const planLabel =
+    tier === "patrimonio"
+      ? t("Plan Familiar", "Family plan")
+      : tier === "pro"
+        ? isPromo
+          ? t("Plan Pro · código", "Pro plan · code")
+          : t("Plan Pro", "Pro plan")
+        : t("Plan Free", "Free plan");
+  const PlanIcon = tier === "patrimonio" ? Users : tier === "pro" ? Crown : Sprout;
+
+  const planBadge = (
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary ring-1 ring-primary/25">
+      <PlanIcon className="h-3 w-3" />
+      {planLabel}
+    </span>
+  );
+
   if (step === 0) {
     return (
-      <div className="fixed inset-0 z-[100] grid place-items-center bg-background/70 p-4 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[100] grid place-items-center bg-background/50 p-4 backdrop-blur-[2px]">
         <div className="relative w-full max-w-sm rounded-3xl border border-primary/40 bg-card p-6 text-center shadow-2xl shadow-primary/20">
           <span className="numeric absolute right-5 top-4 text-xs text-muted-foreground">1 / {TOTAL}</span>
           <Sprout className="mx-auto h-10 w-10 text-positive" />
           <h2 className="mt-3 font-display text-2xl font-semibold">{t("¡Bienvenido!", "Welcome!")}</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <div className="mt-3 flex justify-center">{planBadge}</div>
+          <p className="mt-3 text-sm text-muted-foreground">
             {t("Vamos a hacer un tour rápido para que aproveches al máximo WhatsYourNumber. En menos de 1 minuto estarás listo.", "Let's take a quick tour so you get the most out of WhatsYourNumber. You'll be ready in under a minute.")}
           </p>
           <div className="mt-5 grid grid-cols-3 gap-2 text-xs text-muted-foreground">
@@ -120,17 +273,17 @@ export function AppTour() {
     );
   }
 
-  const [title, body, tip] = t(current!.es.join("|"), current!.en.join("|")).split("|");
+  const [title, intro, ...points] = t(current!.es.join("|"), current!.en.join("|")).split("|");
   const last = step === STEPS.length;
   const StepIcon = current!.icon;
+  const hasAccess = planMeetsTier(current!.minPlan, tier);
 
   return (
     <>
-      {/* Oscurece el fondo para que el paso resalte */}
-      <div className="fixed inset-0 z-[90] bg-background/60 backdrop-blur-[2px]" onClick={close} />
+      {/* Oscurece ligeramente el fondo para que el paso resalte sin ocultarlo */}
+      <div className="fixed inset-0 z-[90] bg-background/40" onClick={close} />
       <div className="fixed inset-x-3 bottom-24 z-[100] sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[400px] lg:bottom-8">
         <div className="relative overflow-hidden rounded-3xl border border-primary/60 bg-card/95 p-5 shadow-[0_0_50px_-8px] shadow-primary/40 ring-2 ring-primary/30 backdrop-blur-xl">
-          {/* brillo superior */}
           <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-64 -translate-x-1/2 rounded-full bg-primary/25 blur-3xl" />
           <button
             aria-label={t("Cerrar tutorial", "Close tour")}
@@ -143,21 +296,45 @@ export function AppTour() {
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-positive/15 text-positive ring-1 ring-positive/30">
               <StepIcon className="h-5 w-5" />
             </span>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 pr-6">
               <h3 className="font-display text-lg font-semibold leading-tight">{title}</h3>
-              <span className="numeric mt-0.5 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                {t("Paso", "Step")} {step + 1} / {TOTAL}
-              </span>
+              <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                <span className="numeric text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  {t("Paso", "Step")} {step + 1} / {TOTAL}
+                </span>
+                {current!.minPlan !== "free" &&
+                  (hasAccess ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-positive/10 px-2 py-0.5 text-[10px] font-medium text-positive ring-1 ring-positive/25">
+                      <Check className="h-2.5 w-2.5" />
+                      {t("Incluido en tu plan", "Included in your plan")}
+                    </span>
+                  ) : (
+                    <Link
+                      to="/suscripcion"
+                      onClick={close}
+                      className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary ring-1 ring-primary/25 transition-colors hover:bg-primary/20"
+                    >
+                      <Crown className="h-2.5 w-2.5" />
+                      {current!.minPlan === "patrimonio" ? t("Plan Familiar", "Family plan") : t("Plan Pro", "Pro plan")}
+                    </Link>
+                  ))}
+              </div>
             </div>
           </div>
-          <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground">{body}</p>
-          {tip && (
-            <p className="relative mt-3 flex items-start gap-2 rounded-xl bg-positive/10 px-3 py-2.5 text-xs leading-relaxed text-positive ring-1 ring-positive/20">
-              <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-              {tip}
-            </p>
-          )}
-          {/* barra de progreso */}
+          <p className="relative mt-3 text-sm leading-relaxed text-foreground/90">{intro}</p>
+          <ul className="relative mt-3 space-y-2">
+            {points.map((p, i) => {
+              const B = BULLET_ICONS[i % BULLET_ICONS.length];
+              return (
+                <li key={i} className="flex items-start gap-2.5 text-xs leading-relaxed text-muted-foreground">
+                  <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-positive/10 text-positive">
+                    <B className="h-3 w-3" />
+                  </span>
+                  {p}
+                </li>
+              );
+            })}
+          </ul>
           <div className="relative mt-4 h-1 overflow-hidden rounded-full bg-foreground/10">
             <div className="h-full rounded-full bg-positive transition-all duration-500" style={{ width: `${((step + 1) / TOTAL) * 100}%` }} />
           </div>
