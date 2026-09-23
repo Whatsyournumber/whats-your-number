@@ -325,13 +325,15 @@ function CancelPlanDialog({
         />
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] max-w-lg gap-3 overflow-y-auto border-border bg-background p-3.5 sm:p-4">
-        <DialogHeader>
-          <div className="grid h-9 w-9 place-items-center rounded-full bg-destructive/10 text-destructive"><AlertTriangle className="h-4 w-4" /></div>
-          <DialogTitle className="max-w-md text-lg leading-tight sm:text-xl">
-            {t("¿Seguro que quieres ", "Are you sure you want to ")}
-            <span className="text-primary">{t("cancelar", "cancel")}</span>
-            {t(` tu plan ${planLabel}?`, ` your ${planLabel} plan?`)}
-          </DialogTitle>
+        <DialogHeader className="text-left">
+          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-destructive/10 text-destructive"><AlertTriangle className="h-4 w-4" /></div>
+            <DialogTitle className="min-w-0 text-lg leading-tight sm:text-xl">
+              {t("¿Seguro que quieres ", "Are you sure you want to ")}
+              <span className="text-destructive">{t("cancelar", "cancel")}</span>
+              {t(` tu plan ${planLabel}?`, ` your ${planLabel} plan?`)}
+            </DialogTitle>
+          </div>
           <DialogDescription asChild>
             <div className="space-y-0.5 text-xs leading-relaxed sm:text-sm">
               <p>
@@ -343,7 +345,7 @@ function CancelPlanDialog({
             </div>
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-2.5 rounded-lg border border-border bg-elevated/30 p-3">
+        <div className="space-y-2.5 px-1 py-1">
           <div className="flex items-start gap-2.5">
             <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><Check className="h-4 w-4" /></span>
             <div>
