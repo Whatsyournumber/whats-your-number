@@ -167,7 +167,7 @@ export function SubscriptionManager() {
       </div>
 
 
-      <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid gap-2 sm:grid-cols-3">
         <InfoTile
           icon={User}
           label={t("Titular", "Account holder")}
@@ -196,7 +196,7 @@ export function SubscriptionManager() {
         />
       </div>
 
-      <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-3 grid gap-2 sm:grid-cols-3">
           <PaymentMethodDialog
             card={card}
             isPromo={isPromo}
@@ -207,7 +207,7 @@ export function SubscriptionManager() {
           <PortalAction
             icon={Receipt}
             label={t("Facturas", "Invoices")}
-            hint={t("Descarga tu historial", "Download your history")}
+            hint={t("Descarga tu historial", "Download history")}
             loading={spin("portal:overview")}
             disabled={busy !== null || loading || tier === "free"}
             onClick={() => void portal("overview")}
@@ -255,7 +255,7 @@ function PaymentMethodDialog({
         <PortalAction
           icon={CreditCard}
           label={t("Método de pago", "Payment method")}
-          hint={t("Añade, cambia o elimina tu tarjeta", "Add, replace or remove your card")}
+          hint={t("Gestiona tu tarjeta", "Manage your card")}
           loading={loading}
           disabled={disabled}
           onClick={() => undefined}
@@ -336,7 +336,7 @@ function CancelPlanDialog({
         <PortalAction
           icon={XCircle}
           label={t("Cancelar plan", "Cancel plan")}
-          hint={t("Sigues con acceso hasta el final", "Access until period ends")}
+          hint={t("Acceso hasta el final", "Access until it ends")}
           loading={loading}
           disabled={disabled}
           onClick={() => undefined}
@@ -427,11 +427,11 @@ function PortalAction({
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Icon className="h-4 w-4" />}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="flex items-center gap-1 text-sm font-medium">
-          {label}
-          <ExternalLink className="h-3 w-3 text-muted-foreground" />
+        <span className="flex items-center gap-1 truncate text-sm font-medium">
+          <span className="truncate">{label}</span>
+          <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground" />
         </span>
-        <span className="mt-0.5 block text-xs text-muted-foreground">{hint}</span>
+        <span className="mt-0.5 block truncate text-xs text-muted-foreground">{hint}</span>
       </span>
       <ChevronRight className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
     </Button>
