@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   ArrowLeft, ArrowRight, ChartPie, Check, Compass, Crown, Globe2, Home, LayoutDashboard,
   Lightbulb, Map, MousePointerClick, ReceiptText, Scale, Sparkles, Sprout, Target,
@@ -166,21 +166,24 @@ const STEPS: Step[] = [
       "It remembers your conversations to follow up with you."],
   },
 ];
-const TOTAL = STEPS.length + 1;
-
 const BULLET_ICONS = [MousePointerClick, Lightbulb, Check];
 
 export function AppTour() {
   const t = useT();
   const { user } = useAuth();
-  const { tier, isPromo } = useSubscription();
+  const { tier, isPromo, loading: subscriptionLoading } = useSubscription();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const { isMobile, setOpenMobile } = useSidebar();
   const [step, setStep] = useState<number | null>(null); // 0 = bienvenida
+  const availableSteps = useMemo(
+    () => STEPS.filter((tourStep) => planMeetsTier(tourStep.minPlan, tier)),
+    [tier],
+  );
+  const total = availableSteps.length + 1;
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || subscriptionLoading) return;
     try {
       if (localStorage.getItem(doneKey(user.id))) return;
       if (localStorage.getItem(PENDING_KEY) !== "1") return;
@@ -188,9 +191,9 @@ export function AppTour() {
     } catch {
       /* noop */
     }
-  }, [user]);
+  }, [user, subscriptionLoading]);
 
-  const current = step && step > 0 ? STEPS[step - 1] : null;
+  const current = step && step > 0 ? availableSteps[step - 1] ?? null : null;
 
   // Abre cada sección cuando le toca.
   useEffect(() => {
@@ -240,7 +243,7 @@ export function AppTour() {
     return (
       <div className="fixed inset-0 z-[100] grid place-items-center bg-background/50 p-4 backdrop-blur-[2px]">
         <div className="relative w-full max-w-sm rounded-3xl border border-primary/40 bg-card p-6 text-center shadow-2xl shadow-primary/20">
-          <span className="numeric absolute right-5 top-4 text-xs text-muted-foreground">1 / {TOTAL}</span>
+           <span className="numeric absolute right-5 top-4 text-xs text-muted-foreground">1 / {total}</span>
           <Sprout className="mx-auto h-10 w-10 text-positive" />
           <h2 className="mt-3 font-display text-2xl font-semibold">{t("¡Bienvenido!", "Welcome!")}</h2>
           <div className="mt-3 flex justify-center">{planBadge}</div>
@@ -273,11 +276,12 @@ export function AppTour() {
     );
   }
 
-  const [title, intro, ...points] = t(current!.es.join("|"), current!.en.join("|")).split("|");
-  const last = step === STEPS.length;
-  const StepIcon = current!.icon;
-  const hasAccess = planMeetsTier(current!.minPlan, tier);
-  const isNumberStep = current!.url === "/retiro";
+  if (!current) return null;
+
+  const [title, intro, ...points] = t(current.es.join("|"), current.en.join("|")).split("|");
+  const last = step === availableSteps.length;
+  const StepIcon = current.icon;
+  const isNumberStep = current.url === "/retiro";
 
   return (
     <>
@@ -301,24 +305,14 @@ export function AppTour() {
               <h3 className="font-display text-lg font-semibold leading-tight">{title}</h3>
               <div className="mt-1 flex flex-wrap items-center gap-1.5">
                 <span className="numeric text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                  {t("Paso", "Step")} {step + 1} / {TOTAL}
+                  {t("Paso", "Step")} {step + 1} / {total}
                 </span>
-                {current!.minPlan !== "free" &&
-                  (hasAccess ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-positive/10 px-2 py-0.5 text-[10px] font-medium text-positive ring-1 ring-positive/25">
-                      <Check className="h-2.5 w-2.5" />
-                      {t("Incluido en tu plan", "Included in your plan")}
-                    </span>
-                  ) : (
-                    <Link
-                      to="/suscripcion"
-                      onClick={close}
-                      className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary ring-1 ring-primary/25 transition-colors hover:bg-primary/20"
-                    >
-                      <Crown className="h-2.5 w-2.5" />
-                      {current!.minPlan === "patrimonio" ? t("Plan Familiar", "Family plan") : t("Plan Pro", "Pro plan")}
-                    </Link>
-                  ))}
+                {current.minPlan !== "free" && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-positive/10 px-2 py-0.5 text-[10px] font-medium text-positive ring-1 ring-positive/25">
+                    <Check className="h-2.5 w-2.5" />
+                    {t("Incluido en tu plan", "Included in your plan")}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -337,7 +331,7 @@ export function AppTour() {
             })}
           </ul>
           <div className="relative mt-4 h-1 overflow-hidden rounded-full bg-foreground/10">
-            <div className="h-full rounded-full bg-positive transition-all duration-500" style={{ width: `${((step + 1) / TOTAL) * 100}%` }} />
+            <div className="h-full rounded-full bg-positive transition-all duration-500" style={{ width: `${((step + 1) / total) * 100}%` }} />
           </div>
           <div className="relative mt-4 flex items-center justify-between gap-2">
             <button className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground" onClick={() => setStep(step - 1)}>
