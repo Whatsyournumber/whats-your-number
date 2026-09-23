@@ -327,7 +327,7 @@ function CancelPlanDialog({
       <DialogContent className="max-h-[90vh] max-w-md gap-0 overflow-y-auto rounded-3xl border-border bg-background p-5 text-center shadow-2xl sm:p-7">
         <DialogHeader className="items-center text-center">
           <div className="mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-destructive/10 text-destructive ring-1 ring-destructive/20"><AlertTriangle className="h-6 w-6" /></div>
-          <DialogTitle className="max-w-sm text-xl font-bold leading-tight sm:text-2xl">
+          <DialogTitle className="whitespace-nowrap text-sm font-bold leading-tight sm:text-base">
             {t("¿Seguro que quieres ", "Are you sure you want to ")}
             <span className="text-destructive">{t("cancelar", "cancel")}</span>
             {t(` tu plan ${planLabel}?`, ` your ${planLabel} plan?`)}
@@ -362,6 +362,7 @@ function CancelPlanDialog({
         <DialogFooter className="grid grid-cols-2 gap-3 sm:space-x-0">
           <DialogClose asChild>
             <Button variant="outline" className="h-auto min-h-16 flex-col items-center justify-center gap-1 rounded-2xl border-border bg-elevated/40 px-3 text-center hover:bg-elevated">
+              <ShieldCheck className="h-4 w-4 text-positive" />
               <span>
                 <span className="block text-xs font-bold">{t("No, mantener", "No, keep it")}</span>
                 <span className="mt-1 block text-[10px] font-normal text-muted-foreground">{t(`Seguir con ${planLabel}`, `Stay on ${planLabel}`)}</span>
@@ -369,7 +370,7 @@ function CancelPlanDialog({
             </Button>
           </DialogClose>
           <Button variant="outline" className="h-auto min-h-16 flex-col items-center justify-center gap-1 rounded-2xl border-destructive/30 bg-destructive/5 px-3 text-center text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={onConfirm} disabled={loading}>
-            {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
             <span>
               <span className="block text-xs font-bold">{t("Sí, cancelar", "Yes, cancel")}</span>
               <span className="mt-1 block text-[10px] font-normal text-destructive/70">{t("Pasar a Free", "Switch to Free")}</span>
