@@ -352,10 +352,7 @@ export function AssetDialog({
             <div className="flex items-center justify-between gap-3">
               <p className="text-[11px] text-muted-foreground">
                 {["etf", "stock", "crypto", "bond", "reit"].includes(draft.kind)
-                  ? t(
-                      "Si dejas el valor actual en cero, usamos el precio de mercado por tus unidades.",
-                      "If you leave the current value at zero, we use the market price times your units.",
-                    )
+                  ? t("En cero, usamos el precio de mercado.", "At zero, we use the market price.")
                   : ""}
               </p>
               <div className="flex shrink-0 gap-2">
