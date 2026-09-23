@@ -324,7 +324,7 @@ export function AppTour() {
   return (
     <>
       {/* Oscurece ligeramente el fondo para que el paso resalte sin ocultarlo */}
-      <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/10" : "bg-background/30"}`} onClick={close} />
+      <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/10" : "bg-background/30"}`} />
       <div className="fixed inset-x-3 bottom-24 z-[100] sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[400px] lg:bottom-8">
         <div className={`relative overflow-hidden rounded-3xl border border-primary/60 p-5 shadow-[0_0_50px_-8px] shadow-primary/40 ring-2 ring-primary/30 ${isNumberStep ? "bg-card/90 backdrop-blur-md" : "bg-card/95 backdrop-blur-xl"}`}>
           <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-64 -translate-x-1/2 rounded-full bg-primary/25 blur-3xl" />
