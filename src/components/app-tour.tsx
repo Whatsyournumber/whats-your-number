@@ -324,7 +324,7 @@ export function AppTour() {
           <p className="relative mt-3 text-sm leading-relaxed text-foreground/90">{intro}</p>
           <ul className="relative mt-3 space-y-2">
             {points.map((p, i) => {
-              const B = BULLET_ICONS[i % BULLET_ICONS.length];
+              const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
               return (
                 <li key={i} className="flex items-start gap-2.5 text-xs leading-relaxed text-muted-foreground">
                   <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-positive/10 text-positive">
