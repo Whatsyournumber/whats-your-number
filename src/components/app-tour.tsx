@@ -79,14 +79,14 @@ const STEPS: Step[] = [
   },
   {
     url: "/retiro", icon: Target, minPlan: "pro",
-    es: ["WhatsYourNumber", "El capital que necesitas para vivir de tus inversiones.",
-      "Mueve el monto mensual deseado y tu número cambia al instante.",
-      "Ve tu año de retiro estimado y cuánto aportar cada mes.",
-      "Simula tasas de retiro del 4% al 12% para comparar escenarios."],
-    en: ["WhatsYourNumber", "The capital you need to live off your investments.",
-      "Adjust your desired monthly amount and your number updates instantly.",
-      "See your estimated retirement year and monthly contribution.",
-      "Simulate withdrawal rates from 4% to 12% to compare scenarios."],
+    es: ["Tu número de libertad financiera", "WhatsYourNumber calcula el capital que necesitas para vivir de tus inversiones y alcanzar tu libertad financiera.",
+      "Tu Número convierte el ingreso mensual que deseas en una meta concreta de capital.",
+      "Descubre el año estimado en que alcanzarás tu libertad y cuánto aportar cada mes.",
+      "Compara tasas de retiro del 4% al 12%; el escenario del 7% destaca Tu Número."],
+    en: ["Your financial freedom number", "WhatsYourNumber calculates the capital you need to live off your investments and reach financial freedom.",
+      "Your Number turns your desired monthly income into a clear capital target.",
+      "See your estimated freedom year and how much to contribute each month.",
+      "Compare withdrawal rates from 4% to 12%; the 7% scenario highlights Your Number."],
   },
   {
     url: "/hipoteca", icon: Home, minPlan: "free",
@@ -277,13 +277,14 @@ export function AppTour() {
   const last = step === STEPS.length;
   const StepIcon = current!.icon;
   const hasAccess = planMeetsTier(current!.minPlan, tier);
+  const isNumberStep = current!.url === "/retiro";
 
   return (
     <>
       {/* Oscurece ligeramente el fondo para que el paso resalte sin ocultarlo */}
-      <div className="fixed inset-0 z-[90] bg-background/40" onClick={close} />
+      <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/10" : "bg-background/30"}`} onClick={close} />
       <div className="fixed inset-x-3 bottom-24 z-[100] sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[400px] lg:bottom-8">
-        <div className="relative overflow-hidden rounded-3xl border border-primary/60 bg-card/95 p-5 shadow-[0_0_50px_-8px] shadow-primary/40 ring-2 ring-primary/30 backdrop-blur-xl">
+        <div className={`relative overflow-hidden rounded-3xl border border-primary/60 p-5 shadow-[0_0_50px_-8px] shadow-primary/40 ring-2 ring-primary/30 ${isNumberStep ? "bg-card/90 backdrop-blur-md" : "bg-card/95 backdrop-blur-xl"}`}>
           <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-64 -translate-x-1/2 rounded-full bg-primary/25 blur-3xl" />
           <button
             aria-label={t("Cerrar tutorial", "Close tour")}
