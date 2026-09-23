@@ -198,6 +198,7 @@ export function SubscriptionManager() {
       <div className="mt-3 grid gap-2 sm:grid-cols-3">
           <PaymentMethodDialog
             card={card}
+            isPromo={isPromo}
             loading={spin("portal:payment_method")}
             disabled={busy !== null || loading || tier === "free"}
             onManage={() => void portal("payment_method")}
@@ -231,11 +232,13 @@ export function SubscriptionManager() {
 
 function PaymentMethodDialog({
   card,
+  isPromo,
   loading,
   disabled,
   onManage,
 }: {
   card: { brand: string | null; last4: string | null; expiry: string | null; type: string | null } | null;
+  isPromo: boolean;
   loading: boolean;
   disabled: boolean;
   onManage: () => void;
@@ -261,7 +264,9 @@ function PaymentMethodDialog({
         <DialogHeader>
           <DialogTitle>{t("Método de pago", "Payment method")}</DialogTitle>
           <DialogDescription>
-            {t("Gestiona de forma segura la tarjeta vinculada a tu suscripción.", "Securely manage the card linked to your subscription.")}
+            {isPromo
+              ? t("Tu plan Pro está activo mediante un código de invitación y no necesita tarjeta.", "Your Pro plan is active through an invite code and doesn't require a card.")
+              : t("Gestiona de forma segura la tarjeta vinculada a tu suscripción.", "Securely manage the card linked to your subscription.")}
           </DialogDescription>
         </DialogHeader>
 
@@ -269,29 +274,41 @@ function PaymentMethodDialog({
           <div className="flex items-center gap-3">
             <span className="grid h-10 w-10 place-items-center rounded-lg bg-primary/10 text-primary"><CreditCard className="h-5 w-5" /></span>
             <div className="min-w-0 flex-1">
-              <p className="text-xs text-muted-foreground">{t("Tarjeta actual", "Current card")}</p>
-              <p className="mt-0.5 font-medium">{cardLabel}</p>
+               <p className="text-xs text-muted-foreground">{isPromo ? t("Plan actual", "Current plan") : t("Tarjeta actual", "Current card")}</p>
+               <p className="mt-0.5 font-medium">{isPromo ? t("Pro · código de invitación", "Pro · invite code") : cardLabel}</p>
               {card?.expiry ? <p className="text-xs text-muted-foreground">{t("Vence", "Expires")} {card.expiry}</p> : null}
             </div>
             <ShieldCheck className="h-5 w-5 text-positive" />
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Button className="w-full justify-start" onClick={onManage} disabled={loading}>
-            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-            {t("Añadir o reemplazar tarjeta", "Add or replace card")}
-            <ExternalLink className="ml-auto h-3.5 w-3.5" />
+        {isPromo ? (
+          <Button asChild className="w-full justify-start">
+            <Link to="/precios" search={{ plan: "pro" }}>
+              <Plus className="mr-2 h-4 w-4" />
+              {t("Activar Pro pagado y añadir tarjeta", "Start paid Pro and add a card")}
+              <ChevronRight className="ml-auto h-4 w-4" />
+            </Link>
           </Button>
-          <Button variant="outline" className="w-full justify-start" onClick={onManage} disabled={loading || !card}>
-            <Trash2 className="mr-2 h-4 w-4" />
-            {t("Eliminar o administrar tarjeta", "Remove or manage card")}
-            <ExternalLink className="ml-auto h-3.5 w-3.5" />
-          </Button>
-        </div>
+        ) : (
+          <div className="space-y-2">
+            <Button className="w-full justify-start" onClick={onManage} disabled={loading}>
+              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
+              {t("Añadir o reemplazar tarjeta", "Add or replace card")}
+              <ExternalLink className="ml-auto h-3.5 w-3.5" />
+            </Button>
+            <Button variant="outline" className="w-full justify-start" onClick={onManage} disabled={loading || !card}>
+              <Trash2 className="mr-2 h-4 w-4" />
+              {t("Eliminar o administrar tarjeta", "Remove or manage card")}
+              <ExternalLink className="ml-auto h-3.5 w-3.5" />
+            </Button>
+          </div>
+        )}
 
         <p className="text-xs text-muted-foreground">
-          {t("La gestión se completa en el portal seguro de pagos. Una suscripción activa puede requerir una tarjeta válida antes de eliminar la actual.", "Management is completed in the secure payments portal. An active subscription may require a valid card before removing the current one.")}
+          {isPromo
+            ? t("Solo se solicita una tarjeta al iniciar una suscripción pagada. Tu acceso actual seguirá activo según las condiciones de tu invitación.", "A card is only requested when starting a paid subscription. Your current access remains active under your invite terms.")
+            : t("La gestión se completa en el portal seguro de pagos. Una suscripción activa puede requerir una tarjeta válida antes de eliminar la actual.", "Management is completed in the secure payments portal. An active subscription may require a valid card before removing the current one.")}
         </p>
       </DialogContent>
     </Dialog>
