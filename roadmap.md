@@ -61,3 +61,8 @@
 - [x] Móvil: selector de moneda compacto (código + símbolo) para que no se recorte
 
 - [x] Corregir números y textos de la tarjeta final de Tu Número en onboarding.
+
+## Suscripción y soporte
+- [x] Mover el código de invitación antes de la información de suscripción
+- [x] Añadir dudas y sugerencias con texto, captura o archivo privado
+- [x] Enviar cada consulta de suscripción a wyn.welcome@gmail.com

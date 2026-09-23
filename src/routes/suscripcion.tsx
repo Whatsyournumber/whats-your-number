@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, PageShell } from "@/components/page";
 import { PromoCodeRedeem } from "@/components/promo-code-redeem";
 import { SubscriptionManager } from "@/components/subscription-manager";
+import { SubscriptionSupport } from "@/components/subscription-support";
 import { useT } from "@/hooks/use-language";
 
 export const Route = createFileRoute("/suscripcion")({
@@ -32,9 +33,9 @@ function SuscripcionPage() {
           "Switch plan, update your card, download invoices or cancel anytime.",
         )}
       />
+      <PromoCodeRedeem />
       <SubscriptionManager />
-      <PromoCodeRedeem className="mt-6" />
-
+      <SubscriptionSupport />
     </PageShell>
   );
 }
