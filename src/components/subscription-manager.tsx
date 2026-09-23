@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, ArrowUpRight, Check, CheckCircle2, ChevronRight, CreditCard, Crown, ExternalLink, Loader2, Mail, Plus, Receipt, ShieldCheck, Sparkles, Trash2, User, XCircle } from "lucide-react";
+import { AlertTriangle, ArrowUpRight, Check, CheckCircle2, ChevronRight, CreditCard, Crown, ExternalLink, Loader2, Mail, Plus, Receipt, ShieldCheck, Smile, Sparkles, Trash2, User, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { Panel } from "@/components/page";
@@ -361,16 +361,16 @@ function CancelPlanDialog({
         </div>
         <DialogFooter className="grid grid-cols-2 gap-3 sm:space-x-0">
           <DialogClose asChild>
-            <Button variant="outline" className="h-auto min-h-16 flex-col items-center justify-center gap-1 rounded-2xl border-border bg-elevated/40 px-3 text-center hover:bg-elevated">
-              <ShieldCheck className="h-4 w-4 text-positive" />
+            <Button variant="outline" className="h-auto min-h-16 items-center justify-center gap-2 rounded-2xl border-border bg-elevated/40 px-3 text-center hover:bg-elevated">
+              <Smile className="h-4 w-4 shrink-0 text-positive" />
               <span>
                 <span className="block text-xs font-bold">{t("No, mantener", "No, keep it")}</span>
                 <span className="mt-1 block text-[10px] font-normal text-muted-foreground">{t(`Seguir con ${planLabel}`, `Stay on ${planLabel}`)}</span>
               </span>
             </Button>
           </DialogClose>
-          <Button variant="outline" className="h-auto min-h-16 flex-col items-center justify-center gap-1 rounded-2xl border-destructive/30 bg-destructive/5 px-3 text-center text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={onConfirm} disabled={loading}>
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+          <Button variant="outline" className="h-auto min-h-16 items-center justify-center gap-2 rounded-2xl border-destructive/30 bg-destructive/5 px-3 text-center text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={onConfirm} disabled={loading}>
+            {loading ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> : <Trash2 className="h-4 w-4 shrink-0" />}
             <span>
               <span className="block text-xs font-bold">{t("Sí, cancelar", "Yes, cancel")}</span>
               <span className="mt-1 block text-[10px] font-normal text-destructive/70">{t("Pasar a Free", "Switch to Free")}</span>
