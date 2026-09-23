@@ -369,9 +369,6 @@ export function AssetDialog({
                     {t("Eliminar", "Delete")}
                   </Button>
                 ) : null}
-                <Button type="button" size="sm" variant="ghost" onClick={close}>
-                  {t("Cancelar", "Cancel")}
-                </Button>
                 <Button type="button" size="sm" onClick={() => void save()} disabled={saving}>
                   {saving ? t("Guardando", "Saving") : t("Guardar", "Save")}
                 </Button>

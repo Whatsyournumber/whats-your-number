@@ -1495,9 +1495,6 @@ function PortafolioContent() {
                 {t("Eliminar", "Delete")}
               </Button>
             ) : null}
-            <Button type="button" size="sm" variant="ghost" onClick={closeEdit}>
-              {t("Cancelar", "Cancel")}
-            </Button>
             <Button type="button" size="sm" onClick={() => void saveEdit()} disabled={saving}>
               {saving ? t("Guardando", "Saving") : t("Guardar", "Save")}
             </Button>
