@@ -65,7 +65,16 @@ function Configuracion() {
       })),
   ];
 
+  /** Nombres propios + etiquetas del catálogo en ambos idiomas + alias internos
+   *  (las reglas guardan el nombre canónico de categorize, p. ej. "Mercado"). */
   const myCategoryNames = new Set(myCategories.map((c) => c.name.toLowerCase()));
+  for (const line of budgets.lines) {
+    const base = findBudgetCategory(line.id);
+    if (!base) continue;
+    myCategoryNames.add(base.es.toLowerCase());
+    myCategoryNames.add(base.en.toLowerCase());
+    base.aliases.forEach((a) => myCategoryNames.add(a.toLowerCase()));
+  }
   /** Solo reglas que apuntan a categorías que existen en esta cuenta. */
   const myRules = learned.rules.filter(
     (r) => myCategoryNames.size === 0 || myCategoryNames.has(r.category.trim().toLowerCase()),
