@@ -327,7 +327,7 @@ function CancelPlanDialog({
       <DialogContent className="max-h-[90vh] max-w-md gap-0 overflow-y-auto rounded-3xl border-border bg-background p-5 text-center shadow-2xl sm:p-7">
         <DialogHeader className="items-center text-center">
           <div className="mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-destructive/10 text-destructive ring-1 ring-destructive/20"><AlertTriangle className="h-6 w-6" /></div>
-          <DialogTitle className="whitespace-nowrap text-sm font-bold leading-tight sm:text-base">
+          <DialogTitle className="whitespace-nowrap text-base font-bold leading-tight sm:text-lg">
             {t("¿Seguro que quieres ", "Are you sure you want to ")}
             <span className="text-destructive">{t("cancelar", "cancel")}</span>
             {t(` tu plan ${planLabel}?`, ` your ${planLabel} plan?`)}
