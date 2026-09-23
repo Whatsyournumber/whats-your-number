@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Compass, Lightbulb, Sprout, Target } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChartPie, Compass, Globe2, Home, LayoutDashboard, Lightbulb, Map, ReceiptText, Scale, Sparkles, Sprout, Target, TrendingUp, UserRound, Wallet, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
 import { useAuth } from "@/hooks/use-auth";
