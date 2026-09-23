@@ -207,7 +207,7 @@ export function SubscriptionManager() {
           <PortalAction
             icon={Receipt}
             label={t("Facturas", "Invoices")}
-            hint={t("Descarga tu historial", "Download your history")}
+            hint={t("Descarga tu historial", "Download history")}
             loading={spin("portal:overview")}
             disabled={busy !== null || loading || tier === "free"}
             onClick={() => void portal("overview")}
@@ -255,7 +255,7 @@ function PaymentMethodDialog({
         <PortalAction
           icon={CreditCard}
           label={t("Método de pago", "Payment method")}
-          hint={t("Añade, cambia o elimina tu tarjeta", "Add, replace or remove your card")}
+          hint={t("Gestiona tu tarjeta", "Manage your card")}
           loading={loading}
           disabled={disabled}
           onClick={() => undefined}
@@ -336,7 +336,7 @@ function CancelPlanDialog({
         <PortalAction
           icon={XCircle}
           label={t("Cancelar plan", "Cancel plan")}
-          hint={t("Sigues con acceso hasta el final", "Access until period ends")}
+          hint={t("Acceso hasta el final", "Access until it ends")}
           loading={loading}
           disabled={disabled}
           onClick={() => undefined}
