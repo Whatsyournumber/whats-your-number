@@ -66,3 +66,4 @@
 - [x] Mover el código de invitación antes de la información de suscripción
 - [x] Añadir dudas y sugerencias con texto, captura o archivo privado
 - [x] Enviar cada consulta de suscripción a wyn.welcome@gmail.com
+- [x] Rediseñar Customer Portal con suscripción destacada, accesos claros y soporte visual

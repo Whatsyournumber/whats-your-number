@@ -98,30 +98,36 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
   };
 
   return (
-    <div className={`rounded-2xl border border-border/60 bg-card/60 p-5 ${className ?? ""}`}>
-      <div className="flex items-center gap-2">
-        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
-          <Gift className="h-4 w-4" />
+    <section className={`rounded-2xl border border-primary/20 bg-primary/10 p-4 sm:p-5 ${className ?? ""}`}>
+      <div className="grid gap-4 lg:grid-cols-[minmax(260px,1fr)_minmax(320px,1.3fr)] lg:items-center">
+        <div className="flex items-center gap-3">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+          <Gift className="h-5 w-5" />
         </span>
         <div>
           <p className="text-sm font-medium">{t("¿Tienes un código de invitación?", "Have an invite code?")}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            {t("Activa los beneficios asociados a tu código.", "Unlock the benefits linked to your code.")}
+          </p>
         </div>
       </div>
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+      <div className="flex flex-col gap-2 sm:flex-row">
         <Input
           value={code}
           onChange={(e) => setCode(e.target.value.toUpperCase())}
           onKeyDown={(e) => {
             if (e.key === "Enter") void redeem();
           }}
-          className="rounded-xl uppercase tracking-wide"
+          placeholder={t("Ingresa tu código", "Enter your invite code")}
+          className="h-11 rounded-xl bg-background/60 uppercase tracking-wide"
           aria-label={t("Código de invitación", "Invite code")}
         />
-        <Button onClick={() => void redeem()} disabled={loading || !code.trim()} className="rounded-xl">
+        <Button onClick={() => void redeem()} disabled={loading || !code.trim()} className="h-11 rounded-xl px-6">
           {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
           {t("Canjear", "Redeem")}
         </Button>
       </div>
-    </div>
+      </div>
+    </section>
   );
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, CreditCard, ExternalLink, Loader2, Mail, Receipt, User, XCircle } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, ChevronRight, CreditCard, Crown, ExternalLink, Loader2, Mail, Receipt, Sparkles, User, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { Panel } from "@/components/page";
@@ -39,6 +39,11 @@ export function SubscriptionManager() {
   const card = billing.data?.card ?? null;
 
   const planLabel = tier === "patrimonio" ? "Familiar" : tier === "pro" ? "Pro" : "Free";
+  const benefits = tier === "free"
+    ? [t("Registro de gastos", "Expense tracking"), t("Presupuesto mensual", "Monthly budget"), t("Asistente IA", "AI assistant")]
+    : tier === "pro"
+      ? [t("Análisis de gastos con IA", "AI spending analysis"), t("Simulador de hipoteca", "Mortgage simulator"), t("Portafolio e inversiones", "Portfolio and investments"), "Life Planner"]
+      : [t("Todo lo incluido en Pro", "Everything in Pro"), t("Perfiles familiares", "Family profiles"), t("Planificación en pareja", "Couples planning"), t("Soporte prioritario", "Priority support")];
 
   const portal = async (target: PortalTarget) => {
     setBusy(`portal:${target}`);
@@ -78,12 +83,43 @@ export function SubscriptionManager() {
   const spin = (key: string) => busy === key;
 
   return (
-    <Panel
-      title={t("Suscripción", "Subscription")}
-      description={t("Gestiona tu plan, tu método de pago y tus facturas.", "Manage your plan, payment method and invoices.")}
-    >
-      <div className="flex flex-wrap items-center gap-3">
-        <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+    <Panel title={t("Tu suscripción", "Your subscription")} description={t("Gestiona tu plan, método de pago y facturas.", "Manage your plan, payment method and invoices.")}>
+      <div className="grid gap-3 rounded-xl border border-border bg-elevated/30 p-4 md:grid-cols-[1fr_auto] md:items-center">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary">
+            {tier === "free" ? <Sparkles className="h-5 w-5" /> : <Crown className="h-5 w-5" />}
+          </span>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-xl font-semibold">{t("Plan", "Plan")} {planLabel}</h3>
+              <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                {t("Activo", "Active")}
+              </span>
+            </div>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {tier === "free" ? t("Empieza a ordenar tus finanzas.", "Start organizing your finances.") : t("Todo lo que necesitas para alcanzar tu Número.", "Everything you need to reach your Number.")}
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 md:justify-end">
+          {tier === "free" && (
+            <Button asChild size="sm"><Link to="/precios">{t("Ver planes", "See plans")} <ArrowUpRight className="ml-1 h-3.5 w-3.5" /></Link></Button>
+          )}
+          {tier === "pro" && <PlanChangeDialog from="pro" to="patrimonio" loading={spin("patrimonio_monthly")} disabled={busy !== null} onConfirm={() => void switchPlan("patrimonio_monthly")} />}
+          {tier === "patrimonio" && <PlanChangeDialog from="patrimonio" to="pro" loading={spin("pro_monthly")} disabled={busy !== null} onConfirm={() => void switchPlan("pro_monthly")} />}
+        </div>
+      </div>
+
+      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 border-b border-border pb-4">
+        {benefits.map((benefit) => (
+          <span key={benefit} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <CheckCircle2 className="h-4 w-4 text-primary" />{benefit}
+          </span>
+        ))}
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <span className="rounded-full border border-border bg-background/50 px-3 py-1 text-xs text-muted-foreground">
           {planLabel}
           {isPromo
             ? ` · ${t("código de invitación", "invite code")}`
@@ -120,36 +156,7 @@ export function SubscriptionManager() {
       </div>
 
 
-      <div className="mt-5 flex flex-wrap gap-2">
-        {tier === "free" && (
-          <Button asChild size="sm">
-            <Link to="/precios">
-              {t("Ver planes", "See plans")} <ArrowUpRight className="ml-1 h-3.5 w-3.5" />
-            </Link>
-          </Button>
-        )}
-        {tier === "pro" && (
-          <PlanChangeDialog
-            from="pro"
-            to="patrimonio"
-            loading={spin("patrimonio_monthly")}
-            disabled={busy !== null}
-            onConfirm={() => void switchPlan("patrimonio_monthly")}
-          />
-        )}
-        {tier === "patrimonio" && (
-          <PlanChangeDialog
-            from="patrimonio"
-            to="pro"
-            loading={spin("pro_monthly")}
-            disabled={busy !== null}
-            onConfirm={() => void switchPlan("pro_monthly")}
-          />
-        )}
-
-      </div>
-
-      <div className="mt-5 grid gap-2 sm:grid-cols-3">
+      <div className="mt-4 grid gap-2 sm:grid-cols-3">
         <InfoTile
           icon={User}
           label={t("Titular", "Account holder")}
@@ -231,23 +238,25 @@ function PortalAction({
   onClick: () => void;
 }) {
   return (
-    <button
+    <Button
       type="button"
+      variant="ghost"
       onClick={onClick}
       disabled={disabled}
-      className="group flex items-start gap-3 rounded-xl border border-border bg-elevated/40 p-3 text-left transition-colors hover:border-primary/40 hover:bg-elevated disabled:opacity-60"
+      className="group h-auto min-h-20 justify-start gap-3 rounded-xl border border-border bg-elevated/40 p-3 text-left transition-colors hover:border-primary/40 hover:bg-elevated disabled:opacity-60"
     >
       <span className="mt-0.5 rounded-lg border border-border bg-background p-1.5 text-muted-foreground group-hover:text-primary">
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Icon className="h-4 w-4" />}
       </span>
-      <span className="min-w-0">
+      <span className="min-w-0 flex-1">
         <span className="flex items-center gap-1 text-sm font-medium">
           {label}
           <ExternalLink className="h-3 w-3 text-muted-foreground" />
         </span>
         <span className="mt-0.5 block text-xs text-muted-foreground">{hint}</span>
       </span>
-    </button>
+      <ChevronRight className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
+    </Button>
   );
 }
 
