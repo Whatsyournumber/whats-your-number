@@ -207,7 +207,7 @@ export function SubscriptionManager() {
           <PortalAction
             icon={Receipt}
             label={t("Facturas", "Invoices")}
-            hint={t("Descarga tu historial", "Download history")}
+            hint={t("Descarga tu historial", "Download your history")}
             loading={spin("portal:overview")}
             disabled={busy !== null || loading || tier === "free"}
             onClick={() => void portal("overview")}
@@ -255,7 +255,7 @@ function PaymentMethodDialog({
         <PortalAction
           icon={CreditCard}
           label={t("Método de pago", "Payment method")}
-          hint={t("Gestiona tu tarjeta", "Manage your card")}
+          hint={t("Añade, cambia o elimina tu tarjeta", "Add, replace or remove your card")}
           loading={loading}
           disabled={disabled}
           onClick={() => undefined}
@@ -336,7 +336,7 @@ function CancelPlanDialog({
         <PortalAction
           icon={XCircle}
           label={t("Cancelar plan", "Cancel plan")}
-          hint={t("Acceso hasta el final", "Access until it ends")}
+          hint={t("Sigues con acceso hasta el final", "Access until period ends")}
           loading={loading}
           disabled={disabled}
           onClick={() => undefined}
@@ -427,11 +427,11 @@ function PortalAction({
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Icon className="h-4 w-4" />}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="flex items-center gap-1 truncate text-sm font-medium">
-          <span className="truncate">{label}</span>
+        <span className="flex items-center gap-1 text-sm font-medium">
+          {label}
           <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground" />
         </span>
-        <span className="mt-0.5 block truncate text-xs text-muted-foreground">{hint}</span>
+        <span className="mt-0.5 block text-xs text-muted-foreground">{hint}</span>
       </span>
       <ChevronRight className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
     </Button>
