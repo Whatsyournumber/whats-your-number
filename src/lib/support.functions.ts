@@ -66,7 +66,7 @@ export const sendSupportRequest = createServerFn({ method: 'POST' })
         lang: data.lang,
       },
       idempotencyKey: `support-request-${saved.id}`,
-      replyTo: email || undefined,
+      ...(email ? { replyTo: email } : {}),
     })
 
     return result.sent ? { ok: true as const } : { ok: false as const, reason: result.reason }

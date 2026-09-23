@@ -128,15 +128,16 @@ export function SubscriptionSupport() {
               accept="image/png,image/jpeg,image/webp,image/gif,application/pdf,text/plain,.doc,.docx,.xls,.xlsx"
               onChange={(event) => selectFile(event.target.files?.[0])}
             />
-            <button
+            <Button
               type="button"
+              variant="outline"
               onClick={() => inputRef.current?.click()}
-              className="flex min-h-28 w-full flex-col items-center justify-center rounded-lg border border-dashed border-border bg-elevated/40 px-4 text-center transition-colors hover:border-primary/50 hover:bg-elevated"
+              className="h-auto min-h-28 w-full flex-col rounded-lg border-dashed bg-elevated/40 px-4 text-center hover:border-primary/50 hover:bg-elevated"
             >
               <ImagePlus className="h-6 w-6 text-primary" />
               <span className="mt-2 text-sm font-medium">{t('Añadir captura o archivo', 'Add screenshot or file')}</span>
               <span className="mt-1 text-xs text-muted-foreground">{t('Imagen, PDF o documento · 10 MB', 'Image, PDF or document · 10 MB')}</span>
-            </button>
+            </Button>
             {file ? (
               <div className="flex items-center gap-2 rounded-lg border border-border bg-elevated/40 p-2.5">
                 <FileText className="h-4 w-4 shrink-0 text-primary" />
