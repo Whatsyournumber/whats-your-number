@@ -120,10 +120,11 @@ export function SubscriptionManager() {
         </div>
       </div>
 
-      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 border-b border-border pb-4">
+      <div className="mt-3 grid grid-cols-2 items-start gap-x-4 gap-y-2.5 border-b border-border pb-4 sm:gap-x-6">
         {benefits.map((benefit) => (
-          <span key={benefit} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <CheckCircle2 className="h-4 w-4 text-primary" />{benefit}
+          <span key={benefit} className="flex min-w-0 items-center gap-1.5 text-[11px] leading-tight text-muted-foreground sm:text-xs">
+            <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+            <span className="min-w-0 break-words">{benefit}</span>
           </span>
         ))}
       </div>
