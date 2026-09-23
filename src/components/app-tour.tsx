@@ -325,15 +325,15 @@ export function AppTour() {
     <>
       {/* Oscurece ligeramente el fondo para que el paso resalte sin ocultarlo */}
       <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/20" : "bg-background/40"}`} />
-      <div className="fixed inset-x-3 bottom-24 z-[100] sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[400px] lg:bottom-8">
-        <div className={`relative overflow-hidden rounded-3xl border border-primary/60 p-5 shadow-[0_0_50px_-8px] shadow-primary/40 ring-2 ring-primary/30 ${isNumberStep ? "bg-card/90 backdrop-blur-md" : "bg-card/95 backdrop-blur-xl"}`}>
+      <div className="fixed inset-x-3 bottom-16 z-[100] sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[400px] lg:bottom-8">
+        <div className={`relative overflow-hidden rounded-2xl border border-primary/60 p-4 shadow-[0_0_50px_-8px] shadow-primary/40 ring-2 ring-primary/30 sm:rounded-3xl sm:p-5 ${isNumberStep ? "bg-card/90 backdrop-blur-md" : "bg-card/95 backdrop-blur-xl"}`}>
           <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-64 -translate-x-1/2 rounded-full bg-primary/25 blur-3xl" />
-          <div className="relative flex items-start gap-3">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-positive/15 text-positive ring-1 ring-positive/30">
-              <StepIcon className="h-5 w-5" />
+          <div className="relative flex items-start gap-2.5 sm:gap-3">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-positive/15 text-positive ring-1 ring-positive/30 sm:h-11 sm:w-11 sm:rounded-2xl">
+              <StepIcon className="h-4 w-4 sm:h-5 sm:w-5" />
             </span>
             <div className="min-w-0 flex-1 pr-6">
-              <h3 className="font-display text-lg font-semibold leading-tight">{title}</h3>
+              <h3 className="font-display text-base font-semibold leading-tight sm:text-lg">{title}</h3>
               <div className="mt-1 flex flex-wrap items-center gap-1.5">
                 <span className="numeric text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                   {t("Paso", "Step")} {step + 1} / {total}
