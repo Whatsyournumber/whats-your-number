@@ -10,7 +10,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useLanguage, useT } from '@/hooks/use-language'
 import { supabase } from '@/integrations/supabase/client'
 import { sendSupportRequest } from '@/lib/support.functions'
-import supportAgent from '@/assets/subscription-support-agent.jpg'
+import supportAgent from '@/assets/subscription-support-agent-casual-business.jpg'
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024
 const ACCEPTED_TYPES = [
