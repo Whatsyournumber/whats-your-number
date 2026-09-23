@@ -151,8 +151,7 @@ function Advisor() {
   };
 
   return (
-    <PlanGate required="pro">
-      <PageShell>
+    <PageShell>
         <PageHeader
           eyebrow={t("Inteligencia", "Intelligence")}
           title={t("Asistente IA", "AI Assistant")}
@@ -264,7 +263,6 @@ function Advisor() {
           </div>
 
         </div>
-      </PageShell>
-    </PlanGate>
+    </PageShell>
   );
 }

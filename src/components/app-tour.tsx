@@ -155,7 +155,7 @@ const STEPS: Step[] = [
       "With the Family plan you manage your household profiles."],
   },
   {
-    url: "/advisor", icon: Sparkles, minPlan: "pro",
+    url: "/advisor", icon: Sparkles, minPlan: "free",
     es: ["Asistente IA", "Tu CFO personal, disponible 24/7.",
       "Analiza tus datos y encuentra oportunidades de ahorro.",
       "Prueba: ¿cuánto ahorro al mes? o ¿cómo va mi fondo de emergencia?",
