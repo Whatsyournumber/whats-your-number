@@ -324,16 +324,16 @@ function CancelPlanDialog({
           onClick={() => undefined}
         />
       </DialogTrigger>
-      <DialogContent className="max-w-3xl gap-5 border-border bg-background p-5 sm:p-7">
+      <DialogContent className="max-h-[90vh] max-w-xl gap-4 overflow-y-auto border-border bg-background p-4 sm:p-5">
         <DialogHeader>
-          <div className="mb-2 grid h-14 w-14 place-items-center rounded-full bg-destructive/10 text-destructive"><AlertTriangle className="h-7 w-7" /></div>
-          <DialogTitle className="max-w-xl text-2xl leading-tight sm:text-3xl">
+          <div className="mb-1 grid h-11 w-11 place-items-center rounded-full bg-destructive/10 text-destructive"><AlertTriangle className="h-5 w-5" /></div>
+          <DialogTitle className="max-w-lg text-xl leading-tight sm:text-2xl">
             {t("¿Seguro que quieres ", "Are you sure you want to ")}
             <span className="text-primary">{t("cancelar", "cancel")}</span>
             {t(` tu plan ${planLabel}?`, ` your ${planLabel} plan?`)}
           </DialogTitle>
           <DialogDescription asChild>
-            <div className="space-y-1 pt-1 text-base leading-relaxed">
+            <div className="space-y-1 pt-1 text-sm leading-relaxed">
               <p>
                 {periodEnd
                   ? <>{t("Tu plan seguirá activo hasta el ", "Your plan will remain active until ")}<span className="font-medium text-primary">{periodEnd}</span>.</>
@@ -343,35 +343,35 @@ function CancelPlanDialog({
             </div>
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4 rounded-xl border border-border bg-elevated/30 p-4 sm:p-5">
-          <div className="flex items-start gap-4">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><Check className="h-6 w-6" /></span>
+        <div className="space-y-3 rounded-xl border border-border bg-elevated/30 p-3.5">
+          <div className="flex items-start gap-3">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><Check className="h-5 w-5" /></span>
             <div>
-              <p className="font-medium text-foreground">{t(`Disfrutarás todas las funciones ${planLabel}`, `You'll enjoy every ${planLabel} feature`)}</p>
-              <p className="mt-0.5 text-sm text-muted-foreground">{periodEnd ? t(`hasta el ${periodEnd}.`, `until ${periodEnd}.`) : t("hasta el final de tu periodo actual.", "until the end of your current period.")}</p>
+              <p className="text-sm font-medium text-foreground">{t(`Disfrutarás todas las funciones ${planLabel}`, `You'll enjoy every ${planLabel} feature`)}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{periodEnd ? t(`hasta el ${periodEnd}.`, `until ${periodEnd}.`) : t("hasta el final de tu periodo actual.", "until the end of your current period.")}</p>
             </div>
           </div>
-          <div className="flex items-start gap-4">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><Check className="h-6 w-6" /></span>
+          <div className="flex items-start gap-3">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><Check className="h-5 w-5" /></span>
             <div>
-              <p className="font-medium text-foreground">{t("Puedes volver a suscribirte más adelante", "You can subscribe again later")}</p>
-              <p className="mt-0.5 text-sm text-muted-foreground">{t("cuando lo necesites.", "whenever you need to.")}</p>
+              <p className="text-sm font-medium text-foreground">{t("Puedes volver a suscribirte más adelante", "You can subscribe again later")}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{t("cuando lo necesites.", "whenever you need to.")}</p>
             </div>
           </div>
         </div>
         <DialogFooter className="grid gap-3 sm:grid-cols-2 sm:space-x-0">
           <DialogClose asChild>
-            <Button variant="outline" className="h-auto min-h-20 justify-start gap-3 border-primary/60 bg-primary/10 px-4 text-left hover:bg-primary/15">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-primary/15 text-primary"><Pause className="h-5 w-5" /></span>
+            <Button variant="outline" className="h-auto min-h-16 justify-start gap-2.5 border-primary/60 bg-primary/10 px-3 text-left hover:bg-primary/15">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/15 text-primary"><Pause className="h-4 w-4" /></span>
               <span>
                 <span className="block font-semibold">{t("No, mantener mi plan", "No, keep my plan")}</span>
                 <span className="mt-1 block text-xs font-normal text-muted-foreground">{t(`Seguir disfrutando de ${planLabel}`, `Keep enjoying ${planLabel}`)}</span>
               </span>
             </Button>
           </DialogClose>
-          <Button variant="outline" className="h-auto min-h-20 justify-start gap-3 border-destructive/70 bg-destructive/10 px-4 text-left hover:bg-destructive/15" onClick={onConfirm} disabled={loading}>
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-destructive/15 text-destructive">
-              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Trash2 className="h-5 w-5" />}
+          <Button variant="outline" className="h-auto min-h-16 justify-start gap-2.5 border-destructive/70 bg-destructive/10 px-3 text-left hover:bg-destructive/15" onClick={onConfirm} disabled={loading}>
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-destructive/15 text-destructive">
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
             </span>
             <span>
               <span className="block font-semibold">{t("Sí, cancelar mi plan", "Yes, cancel my plan")}</span>
