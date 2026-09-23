@@ -10,6 +10,9 @@ import { useT } from "@/hooks/use-language";
 import { useAuth } from "@/hooks/use-auth";
 import { useSidebar } from "@/components/ui/sidebar";
 import { planMeetsTier, useSubscription, type PlanTier } from "@/hooks/use-subscription";
+import { BrandMark } from "@/components/brand-logo";
+import { useProfile } from "@/hooks/use-profile";
+import { cn } from "@/lib/utils";
 
 const PENDING_KEY = "yn.tour.pending";
 const doneKey = (uid: string) => `yn.tour.done:${uid}`;
@@ -175,12 +178,24 @@ export function AppTour() {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const { isMobile, setOpenMobile } = useSidebar();
+  const { profile } = useProfile();
   const [step, setStep] = useState<number | null>(null); // 0 = bienvenida
   const availableSteps = useMemo(
     () => STEPS.filter((tourStep) => planMeetsTier(tourStep.minPlan, tier)),
     [tier],
   );
   const total = availableSteps.length + 1;
+
+  // Nombre para saludar: perfil > Google > correo.
+  const firstName = useMemo(() => {
+    const raw =
+      profile.full_name ||
+      (user?.user_metadata?.["full_name"] as string | undefined) ||
+      user?.email?.split("@")[0] ||
+      "";
+    return raw.trim().split(/\s+/)[0] ?? "";
+  }, [profile.full_name, user]);
+
 
   useEffect(() => {
     if (!user || subscriptionLoading) return;
