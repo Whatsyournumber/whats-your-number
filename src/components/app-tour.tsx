@@ -347,33 +347,33 @@ export function AppTour() {
               </div>
             </div>
           </div>
-          <p className="relative mt-3 text-sm leading-relaxed text-foreground/90">{intro}</p>
-          <ul className="relative mt-3 space-y-2">
+          <p className="relative mt-2.5 text-[13px] leading-snug text-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
+          <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
             {points.map((p, i) => {
               const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
               return (
-                <li key={i} className="flex items-start gap-2.5 text-xs leading-relaxed text-muted-foreground">
-                  <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-positive/10 text-positive">
-                    <B className="h-3 w-3" />
+                <li key={i} className="flex items-start gap-2 text-[11px] leading-snug text-muted-foreground sm:gap-2.5 sm:text-xs sm:leading-relaxed">
+                  <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-positive/10 text-positive sm:h-5 sm:w-5">
+                    <B className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                   </span>
                   {p}
                 </li>
               );
             })}
           </ul>
-          <div className="relative mt-4 h-1 overflow-hidden rounded-full bg-foreground/10">
+          <div className="relative mt-3 h-1 overflow-hidden rounded-full bg-foreground/10 sm:mt-4">
             <div className="h-full rounded-full bg-positive transition-all duration-500" style={{ width: `${((step + 1) / total) * 100}%` }} />
           </div>
-          <div className="relative mt-4 flex items-center justify-between gap-2">
-            <button className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground" onClick={() => setStep(step - 1)}>
-              <ArrowLeft className="h-4 w-4" /> {t("Atrás", "Back")}
+          <div className="relative mt-3 flex items-center justify-between gap-2 sm:mt-4">
+            <button className="flex items-center gap-1 text-[13px] text-muted-foreground transition-colors hover:text-foreground sm:gap-1.5 sm:text-sm" onClick={() => setStep(step - 1)}>
+              <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> {t("Atrás", "Back")}
             </button>
-            <div className="flex items-center gap-3">
-              <button className="text-sm text-muted-foreground underline-offset-2 transition-colors hover:text-foreground hover:underline" onClick={close}>
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <button className="text-[13px] text-muted-foreground underline-offset-2 transition-colors hover:text-foreground hover:underline sm:text-sm" onClick={close}>
                 {t("Omitir", "Skip")}
               </button>
-              <Button size="sm" className="gap-2 rounded-xl" onClick={() => (last ? close() : setStep(step + 1))}>
-                {last ? t("¡Listo!", "Done!") : t("Siguiente", "Next")} <ArrowRight className="h-4 w-4" />
+              <Button size="sm" className="h-8 gap-1.5 rounded-xl text-[13px] sm:h-9 sm:gap-2 sm:text-sm" onClick={() => (last ? close() : setStep(step + 1))}>
+                {last ? t("¡Listo!", "Done!") : t("Siguiente", "Next")} <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </Button>
             </div>
           </div>
