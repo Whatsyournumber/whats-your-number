@@ -934,7 +934,7 @@ function PatrimonioContent() {
                         : "";
                 const subtitle = extraMeta ? `${r.sub} · ${extraMeta}` : r.sub;
                 return (
-                  <div key={r.id} className="relative grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
+                  <div key={r.id} className="relative grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 lg:grid-cols-6">
                     <button
                       type="button"
                       aria-label={t(`Editar ${r.label}`, `Edit ${r.label}`)}
@@ -947,7 +947,7 @@ function PatrimonioContent() {
                     >
                       <Pencil className="h-3.5 w-3.5" />
                     </button>
-                    <div className="col-span-2 min-w-0 pr-8 md:col-span-2">
+                    <div className="col-span-2 min-w-0 pr-8 lg:col-span-2">
                       <p className="truncate text-sm font-medium">{r.ticker || r.label}</p>
                       <p className="truncate text-xs text-muted-foreground">{subtitle}</p>
                     </div>
@@ -1019,8 +1019,8 @@ function PatrimonioContent() {
               })}
             </div>
 
-            <div className="grid grid-cols-2 items-center gap-3 rounded-xl border-2 border-border bg-elevated px-4 py-3.5 md:grid-cols-6">
-              <div className="col-span-2 md:col-span-2">
+            <div className="grid grid-cols-2 items-center gap-3 rounded-xl border-2 border-border bg-elevated px-4 py-3.5 lg:grid-cols-6">
+              <div className="col-span-2 lg:col-span-2">
                 <p className="text-sm font-bold uppercase tracking-wide text-foreground">{t("Total", "Total")}</p>
               </div>
               <div>
