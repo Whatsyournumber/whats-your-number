@@ -4,6 +4,8 @@ import { Check, FileText, ImagePlus, Loader2, MessageSquareText, Send, ShieldChe
 import { toast } from 'sonner'
 
 import { Panel } from '@/components/page'
+import { cn } from '@/lib/utils'
+
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/hooks/use-auth'
@@ -105,24 +107,26 @@ export function SubscriptionSupport() {
         </div>
       ) : (
         <div className="grid lg:grid-cols-[1.05fr_1fr]">
-          <div className="relative min-h-72 overflow-hidden border-b border-border lg:min-h-[390px] lg:border-b-0 lg:border-r">
-            <img src={supportAgent} alt="" loading="lazy" width={1600} height={900} className="absolute inset-0 h-full w-full object-cover object-center" />
-            <div className="absolute inset-0 bg-background/65" />
-            <div className="relative flex h-full flex-col justify-between p-6 md:p-8">
+          <div className="relative min-h-60 overflow-hidden border-b border-border lg:min-h-[390px] lg:border-b-0 lg:border-r">
+            <img src={supportAgent} alt="" loading="lazy" width={1600} height={900} className="absolute inset-0 h-full w-full object-cover object-[72%_28%] lg:object-[64%_45%]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-background/25" />
+            <div className="relative flex h-full flex-col justify-between p-5 md:p-8">
+
               <div>
                 <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">{t('¿Necesitas ayuda?', 'Need help?')}</p>
-                <h2 className="mt-3 max-w-md text-3xl font-semibold leading-tight md:text-4xl">
+                <h2 className="mt-2.5 max-w-md text-2xl font-semibold leading-tight sm:text-3xl md:text-4xl">
                   {t('¿Tienes alguna ', 'Have a ')}<span className="text-primary">{t('duda o sugerencia?', 'question or suggestion?')}</span>
                 </h2>
-                <p className="mt-3 max-w-sm text-sm text-muted-foreground sm:text-base">
+                <p className="mt-3 hidden max-w-sm text-sm text-muted-foreground sm:block sm:text-base">
                   {t('Cuéntanos qué necesitas. Nuestro equipo te responderá lo antes posible.', "Tell us what you need. Our team will reply as soon as possible.")}
                 </p>
               </div>
-              <div className="mt-8 grid grid-cols-2 gap-3 text-xs sm:grid-cols-3">
+              <div className="mt-6 grid grid-cols-2 gap-2.5 text-xs sm:mt-8 sm:grid-cols-3 sm:gap-3">
                 <SupportPromise icon={MessageSquareText} label={t('Soporte real', 'Real support')} />
                 <SupportPromise icon={Timer} label={t('Respuesta rápida', 'Fast response')} />
-                <SupportPromise icon={ShieldCheck} label={t('Atención segura', 'Secure support')} />
+                <SupportPromise icon={ShieldCheck} label={t('Atención segura', 'Secure support')} className="hidden sm:flex" />
               </div>
+
             </div>
           </div>
           <div className="flex flex-col p-5 md:p-6">
@@ -175,9 +179,9 @@ export function SubscriptionSupport() {
   )
 }
 
-function SupportPromise({ icon: Icon, label }: { icon: typeof MessageSquareText; label: string }) {
+function SupportPromise({ icon: Icon, label, className }: { icon: typeof MessageSquareText; label: string; className?: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-xl border border-border bg-background/55 px-3 py-2.5 backdrop-blur-sm">
+    <div className={cn('flex items-center gap-2 rounded-xl border border-border bg-background/55 px-3 py-2.5 backdrop-blur-sm', className)}>
       <Icon className="h-4 w-4 shrink-0 text-primary" />
       <span className="font-medium">{label}</span>
     </div>
