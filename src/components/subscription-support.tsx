@@ -4,6 +4,8 @@ import { Check, FileText, ImagePlus, Loader2, MessageSquareText, Send, ShieldChe
 import { toast } from 'sonner'
 
 import { Panel } from '@/components/page'
+import { cn } from '@/lib/utils'
+
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/hooks/use-auth'
