@@ -62,7 +62,7 @@ const STEPS: Step[] = [
     url: "/gastos", icon: ChartPie, minPlan: "free",
     es: ["Análisis de Gastos", "Descubre dónde se va tu dinero cada mes.",
       "Compara cada categoría con tu presupuesto mensual.",
-      "Las alertas te avisan cuando una categoría se pasa del plan.",
+      "La IA te busca oportunidades de ahorro.",
       "Ve tu evolución mes a mes desde que empezaste."],
     en: ["Spending Analysis", "Find out where your money goes each month.",
       "Compare each category with your monthly budget.",
