@@ -120,27 +120,62 @@ export function AppTour() {
     );
   }
 
-  const [title, body] = t(current!.es.join("|"), current!.en.join("|")).split("|");
+  const [title, body, tip] = t(current!.es.join("|"), current!.en.join("|")).split("|");
   const last = step === STEPS.length;
+  const StepIcon = current!.icon;
 
   return (
-    <div className="fixed inset-x-3 bottom-24 z-[100] sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[380px] lg:bottom-8">
-      <div className="rounded-2xl border border-primary/50 bg-card p-5 shadow-2xl shadow-primary/25 ring-1 ring-primary/20">
-        <div className="flex items-start gap-3">
-          <span className="numeric grid h-8 w-8 shrink-0 place-items-center rounded-full bg-positive text-sm font-semibold text-background">{step + 1}</span>
-          <h3 className="flex-1 pt-1 font-display text-lg font-semibold leading-tight">{title}</h3>
-          <span className="numeric shrink-0 pt-1 text-xs text-muted-foreground">{step + 1} / {TOTAL}</span>
-        </div>
-        <p className="mt-3 text-sm text-muted-foreground">{body}</p>
-        <div className="mt-4 flex items-center justify-between">
-          <button className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground" onClick={() => setStep(step - 1)}>
-            <ArrowLeft className="h-4 w-4" /> {t("Atrás", "Back")}
+    <>
+      {/* Oscurece el fondo para que el paso resalte */}
+      <div className="fixed inset-0 z-[90] bg-background/60 backdrop-blur-[2px]" onClick={close} />
+      <div className="fixed inset-x-3 bottom-24 z-[100] sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[400px] lg:bottom-8">
+        <div className="relative overflow-hidden rounded-3xl border border-primary/60 bg-card/95 p-5 shadow-[0_0_50px_-8px] shadow-primary/40 ring-2 ring-primary/30 backdrop-blur-xl">
+          {/* brillo superior */}
+          <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-64 -translate-x-1/2 rounded-full bg-primary/25 blur-3xl" />
+          <button
+            aria-label={t("Cerrar tutorial", "Close tour")}
+            className="absolute right-3.5 top-3.5 grid h-7 w-7 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-foreground/10 hover:text-foreground"
+            onClick={close}
+          >
+            <X className="h-4 w-4" />
           </button>
-          <Button size="sm" className="gap-2" onClick={() => (last ? close() : setStep(step + 1))}>
-            {last ? t("¡Listo!", "Done!") : t("Siguiente", "Next")} <ArrowRight className="h-4 w-4" />
-          </Button>
+          <div className="relative flex items-start gap-3">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-positive/15 text-positive ring-1 ring-positive/30">
+              <StepIcon className="h-5 w-5" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-display text-lg font-semibold leading-tight">{title}</h3>
+              <span className="numeric mt-0.5 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                {t("Paso", "Step")} {step + 1} / {TOTAL}
+              </span>
+            </div>
+          </div>
+          <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground">{body}</p>
+          {tip && (
+            <p className="relative mt-3 flex items-start gap-2 rounded-xl bg-positive/10 px-3 py-2.5 text-xs leading-relaxed text-positive ring-1 ring-positive/20">
+              <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              {tip}
+            </p>
+          )}
+          {/* barra de progreso */}
+          <div className="relative mt-4 h-1 overflow-hidden rounded-full bg-foreground/10">
+            <div className="h-full rounded-full bg-positive transition-all duration-500" style={{ width: `${((step + 1) / TOTAL) * 100}%` }} />
+          </div>
+          <div className="relative mt-4 flex items-center justify-between gap-2">
+            <button className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground" onClick={() => setStep(step - 1)}>
+              <ArrowLeft className="h-4 w-4" /> {t("Atrás", "Back")}
+            </button>
+            <div className="flex items-center gap-3">
+              <button className="text-sm text-muted-foreground underline-offset-2 transition-colors hover:text-foreground hover:underline" onClick={close}>
+                {t("Omitir", "Skip")}
+              </button>
+              <Button size="sm" className="gap-2 rounded-xl" onClick={() => (last ? close() : setStep(step + 1))}>
+                {last ? t("¡Listo!", "Done!") : t("Siguiente", "Next")} <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
