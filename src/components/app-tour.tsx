@@ -255,35 +255,58 @@ export function AppTour() {
   );
 
   if (step === 0) {
+    const welcomePoints: [typeof Compass, string][] = [
+      [ReceiptText, t("Trackea tus gastos", "Track your expenses")],
+      [Lightbulb, t("Encuentra oportunidades", "Find opportunities")],
+      [Target, t("Alcanza tu libertad financiera", "Reach financial freedom")],
+    ];
     return (
-      <div className="fixed inset-0 z-[100] grid place-items-center bg-background/50 p-4 backdrop-blur-[2px]">
-        <div className="relative w-full max-w-sm rounded-3xl border border-primary/40 bg-card p-6 text-center shadow-2xl shadow-primary/20">
-           <span className="numeric absolute right-5 top-4 text-xs text-muted-foreground">1 / {total}</span>
-          <Sprout className="mx-auto h-10 w-10 text-positive" />
-          <h2 className="mt-3 font-display text-2xl font-semibold">{t("¡Bienvenido!", "Welcome!")}</h2>
-          <div className="mt-3 flex justify-center">{planBadge}</div>
-          <p className="mt-3 text-sm text-muted-foreground">
-            {t("Vamos a hacer un tour rápido para que aproveches al máximo WhatsYourNumber. En menos de 1 minuto estarás listo.", "Let's take a quick tour so you get the most out of WhatsYourNumber. You'll be ready in under a minute.")}
-          </p>
-          <div className="mt-5 grid grid-cols-3 gap-2 text-xs text-muted-foreground">
-            {[
-              [Compass, t("Entiende tu dinero", "Understand your money")],
-              [Lightbulb, t("Encuentra oportunidades", "Find opportunities")],
-              [Target, t("Alcanza tu libertad financiera", "Reach financial freedom")],
-            ].map(([Icon, label], i) => {
-              const I = Icon as typeof Compass;
-              return (
-                <div key={i} className="flex flex-col items-center gap-2">
-                  <span className="grid h-10 w-10 place-items-center rounded-full bg-positive/15 text-positive"><I className="h-4 w-4" /></span>
-                  {label as string}
-                </div>
-              );
-            })}
+      <div className="fixed inset-0 z-[100] grid place-items-center bg-background/60 p-4 backdrop-blur-[2px]">
+        <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-positive/40 bg-card p-6 pt-7 text-center shadow-2xl shadow-positive/15">
+          <div className="pointer-events-none absolute -top-24 left-1/2 h-40 w-72 -translate-x-1/2 rounded-full bg-positive/15 blur-3xl" />
+          <span className="numeric absolute right-5 top-4 text-xs font-medium text-muted-foreground">1 / {total}</span>
+          <div className="relative flex justify-center">
+            <BrandMark className="h-16 w-16" />
           </div>
-          <Button className="mt-6 w-full gap-2" onClick={() => { if (isMobile) setOpenMobile(false); setStep(1); }}>
+          <h2 className="relative mt-3 font-display text-[26px] font-semibold leading-tight">
+            {firstName ? (
+              <>
+                {t("¡Bienvenido,", "Welcome,")} <span className="text-positive">{firstName}!</span>
+              </>
+            ) : (
+              t("¡Bienvenido!", "Welcome!")
+            )}
+          </h2>
+          <div className="relative mt-2.5 flex justify-center">{planBadge}</div>
+          <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground">
+            {t("Vamos a hacer un tour rápido para que aproveches al máximo WhatsYourNumber.", "Let's take a quick tour so you get the most out of WhatsYourNumber.")}
+          </p>
+          <p className="relative mt-1.5 text-sm font-medium text-foreground">
+            {t("En menos de 1 minuto estarás listo.", "You'll be ready in under a minute.")}
+          </p>
+          <div className="relative mt-6 grid grid-cols-3">
+            {welcomePoints.map(([Icon, label], i) => (
+              <div
+                key={label}
+                className={cn(
+                  "flex flex-col items-center gap-2.5 px-1.5 text-[11px] leading-tight text-muted-foreground",
+                  i > 0 && "border-l border-foreground/10",
+                )}
+              >
+                <span className="grid h-11 w-11 place-items-center rounded-full bg-positive/10 text-positive ring-1 ring-positive/25">
+                  <Icon className="h-5 w-5" />
+                </span>
+                <span className="max-w-[94px]">{label}</span>
+              </div>
+            ))}
+          </div>
+          <Button
+            className="relative mt-6 w-full gap-2 rounded-2xl py-5 text-[15px]"
+            onClick={() => { if (isMobile) setOpenMobile(false); setStep(1); }}
+          >
             {t("Comenzar tour", "Start tour")} <ArrowRight className="h-4 w-4" />
           </Button>
-          <button className="mt-3 text-sm text-muted-foreground hover:text-foreground" onClick={close}>
+          <button className="relative mt-3 text-sm text-muted-foreground transition-colors hover:text-foreground" onClick={close}>
             {t("Omitir tour", "Skip tour")}
           </button>
         </div>
