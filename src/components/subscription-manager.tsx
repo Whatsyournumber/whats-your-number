@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, ArrowUpRight, CheckCircle2, ChevronRight, CreditCard, Crown, ExternalLink, Loader2, Mail, Plus, Receipt, ShieldCheck, Sparkles, Trash2, User, XCircle } from "lucide-react";
+import { AlertTriangle, ArrowUpRight, Check, CheckCircle2, ChevronRight, CreditCard, Crown, ExternalLink, Loader2, Mail, Pause, Plus, Receipt, ShieldCheck, Sparkles, Trash2, User, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { Panel } from "@/components/page";
@@ -10,6 +10,7 @@ import { PlanChangeDialog, PlanDetailsDialog } from "@/components/plan-details-d
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -210,6 +211,7 @@ export function SubscriptionManager() {
             onClick={() => void portal("overview")}
           />
           <CancelPlanDialog
+            planLabel={planLabel}
             periodEnd={subscription?.current_period_end ? fmtDate(subscription.current_period_end) : null}
             loading={spin("portal:cancel")}
             disabled={busy !== null || loading || tier === "free"}
@@ -297,11 +299,13 @@ function PaymentMethodDialog({
 }
 
 function CancelPlanDialog({
+  planLabel,
   periodEnd,
   loading,
   disabled,
   onConfirm,
 }: {
+  planLabel: string;
   periodEnd: string | null;
   loading: boolean;
   disabled: boolean;
@@ -320,25 +324,59 @@ function CancelPlanDialog({
           onClick={() => undefined}
         />
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-3xl gap-5 border-border bg-background p-5 sm:p-7">
         <DialogHeader>
-          <div className="mb-2 grid h-11 w-11 place-items-center rounded-xl bg-destructive/10 text-destructive"><AlertTriangle className="h-5 w-5" /></div>
-          <DialogTitle>{t("¿Seguro que quieres cancelar?", "Are you sure you want to cancel?")}</DialogTitle>
-          <DialogDescription>
-            {periodEnd
-              ? t(`Conservarás todas las funciones hasta el ${periodEnd}. Después, tu cuenta volverá al plan Free y no habrá más cobros.`, `You'll keep every feature until ${periodEnd}. After that, your account returns to Free and there will be no more charges.`)
-              : t("Conservarás las funciones hasta que termine el periodo que ya pagaste. Después, tu cuenta volverá al plan Free.", "You'll keep your features until the paid period ends. After that, your account returns to Free.")}
+          <div className="mb-2 grid h-14 w-14 place-items-center rounded-full bg-destructive/10 text-destructive"><AlertTriangle className="h-7 w-7" /></div>
+          <DialogTitle className="max-w-xl text-2xl leading-tight sm:text-3xl">
+            {t("¿Seguro que quieres ", "Are you sure you want to ")}
+            <span className="text-primary">{t("cancelar", "cancel")}</span>
+            {t(` tu plan ${planLabel}?`, ` your ${planLabel} plan?`)}
+          </DialogTitle>
+          <DialogDescription asChild>
+            <div className="space-y-1 pt-1 text-base leading-relaxed">
+              <p>
+                {periodEnd
+                  ? <>{t("Tu plan seguirá activo hasta el ", "Your plan will remain active until ")}<span className="font-medium text-primary">{periodEnd}</span>.</>
+                  : t("Tu plan seguirá activo hasta que termine el periodo que ya pagaste.", "Your plan will remain active until the end of your paid period.")}
+              </p>
+              <p>{t("Después pasarás automáticamente al plan Free y no habrá más cobros.", "After that, you'll automatically switch to the Free plan and there will be no more charges.")}</p>
+            </div>
           </DialogDescription>
         </DialogHeader>
-        <div className="rounded-xl border border-border bg-elevated/40 p-3 text-sm text-muted-foreground">
-          <p className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-positive" />{t("No perderás el acceso inmediatamente.", "You won't lose access immediately.")}</p>
-          <p className="mt-2 flex items-start gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-positive" />{t("Puedes volver a suscribirte más adelante.", "You can subscribe again later.")}</p>
+        <div className="space-y-4 rounded-xl border border-border bg-elevated/30 p-4 sm:p-5">
+          <div className="flex items-start gap-4">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><Check className="h-6 w-6" /></span>
+            <div>
+              <p className="font-medium text-foreground">{t(`Disfrutarás todas las funciones ${planLabel}`, `You'll enjoy every ${planLabel} feature`)}</p>
+              <p className="mt-0.5 text-sm text-muted-foreground">{periodEnd ? t(`hasta el ${periodEnd}.`, `until ${periodEnd}.`) : t("hasta el final de tu periodo actual.", "until the end of your current period.")}</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-4">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><Check className="h-6 w-6" /></span>
+            <div>
+              <p className="font-medium text-foreground">{t("Puedes volver a suscribirte más adelante", "You can subscribe again later")}</p>
+              <p className="mt-0.5 text-sm text-muted-foreground">{t("cuando lo necesites.", "whenever you need to.")}</p>
+            </div>
+          </div>
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onConfirm} disabled={loading}>
-            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-            {t("Sí, continuar con la cancelación", "Yes, continue to cancellation")}
-            <ExternalLink className="ml-2 h-3.5 w-3.5" />
+        <DialogFooter className="grid gap-3 sm:grid-cols-2 sm:space-x-0">
+          <DialogClose asChild>
+            <Button variant="outline" className="h-auto min-h-20 justify-start gap-3 border-primary/60 bg-primary/10 px-4 text-left hover:bg-primary/15">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-primary/15 text-primary"><Pause className="h-5 w-5" /></span>
+              <span>
+                <span className="block font-semibold">{t("No, mantener mi plan", "No, keep my plan")}</span>
+                <span className="mt-1 block text-xs font-normal text-muted-foreground">{t(`Seguir disfrutando de ${planLabel}`, `Keep enjoying ${planLabel}`)}</span>
+              </span>
+            </Button>
+          </DialogClose>
+          <Button variant="outline" className="h-auto min-h-20 justify-start gap-3 border-destructive/70 bg-destructive/10 px-4 text-left hover:bg-destructive/15" onClick={onConfirm} disabled={loading}>
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-destructive/15 text-destructive">
+              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Trash2 className="h-5 w-5" />}
+            </span>
+            <span>
+              <span className="block font-semibold">{t("Sí, cancelar mi plan", "Yes, cancel my plan")}</span>
+              <span className="mt-1 block text-xs font-normal text-muted-foreground">{periodEnd ? t(`Pasar al plan Free el ${periodEnd}`, `Switch to Free on ${periodEnd}`) : t("Pasar al plan Free al terminar", "Switch to Free when it ends")}</span>
+            </span>
           </Button>
         </DialogFooter>
       </DialogContent>
