@@ -180,9 +180,19 @@ export function AppTour() {
   const { isMobile, setOpenMobile } = useSidebar();
   const { profile } = useProfile();
   const [step, setStep] = useState<number | null>(null); // 0 = bienvenida
+  // Permite previsualizar el tour de otro plan con localStorage "yn.tour.tier" = free | pro | patrimonio.
+  const tourTier = useMemo<PlanTier>(() => {
+    try {
+      const forced = localStorage.getItem("yn.tour.tier");
+      if (forced === "free" || forced === "pro" || forced === "patrimonio") return forced;
+    } catch {
+      /* noop */
+    }
+    return tier;
+  }, [tier]);
   const availableSteps = useMemo(
-    () => STEPS.filter((tourStep) => planMeetsTier(tourStep.minPlan, tier)),
-    [tier],
+    () => STEPS.filter((tourStep) => planMeetsTier(tourStep.minPlan, tourTier)),
+    [tourTier],
   );
   const total = availableSteps.length + 1;
 
