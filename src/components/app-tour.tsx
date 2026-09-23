@@ -66,7 +66,7 @@ const STEPS: Step[] = [
       "Ve tu evolución mes a mes desde que empezaste."],
     en: ["Spending Analysis", "Find out where your money goes each month.",
       "Compare each category with your monthly budget.",
-      "Alerts warn you when a category exceeds your plan.",
+      "AI finds you savings opportunities.",
       "See your month-by-month evolution since you started."],
   },
   {
