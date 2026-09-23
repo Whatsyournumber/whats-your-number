@@ -100,7 +100,7 @@ const STEPS: Step[] = [
       "Your property and its debt are added to your net worth."],
   },
   {
-    url: "/patrimonio", icon: Wallet, minPlan: "free",
+    url: "/patrimonio", icon: Wallet, minPlan: "pro",
     es: ["Patrimonio", "Todo lo que tienes y lo que debes, en una vista.",
       "Cuentas, inversiones, cripto, propiedades y deudas.",
       "Edita cualquier activo con el lápiz para mantenerlo al día.",
