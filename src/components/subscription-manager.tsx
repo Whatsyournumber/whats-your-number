@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, ArrowUpRight, Check, CheckCircle2, ChevronRight, CreditCard, Crown, ExternalLink, Loader2, Mail, Pause, Plus, Receipt, ShieldCheck, Sparkles, Trash2, User, XCircle } from "lucide-react";
+import { AlertTriangle, ArrowUpRight, Check, CheckCircle2, ChevronRight, CreditCard, Crown, ExternalLink, Loader2, Mail, Plus, Receipt, ShieldCheck, Sparkles, Trash2, User, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { Panel } from "@/components/page";
