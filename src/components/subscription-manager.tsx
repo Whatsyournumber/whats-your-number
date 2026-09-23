@@ -324,60 +324,55 @@ function CancelPlanDialog({
           onClick={() => undefined}
         />
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] max-w-lg gap-3 overflow-y-auto border-border bg-background p-3.5 sm:p-4">
-        <DialogHeader className="text-left">
-          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
-            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-destructive/10 text-destructive"><AlertTriangle className="h-4 w-4" /></div>
-            <DialogTitle className="min-w-0 text-lg leading-tight sm:text-xl">
-              {t("¿Seguro que quieres ", "Are you sure you want to ")}
-              <span className="text-destructive">{t("cancelar", "cancel")}</span>
-              {t(` tu plan ${planLabel}?`, ` your ${planLabel} plan?`)}
-            </DialogTitle>
-          </div>
+      <DialogContent className="max-h-[90vh] max-w-md gap-0 overflow-y-auto rounded-3xl border-border bg-background p-5 text-center shadow-2xl sm:p-7">
+        <DialogHeader className="items-center text-center">
+          <div className="mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-destructive/10 text-destructive ring-1 ring-destructive/20"><AlertTriangle className="h-6 w-6" /></div>
+          <DialogTitle className="max-w-sm text-xl font-bold leading-tight sm:text-2xl">
+            {t("¿Seguro que quieres ", "Are you sure you want to ")}
+            <span className="text-destructive">{t("cancelar", "cancel")}</span>
+            {t(` tu plan ${planLabel}?`, ` your ${planLabel} plan?`)}
+          </DialogTitle>
           <DialogDescription asChild>
-            <div className="space-y-0.5 text-xs leading-relaxed sm:text-sm">
+            <div className="mt-3 space-y-1 text-center text-xs leading-relaxed sm:text-sm">
               <p>
                 {periodEnd
-                  ? <>{t("Tu plan seguirá activo hasta el ", "Your plan will remain active until ")}<span className="font-medium text-primary">{periodEnd}</span>.</>
+                  ? <>{t("Tu plan seguirá activo hasta el ", "Your plan will remain active until ")}<span className="font-medium text-foreground">{periodEnd}</span>.</>
                   : t("Tu plan seguirá activo hasta que termine el periodo que ya pagaste.", "Your plan will remain active until the end of your paid period.")}
               </p>
-              <p>{t("Después pasarás automáticamente al plan Free y no habrá más cobros.", "After that, you'll automatically switch to the Free plan and there will be no more charges.")}</p>
+              <p className="text-[11px] text-muted-foreground">{t("Después pasarás automáticamente al plan Free y no habrá más cobros.", "After that, you'll automatically switch to the Free plan and there will be no more charges.")}</p>
             </div>
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-2.5 px-1 py-1">
-          <div className="flex items-start gap-2.5">
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><Check className="h-4 w-4" /></span>
+        <div className="my-6 space-y-4 rounded-2xl border border-border bg-elevated/20 p-4 text-left">
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-positive/15 text-positive"><Check className="h-3 w-3" /></span>
             <div>
-              <p className="text-xs font-medium text-foreground sm:text-sm">{t(`Disfrutarás todas las funciones ${planLabel}`, `You'll enjoy every ${planLabel} feature`)}</p>
-              <p className="text-[11px] text-muted-foreground">{periodEnd ? t(`hasta el ${periodEnd}.`, `until ${periodEnd}.`) : t("hasta el final de tu periodo actual.", "until the end of your current period.")}</p>
+              <p className="text-[13px] font-medium text-foreground">{t(`Disfrutarás todas las funciones ${planLabel}`, `You'll enjoy every ${planLabel} feature`)}</p>
+              <p className="mt-0.5 text-[11px] text-muted-foreground">{periodEnd ? t(`hasta el ${periodEnd}.`, `until ${periodEnd}.`) : t("hasta el final de tu periodo actual.", "until the end of your current period.")}</p>
             </div>
           </div>
-          <div className="flex items-start gap-2.5">
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><Check className="h-4 w-4" /></span>
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-positive/15 text-positive"><Check className="h-3 w-3" /></span>
             <div>
-              <p className="text-xs font-medium text-foreground sm:text-sm">{t("Puedes volver a suscribirte más adelante", "You can subscribe again later")}</p>
-              <p className="text-[11px] text-muted-foreground">{t("cuando lo necesites.", "whenever you need to.")}</p>
+              <p className="text-[13px] font-medium text-foreground">{t("Puedes volver a suscribirte más adelante", "You can subscribe again later")}</p>
+              <p className="mt-0.5 text-[11px] text-muted-foreground">{t("cuando lo necesites.", "whenever you need to.")}</p>
             </div>
           </div>
         </div>
-        <DialogFooter className="grid gap-3 sm:grid-cols-2 sm:space-x-0">
+        <DialogFooter className="grid grid-cols-2 gap-3 sm:space-x-0">
           <DialogClose asChild>
-            <Button variant="outline" className="h-auto min-h-14 justify-start gap-2 border-primary/60 bg-primary/10 px-2.5 text-left hover:bg-primary/15">
-              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary/15 text-primary"><Pause className="h-3.5 w-3.5" /></span>
+            <Button variant="outline" className="h-auto min-h-16 flex-col items-center justify-center gap-1 rounded-2xl border-border bg-elevated/40 px-3 text-center hover:bg-elevated">
               <span>
-                <span className="block text-xs font-semibold sm:text-sm">{t("No, mantener mi plan", "No, keep my plan")}</span>
-                <span className="mt-0.5 block text-[10px] font-normal text-muted-foreground sm:text-[11px]">{t(`Seguir disfrutando de ${planLabel}`, `Keep enjoying ${planLabel}`)}</span>
+                <span className="block text-xs font-bold">{t("No, mantener", "No, keep it")}</span>
+                <span className="mt-1 block text-[10px] font-normal text-muted-foreground">{t(`Seguir con ${planLabel}`, `Stay on ${planLabel}`)}</span>
               </span>
             </Button>
           </DialogClose>
-          <Button variant="outline" className="h-auto min-h-14 justify-start gap-2 border-destructive/70 bg-destructive/10 px-2.5 text-left hover:bg-destructive/15" onClick={onConfirm} disabled={loading}>
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-destructive/15 text-destructive">
-              {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
-            </span>
+          <Button variant="outline" className="h-auto min-h-16 flex-col items-center justify-center gap-1 rounded-2xl border-destructive/30 bg-destructive/5 px-3 text-center text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={onConfirm} disabled={loading}>
+            {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
             <span>
-              <span className="block text-xs font-semibold sm:text-sm">{t("Sí, cancelar mi plan", "Yes, cancel my plan")}</span>
-              <span className="mt-0.5 block text-[10px] font-normal text-muted-foreground sm:text-[11px]">{periodEnd ? t(`Pasar al plan Free el ${periodEnd}`, `Switch to Free on ${periodEnd}`) : t("Pasar al plan Free al terminar", "Switch to Free when it ends")}</span>
+              <span className="block text-xs font-bold">{t("Sí, cancelar", "Yes, cancel")}</span>
+              <span className="mt-1 block text-[10px] font-normal text-destructive/70">{t("Pasar a Free", "Switch to Free")}</span>
             </span>
           </Button>
         </DialogFooter>
