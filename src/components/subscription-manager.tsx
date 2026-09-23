@@ -421,7 +421,7 @@ function PortalAction({
       variant="ghost"
       onClick={onClick}
       disabled={disabled}
-      className="group h-auto min-h-20 justify-start gap-3 rounded-xl border border-border bg-elevated/40 p-3 text-left transition-colors hover:border-primary/40 hover:bg-elevated disabled:opacity-60"
+      className="group h-auto min-h-20 justify-start gap-3 whitespace-normal rounded-xl border border-border bg-elevated/40 p-3 text-left transition-colors hover:border-primary/40 hover:bg-elevated disabled:opacity-60"
     >
       <span className="mt-0.5 rounded-lg border border-border bg-background p-1.5 text-muted-foreground group-hover:text-primary">
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Icon className="h-4 w-4" />}
