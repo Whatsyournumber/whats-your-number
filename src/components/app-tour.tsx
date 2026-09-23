@@ -262,13 +262,13 @@ export function AppTour() {
     ];
     return (
       <div className="fixed inset-0 z-[100] grid place-items-center bg-background/60 p-4 backdrop-blur-[2px]">
-        <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-positive/40 bg-card p-6 pt-7 text-center shadow-2xl shadow-positive/15">
+        <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-positive/40 bg-card p-5 pt-6 text-center shadow-2xl shadow-positive/15 sm:p-6 sm:pt-7">
           <div className="pointer-events-none absolute -top-24 left-1/2 h-40 w-72 -translate-x-1/2 rounded-full bg-positive/15 blur-3xl" />
           <span className="numeric absolute right-5 top-4 text-xs font-medium text-muted-foreground">1 / {total}</span>
           <div className="relative flex justify-center">
-            <BrandMark className="h-16 w-16" />
+            <BrandMark className="h-12 w-12 sm:h-16 sm:w-16" />
           </div>
-          <h2 className="relative mt-3 font-display text-[26px] font-semibold leading-tight">
+          <h2 className="relative mt-2.5 font-display text-[21px] font-semibold leading-tight sm:text-[26px]">
             {firstName ? (
               <>
                 {t("¡Bienvenido,", "Welcome,")} <span className="text-positive">{firstName}!</span>
@@ -278,35 +278,35 @@ export function AppTour() {
             )}
           </h2>
           <div className="relative mt-2.5 flex justify-center">{planBadge}</div>
-          <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground">
+          <p className="relative mt-2.5 text-[13px] leading-relaxed text-muted-foreground sm:mt-3 sm:text-sm">
             {t("Vamos a hacer un tour rápido para que aproveches al máximo WhatsYourNumber.", "Let's take a quick tour so you get the most out of WhatsYourNumber.")}
           </p>
-          <p className="relative mt-1.5 text-sm font-medium text-foreground">
+          <p className="relative mt-1.5 text-[13px] font-medium text-foreground sm:text-sm">
             {t("En menos de 1 minuto estarás listo.", "You'll be ready in under a minute.")}
           </p>
-          <div className="relative mt-6 grid grid-cols-3">
+          <div className="relative mt-4 grid grid-cols-3 sm:mt-6">
             {welcomePoints.map(([Icon, label], i) => (
               <div
                 key={label}
                 className={cn(
-                  "flex flex-col items-center gap-2.5 px-1.5 text-[11px] leading-tight text-muted-foreground",
+                  "flex flex-col items-center gap-2 px-1 text-[10px] leading-tight text-muted-foreground sm:gap-2.5 sm:px-1.5 sm:text-[11px]",
                   i > 0 && "border-l border-foreground/10",
                 )}
               >
-                <span className="grid h-11 w-11 place-items-center rounded-full bg-positive/10 text-positive ring-1 ring-positive/25">
-                  <Icon className="h-5 w-5" />
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-positive/10 text-positive ring-1 ring-positive/25 sm:h-11 sm:w-11">
+                  <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                 </span>
                 <span className="max-w-[94px]">{label}</span>
               </div>
             ))}
           </div>
           <Button
-            className="relative mt-6 w-full gap-2 rounded-2xl py-5 text-[15px]"
+            className="relative mt-5 w-full gap-2 rounded-2xl py-4 text-sm sm:mt-6 sm:py-5 sm:text-[15px]"
             onClick={() => { if (isMobile) setOpenMobile(false); setStep(1); }}
           >
             {t("Comenzar tour", "Start tour")} <ArrowRight className="h-4 w-4" />
           </Button>
-          <button className="relative mt-3 text-sm text-muted-foreground transition-colors hover:text-foreground" onClick={close}>
+          <button className="relative mt-2.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground sm:mt-3 sm:text-sm" onClick={close}>
             {t("Omitir tour", "Skip tour")}
           </button>
         </div>
@@ -325,15 +325,15 @@ export function AppTour() {
     <>
       {/* Oscurece ligeramente el fondo para que el paso resalte sin ocultarlo */}
       <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/20" : "bg-background/40"}`} />
-      <div className="fixed inset-x-3 bottom-24 z-[100] sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[400px] lg:bottom-8">
-        <div className={`relative overflow-hidden rounded-3xl border border-primary/60 p-5 shadow-[0_0_50px_-8px] shadow-primary/40 ring-2 ring-primary/30 ${isNumberStep ? "bg-card/90 backdrop-blur-md" : "bg-card/95 backdrop-blur-xl"}`}>
+      <div className="fixed inset-x-3 bottom-16 z-[100] sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[400px] lg:bottom-8">
+        <div className={`relative overflow-hidden rounded-2xl border border-primary/60 p-4 shadow-[0_0_50px_-8px] shadow-primary/40 ring-2 ring-primary/30 sm:rounded-3xl sm:p-5 ${isNumberStep ? "bg-card/90 backdrop-blur-md" : "bg-card/95 backdrop-blur-xl"}`}>
           <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-64 -translate-x-1/2 rounded-full bg-primary/25 blur-3xl" />
-          <div className="relative flex items-start gap-3">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-positive/15 text-positive ring-1 ring-positive/30">
-              <StepIcon className="h-5 w-5" />
+          <div className="relative flex items-start gap-2.5 sm:gap-3">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-positive/15 text-positive ring-1 ring-positive/30 sm:h-11 sm:w-11 sm:rounded-2xl">
+              <StepIcon className="h-4 w-4 sm:h-5 sm:w-5" />
             </span>
             <div className="min-w-0 flex-1 pr-6">
-              <h3 className="font-display text-lg font-semibold leading-tight">{title}</h3>
+              <h3 className="font-display text-base font-semibold leading-tight sm:text-lg">{title}</h3>
               <div className="mt-1 flex flex-wrap items-center gap-1.5">
                 <span className="numeric text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                   {t("Paso", "Step")} {step + 1} / {total}
@@ -347,33 +347,33 @@ export function AppTour() {
               </div>
             </div>
           </div>
-          <p className="relative mt-3 text-sm leading-relaxed text-foreground/90">{intro}</p>
-          <ul className="relative mt-3 space-y-2">
+          <p className="relative mt-2.5 text-[13px] leading-snug text-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
+          <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
             {points.map((p, i) => {
               const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
               return (
-                <li key={i} className="flex items-start gap-2.5 text-xs leading-relaxed text-muted-foreground">
-                  <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-positive/10 text-positive">
-                    <B className="h-3 w-3" />
+                <li key={i} className="flex items-start gap-2 text-[11px] leading-snug text-muted-foreground sm:gap-2.5 sm:text-xs sm:leading-relaxed">
+                  <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-positive/10 text-positive sm:h-5 sm:w-5">
+                    <B className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                   </span>
                   {p}
                 </li>
               );
             })}
           </ul>
-          <div className="relative mt-4 h-1 overflow-hidden rounded-full bg-foreground/10">
+          <div className="relative mt-3 h-1 overflow-hidden rounded-full bg-foreground/10 sm:mt-4">
             <div className="h-full rounded-full bg-positive transition-all duration-500" style={{ width: `${((step + 1) / total) * 100}%` }} />
           </div>
-          <div className="relative mt-4 flex items-center justify-between gap-2">
-            <button className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground" onClick={() => setStep(step - 1)}>
-              <ArrowLeft className="h-4 w-4" /> {t("Atrás", "Back")}
+          <div className="relative mt-3 flex items-center justify-between gap-2 sm:mt-4">
+            <button className="flex items-center gap-1 text-[13px] text-muted-foreground transition-colors hover:text-foreground sm:gap-1.5 sm:text-sm" onClick={() => setStep(step - 1)}>
+              <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> {t("Atrás", "Back")}
             </button>
-            <div className="flex items-center gap-3">
-              <button className="text-sm text-muted-foreground underline-offset-2 transition-colors hover:text-foreground hover:underline" onClick={close}>
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <button className="text-[13px] text-muted-foreground underline-offset-2 transition-colors hover:text-foreground hover:underline sm:text-sm" onClick={close}>
                 {t("Omitir", "Skip")}
               </button>
-              <Button size="sm" className="gap-2 rounded-xl" onClick={() => (last ? close() : setStep(step + 1))}>
-                {last ? t("¡Listo!", "Done!") : t("Siguiente", "Next")} <ArrowRight className="h-4 w-4" />
+              <Button size="sm" className="h-8 gap-1.5 rounded-xl text-[13px] sm:h-9 sm:gap-2 sm:text-sm" onClick={() => (last ? close() : setStep(step + 1))}>
+                {last ? t("¡Listo!", "Done!") : t("Siguiente", "Next")} <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </Button>
             </div>
           </div>
