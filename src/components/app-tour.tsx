@@ -180,9 +180,19 @@ export function AppTour() {
   const { isMobile, setOpenMobile } = useSidebar();
   const { profile } = useProfile();
   const [step, setStep] = useState<number | null>(null); // 0 = bienvenida
+  // Permite previsualizar el tour de otro plan con localStorage "yn.tour.tier" = free | pro | patrimonio.
+  const tourTier = useMemo<PlanTier>(() => {
+    try {
+      const forced = localStorage.getItem("yn.tour.tier");
+      if (forced === "free" || forced === "pro" || forced === "patrimonio") return forced;
+    } catch {
+      /* noop */
+    }
+    return tier;
+  }, [tier]);
   const availableSteps = useMemo(
-    () => STEPS.filter((tourStep) => planMeetsTier(tourStep.minPlan, tier)),
-    [tier],
+    () => STEPS.filter((tourStep) => planMeetsTier(tourStep.minPlan, tourTier)),
+    [tourTier],
   );
   const total = availableSteps.length + 1;
 
@@ -238,14 +248,14 @@ export function AppTour() {
   if (step === null) return null;
 
   const planLabel =
-    tier === "patrimonio"
+    tourTier === "patrimonio"
       ? t("Plan Familiar", "Family plan")
-      : tier === "pro"
+      : tourTier === "pro"
         ? isPromo
           ? t("Plan Pro · código", "Pro plan · code")
           : t("Plan Pro", "Pro plan")
         : t("Plan Free", "Free plan");
-  const PlanIcon = tier === "patrimonio" ? Users : tier === "pro" ? Crown : Sprout;
+  const PlanIcon = tourTier === "patrimonio" ? Users : tourTier === "pro" ? Crown : Sprout;
 
   const planBadge = (
     <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary ring-1 ring-primary/25">
