@@ -1,13 +1,22 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, CheckCircle2, ChevronRight, CreditCard, Crown, ExternalLink, Loader2, Mail, Receipt, Sparkles, User, XCircle } from "lucide-react";
+import { AlertTriangle, ArrowUpRight, CheckCircle2, ChevronRight, CreditCard, Crown, ExternalLink, Loader2, Mail, Plus, Receipt, ShieldCheck, Sparkles, Trash2, User, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { Panel } from "@/components/page";
 import { PlanChangeDialog, PlanDetailsDialog } from "@/components/plan-details-dialog";
 
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -186,13 +195,11 @@ export function SubscriptionManager() {
       </div>
 
       <div className="mt-3 grid gap-2 sm:grid-cols-3">
-          <PortalAction
-            icon={CreditCard}
-            label={t("Método de pago", "Payment method")}
-            hint={t("Actualiza tu tarjeta", "Update your card")}
+          <PaymentMethodDialog
+            card={card}
             loading={spin("portal:payment_method")}
             disabled={busy !== null || loading || tier === "free"}
-            onClick={() => void portal("payment_method")}
+            onManage={() => void portal("payment_method")}
           />
           <PortalAction
             icon={Receipt}
@@ -202,13 +209,11 @@ export function SubscriptionManager() {
             disabled={busy !== null || loading || tier === "free"}
             onClick={() => void portal("overview")}
           />
-          <PortalAction
-            icon={XCircle}
-            label={t("Cancelar plan", "Cancel plan")}
-            hint={t("Sigues con acceso hasta el final", "Access until period ends")}
+          <CancelPlanDialog
+            periodEnd={subscription?.current_period_end ? fmtDate(subscription.current_period_end) : null}
             loading={spin("portal:cancel")}
             disabled={busy !== null || loading || tier === "free"}
-            onClick={() => void portal("cancel")}
+            onConfirm={() => void portal("cancel")}
           />
       </div>
 
@@ -219,6 +224,125 @@ export function SubscriptionManager() {
         )}
       </p>
     </Panel>
+  );
+}
+
+function PaymentMethodDialog({
+  card,
+  loading,
+  disabled,
+  onManage,
+}: {
+  card: { brand: string | null; last4: string | null; expiry: string | null; type: string | null } | null;
+  loading: boolean;
+  disabled: boolean;
+  onManage: () => void;
+}) {
+  const t = useT();
+  const cardLabel = card?.last4
+    ? `${card.brand ? `${card.brand.toUpperCase()} ` : ""}•••• ${card.last4}`
+    : t("No hay una tarjeta disponible", "No card is available");
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <PortalAction
+          icon={CreditCard}
+          label={t("Método de pago", "Payment method")}
+          hint={t("Añade, cambia o elimina tu tarjeta", "Add, replace or remove your card")}
+          loading={loading}
+          disabled={disabled}
+          onClick={() => undefined}
+        />
+      </DialogTrigger>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>{t("Método de pago", "Payment method")}</DialogTitle>
+          <DialogDescription>
+            {t("Gestiona de forma segura la tarjeta vinculada a tu suscripción.", "Securely manage the card linked to your subscription.")}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="rounded-xl border border-border bg-elevated/40 p-4">
+          <div className="flex items-center gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-lg bg-primary/10 text-primary"><CreditCard className="h-5 w-5" /></span>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs text-muted-foreground">{t("Tarjeta actual", "Current card")}</p>
+              <p className="mt-0.5 font-medium">{cardLabel}</p>
+              {card?.expiry ? <p className="text-xs text-muted-foreground">{t("Vence", "Expires")} {card.expiry}</p> : null}
+            </div>
+            <ShieldCheck className="h-5 w-5 text-positive" />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Button className="w-full justify-start" onClick={onManage} disabled={loading}>
+            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
+            {t("Añadir o reemplazar tarjeta", "Add or replace card")}
+            <ExternalLink className="ml-auto h-3.5 w-3.5" />
+          </Button>
+          <Button variant="outline" className="w-full justify-start" onClick={onManage} disabled={loading || !card}>
+            <Trash2 className="mr-2 h-4 w-4" />
+            {t("Eliminar o administrar tarjeta", "Remove or manage card")}
+            <ExternalLink className="ml-auto h-3.5 w-3.5" />
+          </Button>
+        </div>
+
+        <p className="text-xs text-muted-foreground">
+          {t("La gestión se completa en el portal seguro de pagos. Una suscripción activa puede requerir una tarjeta válida antes de eliminar la actual.", "Management is completed in the secure payments portal. An active subscription may require a valid card before removing the current one.")}
+        </p>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function CancelPlanDialog({
+  periodEnd,
+  loading,
+  disabled,
+  onConfirm,
+}: {
+  periodEnd: string | null;
+  loading: boolean;
+  disabled: boolean;
+  onConfirm: () => void;
+}) {
+  const t = useT();
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <PortalAction
+          icon={XCircle}
+          label={t("Cancelar plan", "Cancel plan")}
+          hint={t("Sigues con acceso hasta el final", "Access until period ends")}
+          loading={loading}
+          disabled={disabled}
+          onClick={() => undefined}
+        />
+      </DialogTrigger>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <div className="mb-2 grid h-11 w-11 place-items-center rounded-xl bg-destructive/10 text-destructive"><AlertTriangle className="h-5 w-5" /></div>
+          <DialogTitle>{t("¿Seguro que quieres cancelar?", "Are you sure you want to cancel?")}</DialogTitle>
+          <DialogDescription>
+            {periodEnd
+              ? t(`Conservarás todas las funciones hasta el ${periodEnd}. Después, tu cuenta volverá al plan Free y no habrá más cobros.`, `You'll keep every feature until ${periodEnd}. After that, your account returns to Free and there will be no more charges.`)
+              : t("Conservarás las funciones hasta que termine el periodo que ya pagaste. Después, tu cuenta volverá al plan Free.", "You'll keep your features until the paid period ends. After that, your account returns to Free.")}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="rounded-xl border border-border bg-elevated/40 p-3 text-sm text-muted-foreground">
+          <p className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-positive" />{t("No perderás el acceso inmediatamente.", "You won't lose access immediately.")}</p>
+          <p className="mt-2 flex items-start gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-positive" />{t("Puedes volver a suscribirte más adelante.", "You can subscribe again later.")}</p>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onConfirm} disabled={loading}>
+            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+            {t("Sí, continuar con la cancelación", "Yes, continue to cancellation")}
+            <ExternalLink className="ml-2 h-3.5 w-3.5" />
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
