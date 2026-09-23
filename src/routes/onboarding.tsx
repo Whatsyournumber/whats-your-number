@@ -1,3 +1,4 @@
+import { queueAppTour } from "@/components/app-tour";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -302,6 +303,7 @@ function OnboardingPage() {
   };
 
   const finish = () => {
+    queueAppTour();
     setStep(SUMMARY_STEP);
     void persist({ completed: true, completed_at: new Date().toISOString(), desired_retirement_income: desiredIncome });
     // El plan del onboarding queda listo como plan de gastos personalizado.
