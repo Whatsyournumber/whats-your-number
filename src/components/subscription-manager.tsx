@@ -167,7 +167,7 @@ export function SubscriptionManager() {
       </div>
 
 
-      <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
         <InfoTile
           icon={User}
           label={t("Titular", "Account holder")}
@@ -194,31 +194,28 @@ export function SubscriptionManager() {
           }
           loading={billing.isLoading}
         />
-      </div>
-
-      <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          <PaymentMethodDialog
-            card={card}
-            isPromo={isPromo}
-            loading={spin("portal:payment_method")}
-            disabled={busy !== null || loading || tier === "free"}
-            onManage={() => void portal("payment_method")}
-          />
-          <PortalAction
-            icon={Receipt}
-            label={t("Facturas", "Invoices")}
-            hint={t("Descarga tu historial", "Download your history")}
-            loading={spin("portal:overview")}
-            disabled={busy !== null || loading || tier === "free"}
-            onClick={() => void portal("overview")}
-          />
-          <CancelPlanDialog
-            planLabel={planLabel}
-            periodEnd={subscription?.current_period_end ? fmtDate(subscription.current_period_end) : null}
-            loading={spin("portal:cancel")}
-            disabled={busy !== null || loading || tier === "free"}
-            onConfirm={() => void portal("cancel")}
-          />
+        <PaymentMethodDialog
+          card={card}
+          isPromo={isPromo}
+          loading={spin("portal:payment_method")}
+          disabled={busy !== null || loading || tier === "free"}
+          onManage={() => void portal("payment_method")}
+        />
+        <PortalAction
+          icon={Receipt}
+          label={t("Facturas", "Invoices")}
+          hint={t("Descarga tu historial", "Download your history")}
+          loading={spin("portal:overview")}
+          disabled={busy !== null || loading || tier === "free"}
+          onClick={() => void portal("overview")}
+        />
+        <CancelPlanDialog
+          planLabel={planLabel}
+          periodEnd={subscription?.current_period_end ? fmtDate(subscription.current_period_end) : null}
+          loading={spin("portal:cancel")}
+          disabled={busy !== null || loading || tier === "free"}
+          onConfirm={() => void portal("cancel")}
+        />
       </div>
 
       <p className="mt-4 text-xs text-muted-foreground">
@@ -454,9 +451,9 @@ function InfoTile({
       <span className="mt-0.5 rounded-lg border border-border bg-background p-1.5 text-muted-foreground">
         <Icon className="h-4 w-4" />
       </span>
-      <span className="min-w-0">
+      <span className="min-w-0 flex-1">
         <span className="block text-xs text-muted-foreground">{label}</span>
-        <span className="mt-0.5 block truncate text-sm font-medium">
+        <span className="mt-0.5 block break-words text-sm font-medium leading-snug">
           {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : value}
         </span>
       </span>
