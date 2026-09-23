@@ -427,11 +427,11 @@ function PortalAction({
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Icon className="h-4 w-4" />}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="flex items-center gap-1 text-sm font-medium">
-          {label}
-          <ExternalLink className="h-3 w-3 text-muted-foreground" />
+        <span className="flex items-center gap-1 truncate text-sm font-medium">
+          <span className="truncate">{label}</span>
+          <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground" />
         </span>
-        <span className="mt-0.5 block text-xs text-muted-foreground">{hint}</span>
+        <span className="mt-0.5 block truncate text-xs text-muted-foreground">{hint}</span>
       </span>
       <ChevronRight className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
     </Button>
