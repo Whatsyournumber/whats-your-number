@@ -452,14 +452,16 @@ export function AppTour() {
       <div
         className={cn(
           "fixed inset-x-3 bottom-16 z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
-          isDashboardStep || isExpenseStep ? "sm:w-[560px]" : "sm:w-[400px]",
+          hasNumberedBullets ? "sm:w-[560px]" : "sm:w-[400px]",
           isDashboardStep
             ? sidebarState === "expanded"
               ? "sm:bottom-auto sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto sm:top-[clamp(22rem,42vh,28rem)]"
               : "sm:bottom-auto sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto sm:top-[clamp(22rem,42vh,28rem)]"
             : isExpenseStep
               ? "sm:bottom-auto sm:right-6 sm:top-[clamp(18rem,48vh,24rem)]"
-              : "sm:right-6",
+              : isAnalysisStep
+                ? "sm:bottom-auto sm:right-6 sm:top-[clamp(16rem,42vh,24rem)]"
+                : "sm:right-6",
         )}
       >
         <div ref={tourBoxRef} data-tour-box className="relative overflow-hidden rounded-2xl border border-tour-border bg-tour-surface p-4 text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25 sm:rounded-3xl sm:p-5">
