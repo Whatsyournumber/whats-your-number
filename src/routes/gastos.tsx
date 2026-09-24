@@ -1600,6 +1600,81 @@ function Gastos() {
               <Plus className="h-4 w-4" /> {t("Añadir categoría", "Add category")}
             </Button>
           </div>
+
+          <div className="mt-4 space-y-2">
+            <p className="text-xs font-medium text-muted-foreground">{t("Reglas de tus gastos", "Your spending rules")}</p>
+            <p className="text-xs text-muted-foreground/80">
+              {t(
+                "Corrige comercios mal clasificados: la próxima vez se ordenan solos.",
+                "Fix mis-tracked merchants: next time they sort themselves.",
+              )}
+            </p>
+            {learned.rules.length > 0 && (
+              <div className="grid gap-2">
+                {learned.rules.map((r) => (
+                  <div key={r.id} className="flex items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
+                    <span className="min-w-0 flex-1 truncate text-sm">{r.match}</span>
+                    <span className="shrink-0 text-xs text-muted-foreground">→</span>
+                    <span className="shrink-0 truncate text-sm text-primary">{tc(r.category)}</span>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7 shrink-0 text-muted-foreground hover:text-negative"
+                      onClick={() => learned.remove(r.id)}
+                      aria-label={t("Eliminar regla", "Delete rule")}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="flex items-center gap-2">
+              <Input
+                value={ruleMerchant}
+                onChange={(e) => setRuleMerchant(e.target.value)}
+                className="h-9 flex-1 text-sm"
+                placeholder={t("Comercio, p. ej. Fandango", "Merchant, e.g. Fandango")}
+              />
+              <Select value={ruleCat} onValueChange={setRuleCat}>
+                <SelectTrigger className="h-9 w-36 text-sm">
+                  <SelectValue placeholder={t("Categoría", "Category")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.names.map((n) => (
+                    <SelectItem key={n} value={n} className="text-sm">
+                      {tc(n)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-9 gap-1.5"
+                disabled={!ruleMerchant.trim() || !ruleCat}
+                onClick={() => {
+                  learned.learn(ruleMerchant, ruleCat);
+                  setRuleMerchant("");
+                  setRuleCat("");
+                }}
+              >
+                <Plus className="h-4 w-4" /> {t("Guardar", "Save")}
+              </Button>
+            </div>
+          </div>
+
+          <div className="mt-4 space-y-2">
+            <CategoryChat
+              categories={categories.names}
+              items={categories.items}
+              customRules={categories.rules.map((r) => ({ name: r.name, keywords: r.hints }))}
+              merchants={merchantsForAi}
+              onCreate={(name, keywords) => categories.add(name, keywords)}
+              onUpdate={categories.update}
+              onRemove={categories.remove}
+            />
+          </div>
         </Panel>
 
         <Panel
