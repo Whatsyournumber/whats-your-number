@@ -1567,7 +1567,8 @@ function PortafolioContent() {
       }).map((h) => {
         const tk = h.ticker?.toUpperCase();
         const hasLive = Boolean(tk && prices[tk]);
-        const isEtf = h.type === "ETF" || h.type === "Cripto" || (h.type === "Acción" && hasLive);
+        const isEtf = h.type === "ETF" || (h.type === "Acción" && hasLive);
+        const isCrypto = h.type === "Cripto";
         const isMarketSecurity = (h.type === "ETF" || h.type === "Acción") && hasLive;
         const today = tk && dayChange[tk] !== undefined ? dayChange[tk] : null;
         return (
@@ -1590,9 +1591,46 @@ function PortafolioContent() {
         >
           <div className="col-span-2 pr-9 lg:col-span-2">
             <p className="text-sm font-medium">{h.ticker}</p>
-            <p className="truncate text-xs text-muted-foreground">{h.type === "Cripto" ? t("Cripto", "Crypto") : h.name}</p>
+            <p className="flex min-w-0 items-center gap-1.5 truncate text-xs text-muted-foreground">
+              <span>{isCrypto ? t("Cripto", "Crypto") : h.name}</span>
+              {isCrypto && h.units ? (
+                <span className="numeric truncate">
+                  {h.units.toLocaleString(lang === "es" ? "es-ES" : "en-US", { maximumFractionDigits: 4 })} {h.ticker?.replace("-USD", "")}
+                </span>
+              ) : null}
+            </p>
           </div>
-          {isMarketSecurity ? (
+          {isCrypto ? (
+            <>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Valor actual", "Current value")}</p>
+                <p className="numeric text-sm font-semibold">{fmt(h.value)}</p>
+                <p className="numeric text-[11px] text-muted-foreground">{fmt(h.cost)}</p>
+              </div>
+              <div>
+                <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  {t("Mercado hoy", "Market today")}
+                  {hasLive ? (
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-positive/70" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-positive" />
+                    </span>
+                  ) : null}
+                </p>
+                <p className="numeric text-sm font-semibold">{tk && prices[tk] ? fmtUsd(prices[tk]) : "—"}</p>
+                <p className="numeric text-[11px] text-muted-foreground">{h.strike && h.strike > 0 ? fmtUsd(h.strike) : "—"}</p>
+              </div>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Ganancia / pérdida", "Gain / loss")}</p>
+                <p className={cn("numeric text-sm font-semibold", h.gain === 0 ? "text-muted-foreground/50" : h.gain > 0 ? "text-positive" : "text-negative")}>
+                  {h.gain === 0 ? "—" : `${h.gain > 0 ? "+" : ""}${fmt(h.gain)}`}
+                </p>
+                <p className={cn("numeric text-[11px]", today === null ? "text-muted-foreground/50" : today < 0 ? "text-negative" : "text-positive")}>
+                  {today === null ? "—" : `${today > 0 ? "+" : ""}${today.toFixed(2)}%`}
+                </p>
+              </div>
+            </>
+          ) : isMarketSecurity ? (
             <>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Precio actual", "Current price")}</p>
@@ -1682,18 +1720,20 @@ function PortafolioContent() {
             </>
           )}
 
-          <div>
-            <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-            <p className={cn("numeric text-sm font-semibold", h.ret === 0 ? "text-muted-foreground/50" : h.ret >= 0 ? "text-positive" : "text-negative")}>
-              {h.ret === 0 ? "—" : `${h.ret > 0 ? "+" : ""}${h.ret.toFixed(1)}%`}
-            </p>
-            {h.cagr !== null && !isEtf && h.cagr !== 0 && (
-              <p className="text-[10px] text-muted-foreground">
-                {h.cagr > 0 ? "+" : ""}
-                {h.cagr.toFixed(1)}% {t("anual", "annual")} · {h.years} {t("años", "yrs")}
+          {!isCrypto ? (
+            <div>
+              <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
+              <p className={cn("numeric text-sm font-semibold", h.ret === 0 ? "text-muted-foreground/50" : h.ret >= 0 ? "text-positive" : "text-negative")}>
+                {h.ret === 0 ? "—" : `${h.ret > 0 ? "+" : ""}${h.ret.toFixed(1)}%`}
               </p>
-            )}
-          </div>
+              {h.cagr !== null && !isEtf && h.cagr !== 0 && (
+                <p className="text-[10px] text-muted-foreground">
+                  {h.cagr > 0 ? "+" : ""}
+                  {h.cagr.toFixed(1)}% {t("anual", "annual")} · {h.years} {t("años", "yrs")}
+                </p>
+              )}
+            </div>
+          ) : null}
 
           <button
             type="button"
