@@ -197,6 +197,8 @@ function Gastos() {
     }
   }, []);
   const learned = useCategoryRules();
+  const [ruleMerchant, setRuleMerchant] = useState("");
+  const [ruleCat, setRuleCat] = useState("");
   const moveTxToCategory = (ids: string | string[], category: string) => {
     const list = Array.isArray(ids) ? ids : [ids];
     setTxCat((prev) => {
