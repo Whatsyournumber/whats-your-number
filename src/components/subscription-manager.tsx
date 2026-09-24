@@ -430,7 +430,7 @@ const PortalAction = React.forwardRef<
       <ChevronRight className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
     </Button>
   );
-}
+});
 
 function InfoTile({
   icon: Icon,
