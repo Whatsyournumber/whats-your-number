@@ -49,7 +49,7 @@ const STEPS: Step[] = [
   },
   {
     url: "/registro-gastos", icon: ReceiptText, minPlan: "free",
-    es: ["Registra tus gastos", "Controla tus gastos del día a día y mantente dentro de tu plan.",
+    es: ["Registra tus gastos", "Trackea tus gastos del día a día y mantente dentro de tu plan",
       "Crea o edita tu presupuesto mensual",
       "Añade gastos vía voz, foto a los recibos (como mercados) o cargando archivos",
       "Mira cómo van tus gastos diarios por categoría"],
@@ -417,7 +417,7 @@ export function AppTour() {
       <div
         className={cn(
           "fixed inset-x-3 bottom-16 z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
-          isDashboardStep ? "sm:w-[560px]" : "sm:w-[400px]",
+          isDashboardStep || isExpenseStep ? "sm:w-[560px]" : "sm:w-[400px]",
           isDashboardStep
             ? sidebarState === "expanded"
               ? "sm:bottom-auto sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto sm:top-[clamp(22rem,42vh,28rem)]"
