@@ -224,6 +224,7 @@ export function AppTour() {
   const isAnalysisTourStep = current?.url === "/gastos";
   const isCashFlowTourStep = current?.url === "/cash-flow";
   const isNumberTourStep = current?.url === "/retiro";
+  const isHipotecaTourStep = current?.url === "/hipoteca";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
@@ -409,6 +410,57 @@ export function AppTour() {
       window.removeEventListener("scroll", measure);
     };
   }, [isNumberTourStep, isMobile, pathname]);
+
+  const [hipotecaMarkers, setHipotecaMarkers] = useState<{
+    inputs: { x: number; y: number };
+    strategies: { x: number; y: number };
+    simulator: { x: number; y: number };
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isHipotecaTourStep || isMobile) {
+      setHipotecaMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    const measure = () => {
+      const inputs = document.querySelector<HTMLElement>('[data-tour-hipoteca-target="inputs"]')?.getBoundingClientRect();
+      const strategies = document.getElementById("tour-hipo-strategies")?.getBoundingClientRect();
+      const simulator = document.getElementById("tour-hipo-simulator")?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!inputs || !strategies || !simulator || !box || cancelled) return;
+      setHipotecaMarkers({
+        inputs: { x: inputs.left + inputs.width * 0.68, y: inputs.top + inputs.height * 0.5 },
+        strategies: { x: strategies.left + strategies.width * 0.35, y: strategies.top + 74 },
+        simulator: { x: simulator.left + simulator.width * 0.4, y: simulator.top + 64 },
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure);
+    };
+  }, [isHipotecaTourStep, isMobile, pathname]);
+
+  // En Análisis de hipoteca, baja lo justo para ver los campos de arriba y las estrategias a la vez.
+  useEffect(() => {
+    if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/retiro" && pathname === "/hipoteca") {
+      const timer = window.setTimeout(() => {
+        const strategies = document.getElementById("tour-hipo-strategies");
+        if (strategies) {
+          const offset = Math.max(0, strategies.getBoundingClientRect().top - window.innerHeight * 0.62);
+          window.scrollTo({ top: window.scrollY + offset, behavior: "smooth" });
+        }
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [step, pathname, isMobile]);
 
   // En Tu Número, baja hasta que la gráfica quede bajo la barra de progreso.
   useEffect(() => {
