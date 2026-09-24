@@ -467,7 +467,7 @@ export function AppTour() {
       const box = tourBoxRef.current?.getBoundingClientRect();
       if (!cards || !chart || !assets || !box || cancelled) return;
       setPatrimonioMarkers({
-        cards: { x: cards.left + cards.width * 0.82, y: cards.top + cards.height - 12 },
+        cards: { x: cards.left + cards.width * 0.06, y: cards.top + 8 },
         chart: { x: chart.left + chart.width * 0.3, y: chart.top + 90 },
         assets: { x: assets.left + assets.width * 0.5, y: assets.top + 4 },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
@@ -964,7 +964,7 @@ export function AppTour() {
             />
           </svg>
           {([
-            [patrimonioMarkers.cards.x - 14, patrimonioMarkers.cards.y - 32, 1],
+            [patrimonioMarkers.cards.x - 14, patrimonioMarkers.cards.y - 34, 1],
             [patrimonioMarkers.chart.x - 14, patrimonioMarkers.chart.y - 36, 2],
             [patrimonioMarkers.assets.x - 14, Math.min(patrimonioMarkers.assets.y, window.innerHeight - 46) + 8, 3],
           ] as const).map(([left, top, label]) => (
