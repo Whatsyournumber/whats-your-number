@@ -1144,6 +1144,13 @@ function Dashboard() {
               const goalBarColor = (value: number) =>
                 value >= 75 ? "bg-positive" : value >= 50 ? "bg-warning" : "bg-negative";
 
+              // Gastos del mes: aquí subir es malo. Amarillo desde el 80%, rojo al llegar o pasar el objetivo.
+              const spendBarColor = (value: number) =>
+                value >= 100 ? "bg-negative" : value >= 80 ? "bg-warning" : "bg-positive";
+              const spendTextColor = (value: number) =>
+                value >= 100 ? "text-negative" : value >= 80 ? "text-warning" : "text-positive";
+
+
               if (g.name === "Cartera de inversión") {
                 const noInvestments = portfolioValue <= 0;
                 const diff = portfolioReturn - sp500Rate;
