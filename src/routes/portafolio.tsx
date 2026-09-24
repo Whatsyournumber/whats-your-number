@@ -1589,7 +1589,7 @@ function PortafolioContent() {
                   {tk && prices[tk] ? fmtUsd(prices[tk]) : "—"}
                 </p>
                 <p className="numeric text-[11px] text-muted-foreground">
-                  {t("Precio compra", "Buy price")} {h.strike && h.strike > 0 ? fmtUsd(h.strike) : "—"}
+                  {h.strike && h.strike > 0 ? fmtUsd(h.strike) : "—"}
                 </p>
               </div>
               <div>
@@ -1604,7 +1604,7 @@ function PortafolioContent() {
                 <p className="numeric text-[11px] text-muted-foreground">
                   {h.units
                     ? `${h.units.toLocaleString(lang === "es" ? "es-ES" : "en-US", { maximumFractionDigits: 4 })} ${h.ticker}`
-                    : `${t("Compra total", "Total purchase")} ${fmt(h.cost)}`}
+                    : fmt(h.cost)}
                 </p>
               </div>
               <div>
@@ -1613,7 +1613,7 @@ function PortafolioContent() {
                   {h.gain === 0 ? "—" : `${h.gain > 0 ? "+" : ""}${fmt(h.gain)}`}
                 </p>
                 <p className={cn("numeric text-[11px]", today === null ? "text-muted-foreground/50" : today < 0 ? "text-negative" : "text-positive")}>
-                  {today === null ? "—" : `${t("Hoy", "Today")} ${today > 0 ? "+" : ""}${today.toFixed(2)}%`}
+                  {today === null ? "—" : `${today > 0 ? "+" : ""}${today.toFixed(2)}%`}
                 </p>
               </div>
             </>
