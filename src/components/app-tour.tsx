@@ -320,12 +320,19 @@ export function AppTour() {
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
-    const timers = [80, 350, 900, 1800].map((ms) => window.setTimeout(measure, ms));
+    const scrollTimer = window.setTimeout(() => {
+      const btn = document.querySelector<HTMLElement>('[data-tour-analysis-target="import"]');
+      if (btn) window.scrollTo({ top: btn.getBoundingClientRect().top + window.scrollY - 140, behavior: "smooth" });
+    }, 250);
+    const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
     window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, { passive: true });
     return () => {
       cancelled = true;
+      clearTimeout(scrollTimer);
       timers.forEach((timer) => clearTimeout(timer));
       window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure);
     };
   }, [isAnalysisTourStep, isMobile, pathname]);
 
@@ -460,7 +467,7 @@ export function AppTour() {
             : isExpenseStep
               ? "sm:bottom-auto sm:right-6 sm:top-[clamp(18rem,48vh,24rem)]"
               : isAnalysisStep
-                ? "sm:bottom-auto sm:right-6 sm:top-[clamp(19rem,54vh,28rem)]"
+                ? "sm:bottom-6 sm:right-6 sm:top-auto"
                 : "sm:right-6",
         )}
       >
