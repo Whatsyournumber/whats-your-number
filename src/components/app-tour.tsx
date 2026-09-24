@@ -94,13 +94,13 @@ const STEPS: Step[] = [
   {
     url: "/hipoteca", icon: Home, minPlan: "free",
     es: ["Análisis de hipoteca", "Compra vs alquiler, con tus datos reales.",
-      "Simula entrada, plazo e interés y compara escenarios.",
-      "Ve cómo cada opción afecta a tu número y tu libertad.",
-      "Tu propiedad y su deuda se suman a tu patrimonio."],
+      "Edita tu información para ver tu renta mensual y cuántos intereses pagarás.",
+      "La IA te ayuda a entender si es mejor abonar, bajar la tasa o pagar mensual.",
+      "Te analizamos si es mejor abonar todo o invertir en el S&P 500 directamente."],
     en: ["Mortgage analysis", "Buy vs rent, with your real data.",
-      "Simulate down payment, term and interest to compare scenarios.",
-      "See how each option affects your number and your freedom.",
-      "Your property and its debt are added to your net worth."],
+      "Edit your info to see your monthly payment and the interest you'll pay.",
+      "AI helps you see if it's better to pay down, lower the rate or pay monthly.",
+      "We analyze whether paying it all off or investing in the S&P 500 is better."],
   },
   {
     url: "/patrimonio", icon: Wallet, minPlan: "pro",
@@ -224,6 +224,7 @@ export function AppTour() {
   const isAnalysisTourStep = current?.url === "/gastos";
   const isCashFlowTourStep = current?.url === "/cash-flow";
   const isNumberTourStep = current?.url === "/retiro";
+  const isHipotecaTourStep = current?.url === "/hipoteca";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
@@ -410,6 +411,57 @@ export function AppTour() {
     };
   }, [isNumberTourStep, isMobile, pathname]);
 
+  const [hipotecaMarkers, setHipotecaMarkers] = useState<{
+    inputs: { x: number; y: number };
+    strategies: { x: number; y: number };
+    simulator: { x: number; y: number };
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isHipotecaTourStep || isMobile) {
+      setHipotecaMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    const measure = () => {
+      const inputs = document.querySelector<HTMLElement>('[data-tour-hipoteca-target="inputs"]')?.getBoundingClientRect();
+      const strategies = document.getElementById("tour-hipo-strategies")?.getBoundingClientRect();
+      const simulator = document.getElementById("tour-hipo-simulator")?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!inputs || !strategies || !simulator || !box || cancelled) return;
+      setHipotecaMarkers({
+        inputs: { x: inputs.left + inputs.width * 0.68, y: inputs.top + inputs.height * 0.5 },
+        strategies: { x: strategies.left + strategies.width * 0.35, y: strategies.top + 74 },
+        simulator: { x: simulator.left + simulator.width * 0.4, y: simulator.top + 64 },
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure);
+    };
+  }, [isHipotecaTourStep, isMobile, pathname]);
+
+  // En Análisis de hipoteca, baja lo justo para ver los campos de arriba y las estrategias a la vez.
+  useEffect(() => {
+    if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/retiro" && pathname === "/hipoteca") {
+      const timer = window.setTimeout(() => {
+        const strategies = document.getElementById("tour-hipo-strategies");
+        if (strategies) {
+          const offset = Math.max(0, strategies.getBoundingClientRect().top - window.innerHeight * 0.62);
+          window.scrollTo({ top: window.scrollY + offset, behavior: "smooth" });
+        }
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [step, pathname, isMobile]);
+
   // En Tu Número, baja hasta que la gráfica quede bajo la barra de progreso.
   useEffect(() => {
     if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/retiro" && pathname === "/retiro") {
@@ -537,7 +589,8 @@ export function AppTour() {
   const isExpenseStep = current.url === "/registro-gastos";
   const isAnalysisStep = current.url === "/gastos";
   const isCashFlowStep = current.url === "/cash-flow";
-  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep;
+  const isHipotecaStep = current.url === "/hipoteca";
+  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep || isHipotecaStep;
 
   return (
     <>
@@ -553,8 +606,10 @@ export function AppTour() {
               : "sm:bottom-auto sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto sm:top-[clamp(22rem,42vh,28rem)]"
             : isExpenseStep
               ? "sm:bottom-auto sm:right-6 sm:top-[clamp(18rem,48vh,24rem)]"
-              : isAnalysisStep
-                ? "sm:bottom-auto sm:right-6 sm:top-[38vh]"
+            : isAnalysisStep
+              ? "sm:bottom-auto sm:right-6 sm:top-[38vh]"
+              : isHipotecaStep
+                ? "sm:bottom-auto sm:right-6 sm:top-[clamp(10rem,30vh,16rem)]"
                 : isCashFlowStep || isNumberStep
                   ? sidebarState === "expanded"
                     ? `sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
@@ -790,6 +845,42 @@ export function AppTour() {
             [numberMarkers.number.x - 14, numberMarkers.number.y - 36, 1],
             [numberMarkers.progress.x - 14, numberMarkers.progress.y - 36, 2],
             [numberMarkers.simulator.x - 14, numberMarkers.simulator.y - 14, 3],
+          ] as const).map(([left, top, label]) => (
+            <span
+              key={label}
+              className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+              style={{ left, top }}
+            >
+              {label}
+            </span>
+          ))}
+        </div>
+      )}
+      {isHipotecaStep && hipotecaMarkers?.inputs && hipotecaMarkers?.strategies && hipotecaMarkers?.simulator && hipotecaMarkers?.box && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            <defs>
+              <marker id="tour-hipoteca-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
+              </marker>
+            </defs>
+            <path
+              d={`M ${hipotecaMarkers.box.x + 70} ${hipotecaMarkers.box.y - 4} Q ${(hipotecaMarkers.box.x + 70 + hipotecaMarkers.inputs.x) / 2} ${hipotecaMarkers.inputs.y + 120} ${hipotecaMarkers.inputs.x} ${hipotecaMarkers.inputs.y + 12}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-hipoteca-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${hipotecaMarkers.box.x + 50} ${hipotecaMarkers.box.y + hipotecaMarkers.box.height + 4} Q ${(hipotecaMarkers.box.x + 50 + hipotecaMarkers.strategies.x) / 2} ${hipotecaMarkers.strategies.y + 90} ${hipotecaMarkers.strategies.x} ${hipotecaMarkers.strategies.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-hipoteca-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${hipotecaMarkers.box.x + hipotecaMarkers.box.width - 90} ${hipotecaMarkers.box.y + hipotecaMarkers.box.height + 4} Q ${(hipotecaMarkers.box.x + hipotecaMarkers.box.width - 90 + hipotecaMarkers.simulator.x) / 2} ${hipotecaMarkers.simulator.y + 60} ${hipotecaMarkers.simulator.x} ${hipotecaMarkers.simulator.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-hipoteca-arrow)" className="stroke-positive/70"
+            />
+          </svg>
+          {([
+            [hipotecaMarkers.inputs.x - 28, hipotecaMarkers.inputs.y + 20, 1],
+            [hipotecaMarkers.strategies.x - 28, hipotecaMarkers.strategies.y - 34, 2],
+            [hipotecaMarkers.simulator.x - 28, hipotecaMarkers.simulator.y - 34, 3],
           ] as const).map(([left, top, label]) => (
             <span
               key={label}
