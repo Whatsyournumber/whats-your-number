@@ -1528,18 +1528,6 @@ function Gastos() {
           )}
 
           <div className="mt-3 space-y-2 border-t border-border pt-3">
-            <CategoryChat
-              categories={categories.names}
-              items={categories.items}
-              customRules={categories.rules.map((r) => ({ name: r.name, keywords: r.hints }))}
-              merchants={merchantsForAi}
-              onCreate={(name, keywords) => categories.add(name, keywords)}
-              onUpdate={categories.update}
-              onRemove={categories.remove}
-            />
-          </div>
-
-          <div className="mt-4 space-y-2">
             <p className="text-xs font-medium text-muted-foreground">{t("Categorías propias", "Custom categories")}</p>
             <div className="grid gap-2">
               {categories.items.map((cat) => (
