@@ -1326,6 +1326,26 @@ function PortafolioContent() {
   const simResult = projPoints[projPoints.length - 1]!;
 
 
+  // Etiquetas de todos los tipos (para el selector dentro del editor, incluido el tipo actual aunque no esté en la lista de alta).
+  const assetKindLabels: Record<HoldingKind, string> = {
+    etf: t("ETF", "ETF"),
+    stock: t("Acción", "Stock"),
+    crypto: t("Cripto", "Crypto"),
+    cash: t("Efectivo", "Cash"),
+    bank: t("Cuenta bancaria", "Bank account"),
+    money_market: t("Mercado monetario", "Money market"),
+    property: t("Propiedad", "Property"),
+    reit: t("REITs", "REITs"),
+    bond: t("Renta fija", "Fixed income"),
+    tbill: t("Letra del tesoro", "Treasury bill"),
+    note: t("Nota", "Note"),
+    structured: t("Nota estructurada", "Structured note"),
+    retirement: t("Fondo de retiro", "Retirement fund"),
+    future: t("Futuros", "Futures"),
+    debt: t("Préstamo", "Loan"),
+    other: t("Otros", "Other"),
+  };
+
   const newAssetKinds: Array<[HoldingKind, string, string]> = [
     ["etf", t("ETF", "ETF"), t("Fondos cotizados", "Exchange-traded funds")],
     ["stock", t("Acción", "Stock"), t("Empresas individuales", "Individual companies")],
@@ -1371,25 +1391,25 @@ function PortafolioContent() {
             </div>
           </div>
         ) : null}
-        <div className="flex items-center gap-2">
-          <Label className="shrink-0 text-[11px] text-muted-foreground">{t("Tipo de activo", "Asset type")}</Label>
-          <Select value={draft.kind} onValueChange={(v) => changeDraftKind(v as HoldingKind)}>
-            <SelectTrigger className="h-9">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {newAssetKinds.map(([kind, label]) => (
-                <SelectItem key={kind} value={kind}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
         <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
           <div className="space-y-1">
             <Label className="text-[11px] text-muted-foreground">{t("Nombre", "Name")}</Label>
             <Input className="h-9" value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] text-muted-foreground">{t("Tipo de activo", "Asset type")}</Label>
+            <Select value={draft.kind} onValueChange={(v) => changeDraftKind(v as HoldingKind)}>
+              <SelectTrigger className="h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(Object.keys(assetKindLabels) as HoldingKind[]).map((kind) => (
+                  <SelectItem key={kind} value={kind}>
+                    {assetKindLabels[kind]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           {["etf", "stock", "crypto"].includes(draft.kind) && (
             <>

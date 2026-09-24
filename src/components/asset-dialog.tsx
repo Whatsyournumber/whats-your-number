@@ -226,25 +226,25 @@ export function AssetDialog({
                 </div>
               </div>
             ) : null}
-            <div className="flex items-center gap-2">
-              <Label className="shrink-0 text-[11px] text-muted-foreground">{t("Tipo de activo", "Asset type")}</Label>
-              <Select value={draft.kind} onValueChange={(v) => changeKind(v as HoldingKind)}>
-                <SelectTrigger className="h-9">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {kinds.map(([kind, label]) => (
-                    <SelectItem key={kind} value={kind}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
             <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
               <div className="space-y-1">
                 <Label className="text-[11px] text-muted-foreground">{t("Nombre", "Name")}</Label>
                 <Input className="h-9" value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[11px] text-muted-foreground">{t("Tipo de activo", "Asset type")}</Label>
+                <Select value={draft.kind} onValueChange={(v) => changeKind(v as HoldingKind)}>
+                  <SelectTrigger className="h-9">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {kinds.map(([kind, label]) => (
+                      <SelectItem key={kind} value={kind}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               {["etf", "stock", "crypto"].includes(draft.kind) && (
                 <>
