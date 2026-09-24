@@ -1234,7 +1234,16 @@ function Dashboard() {
                       </p>
                       <Progress
                         value={pct}
-                        indicatorClassName={isCityGoal ? (cityReached ? "bg-positive" : "bg-negative") : goalBarColor(pct)}
+                        indicatorClassName={
+                          isMonthlyExpenses
+                            ? spendBarColor(pct)
+                            : isCityGoal
+                              ? cityReached
+                                ? "bg-positive"
+                                : "bg-negative"
+                              : goalBarColor(pct)
+                        }
+
                         className="mt-1.5 h-1.5"
                       />
                       <p className="mt-1 truncate text-[11px] text-muted-foreground">{subtitle}</p>
