@@ -686,3 +686,46 @@ input[type="number"] {
   border-radius: 0.6rem;
   box-shadow: 0 0 18px color-mix(in oklab, var(--color-positive, #22c55e) 55%, transparent);
 }
+
+[data-tour-point] {
+  position: relative;
+  overflow: visible;
+}
+
+[data-tour-point]::after {
+  content: attr(data-tour-point);
+  position: absolute;
+  left: calc(100% + 0.55rem);
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  transform: translateY(-50%);
+  border-radius: 9999px;
+  background: var(--positive);
+  color: var(--background);
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: 0 0 18px color-mix(in oklab, var(--positive) 50%, transparent);
+}
+
+.portfolio-live-dot {
+  position: relative;
+  animation: portfolio-live-blink 1s ease-in-out infinite !important;
+  box-shadow: 0 0 0 0 color-mix(in oklab, var(--positive) 55%, transparent);
+}
+
+@keyframes portfolio-live-blink {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--positive) 55%, transparent);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.72);
+    box-shadow: 0 0 0 0.45rem transparent;
+  }
+}

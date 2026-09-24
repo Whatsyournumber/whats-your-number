@@ -501,15 +501,21 @@ export function AppTour() {
       const valueTarget = document.querySelector<HTMLElement>('[data-tour-portfolio-target="value"]');
       const chartTarget = document.getElementById("tour-portfolio-chart");
       const assetsTarget = document.getElementById("tour-portfolio-assets");
-      const value = valueTarget?.querySelector("p")?.getBoundingClientRect();
-      const chart = chartTarget?.querySelector("h2")?.getBoundingClientRect();
-      const assets = assetsTarget?.querySelector("h2")?.getBoundingClientRect();
+      const valueLabel = valueTarget?.querySelector<HTMLElement>("p");
+      const chartLabel = chartTarget?.querySelector<HTMLElement>("h2");
+      const assetsLabel = assetsTarget?.querySelector<HTMLElement>("h2");
+      const value = valueLabel?.getBoundingClientRect();
+      const chart = chartLabel?.getBoundingClientRect();
+      const assets = assetsLabel?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
       if (!value || !chart || !assets || !box || cancelled) return;
+      valueLabel.setAttribute("data-tour-point", "1");
+      chartLabel.setAttribute("data-tour-point", "2");
+      assetsLabel.setAttribute("data-tour-point", "3");
       setPortfolioMarkers({
-        value: { x: value.right + 10, y: value.top + value.height / 2 },
-        chart: { x: chart.right + 10, y: chart.top + chart.height / 2 },
-        assets: { x: assets.right + 10, y: Math.min(assets.top + assets.height / 2, window.innerHeight - 42) },
+        value: { x: value.right + 24, y: value.top + value.height / 2 },
+        chart: { x: chart.right + 24, y: chart.top + chart.height / 2 },
+        assets: { x: assets.right + 24, y: Math.min(assets.top + assets.height / 2, window.innerHeight - 42) },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
@@ -521,6 +527,7 @@ export function AppTour() {
       timers.forEach((timer) => clearTimeout(timer));
       window.removeEventListener("resize", measure);
       window.removeEventListener("scroll", measure);
+      document.querySelectorAll("[data-tour-point]").forEach((node) => node.removeAttribute("data-tour-point"));
     };
   }, [isPortfolioTourStep, isMobile, pathname]);
 
@@ -1042,19 +1049,6 @@ export function AppTour() {
               fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive"
             />
           </svg>
-          {([
-            [portfolioMarkers.value.x, portfolioMarkers.value.y - 14, 1],
-            [portfolioMarkers.chart.x, portfolioMarkers.chart.y - 14, 2],
-            [portfolioMarkers.assets.x, portfolioMarkers.assets.y - 14, 3],
-          ] as const).map(([left, top, label]) => (
-            <span
-              key={label}
-              className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
-              style={{ left, top }}
-            >
-              {label}
-            </span>
-          ))}
         </div>
       )}
     </>
