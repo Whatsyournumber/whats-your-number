@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useT } from "@/hooks/use-language";
 import { defaultReturn, newHolding, useHoldings, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { useQuotes, useSymbolSearch } from "@/hooks/use-market";
@@ -103,6 +104,13 @@ export function AssetDialog({
     }
     setDraft(null);
     baseline.current = null;
+  };
+
+  // Cambiar el tipo de activo dentro del editor: limpia el ticker si el nuevo tipo no cotiza.
+  const changeKind = (kind: HoldingKind) => {
+    if (!draft) return;
+    const quoted = ["etf", "stock", "crypto"].includes(kind);
+    setDraft({ ...draft, kind, ticker: quoted ? draft.ticker : "" });
   };
 
   const selectNewKind = (kind: HoldingKind) => {
@@ -218,12 +226,27 @@ export function AssetDialog({
                 </div>
               </div>
             ) : null}
+            <div className="flex items-center gap-2">
+              <Label className="shrink-0 text-[11px] text-muted-foreground">{t("Tipo de activo", "Asset type")}</Label>
+              <Select value={draft.kind} onValueChange={(v) => changeKind(v as HoldingKind)}>
+                <SelectTrigger className="h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {kinds.map(([kind, label]) => (
+                    <SelectItem key={kind} value={kind}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
               <div className="space-y-1">
                 <Label className="text-[11px] text-muted-foreground">{t("Nombre", "Name")}</Label>
                 <Input className="h-9" value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} />
               </div>
-              {(!isNew || ["etf", "stock", "crypto", "bond", "reit"].includes(draft.kind)) && (
+              {["etf", "stock", "crypto"].includes(draft.kind) && (
                 <>
                   <div className="space-y-1">
                     <Label className="text-[11px] text-muted-foreground">{t("Ticker", "Ticker")}</Label>
@@ -231,7 +254,7 @@ export function AssetDialog({
                       <Input
                         className="h-9 uppercase"
                         value={tickerOpen ? tickerQuery : draft.ticker}
-                        placeholder={draft.kind === "crypto" ? "BTC-USD" : draft.kind === "bond" ? t("Opcional", "Optional") : "VOO"}
+                        placeholder={draft.kind === "crypto" ? "BTC-USD" : "VOO"}
                         onFocus={() => {
                           setTickerQuery(draft.ticker);
                           setTickerOpen(true);
@@ -351,7 +374,7 @@ export function AssetDialog({
             </div>
             <div className="flex items-center justify-between gap-3">
               <p className="text-[11px] text-muted-foreground">
-                {["etf", "stock", "crypto", "bond", "reit"].includes(draft.kind)
+                {["etf", "stock", "crypto"].includes(draft.kind)
                   ? t("En cero, usamos el precio de mercado.", "At zero, we use the market price.")
                   : ""}
               </p>
