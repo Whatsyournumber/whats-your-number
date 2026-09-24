@@ -409,7 +409,7 @@ function CashFlow() {
             ))}
           </div>
         )}
-        <Button variant="outline" size="sm" className="shrink-0 gap-2" onClick={() => setRuleOpen(true)}>
+        <Button variant="outline" size="sm" className="shrink-0 gap-2" data-tour-cashflow-target="edit" onClick={() => setRuleOpen(true)}>
           <Pencil className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">{t("Editar categorías", "Edit categories")}</span>
           <span className="sm:hidden">{t("Editar", "Edit")}</span>

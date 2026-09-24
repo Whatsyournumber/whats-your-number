@@ -72,12 +72,12 @@ const STEPS: Step[] = [
   {
     url: "/cash-flow", icon: Scale, minPlan: "free",
     es: ["Distribución del dinero", "La regla 50/30/20 aplicada a tus números reales.",
-      "Pasa el cursor sobre cada bloque para ver el detalle.",
       "Necesidades, deseos y ahorro, comparados con tu plan.",
+      "Pasa el cursor sobre cada bloque para ver el detalle.",
       "Al empezar usa tu plan; luego usa tus gastos reales."],
     en: ["Money Distribution", "The 50/30/20 rule applied to your real numbers.",
-      "Hover each block to see the breakdown by category.",
       "Needs, wants and savings, compared with your plan.",
+      "Hover each block to see the breakdown by category.",
       "It starts from your plan, then uses your real spending."],
   },
   {
@@ -337,10 +337,10 @@ export function AppTour() {
     };
   }, [isAnalysisTourStep, isMobile, pathname]);
 
-  // Señala los bloques de destino y las tarjetas de la regla en Distribución del dinero.
+  // Señala "Editar categorías" y los bloques de destino en Distribución del dinero.
   const [cashFlowMarkers, setCashFlowMarkers] = useState<{
     blocks: { x: number; y: number };
-    cards: { x: number; y: number };
+    edit: { x: number; y: number };
     box: { x: number; y: number; width: number; height: number };
   } | null>(null);
   useEffect(() => {
@@ -351,12 +351,12 @@ export function AppTour() {
     let cancelled = false;
     const measure = () => {
       const blocks = document.querySelector<HTMLElement>('[data-tour-cashflow-target="blocks"]')?.getBoundingClientRect();
-      const cards = document.querySelector<HTMLElement>('[data-tour-cashflow-target="cards"]')?.getBoundingClientRect();
+      const edit = document.querySelector<HTMLElement>('[data-tour-cashflow-target="edit"]')?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
-      if (!blocks || !cards || !box || cancelled) return;
+      if (!blocks || !edit || !box || cancelled) return;
       setCashFlowMarkers({
         blocks: { x: blocks.left + blocks.width * 0.5, y: blocks.top + 28 },
-        cards: { x: cards.left + cards.width * 0.55, y: cards.top + cards.height * 0.5 },
+        edit: { x: edit.left + edit.width * 0.5, y: edit.top + edit.height * 0.5 },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
@@ -692,23 +692,23 @@ export function AppTour() {
               </marker>
             </defs>
             <path
-              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width - 16} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.35} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width + cashFlowMarkers.blocks.x) / 2} ${cashFlowMarkers.blocks.y + 70} ${cashFlowMarkers.blocks.x} ${cashFlowMarkers.blocks.y}`}
+              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.55} ${cashFlowMarkers.box.y - 4} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.55 + cashFlowMarkers.edit.x) / 2} ${cashFlowMarkers.box.y - 130} ${cashFlowMarkers.edit.x} ${cashFlowMarkers.edit.y + 22}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
             <path
-              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.55} ${cashFlowMarkers.box.y - 4} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.55 + cashFlowMarkers.cards.x) / 2} ${cashFlowMarkers.box.y - 130} ${cashFlowMarkers.cards.x} ${cashFlowMarkers.cards.y}`}
+              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width - 16} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.35} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width + cashFlowMarkers.blocks.x) / 2} ${cashFlowMarkers.blocks.y + 70} ${cashFlowMarkers.blocks.x} ${cashFlowMarkers.blocks.y}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
           </svg>
           <span
             className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
-            style={{ left: cashFlowMarkers.blocks.x - 14, top: cashFlowMarkers.blocks.y - 14 }}
+            style={{ left: cashFlowMarkers.edit.x - 14, top: cashFlowMarkers.edit.y - 14 }}
           >
             1
           </span>
           <span
             className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
-            style={{ left: cashFlowMarkers.cards.x - 14, top: cashFlowMarkers.cards.y - 14 }}
+            style={{ left: cashFlowMarkers.blocks.x - 14, top: cashFlowMarkers.blocks.y - 14 }}
           >
             2
           </span>
