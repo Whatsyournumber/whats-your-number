@@ -1909,7 +1909,7 @@ export function ExpenseLog() {
           )}
 
           {/* En escritorio, Últimos gastos va al lado de Gastos por categoría. */}
-          <div className="grid gap-4 sm:gap-6 lg:grid-cols-2 lg:items-start">
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-[3fr_2fr] lg:items-start">
           {rows.length > 0 && (
             <div
               ref={categoryCardRef}
