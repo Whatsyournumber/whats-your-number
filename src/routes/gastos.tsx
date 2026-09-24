@@ -943,7 +943,7 @@ function Gastos() {
                   <div
                     className="h-full rounded-full"
                     style={{
-                      width: `${Math.max(6, Math.min(100, (s.pct / Math.max(1, topSources[0].pct)) * 100))}%`,
+                      width: `${Math.max(6, Math.min(100, (s.pct / Math.max(1, topSources[0]?.pct ?? 1)) * 100))}%`,
                       background: palette[i % palette.length],
                     }}
                   />
