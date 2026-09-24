@@ -221,6 +221,7 @@ export function AppTour() {
   const current = step && step > 0 ? availableSteps[step - 1] ?? null : null;
   const isDashboardTourStep = current?.url === "/dashboard";
   const isExpenseTourStep = current?.url === "/registro-gastos";
+  const isAnalysisTourStep = current?.url === "/gastos";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
