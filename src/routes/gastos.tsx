@@ -196,9 +196,11 @@ function Gastos() {
     }
   }, []);
   const learned = useCategoryRules();
-  const moveTxToCategory = (id: string, category: string) => {
+  const moveTxToCategory = (ids: string | string[], category: string) => {
+    const list = Array.isArray(ids) ? ids : [ids];
     setTxCat((prev) => {
-      const next = { ...prev, [id]: category };
+      const next = { ...prev };
+      for (const id of list) next[id] = category;
       try {
         localStorage.setItem(TX_CAT_KEY, JSON.stringify(next));
       } catch {
@@ -206,9 +208,11 @@ function Gastos() {
       }
       return next;
     });
-    // Aprende la regla comercio → categoría para aplicarla la próxima vez.
-    const tx = transactions.find((x) => x.id === id);
-    if (tx) learned.learn(tx.merchant || tx.description, category);
+    // Aprende la regla comercio → categoría (solo con un movimiento, para no generalizar un lote).
+    if (list.length === 1) {
+      const tx = transactions.find((x) => x.id === list[0]);
+      if (tx) learned.learn(tx.merchant || tx.description, category);
+    }
   };
   const categoryOf = (t: Tx) =>
     txCat[t.id] ?? learned.resolve(t.merchant, t.description) ?? categorizeTxWithTravel(t, categories.rules, travelDays);
@@ -314,7 +318,15 @@ function Gastos() {
 
   // Categorías con gastos visibles por defecto; toggle para ver vacías
   const showEmptyCategories = false;
-  const [dragTx, setDragTx] = useState<{ id: string; from: string } | null>(null);
+  const [dragTx, setDragTx] = useState<{ ids: string[]; from: string } | null>(null);
+  const [selTx, setSelTx] = useState<{ from: string; ids: Set<string> }>({ from: "", ids: new Set() });
+  const toggleSel = (from: string, id: string) =>
+    setSelTx((prev) => {
+      const ids = new Set(prev.from === from ? prev.ids : []);
+      if (ids.has(id)) ids.delete(id);
+      else ids.add(id);
+      return { from, ids };
+    });
 
   const detailRows = useMemo(() => {
     // Las categorías base se muestran primero; las creadas por el usuario al final.
@@ -1339,8 +1351,14 @@ function Gastos() {
                     e.preventDefault();
                     if (dragTx) {
                       if (dragTx.from !== c.name) {
-                        moveTxToCategory(dragTx.id, c.name);
-                        toast.success(t(`Movido a ${tc(c.name)}`, `Moved to ${tc(c.name)}`));
+                        moveTxToCategory(dragTx.ids, c.name);
+                        const n = dragTx.ids.length;
+                        toast.success(
+                          n > 1
+                            ? t(`${n} movimientos movidos a ${tc(c.name)}`, `${n} transactions moved to ${tc(c.name)}`)
+                            : t(`Movido a ${tc(c.name)}`, `Moved to ${tc(c.name)}`),
+                        );
+                        setSelTx({ from: "", ids: new Set() });
                       }
                       setDragTx(null);
                     }
@@ -1392,6 +1410,20 @@ function Gastos() {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
+                    {selTx.from === c.name && selTx.ids.size > 0 && (
+                      <div className="mb-1 flex items-center justify-between gap-2 pl-6 pr-2 text-xs text-muted-foreground">
+                        <span>
+                          {t(`${selTx.ids.size} seleccionados · arrástralos juntos`, `${selTx.ids.size} selected · drag them together`)}
+                        </span>
+                        <button
+                          type="button"
+                          className="rounded-full px-2 py-0.5 hover:bg-elevated hover:text-foreground"
+                          onClick={() => setSelTx({ from: "", ids: new Set() })}
+                        >
+                          {t("Quitar selección", "Clear")}
+                        </button>
+                      </div>
+                    )}
                     {c.items.length === 0 ? (
                       <p className="pl-6 text-sm text-muted-foreground">{t("Sin gastos de esta categoría en el periodo.", "No expenses in this category for the period.")}</p>
                     ) : (
@@ -1399,21 +1431,32 @@ function Gastos() {
                         {c.items
                           .slice()
                           .sort((a: Tx, b: Tx) => (a.tx_date! < b.tx_date! ? 1 : -1))
-                          .map((tx: Tx) => (
+                          .map((tx: Tx) => {
+                            const isSel = selTx.from === c.name && selTx.ids.has(tx.id);
+                            return (
                             <li
                               key={tx.id}
                               draggable
                               onDragStart={(e) => {
                                 e.stopPropagation();
-                                setDragTx({ id: tx.id, from: c.name });
+                                const ids = isSel ? [...selTx.ids] : [tx.id];
+                                setDragTx({ ids, from: c.name });
                               }}
                               onDragEnd={() => setDragTx(null)}
-                              title={t("Arrastra a otra categoría para reasignarlo", "Drag to another category to reassign")}
+                              title={t("Selecciona varios y arrástralos a otra categoría", "Select several and drag them to another category")}
                               className={cn(
                                 "flex cursor-grab items-center gap-3 rounded-lg px-2 py-1 hover:bg-elevated/50 active:cursor-grabbing",
-                                dragTx?.id === tx.id && "opacity-50",
+                                isSel && "bg-primary/10",
+                                dragTx?.ids.includes(tx.id) && "opacity-50",
                               )}
                             >
+                              <input
+                                type="checkbox"
+                                checked={isSel}
+                                onChange={() => toggleSel(c.name, tx.id)}
+                                aria-label={t("Seleccionar movimiento", "Select transaction")}
+                                className="h-3.5 w-3.5 shrink-0 cursor-pointer accent-[var(--color-primary)]"
+                              />
                               <GripVertical className="h-3 w-3 shrink-0 text-muted-foreground/40" />
                               <span className="w-16 shrink-0 text-xs text-muted-foreground">
                                 {format(parseISO(tx.tx_date!), "d MMM", { locale: es })}
@@ -1424,7 +1467,8 @@ function Gastos() {
                               </div>
                               <span className="numeric ml-auto text-sm font-medium">{fmt(Math.abs(tx.amount))}</span>
                             </li>
-                          ))}
+                            );
+                          })}
                       </ul>
                     )}
                   </AccordionContent>
