@@ -544,20 +544,6 @@ function Gastos() {
     return map;
   }, [previous]);
 
-  /** Las 2-3 fuentes de gasto que más pesan en el periodo, con su peso real. */
-  const topSources = useMemo(() => {
-    const base = variableTotal || 1;
-    return merchants.slice(0, 3).map((m) => ({
-      name: m.name,
-      amount: m.amount,
-      count: m.count,
-      category: tc(m.category),
-      pct: (m.amount / base) * 100,
-    }));
-  }, [merchants, variableTotal, lang, tc]);
-
-  const topSourcesTotal = topSources.reduce((s, m) => s + m.amount, 0);
-  const topSourcesPct = variableTotal > 0 ? (topSourcesTotal / variableTotal) * 100 : 0;
 
 
   /** Comercios del periodo con su categoría actual, para el chat de categorías. */
@@ -893,71 +879,6 @@ function Gastos() {
         />
       </div>
 
-      {topSources.length > 0 && (
-        <div className="rounded-2xl border border-border/60 bg-elevated/40 p-4 sm:p-5">
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            {topSources.length === 1
-              ? t("Tu mayor fuente de gasto del periodo", "Your biggest spending source this period")
-              : t(
-                  `Tus ${topSources.length} mayores fuentes de gasto del periodo`,
-                  `Your ${topSources.length} biggest spending sources this period`,
-                )}
-            {": "}
-            {topSources.map((s, i) => (
-              <span key={s.name}>
-                {i > 0 && (i === topSources.length - 1 ? ` ${t("y", "and")} ` : ", ")}
-                <span className="font-medium text-foreground">{s.name}</span>{" "}
-                <span className="numeric">{fmt(s.amount)}</span>{" "}
-                <span className="numeric text-muted-foreground/70">· {s.pct.toFixed(0)}%</span>
-              </span>
-            ))}
-            {". "}
-            {topSources.length === 1 ? (
-              <>
-                {t("Supone el ", "That's ")}
-                <span className="numeric text-foreground">{topSourcesPct.toFixed(0)}%</span>
-                {t(" de tu gasto variable del periodo.", " of your variable spend this period.")}
-              </>
-            ) : (
-              <>
-                {t("Juntos suman ", "Together they add up to ")}
-                <span className="numeric text-foreground">{fmt(topSourcesTotal)}</span>
-                {t(", el ", ", ")}
-                <span className="numeric text-foreground">{topSourcesPct.toFixed(0)}%</span>
-                {t(" de tu gasto variable del periodo.", " of your variable spend this period.")}
-              </>
-            )}
-          </p>
-          <div className="mt-3 grid gap-2 sm:grid-cols-3">
-            {topSources.map((s, i) => (
-              <div key={s.name} className="rounded-xl border border-border/60 bg-background/50 px-3 py-2">
-                <div className="flex items-center gap-2">
-                  <span
-                    className="h-2 w-2 shrink-0 rounded-full"
-                    style={{ background: palette[i % palette.length] }}
-                  />
-                  <span className="min-w-0 flex-1 truncate text-sm font-medium">{s.name}</span>
-                  <span className="numeric shrink-0 text-sm font-semibold">{fmt(s.amount)}</span>
-                </div>
-                <div className="mt-2 h-1 overflow-hidden rounded-full bg-muted">
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: `${Math.max(6, Math.min(100, (s.pct / Math.max(1, topSources[0]?.pct ?? 1)) * 100))}%`,
-                      background: palette[i % palette.length],
-                    }}
-                  />
-                </div>
-
-                <p className="mt-1.5 truncate text-[11px] text-muted-foreground">
-                  {s.category} · {s.count} {s.count === 1 ? t("mov.", "tx") : t("movs.", "txs")} ·{" "}
-                  {s.pct.toFixed(0)}%
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       <Panel variant="minimal" className="p-5 sm:p-6">
 
