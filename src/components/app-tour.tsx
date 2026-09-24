@@ -451,7 +451,7 @@ export function AppTour() {
   const [patrimonioMarkers, setPatrimonioMarkers] = useState<{
     cards: { x: number; y: number };
     chart: { x: number; y: number };
-    allocation: { x: number; y: number };
+    assets: { x: number; y: number };
     box: { x: number; y: number; width: number; height: number };
   } | null>(null);
   useEffect(() => {
@@ -463,13 +463,13 @@ export function AppTour() {
     const measure = () => {
       const cards = document.querySelector<HTMLElement>('[data-tour-patrimonio-target="cards"]')?.getBoundingClientRect();
       const chart = document.getElementById("tour-pat-chart")?.getBoundingClientRect();
-      const allocation = document.getElementById("tour-pat-allocation")?.getBoundingClientRect();
+      const assets = document.getElementById("tour-pat-assets")?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
-      if (!cards || !chart || !allocation || !box || cancelled) return;
+      if (!cards || !chart || !assets || !box || cancelled) return;
       setPatrimonioMarkers({
-        cards: { x: cards.left + cards.width * 0.82, y: cards.top + cards.height * 0.35 },
+        cards: { x: cards.left + cards.width * 0.06, y: cards.top + 8 },
         chart: { x: chart.left + chart.width * 0.3, y: chart.top + 90 },
-        allocation: { x: allocation.left + allocation.width * 0.5, y: allocation.top + 70 },
+        assets: { x: assets.left + assets.width * 0.5, y: assets.top + 4 },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
@@ -486,7 +486,7 @@ export function AppTour() {
 
   // En Análisis de hipoteca, baja lo justo para ver los campos de arriba y las estrategias a la vez.
   useEffect(() => {
-    if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/retiro" && pathname === "/hipoteca") {
+    if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/hipoteca" && pathname === "/hipoteca") {
       const timer = window.setTimeout(() => {
         const strategies = document.getElementById("tour-hipo-strategies");
         if (strategies) {
@@ -511,9 +511,9 @@ export function AppTour() {
     return undefined;
   }, [step, pathname, isMobile]);
 
-  // En Patrimonio, sube al inicio para ver las tarjetas, la gráfica y la allocation a la vez.
+  // En Patrimonio, deja las tarjetas arriba; la línea 3 baja hacia los activos.
   useEffect(() => {
-    if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/hipoteca" && pathname === "/patrimonio") {
+    if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/patrimonio" && pathname === "/patrimonio") {
       const timer = window.setTimeout(() => {
         const cards = document.querySelector<HTMLElement>('[data-tour-patrimonio-target="cards"]');
         if (cards) window.scrollTo({ top: Math.max(0, window.scrollY + cards.getBoundingClientRect().top - 150), behavior: "smooth" });
@@ -942,7 +942,7 @@ export function AppTour() {
           ))}
         </div>
       )}
-      {isPatrimonioStep && patrimonioMarkers?.cards && patrimonioMarkers?.chart && patrimonioMarkers?.allocation && patrimonioMarkers?.box && (
+      {isPatrimonioStep && patrimonioMarkers?.cards && patrimonioMarkers?.chart && patrimonioMarkers?.assets && patrimonioMarkers?.box && (
         <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
           <svg className="absolute inset-0 h-full w-full overflow-visible">
             <defs>
@@ -959,14 +959,14 @@ export function AppTour() {
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-patrimonio-arrow)" className="stroke-positive/70"
             />
             <path
-              d={`M ${patrimonioMarkers.box.x + patrimonioMarkers.box.width * 0.6} ${patrimonioMarkers.box.y - 4} Q ${(patrimonioMarkers.box.x + patrimonioMarkers.box.width * 0.6 + patrimonioMarkers.allocation.x) / 2} ${patrimonioMarkers.allocation.y + 80} ${patrimonioMarkers.allocation.x} ${patrimonioMarkers.allocation.y + 12}`}
+              d={`M ${patrimonioMarkers.box.x - 4} ${patrimonioMarkers.box.y + patrimonioMarkers.box.height * 0.4} Q ${(patrimonioMarkers.box.x + patrimonioMarkers.assets.x) / 2 - 30} ${Math.min(patrimonioMarkers.assets.y, window.innerHeight - 110)} ${patrimonioMarkers.assets.x} ${Math.min(patrimonioMarkers.assets.y, window.innerHeight - 46)}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-patrimonio-arrow)" className="stroke-positive/70"
             />
           </svg>
           {([
-            [patrimonioMarkers.cards.x - 14, patrimonioMarkers.cards.y + 20, 1],
+            [patrimonioMarkers.cards.x - 14, patrimonioMarkers.cards.y - 34, 1],
             [patrimonioMarkers.chart.x - 14, patrimonioMarkers.chart.y - 36, 2],
-            [patrimonioMarkers.allocation.x - 14, patrimonioMarkers.allocation.y + 20, 3],
+            [patrimonioMarkers.assets.x - 14, Math.min(patrimonioMarkers.assets.y, window.innerHeight - 46) + 8, 3],
           ] as const).map(([left, top, label]) => (
             <span
               key={label}
