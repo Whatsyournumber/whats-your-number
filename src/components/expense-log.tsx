@@ -1066,7 +1066,7 @@ export function ExpenseLog() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="hidden h-11 shrink-0 px-5 sm:flex sm:w-auto">
+            <Button data-tour-expense-target="add" className="hidden h-11 shrink-0 px-5 sm:flex sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               {t("Añadir gasto", "Add expense")}
             </Button>
@@ -1271,7 +1271,7 @@ export function ExpenseLog() {
                   <p className="text-sm text-muted-foreground">{t("Gasto objetivo mensual", "Monthly spending target")}</p>
                   <span aria-hidden className="-my-1 row-span-2 self-stretch border-l border-border/70" />
                   <p className="text-sm text-muted-foreground">{t("Gastado a la fecha", "Spent to date")}</p>
-                 <div className="inline-flex min-w-0 items-baseline gap-1.5 rounded-xl border border-border bg-muted/20 px-3 py-1.5 transition-colors focus-within:border-positive/60">
+                  <div data-tour-expense-target="budget" className="inline-flex min-w-0 items-baseline gap-1.5 rounded-xl border border-border bg-muted/20 px-3 py-1.5 transition-colors focus-within:border-positive/60">
                    <span className="numeric text-xl font-semibold text-muted-foreground">{currencySymbol}</span>
                    <NumberInput
                      value={target}
@@ -1626,7 +1626,7 @@ export function ExpenseLog() {
 
           {(target > 0 || monthVariable > 0) && (
             <div className="grid gap-4 xl:grid-cols-[1fr_320px]">
-              <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
+              <div data-tour-expense-target="chart" className="rounded-2xl border border-border bg-card p-4 sm:p-6">
                 <h3 className="text-base font-semibold">
                   {t("Gasto diario vs. presupuesto esperado", "Daily spend vs. expected budget")}
                 </h3>
