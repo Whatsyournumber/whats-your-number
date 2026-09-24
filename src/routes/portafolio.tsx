@@ -31,7 +31,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useDailySeries, useMarketSeries, useQuotes, useSymbolReturns, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
-import { defaultReturn, holdingValue, newHolding, useHoldings, type HoldingKind } from "@/hooks/use-holdings";
+import { PATRIMONIO_ONLY_NOTE, defaultReturn, holdingValue, newHolding, useHoldings, type HoldingKind } from "@/hooks/use-holdings";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useProfile } from "@/hooks/use-profile";
@@ -485,7 +485,7 @@ function PortafolioContent() {
             : ("ETF" as const);
 
   const detailed = holdings
-    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit", "future", "retirement"].includes(h.kind))
+    .filter((h) => h.note !== PATRIMONIO_ONLY_NOTE && ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit", "future", "retirement"].includes(h.kind))
     .map((h) => {
       const value = holdingValue(h, prices);
       // Retorno derivado del mercado: plusvalía real (valor hoy − costo) cuando hay ticker + costo;
@@ -532,7 +532,7 @@ function PortafolioContent() {
     })
     .filter((h) => h.value > 0);
 
-  const cashDetailed = holdings.filter((h) => ["cash", "bank", "money_market"].includes(h.kind));
+  const cashDetailed = holdings.filter((h) => h.note !== PATRIMONIO_ONLY_NOTE && ["cash", "bank", "money_market"].includes(h.kind));
   if (cashDetailed.length) {
     const cash = cashDetailed.reduce((s, h) => s + holdingValue(h, prices), 0);
     if (cash > 0)

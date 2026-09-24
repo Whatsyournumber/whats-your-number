@@ -1,3 +1,4 @@
+import { PATRIMONIO_ONLY_NOTE } from "@/hooks/use-holdings";
 import { useRef, useState } from "react";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -145,6 +146,8 @@ export function AssetDialog({
       expected_return: numOr(draft.expected_return, base.expected_return),
       linked_liability: numOr(draft.linked_liability),
       purchased_at: draft.purchased_at || base.purchased_at || null,
+      // Lo creado desde Patrimonio no se muestra en Portafolio.
+      note: persistedHolding ? base.note : PATRIMONIO_ONLY_NOTE,
     };
     try {
       await saveAll(persistedHolding ? holdings.map((h) => (h.id === updated.id ? updated : h)) : [...holdings, updated]);
