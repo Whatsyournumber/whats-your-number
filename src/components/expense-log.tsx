@@ -2135,6 +2135,32 @@ export function ExpenseLog() {
 
           )}
 
+          {/* Análisis del rubro: misma gráfica y detalle que en Análisis de gastos. */}
+          {analysisCat && (() => {
+            const row = rows.find((r) => r.id === analysisCat);
+            if (!row) return null;
+            const items = row.items.map((it) => ({
+              id: it.key,
+              amount: -Math.abs(it.amount),
+              merchant: it.label,
+              tx_date: it.date ?? null,
+            })) as unknown as Tx[];
+            return (
+              <CategoryDetailDialog
+                open={Boolean(analysisCat)}
+                onOpenChange={(v) => !v && setAnalysisCat(null)}
+                name={row.name}
+                items={items}
+                amount={row.actual}
+                prevAmount={prevByCategory.get(row.id) ?? 0}
+                periodTotal={rows.reduce((s, r) => s + r.actual, 0)}
+                days={periodDays}
+                fmt={fmt}
+                fmtCompact={fmtCompact}
+              />
+            );
+          })()}
+
 
         <div ref={latestExpensesRef} className="scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6">
           <div className="flex items-start justify-between gap-2">
