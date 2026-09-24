@@ -1956,6 +1956,7 @@ function PortafolioContent() {
         <KpiCard label={t("Ganancia total", "Total gain")} value={fmt(totalGain)} delta={totalCostForGain > 0 ? (totalGain / totalCostForGain) * 100 : 0} index={1} />
         <KpiCard label={t("Ganancia mensual", "Monthly gain")} value={fmt(Math.round(totalGain / 12))} index={2} />
         <motion.div
+          data-tour-portfolio-target="return"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.15, ease: "easeOut" }}

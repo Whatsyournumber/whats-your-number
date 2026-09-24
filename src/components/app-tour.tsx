@@ -499,13 +499,13 @@ export function AppTour() {
     let cancelled = false;
     const measure = () => {
       const value = document.querySelector<HTMLElement>('[data-tour-portfolio-target="value"]')?.getBoundingClientRect();
-      const chart = document.getElementById("tour-portfolio-chart")?.getBoundingClientRect();
+      const chart = document.querySelector<HTMLElement>('[data-tour-portfolio-target="return"]')?.getBoundingClientRect();
       const configuration = document.getElementById("tour-portfolio-configuration")?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
       if (!value || !chart || !configuration || !box || cancelled) return;
       setPortfolioMarkers({
         value: { x: value.left + value.width * 0.2, y: value.top + value.height * 0.52 },
-        chart: { x: chart.left + chart.width * 0.58, y: chart.top + 88 },
+        chart: { x: chart.left + chart.width * 0.5, y: chart.top + chart.height * 0.5 },
         configuration: { x: configuration.left + configuration.width * 0.42, y: configuration.top + 74 },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
@@ -702,7 +702,11 @@ export function AppTour() {
                   ? sidebarState === "expanded"
                     ? `sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
                     : `sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
-                  : "sm:right-6",
+                  : isPortfolioStep
+                    ? sidebarState === "expanded"
+                      ? "sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto"
+                      : "sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto"
+                    : "sm:right-6",
         )}
       >
         <div ref={tourBoxRef} data-tour-box className="relative overflow-hidden rounded-2xl border border-tour-border bg-tour-surface p-4 text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25 sm:rounded-3xl sm:p-5">
