@@ -542,15 +542,15 @@ export function AppTour() {
             </defs>
             <path
               d={`M ${expenseMarkers.box.x + 50} ${expenseMarkers.box.y} Q ${expenseMarkers.box.x - 30} ${expenseMarkers.box.y - 70} ${expenseMarkers.budget.x} ${expenseMarkers.budget.y}`}
-              fill="none" strokeWidth={1.75} markerEnd="url(#tour-expense-arrow)" className="stroke-positive"
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-expense-arrow)" className="stroke-positive/70"
             />
             <path
               d={`M ${expenseMarkers.box.x + expenseMarkers.box.width - 42} ${expenseMarkers.box.y} Q ${expenseMarkers.add.x + 85} ${expenseMarkers.box.y - 95} ${expenseMarkers.add.x} ${expenseMarkers.add.y}`}
-              fill="none" strokeWidth={1.75} markerEnd="url(#tour-expense-arrow)" className="stroke-positive"
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-expense-arrow)" className="stroke-positive/70"
             />
             <path
               d={`M ${expenseMarkers.box.x + 38} ${expenseMarkers.box.y + expenseMarkers.box.height * 0.46} Q ${expenseMarkers.box.x - 90} ${expenseMarkers.box.y + 30} ${expenseMarkers.chart.x} ${expenseMarkers.chart.y}`}
-              fill="none" strokeWidth={1.75} markerEnd="url(#tour-expense-arrow)" className="stroke-positive"
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-expense-arrow)" className="stroke-positive/70"
             />
           </svg>
           {([
