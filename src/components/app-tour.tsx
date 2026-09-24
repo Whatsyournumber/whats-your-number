@@ -624,7 +624,7 @@ export function AppTour() {
           </svg>
           <span
             className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
-            style={{ left: analysisMarkers.importBtn.x - 14, top: analysisMarkers.importBtn.y + 52 }}
+            style={{ left: analysisMarkers.importBtn.x - 14, top: analysisMarkers.importBtn.y - 52 }}
           >
             1
           </span>
