@@ -2,7 +2,7 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "rea
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, CalendarDays, Camera, ChevronDown, ChevronRight, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { FolderIcon, GalleryIcon, GooglePhotosIcon } from "@/components/expense-source-icons";
@@ -45,7 +45,8 @@ import { captureExpense } from "@/lib/expense-capture.functions";
 import { translateCategory } from "@/lib/i18n-data";
 import { saveExpense } from "@/lib/manual-expense";
 import { supabase } from "@/integrations/supabase/client";
-import { SPEND_PLAN_FIELDS, getWynMoneyLocale, money } from "@/lib/onboarding";
+import { SPEND_PLAN_FIELDS, compact, getWynMoneyLocale, money } from "@/lib/onboarding";
+import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { cn } from "@/lib/utils";
 
 type DraftItem = { name: string; amount: number; category: string };
@@ -260,6 +261,7 @@ export function ExpenseLog() {
 
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
+  const fmtCompact = (n: number) => compact(n, currency);
   const currencySymbol = useMemo(() => {
     try {
       return (
@@ -281,6 +283,8 @@ export function ExpenseLog() {
   const [period, setPeriod] = useState<"day" | "week" | "month">("month");
   // Día de la columna del gráfico diario que el usuario está mirando (hover o toque).
   const [hoverDay, setHoverDay] = useState<number | null>(null);
+  // Categoría cuyo análisis detallado (gráfica + movimientos) está abierto.
+  const [analysisCat, setAnalysisCat] = useState<string | null>(null);
 
   const daysInMonth = monthEnd.getDate();
   const periodDays = period === "day" ? 1 : period === "week" ? 7 : daysInMonth;
