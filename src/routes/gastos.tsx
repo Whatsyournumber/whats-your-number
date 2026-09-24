@@ -544,6 +544,22 @@ function Gastos() {
     return map;
   }, [previous]);
 
+  /** Las 2-3 fuentes de gasto que más pesan en el periodo, con su peso real. */
+  const topSources = useMemo(() => {
+    const base = variableTotal || 1;
+    return merchants.slice(0, 3).map((m) => ({
+      name: m.name,
+      amount: m.amount,
+      count: m.count,
+      category: tc(m.category),
+      pct: (m.amount / base) * 100,
+    }));
+  }, [merchants, variableTotal, lang, tc]);
+
+  const topSourcesTotal = topSources.reduce((s, m) => s + m.amount, 0);
+  const topSourcesPct = variableTotal > 0 ? (topSourcesTotal / variableTotal) * 100 : 0;
+
+
   /** Comercios del periodo con su categoría actual, para el chat de categorías. */
   const merchantsForAi = useMemo(
     () =>
