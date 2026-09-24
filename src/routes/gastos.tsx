@@ -1339,7 +1339,7 @@ function Gastos() {
             </div>
           }
         >
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion type="single" collapsible className="w-full" data-tour-analysis-target="categories">
             {detailRows.map((c, i) => {
               const prev = prevByCategory.get(c.name) ?? 0;
               const variation = prev > 0 ? ((c.amount - prev) / prev) * 100 : null;

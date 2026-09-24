@@ -311,18 +311,18 @@ export function AppTour() {
     let cancelled = false;
     const measure = () => {
       const importBtn = document.querySelector<HTMLElement>('[data-tour-analysis-target="import"]')?.getBoundingClientRect();
-      const chart = document.querySelector<HTMLElement>('[data-tour-analysis-target="chart"]')?.getBoundingClientRect();
+      const chart = document.querySelector<HTMLElement>('[data-tour-analysis-target="categories"]')?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
       if (!importBtn || !chart || !box || cancelled) return;
       setAnalysisMarkers({
         importBtn: { x: importBtn.left + importBtn.width / 2, y: importBtn.top },
-        chart: { x: chart.left + 90, y: Math.max(chart.top + 64, chart.bottom - 200) },
+        chart: { x: chart.left + 90, y: chart.top + 80 },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
     const scrollTimer = window.setTimeout(() => {
-      const chart = document.querySelector<HTMLElement>('[data-tour-analysis-target="chart"]');
-      if (chart) window.scrollTo({ top: chart.getBoundingClientRect().top + window.scrollY - 90, behavior: "smooth" });
+      const btn = document.querySelector<HTMLElement>('[data-tour-analysis-target="import"]');
+      if (btn) window.scrollTo({ top: btn.getBoundingClientRect().top + window.scrollY - 120, behavior: "smooth" });
     }, 250);
     const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
     window.addEventListener("resize", measure);
@@ -467,7 +467,7 @@ export function AppTour() {
             : isExpenseStep
               ? "sm:bottom-auto sm:right-6 sm:top-[clamp(18rem,48vh,24rem)]"
               : isAnalysisStep
-                ? "sm:bottom-auto sm:right-6 sm:top-[clamp(15rem,38vh,18rem)]"
+                ? "sm:bottom-auto sm:right-6 sm:top-[clamp(12rem,42vh,17rem)]"
                 : "sm:right-6",
         )}
       >
