@@ -72,12 +72,12 @@ const STEPS: Step[] = [
   {
     url: "/cash-flow", icon: Scale, minPlan: "free",
     es: ["Distribución del dinero", "La regla 50/30/20 aplicada a tus números reales.",
-      "Pasa el cursor sobre cada bloque para ver el detalle.",
       "Necesidades, deseos y ahorro, comparados con tu plan.",
+      "Pasa el cursor sobre cada bloque para ver el detalle.",
       "Al empezar usa tu plan; luego usa tus gastos reales."],
     en: ["Money Distribution", "The 50/30/20 rule applied to your real numbers.",
-      "Hover each block to see the breakdown by category.",
       "Needs, wants and savings, compared with your plan.",
+      "Hover each block to see the breakdown by category.",
       "It starts from your plan, then uses your real spending."],
   },
   {
