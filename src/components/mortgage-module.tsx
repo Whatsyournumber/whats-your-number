@@ -617,6 +617,7 @@ export function MortgageModule() {
       {/* Middle: strategies + quick simulator */}
       <div className="grid gap-4 lg:grid-cols-5">
         <Panel
+          id="tour-hipo-strategies"
           variant="minimal"
           className="min-w-0 lg:col-span-3"
           title={t("¿Qué deberías hacer?", "What should you do?")}
@@ -690,6 +691,7 @@ export function MortgageModule() {
         </Panel>
 
         <Panel
+          id="tour-hipo-simulator"
           variant="minimal"
           className="lg:col-span-2"
           title={t("Simulador rápido", "Quick simulator")}
