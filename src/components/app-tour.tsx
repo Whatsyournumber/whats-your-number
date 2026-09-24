@@ -764,6 +764,42 @@ export function AppTour() {
           </span>
         </div>
       )}
+      {isNumberStep && numberMarkers?.number && numberMarkers?.progress && numberMarkers?.simulator && numberMarkers?.box && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            <defs>
+              <marker id="tour-number-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
+              </marker>
+            </defs>
+            <path
+              d={`M ${numberMarkers.box.x + 40} ${numberMarkers.box.y - 4} Q ${(numberMarkers.box.x + 40 + numberMarkers.number.x) / 2} ${numberMarkers.number.y + 90} ${numberMarkers.number.x} ${numberMarkers.number.y + 14}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-number-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${numberMarkers.box.x + numberMarkers.box.width * 0.55} ${numberMarkers.box.y - 4} Q ${(numberMarkers.box.x + numberMarkers.box.width * 0.55 + numberMarkers.progress.x) / 2} ${numberMarkers.progress.y + 110} ${numberMarkers.progress.x} ${numberMarkers.progress.y + 14}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-number-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${numberMarkers.box.x + numberMarkers.box.width - 24} ${numberMarkers.box.y + numberMarkers.box.height * 0.3} Q ${(numberMarkers.box.x + numberMarkers.box.width + numberMarkers.simulator.x) / 2} ${numberMarkers.simulator.y - 60} ${numberMarkers.simulator.x} ${numberMarkers.simulator.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-number-arrow)" className="stroke-positive/70"
+            />
+          </svg>
+          {([
+            [numberMarkers.number.x - 14, numberMarkers.number.y - 36, 1],
+            [numberMarkers.progress.x - 14, numberMarkers.progress.y - 36, 2],
+            [numberMarkers.simulator.x - 14, numberMarkers.simulator.y - 14, 3],
+          ] as const).map(([left, top, label]) => (
+            <span
+              key={label}
+              className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+              style={{ left, top }}
+            >
+              {label}
+            </span>
+          ))}
+        </div>
+      )}
     </>
   );
 }
