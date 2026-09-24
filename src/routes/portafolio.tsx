@@ -1943,7 +1943,12 @@ function PortafolioContent() {
           <KpiCard
             label={t("Valor actual", "Current value")}
             value={fmt(totalValue)}
-            valueTrailing={<span className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full bg-positive shadow-[0_0_0_4px_var(--color-positive-muted)]" aria-hidden="true" />}
+            valueTrailing={(
+              <span
+                className="ml-1 mt-1 inline-block h-2.5 w-2.5 shrink-0 self-center rounded-full bg-positive shadow-[0_0_0_4px_var(--color-positive-muted)] motion-safe:animate-pulse"
+                aria-hidden="true"
+              />
+            )}
             accent
             index={0}
           />
