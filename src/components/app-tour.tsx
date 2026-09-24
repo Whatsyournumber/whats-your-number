@@ -337,6 +337,40 @@ export function AppTour() {
     };
   }, [isAnalysisTourStep, isMobile, pathname]);
 
+  // Señala los bloques de destino y las tarjetas de la regla en Distribución del dinero.
+  const [cashFlowMarkers, setCashFlowMarkers] = useState<{
+    blocks: { x: number; y: number };
+    cards: { x: number; y: number };
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isCashFlowTourStep || isMobile) {
+      setCashFlowMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    const measure = () => {
+      const blocks = document.querySelector<HTMLElement>('[data-tour-cashflow-target="blocks"]')?.getBoundingClientRect();
+      const cards = document.querySelector<HTMLElement>('[data-tour-cashflow-target="cards"]')?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!blocks || !cards || !box || cancelled) return;
+      setCashFlowMarkers({
+        blocks: { x: blocks.left + blocks.width * 0.5, y: blocks.top + 28 },
+        cards: { x: cards.left + cards.width * 0.55, y: cards.top + cards.height * 0.5 },
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure);
+    };
+  }, [isCashFlowTourStep, isMobile, pathname]);
+
   // Abre cada sección cuando le toca.
   useEffect(() => {
     if (current && pathname !== current.url) navigate({ to: current.url });
