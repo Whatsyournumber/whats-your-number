@@ -942,9 +942,13 @@ function Gastos() {
                 <div className="mt-2 h-1 overflow-hidden rounded-full bg-muted">
                   <div
                     className="h-full rounded-full"
-                    style={{ width: `${Math.min(100, s.pct)}%`, background: palette[i % palette.length] }}
+                    style={{
+                      width: `${Math.max(6, Math.min(100, (s.pct / Math.max(1, topSources[0].pct)) * 100))}%`,
+                      background: palette[i % palette.length],
+                    }}
                   />
                 </div>
+
                 <p className="mt-1.5 truncate text-[11px] text-muted-foreground">
                   {s.category} · {s.count} {s.count === 1 ? t("mov.", "tx") : t("movs.", "txs")} ·{" "}
                   {s.pct.toFixed(0)}%
