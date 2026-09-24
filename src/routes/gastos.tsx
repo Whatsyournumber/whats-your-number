@@ -796,7 +796,7 @@ function Gastos() {
           : t("Entiende tus gastos, controla tus objetivos y encuentra oportunidades de ahorro.", "Understand your spending, control your goals and find savings opportunities.")}
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            <Button asChild size="sm" className="gap-2 rounded-full" data-tour-analysis-target="import">
+            <Button asChild size="sm" className="gap-2 rounded-full">
               <Link to="/configuracion">
                 <Upload className="h-3.5 w-3.5" />
                 {t("Importar gastos", "Import expenses")}
@@ -1329,7 +1329,7 @@ function Gastos() {
           className="flex h-full flex-col"
           actions={
             <div className="flex flex-wrap items-center gap-2">
-              <Button asChild size="sm" className="gap-2 rounded-full">
+              <Button asChild size="sm" className="gap-2 rounded-full" data-tour-analysis-target="import">
                 <Link to="/configuracion">
                   <Upload className="h-3.5 w-3.5" />
                   {t("Importar gastos", "Import expenses")}

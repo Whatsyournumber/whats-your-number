@@ -61,11 +61,11 @@ const STEPS: Step[] = [
   {
     url: "/gastos", icon: ChartPie, minPlan: "free",
     es: ["Análisis de Gastos", "Descubre dónde se va tu dinero cada mes.",
-      "Añade tus estados financieros de todos los bancos.",
+      "Importa tus gastos mensuales o estados de todos tus bancos.",
       "Compara cada categoría con tu presupuesto mensual.",
       "Deja que la IA te diga dónde gastaste de más y dónde ahorrar."],
     en: ["Spending Analysis", "Find out where your money goes each month.",
-      "Add your financial statements from all your banks.",
+      "Import your monthly expenses or statements from any bank.",
       "Compare each category with your monthly budget.",
       "Let AI tell you where you overspent and where to save."],
   },
@@ -614,7 +614,7 @@ export function AppTour() {
               </marker>
             </defs>
             <path
-              d={`M ${analysisMarkers.box.x + 60} ${analysisMarkers.box.y + analysisMarkers.box.height} Q ${analysisMarkers.box.x - 120} ${analysisMarkers.box.y + analysisMarkers.box.height + 60} ${analysisMarkers.importBtn.x} ${analysisMarkers.importBtn.y + 44}`}
+              d={`M ${analysisMarkers.box.x + 40} ${analysisMarkers.box.y + analysisMarkers.box.height - 12} Q ${analysisMarkers.box.x - 160} ${(analysisMarkers.box.y + analysisMarkers.importBtn.y) / 2} ${analysisMarkers.importBtn.x} ${analysisMarkers.importBtn.y - 12}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-analysis-arrow)" className="stroke-positive/70"
             />
             <path
@@ -624,7 +624,7 @@ export function AppTour() {
           </svg>
           <span
             className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
-            style={{ left: analysisMarkers.importBtn.x - 14, top: analysisMarkers.importBtn.y + 52 }}
+            style={{ left: analysisMarkers.importBtn.x - 14, top: analysisMarkers.importBtn.y - 52 }}
           >
             1
           </span>
