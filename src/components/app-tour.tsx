@@ -82,11 +82,11 @@ const STEPS: Step[] = [
   },
   {
     url: "/retiro", icon: Target, minPlan: "pro",
-    es: ["Tu número de libertad financiera", "Calcula cuánto dinero necesitas para vivir de tus inversiones. Este número se usará en todas partes para ayudarte a llegar.",
+    es: ["Tu número de libertad financiera", "Calcula cuánto dinero necesitas para vivir de tus inversiones.\nEste número se usará en todas partes para ayudarte a llegar.",
       "Mira tu número de retiro; puedes editarlo según cuánto quieras vivir al mes.",
       "Mira el progreso de tu número vs el año de retiro.",
       "Simula tu retiro con más aporte mensual, rentabilidad y edad para planificarte mejor."],
-    en: ["Your financial freedom number", "Calculate how much money you need to live off your investments. This number is used everywhere to help you get there.",
+    en: ["Your financial freedom number", "Calculate how much money you need to live off your investments.\nThis number is used everywhere to help you get there.",
       "See your retirement number; edit it to match the monthly income you want.",
       "See your number's progress vs your retirement year.",
       "Simulate retirement with higher contributions, returns and age to plan better."],
@@ -386,7 +386,8 @@ export function AppTour() {
     }
     let cancelled = false;
     const measure = () => {
-      const number = document.querySelector<HTMLElement>('[data-tour-number-target="number"]')?.getBoundingClientRect();
+      const number = document.querySelector<HTMLElement>('[data-tour-number-target="pencil"]')?.getBoundingClientRect()
+        ?? document.querySelector<HTMLElement>('[data-tour-number-target="number"]')?.getBoundingClientRect();
       const progress = document.querySelector<HTMLElement>('[data-tour-number-target="progress"]')?.getBoundingClientRect();
       const simulator = document.querySelector<HTMLElement>('[data-tour-number-target="simulator"]')?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
@@ -593,7 +594,7 @@ export function AppTour() {
               </>
             )}
           </div>
-          <p className="relative mt-2.5 text-[13px] leading-snug text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
+          <p className="relative mt-2.5 whitespace-pre-line text-[13px] leading-snug text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
           <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
             {points.map((p, i) => {
               const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
