@@ -486,7 +486,7 @@ export function AppTour() {
 
   // En Análisis de hipoteca, baja lo justo para ver los campos de arriba y las estrategias a la vez.
   useEffect(() => {
-    if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/retiro" && pathname === "/hipoteca") {
+    if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/hipoteca" && pathname === "/hipoteca") {
       const timer = window.setTimeout(() => {
         const strategies = document.getElementById("tour-hipo-strategies");
         if (strategies) {
@@ -513,7 +513,7 @@ export function AppTour() {
 
   // En Patrimonio, deja las tarjetas arriba y el panel de Activos asomando abajo, a la izquierda de la caja.
   useEffect(() => {
-    if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/hipoteca" && pathname === "/patrimonio") {
+    if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/patrimonio" && pathname === "/patrimonio") {
       const timer = window.setTimeout(() => {
         const assets = document.getElementById("tour-pat-assets");
         if (assets) {
