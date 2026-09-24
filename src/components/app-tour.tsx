@@ -61,13 +61,13 @@ const STEPS: Step[] = [
   {
     url: "/gastos", icon: ChartPie, minPlan: "free",
     es: ["Análisis de Gastos", "Descubre dónde se va tu dinero cada mes.",
+      "Añade tus estados financieros de todos los bancos.",
       "Compara cada categoría con tu presupuesto mensual.",
-      "La IA te busca oportunidades de ahorro.",
-      "Ve tu evolución mes a mes desde que empezaste."],
+      "Deja que la IA te diga dónde gastaste de más y dónde ahorrar."],
     en: ["Spending Analysis", "Find out where your money goes each month.",
+      "Add your financial statements from all your banks.",
       "Compare each category with your monthly budget.",
-      "AI finds you savings opportunities.",
-      "See your month-by-month evolution since you started."],
+      "Let AI tell you where you overspent and where to save."],
   },
   {
     url: "/cash-flow", icon: Scale, minPlan: "free",
