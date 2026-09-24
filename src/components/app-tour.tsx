@@ -945,7 +945,7 @@ export function AppTour() {
           ))}
         </div>
       )}
-      {isPatrimonioStep && patrimonioMarkers?.cards && patrimonioMarkers?.chart && patrimonioMarkers?.allocation && patrimonioMarkers?.box && (
+      {isPatrimonioStep && patrimonioMarkers?.cards && patrimonioMarkers?.chart && patrimonioMarkers?.assets && patrimonioMarkers?.box && (
         <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
           <svg className="absolute inset-0 h-full w-full overflow-visible">
             <defs>
@@ -962,14 +962,14 @@ export function AppTour() {
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-patrimonio-arrow)" className="stroke-positive/70"
             />
             <path
-              d={`M ${patrimonioMarkers.box.x + patrimonioMarkers.box.width * 0.6} ${patrimonioMarkers.box.y - 4} Q ${(patrimonioMarkers.box.x + patrimonioMarkers.box.width * 0.6 + patrimonioMarkers.allocation.x) / 2} ${patrimonioMarkers.allocation.y + 80} ${patrimonioMarkers.allocation.x} ${patrimonioMarkers.allocation.y + 12}`}
+              d={`M ${patrimonioMarkers.box.x - 4} ${patrimonioMarkers.box.y + patrimonioMarkers.box.height * 0.4} Q ${(patrimonioMarkers.box.x + patrimonioMarkers.assets.x) / 2 - 30} ${patrimonioMarkers.assets.y - 60} ${patrimonioMarkers.assets.x} ${patrimonioMarkers.assets.y}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-patrimonio-arrow)" className="stroke-positive/70"
             />
           </svg>
           {([
             [patrimonioMarkers.cards.x - 14, patrimonioMarkers.cards.y + 20, 1],
             [patrimonioMarkers.chart.x - 14, patrimonioMarkers.chart.y - 36, 2],
-            [patrimonioMarkers.allocation.x - 14, patrimonioMarkers.allocation.y + 20, 3],
+            [patrimonioMarkers.assets.x - 14, patrimonioMarkers.assets.y + 8, 3],
           ] as const).map(([left, top, label]) => (
             <span
               key={label}
