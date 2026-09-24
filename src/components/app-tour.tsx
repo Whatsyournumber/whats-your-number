@@ -311,12 +311,12 @@ export function AppTour() {
     let cancelled = false;
     const measure = () => {
       const importBtn = document.querySelector<HTMLElement>('[data-tour-analysis-target="import"]')?.getBoundingClientRect();
-      const chart = document.querySelector<HTMLElement>('[data-tour-analysis-target="categories"]')?.getBoundingClientRect();
+      const chart = document.querySelector<HTMLElement>('[data-tour-analysis-target="chart"]')?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
       if (!importBtn || !chart || !box || cancelled) return;
       setAnalysisMarkers({
         importBtn: { x: importBtn.left + importBtn.width / 2, y: importBtn.top },
-        chart: { x: chart.left + 90, y: chart.top + 80 },
+        chart: { x: chart.left + chart.width * 0.3, y: chart.top + chart.height * 0.3 },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
@@ -625,7 +625,7 @@ export function AppTour() {
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-analysis-arrow)" className="stroke-positive/70"
             />
             <path
-              d={`M ${analysisMarkers.box.x + 30} ${analysisMarkers.box.y + 40} Q ${analysisMarkers.box.x - 160} ${analysisMarkers.box.y - 40} ${analysisMarkers.chart.x} ${analysisMarkers.chart.y}`}
+              d={`M ${analysisMarkers.box.x + 30} ${analysisMarkers.box.y - 4} Q ${analysisMarkers.box.x + 30} ${analysisMarkers.box.y - 70} ${analysisMarkers.chart.x} ${analysisMarkers.chart.y - 10}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-analysis-arrow)" className="stroke-positive/70"
             />
           </svg>
