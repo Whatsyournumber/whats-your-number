@@ -423,12 +423,18 @@ export function AppTour() {
           <p className="relative mt-2.5 text-[13px] leading-snug text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
           <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
             {points.map((p, i) => {
-              const B = isDashboardStep ? Check : (BULLET_ICONS[i % BULLET_ICONS.length] ?? Check);
+              const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
               return (
-                <li key={i} className="flex items-start gap-2 text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
-                  <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-positive/10 text-positive sm:h-5 sm:w-5">
-                    <B className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                  </span>
+                <li key={i} className="flex items-start gap-2 whitespace-nowrap text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
+                  {isDashboardStep ? (
+                    <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-positive text-[9px] font-semibold text-white sm:h-5 sm:w-5 sm:text-[10px]">
+                      {i + 1}
+                    </span>
+                  ) : (
+                    <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-positive/10 text-positive sm:h-5 sm:w-5">
+                      <B className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                    </span>
+                  )}
                   {p}
                 </li>
               );
