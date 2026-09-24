@@ -318,7 +318,15 @@ function Gastos() {
 
   // Categorías con gastos visibles por defecto; toggle para ver vacías
   const showEmptyCategories = false;
-  const [dragTx, setDragTx] = useState<{ id: string; from: string } | null>(null);
+  const [dragTx, setDragTx] = useState<{ ids: string[]; from: string } | null>(null);
+  const [selTx, setSelTx] = useState<{ from: string; ids: Set<string> }>({ from: "", ids: new Set() });
+  const toggleSel = (from: string, id: string) =>
+    setSelTx((prev) => {
+      const ids = new Set(prev.from === from ? prev.ids : []);
+      if (ids.has(id)) ids.delete(id);
+      else ids.add(id);
+      return { from, ids };
+    });
 
   const detailRows = useMemo(() => {
     // Las categorías base se muestran primero; las creadas por el usuario al final.
