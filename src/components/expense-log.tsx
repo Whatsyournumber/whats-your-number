@@ -599,6 +599,25 @@ export function ExpenseLog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [planLines, expenseTx, expenseFixedItems, match, periodFactor, spent, t, categories.rules, catOverrides]);
 
+  // Gasto del periodo anterior equivalente, por categoría, para el "vs periodo
+  // anterior" del análisis (misma ventana de días justo antes del periodo actual).
+  const prevByCategory = useMemo(() => {
+    const prevEnd = subDays(periodStart, 1);
+    const prevStart = subDays(periodStart, periodDays);
+    const map = new Map<string, number>();
+    for (const x of transactions) {
+      if (x.amount >= 0 || !x.tx_date) continue;
+      const d = parseISO(x.tx_date);
+      if (d < prevStart || d > prevEnd) continue;
+      if (isSavingsName(`${x.merchant} ${x.description ?? ""}`)) continue;
+      const name = categorizeTx(x as Tx, categories.rules);
+      const id = catOverrides[x.id] ?? match(name) ?? "others";
+      map.set(id, (map.get(id) ?? 0) + Math.abs(x.amount));
+    }
+    return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transactions, periodStart.getTime(), periodDays, categories.rules, catOverrides, match]);
+
   const [dismissed, setDismissed] = useState<string[]>([]);
 
   useEffect(() => {
