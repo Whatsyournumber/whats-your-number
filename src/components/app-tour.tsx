@@ -115,14 +115,14 @@ const STEPS: Step[] = [
   },
   {
     url: "/portafolio", icon: TrendingUp, minPlan: "pro",
-    es: ["Portafolio", "Tus inversiones comparadas con el mercado.",
-      "Escribe el ticker y traemos el precio en tiempo real.",
-      "Rentabilidad real ponderada frente al S&P 500.",
-      "Acciones, ETF, cripto, REITs, fondo de retiro y efectivo."],
-    en: ["Portfolio", "Your investments compared with the market.",
-      "Type a ticker and we fetch its live price.",
-      "Real weighted performance vs the S&P 500.",
-      "Stocks, ETFs, crypto, REITs, retirement fund and cash."],
+    es: ["Portafolio", "Todo tu portafolio y su evolución, en un solo lugar.",
+      "Entiende todo tu portafolio: cripto, acciones, bonos, notas y más, en tiempo real.",
+      "Mira la rentabilidad real ponderada frente al S&P 500 y trackea cualquier acción.",
+      "Organiza tu portafolio y entiende mejor tus ganancias y rentabilidad."],
+    en: ["Portfolio", "Your entire portfolio and its performance, in one place.",
+      "Understand your whole portfolio: crypto, stocks, bonds, notes and more, in real time.",
+      "See real weighted returns versus the S&P 500 and track any stock.",
+      "Organize your portfolio and better understand your gains and returns."],
   },
   {
     url: "/ciudades", icon: Globe2, minPlan: "pro",
@@ -226,6 +226,7 @@ export function AppTour() {
   const isNumberTourStep = current?.url === "/retiro";
   const isHipotecaTourStep = current?.url === "/hipoteca";
   const isPatrimonioTourStep = current?.url === "/patrimonio";
+  const isPortfolioTourStep = current?.url === "/portafolio";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
@@ -484,6 +485,42 @@ export function AppTour() {
     };
   }, [isPatrimonioTourStep, isMobile, pathname]);
 
+  const [portfolioMarkers, setPortfolioMarkers] = useState<{
+    value: { x: number; y: number };
+    chart: { x: number; y: number };
+    configuration: { x: number; y: number };
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isPortfolioTourStep || isMobile) {
+      setPortfolioMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    const measure = () => {
+      const value = document.querySelector<HTMLElement>('[data-tour-portfolio-target="value"]')?.getBoundingClientRect();
+      const chart = document.querySelector<HTMLElement>('[data-tour-portfolio-target="return"]')?.getBoundingClientRect();
+      const configuration = document.getElementById("tour-portfolio-configuration")?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!value || !chart || !configuration || !box || cancelled) return;
+      setPortfolioMarkers({
+        value: { x: value.left + value.width * 0.2, y: value.top + value.height * 0.52 },
+        chart: { x: chart.left + chart.width * 0.5, y: chart.top + chart.height * 0.5 },
+        configuration: { x: configuration.left + configuration.width * 0.42, y: configuration.top + 74 },
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure);
+    };
+  }, [isPortfolioTourStep, isMobile, pathname]);
+
   // En Análisis de hipoteca, baja lo justo para ver los campos de arriba y las estrategias a la vez.
   useEffect(() => {
     if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/hipoteca" && pathname === "/hipoteca") {
@@ -640,7 +677,8 @@ export function AppTour() {
   const isCashFlowStep = current.url === "/cash-flow";
   const isHipotecaStep = current.url === "/hipoteca";
   const isPatrimonioStep = current.url === "/patrimonio";
-  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep || isHipotecaStep || isPatrimonioStep;
+  const isPortfolioStep = current.url === "/portafolio";
+  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep || isHipotecaStep || isPatrimonioStep || isPortfolioStep;
 
   return (
     <>
@@ -664,7 +702,11 @@ export function AppTour() {
                   ? sidebarState === "expanded"
                     ? `sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
                     : `sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
-                  : "sm:right-6",
+                  : isPortfolioStep
+                    ? sidebarState === "expanded"
+                      ? "sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto"
+                      : "sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto"
+                    : "sm:right-6",
         )}
       >
         <div ref={tourBoxRef} data-tour-box className="relative overflow-hidden rounded-2xl border border-tour-border bg-tour-surface p-4 text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25 sm:rounded-3xl sm:p-5">
@@ -967,6 +1009,42 @@ export function AppTour() {
             [patrimonioMarkers.cards.x - 14, patrimonioMarkers.cards.y - 34, 1],
             [patrimonioMarkers.chart.x - 14, patrimonioMarkers.chart.y - 36, 2],
             [patrimonioMarkers.assets.x - 14, Math.min(patrimonioMarkers.assets.y, window.innerHeight - 46) + 8, 3],
+          ] as const).map(([left, top, label]) => (
+            <span
+              key={label}
+              className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+              style={{ left, top }}
+            >
+              {label}
+            </span>
+          ))}
+        </div>
+      )}
+      {isPortfolioStep && portfolioMarkers?.value && portfolioMarkers?.chart && portfolioMarkers?.configuration && portfolioMarkers?.box && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            <defs>
+              <marker id="tour-portfolio-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
+              </marker>
+            </defs>
+            <path
+              d={`M ${portfolioMarkers.box.x + 50} ${portfolioMarkers.box.y - 4} Q ${(portfolioMarkers.box.x + portfolioMarkers.value.x) / 2} ${portfolioMarkers.value.y + 110} ${portfolioMarkers.value.x} ${portfolioMarkers.value.y + 14}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${portfolioMarkers.box.x - 4} ${portfolioMarkers.box.y + portfolioMarkers.box.height * 0.36} Q ${(portfolioMarkers.box.x + portfolioMarkers.chart.x) / 2} ${portfolioMarkers.chart.y + 55} ${portfolioMarkers.chart.x} ${portfolioMarkers.chart.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${portfolioMarkers.box.x + portfolioMarkers.box.width * 0.72} ${portfolioMarkers.box.y - 4} Q ${portfolioMarkers.configuration.x + 80} ${portfolioMarkers.box.y - 70} ${portfolioMarkers.configuration.x} ${portfolioMarkers.configuration.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive/70"
+            />
+          </svg>
+          {([
+            [portfolioMarkers.value.x - 14, portfolioMarkers.value.y - 36, 1],
+            [portfolioMarkers.chart.x - 14, portfolioMarkers.chart.y - 36, 2],
+            [portfolioMarkers.configuration.x - 14, portfolioMarkers.configuration.y - 36, 3],
           ] as const).map(([left, top, label]) => (
             <span
               key={label}
