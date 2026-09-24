@@ -700,20 +700,44 @@ function Dashboard() {
     `A este ritmo alcanzarías tu WhatsYournumber de ${fmt(targetNumber)} a los ${freedomAgeLive} años: llevas el ${Math.round(numberProgress)}% y ahorras el ${Math.round(savingsRate)}% (${fmt(monthlySavings)}/mes). Sumar ${fmt(insightExtraSaving)} más al mes adelantaría tu objetivo ${insightYearsSaved > 0 ? `unos ${insightYearsSaved} ${insightYearsSaved === 1 ? "año" : "años"}` : "y aumentaría tu margen"}.`,
     `At this pace, you would reach your ${fmt(targetNumber)} WhatsYournumber at age ${freedomAgeLive}: you are ${Math.round(numberProgress)}% there and save ${Math.round(savingsRate)}% (${fmt(monthlySavings)}/month). Adding ${fmt(insightExtraSaving)} more each month would ${insightYearsSaved > 0 ? `bring your goal forward by about ${insightYearsSaved} ${insightYearsSaved === 1 ? "year" : "years"}` : "increase your margin"}.`,
   );
-  const expenseInsight = spendTarget > 0
-    ? monthlyExpenses <= spendTarget
-      ? t(
-          `Este mes llevas ${fmt(monthlyExpenses)} gastados, el ${spendPlanUsed}% de tu presupuesto de ${fmt(spendTarget)}. Puedes gastar hasta ${fmt(Math.max(0, spendTarget - monthlyExpenses))} más y mantenerte dentro de tu plan.`,
-          `You have spent ${fmt(monthlyExpenses)} this month, ${spendPlanUsed}% of your ${fmt(spendTarget)} budget. You can spend up to ${fmt(Math.max(0, spendTarget - monthlyExpenses))} more and stay within your plan.`,
-        )
+  const topSourcesTotal = topSources.reduce((sum, s) => sum + s.amount, 0);
+  const topSourcesPct = topSources.reduce((sum, s) => sum + s.pct, 0);
+  // Análisis de gastos: las fuentes que más pesan en el mes, dentro del insight de gastos.
+  const topSourcesText = topSources.length > 0
+    ? t(
+        `${topSources.length === 1
+          ? "Tu mayor fuente de gasto del mes"
+          : `Tus ${topSources.length} mayores fuentes de gasto del mes`}: ${topSources
+            .map((s, i) => `${i === 0 ? "" : i === topSources.length - 1 ? " y " : ", "}${s.name} ${fmt(s.amount)} (${s.pct.toFixed(0)}%)`)
+            .join("")}. ${topSources.length === 1
+            ? `Supone el ${topSourcesPct.toFixed(0)}% de tu gasto variable`
+            : `Juntos suman ${fmt(topSourcesTotal)}, el ${topSourcesPct.toFixed(0)}% de tu gasto variable`}.`,
+        `${topSources.length === 1
+          ? "Your biggest spending source this month"
+          : `Your ${topSources.length} biggest spending sources this month`}: ${topSources
+            .map((s, i) => `${i === 0 ? "" : i === topSources.length - 1 ? " and " : ", "}${s.name} ${fmt(s.amount)} (${s.pct.toFixed(0)}%)`)
+            .join("")}. ${topSources.length === 1
+            ? `That's ${topSourcesPct.toFixed(0)}% of your variable spend`
+            : `Together they add up to ${fmt(topSourcesTotal)}, ${topSourcesPct.toFixed(0)}% of your variable spend`}.`,
+      )
+    : "";
+  const expenseInsight = [
+    spendTarget > 0
+      ? monthlyExpenses <= spendTarget
+        ? t(
+            `Este mes llevas ${fmt(monthlyExpenses)} gastados, el ${spendPlanUsed}% de tu presupuesto de ${fmt(spendTarget)}. Puedes gastar hasta ${fmt(Math.max(0, spendTarget - monthlyExpenses))} más y mantenerte dentro de tu plan.`,
+            `You have spent ${fmt(monthlyExpenses)} this month, ${spendPlanUsed}% of your ${fmt(spendTarget)} budget. You can spend up to ${fmt(Math.max(0, spendTarget - monthlyExpenses))} more and stay within your plan.`,
+          )
+        : t(
+            `Has gastado ${fmt(monthlyExpenses)} este mes, el ${spendPlanUsed}% de tu presupuesto de ${fmt(spendTarget)}: te has pasado ${fmt(monthlyExpenses - spendTarget)}.`,
+            `You have spent ${fmt(monthlyExpenses)} this month, ${spendPlanUsed}% of your ${fmt(spendTarget)} budget: that's ${fmt(monthlyExpenses - spendTarget)} over.`,
+          )
       : t(
-          `Has gastado ${fmt(monthlyExpenses)} este mes, ${fmt(monthlyExpenses - spendTarget)} por encima de tu presupuesto de ${fmt(spendTarget)}.`,
-          `You have spent ${fmt(monthlyExpenses)} this month, ${fmt(monthlyExpenses - spendTarget)} above your ${fmt(spendTarget)} budget.`,
-        )
-    : t(
-        `Has gastado ${fmt(monthlyExpenses)} en lo que va de mes. Define tu presupuesto mensual para medir cuánto te queda disponible.`,
-        `You have spent ${fmt(monthlyExpenses)} so far this month. Set your monthly budget to track how much remains.`,
-      );
+          `Has gastado ${fmt(monthlyExpenses)} en lo que va de mes. Define tu presupuesto mensual para medir cuánto te queda disponible.`,
+          `You have spent ${fmt(monthlyExpenses)} so far this month. Set your monthly budget to track how much remains.`,
+        ),
+    topSourcesText,
+  ].filter(Boolean).join(" ");
   const emergencyInsight = emergencyTarget > 0
     ? emergencyGap > 0
       ? t(
@@ -1295,28 +1319,6 @@ function Dashboard() {
                         className="mt-1.5 h-1.5"
                       />
                       <p className="mt-1 truncate text-[11px] text-muted-foreground">{subtitle}</p>
-                      {isMonthlyExpenses && topSources.length > 0 && (
-                        <div className="mt-2.5 border-t border-border/60 pt-2.5">
-                          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-                            {t("Tus mayores fuentes de gasto", "Your biggest spending sources")}
-                          </p>
-                          <div className="mt-1.5 space-y-1">
-                            {topSources.map((s, i) => (
-                              <div key={s.name} className="flex items-baseline gap-2">
-                                <span
-                                  className="h-2 w-2 shrink-0 translate-y-[-1px] rounded-full"
-                                  style={{ background: `var(--color-chart-${(i % 7) + 1})` }}
-                                />
-                                <span className="min-w-0 flex-1 text-xs leading-snug">{s.name}</span>
-                                <span className="numeric shrink-0 text-xs font-semibold">{fmt(s.amount)}</span>
-                                <span className="numeric w-10 shrink-0 text-right text-[11px] text-muted-foreground">
-                                  {s.pct.toFixed(0)}%
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </Link>
                 </li>
