@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   ArrowLeft, ArrowRight, ChartPie, Check, Compass, Crown, Globe2, Home, LayoutDashboard,
@@ -38,14 +38,14 @@ type Step = {
 const STEPS: Step[] = [
   {
     url: "/dashboard", icon: LayoutDashboard, minPlan: "free",
-    es: ["Tu Dashboard", "El resumen de tu situación financiera, en un solo lugar.",
-      "Patrimonio, ingresos, gastos, ahorro, hipoteca y tu Número de libertad financiera de un vistazo.",
-      "Toca cualquier tarjeta para ir directo a su sección.",
-      "Tus metas e insights se actualizan con cada gasto que registras."],
-    en: ["Your Dashboard", "The summary of your financial situation, in one place.",
-      "Net worth, income, expenses, savings, mortgage and your Financial Freedom Number at a glance.",
-      "Tap any card to jump straight to its section.",
-      "Your goals and insights update with every expense you log."],
+    es: ["Tu Dashboard", "Aquí tienes el resumen de tu situación financiera, en un solo lugar.",
+      "Patrimonio, ingresos, gastos, ahorro e hipoteca de un vistazo.",
+      "Tus metas e insights se actualizan con cada gasto que registras.",
+      ""],
+    en: ["Your Dashboard", "Here's the summary of your financial situation, in one place.",
+      "Net worth, income, expenses, savings and mortgage at a glance.",
+      "Your goals and insights update with every expense you log.",
+      ""],
   },
   {
     url: "/registro-gastos", icon: ReceiptText, minPlan: "free",
@@ -219,6 +219,46 @@ export function AppTour() {
   }, [user, subscriptionLoading]);
 
   const current = step && step > 0 ? availableSteps[step - 1] ?? null : null;
+  const isDashboardTourStep = current?.url === "/dashboard";
+
+  // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
+  const tourBoxRef = useRef<HTMLDivElement | null>(null);
+  const [markers, setMarkers] = useState<{ kpi: { x: number; y: number }; number: { x: number; y: number }; box: { x: number; y: number } } | null>(null);
+  useEffect(() => {
+    if (!isDashboardTourStep || isMobile) {
+      setMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    const findLabel = (text: string, rightHalf = false): DOMRect | null => {
+      const els = document.querySelectorAll<HTMLElement>("span, p, h1, h2, h3, h4, div");
+      for (const el of els) {
+        if (el.closest("[data-sidebar]") || el.closest("[data-tour-box]")) continue;
+        if (el.children.length > 0) continue;
+        const txt = el.textContent?.trim().toLowerCase() ?? "";
+        if (!txt.startsWith(text)) continue;
+        const r = el.getBoundingClientRect();
+        if (r.width === 0 || r.height === 0) continue;
+        if (rightHalf && r.left < window.innerWidth * 0.55) continue;
+        return r;
+      }
+      return null;
+    };
+    const measure = () => {
+      const kpi = findLabel("patrimonio neto") ?? findLabel("net worth");
+      const num = findLabel("tu número", true) ?? findLabel("your number", true);
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!kpi || !num || !box || cancelled) return;
+      setMarkers({ kpi: { x: kpi.left, y: kpi.top }, number: { x: num.left, y: num.top }, box: { x: box.left, y: box.top } });
+    };
+    const timers = [80, 350, 900, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelled = true;
+      timers.forEach((t) => clearTimeout(t));
+      window.removeEventListener("resize", measure);
+    };
+  }, [isDashboardTourStep, isMobile, pathname]);
 
   // Abre cada sección cuando le toca.
   useEffect(() => {
@@ -326,7 +366,8 @@ export function AppTour() {
 
   if (!current) return null;
 
-  const [title, intro, ...points] = t(current.es.join("|"), current.en.join("|")).split("|");
+  const [title, intro, ...rawPoints] = t(current.es.join("|"), current.en.join("|")).split("|");
+  const points = rawPoints.filter(Boolean);
   const last = step === availableSteps.length;
   const StepIcon = current.icon;
   const isNumberStep = current.url === "/retiro";
@@ -346,31 +387,42 @@ export function AppTour() {
             : "sm:right-6",
         )}
       >
-        <div className="relative overflow-hidden rounded-2xl border border-tour-border bg-tour-surface p-4 text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25 sm:rounded-3xl sm:p-5">
+        <div ref={tourBoxRef} data-tour-box className="relative overflow-hidden rounded-2xl border border-tour-border bg-tour-surface p-4 text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25 sm:rounded-3xl sm:p-5">
           <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-64 -translate-x-1/2 rounded-full bg-primary/25 blur-3xl" />
           <div className="relative flex items-start gap-2.5 sm:gap-3">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-positive/15 text-positive ring-1 ring-positive/30 sm:h-11 sm:w-11 sm:rounded-2xl">
-              <StepIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-            </span>
-            <div className="min-w-0 flex-1 pr-6">
-              <h3 className="font-display text-base font-semibold leading-tight sm:text-lg">{title}</h3>
-              <div className="mt-1 flex flex-wrap items-center gap-1.5">
+            {isDashboardStep ? (
+              <div className="min-w-0 flex-1">
                 <span className="numeric text-[11px] font-medium uppercase tracking-wider text-tour-muted">
                   {t("Paso", "Step")} {step + 1} / {total}
                 </span>
-                {current.minPlan !== "free" && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-positive/10 px-2 py-0.5 text-[10px] font-medium text-positive ring-1 ring-positive/25">
-                    <Check className="h-2.5 w-2.5" />
-                    {t("Incluido en tu plan", "Included in your plan")}
-                  </span>
-                )}
+                <h3 className="mt-0.5 font-display text-lg font-semibold leading-tight sm:text-xl">{title}</h3>
               </div>
-            </div>
+            ) : (
+              <>
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-positive/15 text-positive ring-1 ring-positive/30 sm:h-11 sm:w-11 sm:rounded-2xl">
+                  <StepIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                </span>
+                <div className="min-w-0 flex-1 pr-6">
+                  <h3 className="font-display text-base font-semibold leading-tight sm:text-lg">{title}</h3>
+                  <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                    <span className="numeric text-[11px] font-medium uppercase tracking-wider text-tour-muted">
+                      {t("Paso", "Step")} {step + 1} / {total}
+                    </span>
+                    {current.minPlan !== "free" && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-positive/10 px-2 py-0.5 text-[10px] font-medium text-positive ring-1 ring-positive/25">
+                        <Check className="h-2.5 w-2.5" />
+                        {t("Incluido en tu plan", "Included in your plan")}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
           <p className="relative mt-2.5 text-[13px] leading-snug text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
           <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
             {points.map((p, i) => {
-              const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
+              const B = isDashboardStep ? Check : (BULLET_ICONS[i % BULLET_ICONS.length] ?? Check);
               return (
                 <li key={i} className="flex items-start gap-2 text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
                   <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-positive/10 text-positive sm:h-5 sm:w-5">
@@ -399,6 +451,41 @@ export function AppTour() {
           </div>
         </div>
       </div>
+      {isDashboardStep && markers && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            {([
+              [markers.kpi.x - 34, markers.kpi.y + 24, markers.box.x + 64, markers.box.y - 2],
+              [markers.number.x - 20, markers.number.y + 24, markers.box.x + 220, markers.box.y - 2],
+            ] as const).map(([sx, sy, tx, ty], i) => {
+              const cx = sx - (sx - tx) * 0.1;
+              const cy = ty - Math.max(80, (sy - ty) * 0.3);
+              return (
+                <path
+                  key={i}
+                  d={`M ${sx} ${sy} Q ${cx} ${cy} ${tx} ${ty}`}
+                  fill="none"
+                  strokeWidth={1.5}
+                  strokeDasharray="5 7"
+                  className="stroke-positive/70"
+                />
+              );
+            })}
+          </svg>
+          <span
+            className="absolute grid h-6 w-6 place-items-center rounded-full bg-positive text-[11px] font-bold text-background shadow-lg shadow-positive/40"
+            style={{ left: markers.kpi.x - 46, top: markers.kpi.y - 6 }}
+          >
+            1
+          </span>
+          <span
+            className="absolute grid h-6 w-6 place-items-center rounded-full bg-positive text-[11px] font-bold text-background shadow-lg shadow-positive/40"
+            style={{ left: markers.number.x - 34, top: markers.number.y - 4 }}
+          >
+            2
+          </span>
+        </div>
+      )}
     </>
   );
 }
