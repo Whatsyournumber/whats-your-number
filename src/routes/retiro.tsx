@@ -734,8 +734,8 @@ function RetiroContent() {
 
 
 
+        <div data-tour-number-target="simulator">
         <Panel
-          data-tour-number-target="simulator"
           title={<span className="text-base font-semibold tracking-tight">{t("Simulador", "Simulator")}</span>}
           description={isGoal ? `${goalLabel} · ${fmt(plan.targetCapital)}` : t("Ajusta y mira el impacto", "Adjust and see the impact")}
         >
