@@ -36,7 +36,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { planCategories } from "@/lib/category-ai.functions";
-import { CategoryChat } from "@/components/category-chat";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { useCategories } from "@/hooks/use-categories";
@@ -1664,17 +1663,6 @@ function Gastos() {
             </div>
           </div>
 
-          <div className="mt-4 space-y-2">
-            <CategoryChat
-              categories={categories.names}
-              items={categories.items}
-              customRules={categories.rules.map((r) => ({ name: r.name, keywords: r.hints }))}
-              merchants={merchantsForAi}
-              onCreate={(name, keywords) => categories.add(name, keywords)}
-              onUpdate={categories.update}
-              onRemove={categories.remove}
-            />
-          </div>
         </Panel>
 
         <Panel
