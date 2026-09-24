@@ -605,6 +605,37 @@ export function AppTour() {
           ))}
         </div>
       )}
+      {isAnalysisStep && analysisMarkers && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            <defs>
+              <marker id="tour-analysis-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
+              </marker>
+            </defs>
+            <path
+              d={`M ${analysisMarkers.box.x + 60} ${analysisMarkers.box.y + analysisMarkers.box.height} Q ${analysisMarkers.box.x - 120} ${analysisMarkers.box.y + analysisMarkers.box.height + 60} ${analysisMarkers.importBtn.x} ${analysisMarkers.importBtn.y + 44}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-analysis-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${analysisMarkers.box.x + 30} ${analysisMarkers.box.y + 40} Q ${analysisMarkers.box.x - 160} ${analysisMarkers.box.y - 40} ${analysisMarkers.chart.x} ${analysisMarkers.chart.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-analysis-arrow)" className="stroke-positive/70"
+            />
+          </svg>
+          <span
+            className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+            style={{ left: analysisMarkers.importBtn.x - 14, top: analysisMarkers.importBtn.y + 52 }}
+          >
+            1
+          </span>
+          <span
+            className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+            style={{ left: analysisMarkers.chart.x - 14, top: analysisMarkers.chart.y + 8 }}
+          >
+            2
+          </span>
+        </div>
+      )}
     </>
   );
 }
