@@ -40,12 +40,12 @@ const STEPS: Step[] = [
     url: "/dashboard", icon: LayoutDashboard, minPlan: "free",
     es: ["Tu Dashboard", "Aquí tienes el resumen de tu situación financiera, en un solo lugar.",
       "Patrimonio, ingresos, gastos, ahorro e hipoteca de un vistazo.",
-      "Tus metas e insights se actualizan con cada gasto que registras.",
-      ""],
+      "Verás tu número para tu libertad financiera y podrás editarlo en el plan Pro.",
+      "Tus metas e insights se actualizan con cada gasto que registras."],
     en: ["Your Dashboard", "Here's the summary of your financial situation, in one place.",
       "Net worth, income, expenses, savings and mortgage at a glance.",
-      "Your goals and insights update with every expense you log.",
-      ""],
+      "You'll see your financial freedom number and can edit it on the Pro plan.",
+      "Your goals and insights update with every expense you log."],
   },
   {
     url: "/registro-gastos", icon: ReceiptText, minPlan: "free",
@@ -379,7 +379,8 @@ export function AppTour() {
       <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/20" : "bg-background/40"}`} />
       <div
         className={cn(
-          "fixed inset-x-3 bottom-16 z-[100] sm:inset-x-auto sm:bottom-6 sm:w-[400px] lg:bottom-8",
+          "fixed inset-x-3 bottom-16 z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
+          isDashboardStep ? "sm:w-[480px]" : "sm:w-[400px]",
           isDashboardStep
             ? sidebarState === "expanded"
               ? "sm:bottom-auto sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto sm:top-[clamp(22rem,42vh,28rem)]"
