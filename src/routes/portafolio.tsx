@@ -32,6 +32,7 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { useDailySeries, useMarketSeries, useQuotes, useSymbolReturns, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { defaultReturn, holdingValue, newHolding, useHoldings, type HoldingKind } from "@/hooks/use-holdings";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useProfile } from "@/hooks/use-profile";
 import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
@@ -711,6 +712,12 @@ function PortafolioContent() {
       linked_liability: "",
       purchased_at: new Date().toISOString().slice(0, 10),
     });
+  // Cambiar el tipo de activo dentro del editor: limpia el ticker si el nuevo tipo no cotiza.
+  const changeDraftKind = (kind: HoldingKind) => {
+    if (!draft) return;
+    const quoted = ["etf", "stock", "crypto"].includes(kind);
+    setDraft({ ...draft, kind, ticker: quoted ? draft.ticker : "" });
+  };
   const editDirty = draft !== null && editBaseline.current !== null && JSON.stringify(draft) !== editBaseline.current;
   const forceCloseEdit = () => {
     setEditId(null);
