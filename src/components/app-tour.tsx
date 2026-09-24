@@ -460,7 +460,7 @@ export function AppTour() {
             : isExpenseStep
               ? "sm:bottom-auto sm:right-6 sm:top-[clamp(18rem,48vh,24rem)]"
               : isAnalysisStep
-                ? "sm:bottom-auto sm:right-6 sm:top-[clamp(16rem,42vh,24rem)]"
+                ? "sm:bottom-auto sm:right-6 sm:top-[clamp(19rem,54vh,28rem)]"
                 : "sm:right-6",
         )}
       >
