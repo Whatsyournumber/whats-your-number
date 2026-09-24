@@ -692,23 +692,23 @@ export function AppTour() {
               </marker>
             </defs>
             <path
-              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width - 16} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.35} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width + cashFlowMarkers.blocks.x) / 2} ${cashFlowMarkers.blocks.y + 70} ${cashFlowMarkers.blocks.x} ${cashFlowMarkers.blocks.y}`}
+              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.55} ${cashFlowMarkers.box.y - 4} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.55 + cashFlowMarkers.edit.x) / 2} ${cashFlowMarkers.box.y - 130} ${cashFlowMarkers.edit.x} ${cashFlowMarkers.edit.y + 22}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
             <path
-              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.55} ${cashFlowMarkers.box.y - 4} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.55 + cashFlowMarkers.cards.x) / 2} ${cashFlowMarkers.box.y - 130} ${cashFlowMarkers.cards.x} ${cashFlowMarkers.cards.y}`}
+              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width - 16} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.35} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width + cashFlowMarkers.blocks.x) / 2} ${cashFlowMarkers.blocks.y + 70} ${cashFlowMarkers.blocks.x} ${cashFlowMarkers.blocks.y}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
           </svg>
           <span
             className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
-            style={{ left: cashFlowMarkers.blocks.x - 14, top: cashFlowMarkers.blocks.y - 14 }}
+            style={{ left: cashFlowMarkers.edit.x - 14, top: cashFlowMarkers.edit.y - 14 }}
           >
             1
           </span>
           <span
             className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
-            style={{ left: cashFlowMarkers.cards.x - 14, top: cashFlowMarkers.cards.y - 14 }}
+            style={{ left: cashFlowMarkers.blocks.x - 14, top: cashFlowMarkers.blocks.y - 14 }}
           >
             2
           </span>
