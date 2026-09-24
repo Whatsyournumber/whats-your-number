@@ -796,7 +796,7 @@ function Gastos() {
           : t("Entiende tus gastos, controla tus objetivos y encuentra oportunidades de ahorro.", "Understand your spending, control your goals and find savings opportunities.")}
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            <Button asChild size="sm" className="gap-2 rounded-full">
+            <Button asChild size="sm" className="gap-2 rounded-full" data-tour-analysis-target="import">
               <Link to="/configuracion">
                 <Upload className="h-3.5 w-3.5" />
                 {t("Importar gastos", "Import expenses")}
@@ -1171,7 +1171,7 @@ function Gastos() {
               </span>
             </div>
 
-            <div className="mt-3 flex-1">
+            <div className="mt-3 flex-1" data-tour-analysis-target="chart">
               <ResponsiveContainer width="100%" height={isMobile ? 260 : 400}>
                 <BarChart data={monthCompare.rows.slice(0, 10)} margin={{ left: isMobile ? 0 : -8, right: isMobile ? 4 : 8, bottom: 8 }}>
                   <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />

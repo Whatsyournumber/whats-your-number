@@ -61,13 +61,13 @@ const STEPS: Step[] = [
   {
     url: "/gastos", icon: ChartPie, minPlan: "free",
     es: ["Análisis de Gastos", "Descubre dónde se va tu dinero cada mes.",
+      "Añade tus estados financieros de todos los bancos.",
       "Compara cada categoría con tu presupuesto mensual.",
-      "La IA te busca oportunidades de ahorro.",
-      "Ve tu evolución mes a mes desde que empezaste."],
+      "Deja que la IA te diga dónde gastaste de más y dónde ahorrar."],
     en: ["Spending Analysis", "Find out where your money goes each month.",
+      "Add your financial statements from all your banks.",
       "Compare each category with your monthly budget.",
-      "AI finds you savings opportunities.",
-      "See your month-by-month evolution since you started."],
+      "Let AI tell you where you overspent and where to save."],
   },
   {
     url: "/cash-flow", icon: Scale, minPlan: "free",
@@ -221,6 +221,7 @@ export function AppTour() {
   const current = step && step > 0 ? availableSteps[step - 1] ?? null : null;
   const isDashboardTourStep = current?.url === "/dashboard";
   const isExpenseTourStep = current?.url === "/registro-gastos";
+  const isAnalysisTourStep = current?.url === "/gastos";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
@@ -295,6 +296,38 @@ export function AppTour() {
       window.removeEventListener("resize", measure);
     };
   }, [isExpenseTourStep, isMobile, pathname]);
+
+  // Señala el botón de importar y la gráfica comparativa en el paso Análisis de gastos.
+  const [analysisMarkers, setAnalysisMarkers] = useState<{
+    importBtn: { x: number; y: number };
+    chart: { x: number; y: number };
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isAnalysisTourStep || isMobile) {
+      setAnalysisMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    const measure = () => {
+      const importBtn = document.querySelector<HTMLElement>('[data-tour-analysis-target="import"]')?.getBoundingClientRect();
+      const chart = document.querySelector<HTMLElement>('[data-tour-analysis-target="chart"]')?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!importBtn || !chart || !box || cancelled) return;
+      setAnalysisMarkers({
+        importBtn: { x: importBtn.left + importBtn.width / 2, y: importBtn.top },
+        chart: { x: chart.left + 44, y: chart.top + 64 },
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+    };
+  }, [isAnalysisTourStep, isMobile, pathname]);
 
   // Abre cada sección cuando le toca.
   useEffect(() => {
@@ -409,6 +442,8 @@ export function AppTour() {
   const isNumberStep = current.url === "/retiro";
   const isDashboardStep = current.url === "/dashboard";
   const isExpenseStep = current.url === "/registro-gastos";
+  const isAnalysisStep = current.url === "/gastos";
+  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep;
 
   return (
     <>
@@ -417,14 +452,16 @@ export function AppTour() {
       <div
         className={cn(
           "fixed inset-x-3 bottom-16 z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
-          isDashboardStep || isExpenseStep ? "sm:w-[560px]" : "sm:w-[400px]",
+          hasNumberedBullets ? "sm:w-[560px]" : "sm:w-[400px]",
           isDashboardStep
             ? sidebarState === "expanded"
               ? "sm:bottom-auto sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto sm:top-[clamp(22rem,42vh,28rem)]"
               : "sm:bottom-auto sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto sm:top-[clamp(22rem,42vh,28rem)]"
             : isExpenseStep
               ? "sm:bottom-auto sm:right-6 sm:top-[clamp(18rem,48vh,24rem)]"
-              : "sm:right-6",
+              : isAnalysisStep
+                ? "sm:bottom-auto sm:right-6 sm:top-[clamp(16rem,42vh,24rem)]"
+                : "sm:right-6",
         )}
       >
         <div ref={tourBoxRef} data-tour-box className="relative overflow-hidden rounded-2xl border border-tour-border bg-tour-surface p-4 text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25 sm:rounded-3xl sm:p-5">
@@ -465,7 +502,7 @@ export function AppTour() {
               const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
               return (
                 <li key={i} className="flex items-start gap-2 whitespace-nowrap text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
-                  {isDashboardStep || isExpenseStep ? (
+                  {hasNumberedBullets ? (
                     <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-positive text-[9px] font-semibold text-white sm:h-5 sm:w-5 sm:text-[10px]">
                       {i + 1}
                     </span>
@@ -566,6 +603,37 @@ export function AppTour() {
               {label}
             </span>
           ))}
+        </div>
+      )}
+      {isAnalysisStep && analysisMarkers && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            <defs>
+              <marker id="tour-analysis-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
+              </marker>
+            </defs>
+            <path
+              d={`M ${analysisMarkers.box.x + 60} ${analysisMarkers.box.y + analysisMarkers.box.height} Q ${analysisMarkers.box.x - 120} ${analysisMarkers.box.y + analysisMarkers.box.height + 60} ${analysisMarkers.importBtn.x} ${analysisMarkers.importBtn.y + 44}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-analysis-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${analysisMarkers.box.x + 30} ${analysisMarkers.box.y + 40} Q ${analysisMarkers.box.x - 160} ${analysisMarkers.box.y - 40} ${analysisMarkers.chart.x} ${analysisMarkers.chart.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-analysis-arrow)" className="stroke-positive/70"
+            />
+          </svg>
+          <span
+            className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+            style={{ left: analysisMarkers.importBtn.x - 14, top: analysisMarkers.importBtn.y + 52 }}
+          >
+            1
+          </span>
+          <span
+            className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+            style={{ left: analysisMarkers.chart.x - 14, top: analysisMarkers.chart.y + 8 }}
+          >
+            2
+          </span>
         </div>
       )}
     </>
