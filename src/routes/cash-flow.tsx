@@ -416,7 +416,7 @@ function CashFlow() {
         </Button>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" data-tour-cashflow-target="cards">
         <KpiCard
           label={t("Ingresos", "Income")}
           value={fmt(totalIncome)}
@@ -501,7 +501,7 @@ function CashFlow() {
             </svg>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3" data-tour-cashflow-target="blocks">
             {buckets.map((b, idx) => (
               <motion.div
                 key={b.name}

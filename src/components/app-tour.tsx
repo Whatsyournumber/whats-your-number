@@ -72,12 +72,12 @@ const STEPS: Step[] = [
   {
     url: "/cash-flow", icon: Scale, minPlan: "free",
     es: ["Distribución del dinero", "La regla 50/30/20 aplicada a tus números reales.",
-      "Necesidades, deseos y ahorro, comparados con tu plan.",
       "Pasa el cursor sobre cada bloque para ver el detalle.",
+      "Necesidades, deseos y ahorro, comparados con tu plan.",
       "Al empezar usa tu plan; luego usa tus gastos reales."],
     en: ["Money Distribution", "The 50/30/20 rule applied to your real numbers.",
-      "Needs, wants and savings, compared with your plan.",
       "Hover each block to see the breakdown by category.",
+      "Needs, wants and savings, compared with your plan.",
       "It starts from your plan, then uses your real spending."],
   },
   {
@@ -222,6 +222,7 @@ export function AppTour() {
   const isDashboardTourStep = current?.url === "/dashboard";
   const isExpenseTourStep = current?.url === "/registro-gastos";
   const isAnalysisTourStep = current?.url === "/gastos";
+  const isCashFlowTourStep = current?.url === "/cash-flow";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
@@ -335,6 +336,40 @@ export function AppTour() {
       window.removeEventListener("scroll", measure);
     };
   }, [isAnalysisTourStep, isMobile, pathname]);
+
+  // Señala los bloques de destino y las tarjetas de la regla en Distribución del dinero.
+  const [cashFlowMarkers, setCashFlowMarkers] = useState<{
+    blocks: { x: number; y: number };
+    cards: { x: number; y: number };
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isCashFlowTourStep || isMobile) {
+      setCashFlowMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    const measure = () => {
+      const blocks = document.querySelector<HTMLElement>('[data-tour-cashflow-target="blocks"]')?.getBoundingClientRect();
+      const cards = document.querySelector<HTMLElement>('[data-tour-cashflow-target="cards"]')?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!blocks || !cards || !box || cancelled) return;
+      setCashFlowMarkers({
+        blocks: { x: blocks.left + blocks.width * 0.5, y: blocks.top + 28 },
+        cards: { x: cards.left + cards.width * 0.55, y: cards.top + cards.height * 0.5 },
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure);
+    };
+  }, [isCashFlowTourStep, isMobile, pathname]);
 
   // Abre cada sección cuando le toca.
   useEffect(() => {
@@ -450,7 +485,8 @@ export function AppTour() {
   const isDashboardStep = current.url === "/dashboard";
   const isExpenseStep = current.url === "/registro-gastos";
   const isAnalysisStep = current.url === "/gastos";
-  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep;
+  const isCashFlowStep = current.url === "/cash-flow";
+  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep;
 
   return (
     <>
@@ -638,6 +674,37 @@ export function AppTour() {
           <span
             className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
             style={{ left: analysisMarkers.chart.x - 14, top: analysisMarkers.chart.y + 8 }}
+          >
+            2
+          </span>
+        </div>
+      )}
+      {isCashFlowStep && cashFlowMarkers && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            <defs>
+              <marker id="tour-cashflow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
+              </marker>
+            </defs>
+            <path
+              d={`M ${cashFlowMarkers.box.x + 20} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.4} Q ${cashFlowMarkers.box.x - 120} ${cashFlowMarkers.blocks.y + 40} ${cashFlowMarkers.blocks.x} ${cashFlowMarkers.blocks.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.5} ${cashFlowMarkers.box.y - 4} Q ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.5} ${cashFlowMarkers.box.y - 90} ${cashFlowMarkers.cards.x} ${cashFlowMarkers.cards.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
+            />
+          </svg>
+          <span
+            className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+            style={{ left: cashFlowMarkers.blocks.x - 14, top: cashFlowMarkers.blocks.y - 14 }}
+          >
+            1
+          </span>
+          <span
+            className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+            style={{ left: cashFlowMarkers.cards.x - 14, top: cashFlowMarkers.cards.y - 14 }}
           >
             2
           </span>
