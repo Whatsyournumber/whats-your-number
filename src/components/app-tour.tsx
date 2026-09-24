@@ -498,15 +498,18 @@ export function AppTour() {
     }
     let cancelled = false;
     const measure = () => {
-      const value = document.querySelector<HTMLElement>('[data-tour-portfolio-target="value"]')?.getBoundingClientRect();
-      const chart = document.getElementById("tour-portfolio-chart")?.getBoundingClientRect();
-      const assets = document.getElementById("tour-portfolio-assets")?.getBoundingClientRect();
+      const valueTarget = document.querySelector<HTMLElement>('[data-tour-portfolio-target="value"]');
+      const chartTarget = document.getElementById("tour-portfolio-chart");
+      const assetsTarget = document.getElementById("tour-portfolio-assets");
+      const value = valueTarget?.querySelector("p")?.getBoundingClientRect();
+      const chart = chartTarget?.querySelector("h2")?.getBoundingClientRect();
+      const assets = assetsTarget?.querySelector("h2")?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
       if (!value || !chart || !assets || !box || cancelled) return;
       setPortfolioMarkers({
-        value: { x: value.left + value.width * 0.2, y: value.top + value.height * 0.52 },
-        chart: { x: chart.left + chart.width * 0.52, y: chart.top + 116 },
-        assets: { x: assets.left + Math.min(96, assets.width * 0.18), y: Math.min(assets.top + 42, window.innerHeight - 42) },
+        value: { x: value.right + 10, y: value.top + value.height / 2 },
+        chart: { x: chart.right + 10, y: chart.top + chart.height / 2 },
+        assets: { x: assets.right + 10, y: Math.min(assets.top + assets.height / 2, window.innerHeight - 42) },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
@@ -1027,22 +1030,22 @@ export function AppTour() {
               </marker>
             </defs>
             <path
-              d={`M ${portfolioMarkers.box.x + 40} ${portfolioMarkers.box.y - 4} Q ${(portfolioMarkers.box.x + portfolioMarkers.value.x) / 2} ${portfolioMarkers.value.y + 80} ${portfolioMarkers.value.x} ${portfolioMarkers.value.y + 14}`}
+              d={`M ${portfolioMarkers.box.x + 40} ${portfolioMarkers.box.y - 4} Q ${(portfolioMarkers.box.x + portfolioMarkers.value.x) / 2} ${portfolioMarkers.value.y + 80} ${portfolioMarkers.value.x + 14} ${portfolioMarkers.value.y}`}
               fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive"
             />
             <path
-              d={`M ${portfolioMarkers.box.x - 4} ${portfolioMarkers.box.y + portfolioMarkers.box.height * 0.36} Q ${(portfolioMarkers.box.x + portfolioMarkers.chart.x) / 2} ${portfolioMarkers.chart.y + 55} ${portfolioMarkers.chart.x} ${portfolioMarkers.chart.y}`}
+              d={`M ${portfolioMarkers.box.x - 4} ${portfolioMarkers.box.y + portfolioMarkers.box.height * 0.36} Q ${(portfolioMarkers.box.x + portfolioMarkers.chart.x) / 2} ${portfolioMarkers.chart.y + 55} ${portfolioMarkers.chart.x + 14} ${portfolioMarkers.chart.y}`}
               fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive"
             />
             <path
-              d={`M ${portfolioMarkers.box.x - 4} ${portfolioMarkers.box.y + portfolioMarkers.box.height * 0.72} Q ${portfolioMarkers.assets.x + 150} ${portfolioMarkers.assets.y - 55} ${portfolioMarkers.assets.x} ${portfolioMarkers.assets.y}`}
+              d={`M ${portfolioMarkers.box.x - 4} ${portfolioMarkers.box.y + portfolioMarkers.box.height * 0.72} Q ${portfolioMarkers.assets.x + 150} ${portfolioMarkers.assets.y - 55} ${portfolioMarkers.assets.x + 14} ${portfolioMarkers.assets.y}`}
               fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive"
             />
           </svg>
           {([
-            [portfolioMarkers.value.x - 14, portfolioMarkers.value.y - 36, 1],
-            [portfolioMarkers.chart.x - 14, portfolioMarkers.chart.y - 36, 2],
-            [portfolioMarkers.assets.x - 14, portfolioMarkers.assets.y - 36, 3],
+            [portfolioMarkers.value.x, portfolioMarkers.value.y - 14, 1],
+            [portfolioMarkers.chart.x, portfolioMarkers.chart.y - 14, 2],
+            [portfolioMarkers.assets.x, portfolioMarkers.assets.y - 14, 3],
           ] as const).map(([left, top, label]) => (
             <span
               key={label}
