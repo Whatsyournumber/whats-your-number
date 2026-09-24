@@ -818,7 +818,7 @@ function PatrimonioContent() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title={t("Activos", "Assets")} description={fmt(totalAssetsAll)}>
+        <Panel id="tour-pat-assets" title={t("Activos", "Assets")} description={fmt(totalAssetsAll)}>
           <div className="space-y-2">
             {assetRows.map((a) => {
               const info = ASSET_CLASS[a.key];

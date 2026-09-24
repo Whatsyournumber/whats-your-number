@@ -451,7 +451,7 @@ export function AppTour() {
   const [patrimonioMarkers, setPatrimonioMarkers] = useState<{
     cards: { x: number; y: number };
     chart: { x: number; y: number };
-    allocation: { x: number; y: number };
+    assets: { x: number; y: number };
     box: { x: number; y: number; width: number; height: number };
   } | null>(null);
   useEffect(() => {
@@ -463,13 +463,13 @@ export function AppTour() {
     const measure = () => {
       const cards = document.querySelector<HTMLElement>('[data-tour-patrimonio-target="cards"]')?.getBoundingClientRect();
       const chart = document.getElementById("tour-pat-chart")?.getBoundingClientRect();
-      const allocation = document.getElementById("tour-pat-allocation")?.getBoundingClientRect();
+      const assets = document.getElementById("tour-pat-assets")?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
-      if (!cards || !chart || !allocation || !box || cancelled) return;
+      if (!cards || !chart || !assets || !box || cancelled) return;
       setPatrimonioMarkers({
-        cards: { x: cards.left + cards.width * 0.82, y: cards.top + cards.height * 0.35 },
+        cards: { x: cards.left + cards.width * 0.1, y: cards.top + cards.height * 0.5 },
         chart: { x: chart.left + chart.width * 0.3, y: chart.top + 90 },
-        allocation: { x: allocation.left + allocation.width * 0.5, y: allocation.top + 70 },
+        assets: { x: assets.left + assets.width * 0.5, y: assets.top + 4 },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
