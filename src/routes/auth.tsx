@@ -690,14 +690,12 @@ function AuthPage() {
                 setPromo(value);
                 if (value.trim()) setPendingPromoCode(value);
               }}
-              placeholder={tt("Ingresa tu código", "Enter your invite code")}
               className="mt-1.5 rounded-xl border-slate-200 bg-white uppercase tracking-wide text-slate-900 placeholder:text-slate-400"
             />
             <p className="mt-1 text-[11px] text-slate-400">
-              {tt(
-                "Se aplicará al entrar, también si continúas con Google.",
-                "It will apply when you sign in, including with Google.",
-              )}
+              {mode === "signup"
+                ? tt("Se aplica también si te registras con Google.", "It also applies if you sign up with Google.")
+                : tt("Se aplica también si entras con Google.", "It also applies if you sign in with Google.")}
             </p>
           </div>
 
