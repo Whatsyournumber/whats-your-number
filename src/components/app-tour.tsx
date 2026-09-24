@@ -223,6 +223,7 @@ export function AppTour() {
   const isExpenseTourStep = current?.url === "/registro-gastos";
   const isAnalysisTourStep = current?.url === "/gastos";
   const isCashFlowTourStep = current?.url === "/cash-flow";
+  const isNumberTourStep = current?.url === "/retiro";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
@@ -370,6 +371,43 @@ export function AppTour() {
       window.removeEventListener("scroll", measure);
     };
   }, [isCashFlowTourStep, isMobile, pathname]);
+
+  // Señala la tarjeta WhatsYourNumber, la barra de progreso y el simulador.
+  const [numberMarkers, setNumberMarkers] = useState<{
+    number: { x: number; y: number };
+    progress: { x: number; y: number };
+    simulator: { x: number; y: number };
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isNumberTourStep || isMobile) {
+      setNumberMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    const measure = () => {
+      const number = document.querySelector<HTMLElement>('[data-tour-number-target="number"]')?.getBoundingClientRect();
+      const progress = document.querySelector<HTMLElement>('[data-tour-number-target="progress"]')?.getBoundingClientRect();
+      const simulator = document.querySelector<HTMLElement>('[data-tour-number-target="simulator"]')?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!number || !progress || !simulator || !box || cancelled) return;
+      setNumberMarkers({
+        number: { x: number.left + number.width * 0.5, y: number.top + number.height * 0.5 },
+        progress: { x: progress.left + progress.width * 0.5, y: progress.top + progress.height * 0.55 },
+        simulator: { x: simulator.left + simulator.width * 0.4, y: simulator.top + 40 },
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure);
+    };
+  }, [isNumberTourStep, isMobile, pathname]);
 
   // En Tu Número, baja hasta que la gráfica quede bajo la barra de progreso.
   useEffect(() => {
