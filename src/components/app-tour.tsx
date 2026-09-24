@@ -105,13 +105,13 @@ const STEPS: Step[] = [
   {
     url: "/patrimonio", icon: Wallet, minPlan: "pro",
     es: ["Patrimonio", "Todo lo que tienes y lo que debes, en una vista.",
-      "Cuentas, inversiones, cripto, propiedades y deudas.",
-      "Edita cualquier activo con el lápiz para mantenerlo al día.",
-      "Sigue la evolución de tu patrimonio mes a mes."],
+      "Entiende todo tu patrimonio, tus activos - tus pasivos y su rentabilidad, y entiende realmente cuánto vales.",
+      "Compara tu patrimonio vs el S&P 500, Nasdaq o MSCI en tiempo real.",
+      "Mira todos tus activos y cuánto riesgo estás asumiendo, cada uno por separado."],
     en: ["Net Worth", "Everything you own and owe, in one view.",
-      "Accounts, investments, crypto, properties and debts.",
-      "Edit any asset with the pencil to keep it up to date.",
-      "Track your net worth evolution month by month."],
+      "Understand your whole net worth: assets minus liabilities and their return, and what you're really worth.",
+      "Compare your net worth vs the S&P 500, Nasdaq or MSCI in real time.",
+      "See all your assets and how much risk you're taking, each one separately."],
   },
   {
     url: "/portafolio", icon: TrendingUp, minPlan: "pro",
@@ -225,6 +225,7 @@ export function AppTour() {
   const isCashFlowTourStep = current?.url === "/cash-flow";
   const isNumberTourStep = current?.url === "/retiro";
   const isHipotecaTourStep = current?.url === "/hipoteca";
+  const isPatrimonioTourStep = current?.url === "/patrimonio";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
@@ -447,6 +448,42 @@ export function AppTour() {
     };
   }, [isHipotecaTourStep, isMobile, pathname]);
 
+  const [patrimonioMarkers, setPatrimonioMarkers] = useState<{
+    cards: { x: number; y: number };
+    chart: { x: number; y: number };
+    allocation: { x: number; y: number };
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isPatrimonioTourStep || isMobile) {
+      setPatrimonioMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    const measure = () => {
+      const cards = document.querySelector<HTMLElement>('[data-tour-patrimonio-target="cards"]')?.getBoundingClientRect();
+      const chart = document.getElementById("tour-pat-chart")?.getBoundingClientRect();
+      const allocation = document.getElementById("tour-pat-allocation")?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!cards || !chart || !allocation || !box || cancelled) return;
+      setPatrimonioMarkers({
+        cards: { x: cards.left + cards.width * 0.82, y: cards.top + cards.height * 0.35 },
+        chart: { x: chart.left + chart.width * 0.3, y: chart.top + 90 },
+        allocation: { x: allocation.left + allocation.width * 0.5, y: allocation.top + 70 },
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure);
+    };
+  }, [isPatrimonioTourStep, isMobile, pathname]);
+
   // En Análisis de hipoteca, baja lo justo para ver los campos de arriba y las estrategias a la vez.
   useEffect(() => {
     if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/retiro" && pathname === "/hipoteca") {
@@ -468,6 +505,18 @@ export function AppTour() {
       const timer = window.setTimeout(() => {
       const numberCard = document.querySelector<HTMLElement>('[data-tour-number-target="number"]');
       if (numberCard) window.scrollTo({ top: window.scrollY + numberCard.getBoundingClientRect().top - 80, behavior: "smooth" });
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [step, pathname, isMobile]);
+
+  // En Patrimonio, sube al inicio para ver las tarjetas, la gráfica y la allocation a la vez.
+  useEffect(() => {
+    if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/hipoteca" && pathname === "/patrimonio") {
+      const timer = window.setTimeout(() => {
+        const cards = document.querySelector<HTMLElement>('[data-tour-patrimonio-target="cards"]');
+        if (cards) window.scrollTo({ top: Math.max(0, window.scrollY + cards.getBoundingClientRect().top - 150), behavior: "smooth" });
       }, 400);
       return () => clearTimeout(timer);
     }
