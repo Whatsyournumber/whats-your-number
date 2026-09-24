@@ -1150,8 +1150,8 @@ function Dashboard() {
               const spendTextColor = (value: number) =>
                 value >= 100 ? "text-negative" : value >= 80 ? "text-warning" : "text-positive";
 
-
               if (g.name === "Cartera de inversión") {
+
                 const noInvestments = portfolioValue <= 0;
                 const diff = portfolioReturn - sp500Rate;
                 const progress = noInvestments
