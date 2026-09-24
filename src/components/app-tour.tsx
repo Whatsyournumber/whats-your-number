@@ -511,15 +511,12 @@ export function AppTour() {
     return undefined;
   }, [step, pathname, isMobile]);
 
-  // En Patrimonio, deja las tarjetas arriba y el panel de Activos asomando abajo, a la izquierda de la caja.
+  // En Patrimonio, deja las tarjetas arriba; la línea 3 baja hacia los activos.
   useEffect(() => {
     if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/patrimonio" && pathname === "/patrimonio") {
       const timer = window.setTimeout(() => {
-        const assets = document.getElementById("tour-pat-assets");
-        if (assets) {
-          const offset = Math.max(0, assets.getBoundingClientRect().top - (window.innerHeight - 215));
-          window.scrollTo({ top: window.scrollY + offset, behavior: "smooth" });
-        }
+        const cards = document.querySelector<HTMLElement>('[data-tour-patrimonio-target="cards"]');
+        if (cards) window.scrollTo({ top: Math.max(0, window.scrollY + cards.getBoundingClientRect().top - 150), behavior: "smooth" });
       }, 400);
       return () => clearTimeout(timer);
     }
