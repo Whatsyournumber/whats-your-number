@@ -196,9 +196,11 @@ function Gastos() {
     }
   }, []);
   const learned = useCategoryRules();
-  const moveTxToCategory = (id: string, category: string) => {
+  const moveTxToCategory = (ids: string | string[], category: string) => {
+    const list = Array.isArray(ids) ? ids : [ids];
     setTxCat((prev) => {
-      const next = { ...prev, [id]: category };
+      const next = { ...prev };
+      for (const id of list) next[id] = category;
       try {
         localStorage.setItem(TX_CAT_KEY, JSON.stringify(next));
       } catch {
@@ -206,9 +208,11 @@ function Gastos() {
       }
       return next;
     });
-    // Aprende la regla comercio → categoría para aplicarla la próxima vez.
-    const tx = transactions.find((x) => x.id === id);
-    if (tx) learned.learn(tx.merchant || tx.description, category);
+    // Aprende la regla comercio → categoría (solo con un movimiento, para no generalizar un lote).
+    if (list.length === 1) {
+      const tx = transactions.find((x) => x.id === list[0]);
+      if (tx) learned.learn(tx.merchant || tx.description, category);
+    }
   };
   const categoryOf = (t: Tx) =>
     txCat[t.id] ?? learned.resolve(t.merchant, t.description) ?? categorizeTxWithTravel(t, categories.rules, travelDays);
