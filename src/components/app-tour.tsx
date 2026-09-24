@@ -72,12 +72,12 @@ const STEPS: Step[] = [
   {
     url: "/cash-flow", icon: Scale, minPlan: "free",
     es: ["Distribución del dinero", "La regla 50/30/20 aplicada a tus números reales.",
-      "Necesidades, deseos y ahorro, comparados con tu plan.",
       "Pasa el cursor sobre cada bloque para ver el detalle.",
+      "Necesidades, deseos y ahorro, comparados con tu plan.",
       "Al empezar usa tu plan; luego usa tus gastos reales."],
     en: ["Money Distribution", "The 50/30/20 rule applied to your real numbers.",
-      "Needs, wants and savings, compared with your plan.",
       "Hover each block to see the breakdown by category.",
+      "Needs, wants and savings, compared with your plan.",
       "It starts from your plan, then uses your real spending."],
   },
   {
@@ -222,6 +222,7 @@ export function AppTour() {
   const isDashboardTourStep = current?.url === "/dashboard";
   const isExpenseTourStep = current?.url === "/registro-gastos";
   const isAnalysisTourStep = current?.url === "/gastos";
+  const isCashFlowTourStep = current?.url === "/cash-flow";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
