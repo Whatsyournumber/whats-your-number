@@ -297,6 +297,38 @@ export function AppTour() {
     };
   }, [isExpenseTourStep, isMobile, pathname]);
 
+  // Señala el botón de importar y la gráfica comparativa en el paso Análisis de gastos.
+  const [analysisMarkers, setAnalysisMarkers] = useState<{
+    importBtn: { x: number; y: number };
+    chart: { x: number; y: number };
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isAnalysisTourStep || isMobile) {
+      setAnalysisMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    const measure = () => {
+      const importBtn = document.querySelector<HTMLElement>('[data-tour-analysis-target="import"]')?.getBoundingClientRect();
+      const chart = document.querySelector<HTMLElement>('[data-tour-analysis-target="chart"]')?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!importBtn || !chart || !box || cancelled) return;
+      setAnalysisMarkers({
+        importBtn: { x: importBtn.left + importBtn.width / 2, y: importBtn.top },
+        chart: { x: chart.left + chart.width * 0.18, y: chart.top + chart.height * 0.82 },
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+    };
+  }, [isAnalysisTourStep, isMobile, pathname]);
+
   // Abre cada sección cuando le toca.
   useEffect(() => {
     if (current && pathname !== current.url) navigate({ to: current.url });
