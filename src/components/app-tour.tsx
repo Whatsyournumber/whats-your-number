@@ -485,7 +485,8 @@ export function AppTour() {
   const isDashboardStep = current.url === "/dashboard";
   const isExpenseStep = current.url === "/registro-gastos";
   const isAnalysisStep = current.url === "/gastos";
-  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep;
+  const isCashFlowStep = current.url === "/cash-flow";
+  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep;
 
   return (
     <>
