@@ -1193,15 +1193,18 @@ function Dashboard() {
                 );
               }
 
-              const goalTextColor = isCityGoal
-                ? cityReached
-                  ? "text-positive"
-                  : "text-negative"
-                : pct >= 75
-                  ? "text-positive"
-                  : pct >= 50
-                    ? "text-warning"
-                    : "text-negative";
+              const goalTextColor = isMonthlyExpenses
+                ? spendTextColor(pct)
+                : isCityGoal
+                  ? cityReached
+                    ? "text-positive"
+                    : "text-negative"
+                  : pct >= 75
+                    ? "text-positive"
+                    : pct >= 50
+                      ? "text-warning"
+                      : "text-negative";
+
               const goalHref = isCityGoal
                 ? "/ciudades"
                 : isMonthlyExpenses
