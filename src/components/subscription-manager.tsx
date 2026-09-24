@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, ArrowUpRight, Check, CheckCircle2, ChevronRight, CreditCard, Crown, ExternalLink, Loader2, Mail, Plus, Receipt, ShieldCheck, Smile, Sparkles, Trash2, User, XCircle } from "lucide-react";
@@ -255,7 +255,6 @@ function PaymentMethodDialog({
           hint={t("Gestiona tu tarjeta", "Manage your card")}
           loading={loading}
           disabled={disabled}
-          onClick={() => undefined}
         />
       </DialogTrigger>
       <DialogContent className="max-w-md">
@@ -336,7 +335,6 @@ function CancelPlanDialog({
           hint={t("Acceso hasta el final", "Access until the end")}
           loading={loading}
           disabled={disabled}
-          onClick={() => undefined}
         />
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] max-w-md gap-0 overflow-y-auto rounded-3xl border-border bg-background p-5 text-center shadow-2xl sm:p-7">
