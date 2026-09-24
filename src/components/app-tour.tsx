@@ -442,6 +442,8 @@ export function AppTour() {
   const isNumberStep = current.url === "/retiro";
   const isDashboardStep = current.url === "/dashboard";
   const isExpenseStep = current.url === "/registro-gastos";
+  const isAnalysisStep = current.url === "/gastos";
+  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep;
 
   return (
     <>
