@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useT } from "@/hooks/use-language";
 import { defaultReturn, newHolding, useHoldings, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { useQuotes, useSymbolSearch } from "@/hooks/use-market";
@@ -103,6 +104,13 @@ export function AssetDialog({
     }
     setDraft(null);
     baseline.current = null;
+  };
+
+  // Cambiar el tipo de activo dentro del editor: limpia el ticker si el nuevo tipo no cotiza.
+  const changeKind = (kind: HoldingKind) => {
+    if (!draft) return;
+    const quoted = ["etf", "stock", "crypto"].includes(kind);
+    setDraft({ ...draft, kind, ticker: quoted ? draft.ticker : "" });
   };
 
   const selectNewKind = (kind: HoldingKind) => {
