@@ -341,8 +341,8 @@ export function AppTour() {
           "fixed inset-x-3 bottom-16 z-[100] sm:inset-x-auto sm:bottom-6 sm:w-[400px] lg:bottom-8",
           isDashboardStep
             ? sidebarState === "expanded"
-              ? "sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto"
-              : "sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto"
+              ? "sm:bottom-auto sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto sm:top-[clamp(22rem,42vh,28rem)]"
+              : "sm:bottom-auto sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto sm:top-[clamp(22rem,42vh,28rem)]"
             : "sm:right-6",
         )}
       >
