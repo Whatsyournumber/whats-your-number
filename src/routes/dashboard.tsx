@@ -1084,6 +1084,10 @@ function Dashboard() {
               const pct = isYourNumber
                 ? numberProgress
                 : (g.progressPct ?? (targetBase > 0 ? Math.min(100, (left / targetBase) * 100) : 0));
+              // Gastos del mes: el porcentaje que se muestra es el real del plan, aunque pase del 100%.
+              const displayPct = isMonthlyExpenses && spendTarget > 0
+                ? (monthlyExpenses / spendTarget) * 100
+                : pct;
               const remaining = Math.max(0, right - left);
               const portfolioRate = (() => {
                 // El rendimiento de la cartera excluye cripto y ETF para reflejar la ganancia operativa neta.
