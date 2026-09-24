@@ -1362,6 +1362,7 @@ function Gastos() {
                         setSelTx({ from: "", ids: new Set() });
                       }
                       setDragTx(null);
+                      setDragPoint(null);
                     }
                   }}
                 >
