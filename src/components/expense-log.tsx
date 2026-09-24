@@ -2028,6 +2028,22 @@ export function ExpenseLog() {
                             type="button"
                             onClick={(event) => {
                               event.stopPropagation();
+                              setAnalysisCat(r.id);
+                            }}
+                            className="flex h-7 shrink-0 items-center gap-1.5 rounded-full px-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                            aria-label={t(`Ver análisis de ${r.name}`, `View ${r.name} analysis`)}
+                          >
+                            <BarChart3 className="h-3.5 w-3.5" />
+                            <span className="numeric rounded-full bg-muted px-1.5 py-0.5 text-[10px] leading-3">
+                              {r.items.length} {t("movs.", "txs")}
+                            </span>
+                          </button>
+                        )}
+                        {r.items.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
                               setExpandedCategory(expandedCat ? null : r.id);
                             }}
                             className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
