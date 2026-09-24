@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { forwardRef, useState, type ComponentPropsWithoutRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, ArrowUpRight, Check, CheckCircle2, ChevronRight, CreditCard, Crown, ExternalLink, Loader2, Mail, Plus, Receipt, ShieldCheck, Smile, Sparkles, Trash2, User, XCircle } from "lucide-react";
@@ -255,7 +255,6 @@ function PaymentMethodDialog({
           hint={t("Gestiona tu tarjeta", "Manage your card")}
           loading={loading}
           disabled={disabled}
-          onClick={() => undefined}
         />
       </DialogTrigger>
       <DialogContent className="max-w-md">
@@ -336,7 +335,6 @@ function CancelPlanDialog({
           hint={t("Acceso hasta el final", "Access until the end")}
           loading={loading}
           disabled={disabled}
-          onClick={() => undefined}
         />
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] max-w-md gap-0 overflow-y-auto rounded-3xl border-border bg-background p-5 text-center shadow-2xl sm:p-7">
@@ -397,25 +395,22 @@ function CancelPlanDialog({
   );
 }
 
-function PortalAction({
-  icon: Icon,
-  label,
-  hint,
-  loading,
-  disabled,
-  onClick,
-}: {
-  icon: typeof CreditCard;
-  label: string;
-  hint: string;
-  loading: boolean;
-  disabled: boolean;
-  onClick: () => void;
-}) {
+const PortalAction = forwardRef<
+  HTMLButtonElement,
+  {
+    icon: typeof CreditCard;
+    label: string;
+    hint: string;
+    loading: boolean;
+    disabled?: boolean;
+  } & ComponentPropsWithoutRef<"button">
+>(function PortalAction({ icon: Icon, label, hint, loading, disabled, onClick, ...props }, ref) {
   return (
     <Button
       type="button"
       variant="ghost"
+      ref={ref}
+      {...props}
       onClick={onClick}
       disabled={disabled}
       className="group h-auto min-h-20 justify-start gap-3 whitespace-normal rounded-xl border border-border bg-elevated/40 p-3 text-left transition-colors hover:border-primary/40 hover:bg-elevated disabled:opacity-60"
@@ -433,7 +428,7 @@ function PortalAction({
       <ChevronRight className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
     </Button>
   );
-}
+});
 
 function InfoTile({
   icon: Icon,
