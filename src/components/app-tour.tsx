@@ -504,7 +504,11 @@ export function AppTour() {
               ? "sm:bottom-auto sm:right-6 sm:top-[clamp(18rem,48vh,24rem)]"
               : isAnalysisStep
                 ? "sm:bottom-auto sm:right-6 sm:top-[38vh]"
-                : "sm:right-6",
+                : isCashFlowStep
+                  ? sidebarState === "expanded"
+                    ? "sm:bottom-auto sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto sm:top-[clamp(21rem,44vh,27rem)]"
+                    : "sm:bottom-auto sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto sm:top-[clamp(21rem,44vh,27rem)]"
+                  : "sm:right-6",
         )}
       >
         <div ref={tourBoxRef} data-tour-box className="relative overflow-hidden rounded-2xl border border-tour-border bg-tour-surface p-4 text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25 sm:rounded-3xl sm:p-5">
@@ -688,11 +692,11 @@ export function AppTour() {
               </marker>
             </defs>
             <path
-              d={`M ${cashFlowMarkers.box.x + 20} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.4} Q ${cashFlowMarkers.box.x - 120} ${cashFlowMarkers.blocks.y + 40} ${cashFlowMarkers.blocks.x} ${cashFlowMarkers.blocks.y}`}
+              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width - 16} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.35} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width + cashFlowMarkers.blocks.x) / 2} ${cashFlowMarkers.blocks.y + 70} ${cashFlowMarkers.blocks.x} ${cashFlowMarkers.blocks.y}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
             <path
-              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.5} ${cashFlowMarkers.box.y - 4} Q ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.5} ${cashFlowMarkers.box.y - 90} ${cashFlowMarkers.cards.x} ${cashFlowMarkers.cards.y}`}
+              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.55} ${cashFlowMarkers.box.y - 4} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.55 + cashFlowMarkers.cards.x) / 2} ${cashFlowMarkers.box.y - 130} ${cashFlowMarkers.cards.x} ${cashFlowMarkers.cards.y}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
           </svg>
