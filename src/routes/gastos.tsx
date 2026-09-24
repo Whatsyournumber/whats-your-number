@@ -318,7 +318,8 @@ function Gastos() {
 
   // Categorías con gastos visibles por defecto; toggle para ver vacías
   const showEmptyCategories = false;
-  const [dragTx, setDragTx] = useState<{ ids: string[]; from: string } | null>(null);
+  const [dragTx, setDragTx] = useState<{ ids: string[]; from: string; total: number } | null>(null);
+  const [dragPoint, setDragPoint] = useState<{ x: number; y: number } | null>(null);
   const [selTx, setSelTx] = useState<{ from: string; ids: Set<string> }>({ from: "", ids: new Set() });
   const toggleSel = (from: string, id: string) =>
     setSelTx((prev) => {
