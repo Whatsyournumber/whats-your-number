@@ -187,6 +187,7 @@ export function seedHoldingsFromTotals(p: {
 }
 
 /** Marca interna de la vivienda creada desde el onboarding. */
+export const PATRIMONIO_ONLY_NOTE = "source:patrimonio";
 export const HOME_HOLDING_NOTE = "onboarding:vivienda";
 
 /**
