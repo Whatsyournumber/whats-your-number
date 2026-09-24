@@ -355,7 +355,7 @@ export function AppTour() {
       const box = tourBoxRef.current?.getBoundingClientRect();
       if (!blocks || !edit || !box || cancelled) return;
       setCashFlowMarkers({
-        blocks: { x: blocks.left + blocks.width * 0.5, y: blocks.top + 28 },
+        blocks: { x: blocks.left + blocks.width * 0.72, y: blocks.top + 46 },
         edit: { x: edit.left + edit.width * 0.5, y: edit.top + edit.height * 0.5 },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
