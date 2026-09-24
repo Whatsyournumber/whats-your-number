@@ -1225,7 +1225,7 @@ function Dashboard() {
                           {isMonthlyExpenses ? t("Gastos del mes", "Monthly spending") : translateGoalName(g.name, lang)}
                         </span>
                         <span className={cn("numeric ml-auto shrink-0 text-sm font-semibold", goalTextColor)}>
-                          {pct.toFixed(0)}%
+                          {displayPct.toFixed(0)}%
                         </span>
                         <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
                       </div>
@@ -1233,10 +1233,10 @@ function Dashboard() {
                         {fmtCompact(left)} {t("de", "of")} {fmtCompact(right)}
                       </p>
                       <Progress
-                        value={pct}
+                        value={Math.min(100, displayPct)}
                         indicatorClassName={
                           isMonthlyExpenses
-                            ? spendBarColor(pct)
+                            ? spendBarColor(displayPct)
                             : isCityGoal
                               ? cityReached
                                 ? "bg-positive"
@@ -1247,6 +1247,28 @@ function Dashboard() {
                         className="mt-1.5 h-1.5"
                       />
                       <p className="mt-1 truncate text-[11px] text-muted-foreground">{subtitle}</p>
+                      {isMonthlyExpenses && topSources.length > 0 && (
+                        <div className="mt-2.5 border-t border-border/60 pt-2.5">
+                          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                            {t("Tus mayores fuentes de gasto", "Your biggest spending sources")}
+                          </p>
+                          <div className="mt-1.5 space-y-1">
+                            {topSources.map((s, i) => (
+                              <div key={s.name} className="flex items-baseline gap-2">
+                                <span
+                                  className="h-2 w-2 shrink-0 translate-y-[-1px] rounded-full"
+                                  style={{ background: `var(--color-chart-${(i % 7) + 1})` }}
+                                />
+                                <span className="min-w-0 flex-1 text-xs leading-snug">{s.name}</span>
+                                <span className="numeric shrink-0 text-xs font-semibold">{fmt(s.amount)}</span>
+                                <span className="numeric w-10 shrink-0 text-right text-[11px] text-muted-foreground">
+                                  {s.pct.toFixed(0)}%
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </Link>
                 </li>
