@@ -502,7 +502,7 @@ export function AppTour() {
               const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
               return (
                 <li key={i} className="flex items-start gap-2 whitespace-nowrap text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
-                  {isDashboardStep || isExpenseStep ? (
+                  {hasNumberedBullets ? (
                     <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-positive text-[9px] font-semibold text-white sm:h-5 sm:w-5 sm:text-[10px]">
                       {i + 1}
                     </span>
