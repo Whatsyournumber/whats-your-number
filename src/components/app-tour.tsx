@@ -679,6 +679,37 @@ export function AppTour() {
           </span>
         </div>
       )}
+      {isCashFlowStep && cashFlowMarkers && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            <defs>
+              <marker id="tour-cashflow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
+              </marker>
+            </defs>
+            <path
+              d={`M ${cashFlowMarkers.box.x + 20} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.4} Q ${cashFlowMarkers.box.x - 120} ${cashFlowMarkers.blocks.y + 40} ${cashFlowMarkers.blocks.x} ${cashFlowMarkers.blocks.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.5} ${cashFlowMarkers.box.y - 4} Q ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.5} ${cashFlowMarkers.box.y - 90} ${cashFlowMarkers.cards.x} ${cashFlowMarkers.cards.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
+            />
+          </svg>
+          <span
+            className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+            style={{ left: cashFlowMarkers.blocks.x - 14, top: cashFlowMarkers.blocks.y - 14 }}
+          >
+            1
+          </span>
+          <span
+            className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+            style={{ left: cashFlowMarkers.cards.x - 14, top: cashFlowMarkers.cards.y - 14 }}
+          >
+            2
+          </span>
+        </div>
+      )}
     </>
   );
 }
