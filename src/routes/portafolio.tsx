@@ -1589,7 +1589,7 @@ function PortafolioContent() {
                   {tk && prices[tk] ? fmtUsd(prices[tk]) : "—"}
                 </p>
                 <p className="numeric text-[11px] text-muted-foreground">
-                  {t("Monto invertido", "Amount invested")} {fmt(h.cost)}
+                  {t("Precio de compra", "Purchase price")} {h.strike && h.strike > 0 ? fmtUsd(h.strike) : "—"}
                 </p>
               </div>
               <div>
@@ -1602,7 +1602,7 @@ function PortafolioContent() {
                 </p>
                 <p className="numeric text-sm font-medium">{fmt(h.value)}</p>
                 <p className="numeric text-[11px] text-muted-foreground">
-                  {h.strike && h.strike > 0 ? fmtUsd(h.strike) : "—"}
+                  {t("Monto invertido", "Amount invested")} {fmt(h.cost)}
                 </p>
               </div>
               <div>
