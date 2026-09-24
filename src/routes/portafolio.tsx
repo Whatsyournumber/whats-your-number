@@ -1939,7 +1939,20 @@ function PortafolioContent() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label={t("Valor actual", "Current value")} value={fmt(totalValue)} accent index={0} />
+        <div data-tour-portfolio-target="value" className="h-full">
+          <KpiCard
+            label={t("Valor actual", "Current value")}
+            value={fmt(totalValue)}
+            hint={(
+              <span className="inline-flex items-center gap-1.5 text-positive">
+                <span className="h-1.5 w-1.5 rounded-full bg-positive" />
+                {t("Tiempo real", "Real time")}
+              </span>
+            )}
+            accent
+            index={0}
+          />
+        </div>
         <KpiCard label={t("Ganancia total", "Total gain")} value={fmt(totalGain)} delta={totalCostForGain > 0 ? (totalGain / totalCostForGain) * 100 : 0} index={1} />
         <KpiCard label={t("Ganancia mensual", "Monthly gain")} value={fmt(Math.round(totalGain / 12))} index={2} />
         <motion.div
@@ -1985,6 +1998,7 @@ function PortafolioContent() {
 
       <div className="grid gap-4 lg:grid-cols-5">
         <Panel
+          id="tour-portfolio-chart"
           title={t("Simulador del Portfolio", "Portfolio Simulator")}
           titleClassName="truncate whitespace-nowrap"
           description={
@@ -2165,6 +2179,7 @@ function PortafolioContent() {
         </Panel>
 
         <Panel
+          id="tour-portfolio-configuration"
           title={t("Configuración del Portfolio", "Portfolio Configuration")}
           description={
             isMobile
