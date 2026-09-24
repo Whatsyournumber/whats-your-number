@@ -1939,16 +1939,11 @@ function PortafolioContent() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div data-tour-portfolio-target="value" className="h-full">
+        <div data-tour-portfolio-target="value" className="relative h-full">
+          <span className="absolute left-[7.15rem] top-[1.9rem] z-10 h-2 w-2 animate-pulse rounded-full bg-positive shadow-[0_0_0_4px_var(--color-positive-muted)]" aria-hidden="true" />
           <KpiCard
             label={t("Valor actual", "Current value")}
             value={fmt(totalValue)}
-            hint={(
-              <span className="inline-flex items-center gap-1.5 text-positive">
-                <span className="h-1.5 w-1.5 rounded-full bg-positive" />
-                {t("Tiempo real", "Real time")}
-              </span>
-            )}
             accent
             index={0}
           />
@@ -2354,6 +2349,7 @@ function PortafolioContent() {
       </div>
 
       <Panel
+        id="tour-portfolio-assets"
         title={t("Posiciones", "Positions")}
         description={`${enriched.length} ${t("posiciones", "positions")}`}
         actions={
