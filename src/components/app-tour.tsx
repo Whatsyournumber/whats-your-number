@@ -219,6 +219,46 @@ export function AppTour() {
   }, [user, subscriptionLoading]);
 
   const current = step && step > 0 ? availableSteps[step - 1] ?? null : null;
+  const isDashboardTourStep = current?.url === "/dashboard";
+
+  // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
+  const tourBoxRef = useRef<HTMLDivElement | null>(null);
+  const [markers, setMarkers] = useState<{ kpi: { x: number; y: number }; number: { x: number; y: number }; box: { x: number; y: number } } | null>(null);
+  useEffect(() => {
+    if (!isDashboardTourStep || isMobile) {
+      setMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    const findLabel = (text: string, rightHalf = false): DOMRect | null => {
+      const els = document.querySelectorAll<HTMLElement>("span, p, h1, h2, h3, h4, div");
+      for (const el of els) {
+        if (el.closest("[data-sidebar]") || el.closest("[data-tour-box]")) continue;
+        if (el.children.length > 0) continue;
+        const txt = el.textContent?.trim().toLowerCase() ?? "";
+        if (!txt.startsWith(text)) continue;
+        const r = el.getBoundingClientRect();
+        if (r.width === 0 || r.height === 0) continue;
+        if (rightHalf && r.left < window.innerWidth * 0.55) continue;
+        return r;
+      }
+      return null;
+    };
+    const measure = () => {
+      const kpi = findLabel("patrimonio neto") ?? findLabel("net worth");
+      const num = findLabel("tu número", true) ?? findLabel("your number", true);
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!kpi || !num || !box || cancelled) return;
+      setMarkers({ kpi: { x: kpi.left, y: kpi.top }, number: { x: num.left, y: num.top }, box: { x: box.left, y: box.top } });
+    };
+    const timers = [80, 350, 900, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelled = true;
+      timers.forEach((t) => clearTimeout(t));
+      window.removeEventListener("resize", measure);
+    };
+  }, [isDashboardTourStep, isMobile, pathname]);
 
   // Abre cada sección cuando le toca.
   useEffect(() => {
