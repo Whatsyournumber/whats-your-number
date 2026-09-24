@@ -397,25 +397,22 @@ function CancelPlanDialog({
   );
 }
 
-function PortalAction({
-  icon: Icon,
-  label,
-  hint,
-  loading,
-  disabled,
-  onClick,
-}: {
-  icon: typeof CreditCard;
-  label: string;
-  hint: string;
-  loading: boolean;
-  disabled: boolean;
-  onClick: () => void;
-}) {
+const PortalAction = React.forwardRef<
+  HTMLButtonElement,
+  {
+    icon: typeof CreditCard;
+    label: string;
+    hint: string;
+    loading: boolean;
+    disabled?: boolean;
+  } & React.ComponentPropsWithoutRef<"button">
+>(function PortalAction({ icon: Icon, label, hint, loading, disabled, onClick, ...props }, ref) {
   return (
     <Button
       type="button"
       variant="ghost"
+      ref={ref}
+      {...props}
       onClick={onClick}
       disabled={disabled}
       className="group h-auto min-h-20 justify-start gap-3 whitespace-normal rounded-xl border border-border bg-elevated/40 p-3 text-left transition-colors hover:border-primary/40 hover:bg-elevated disabled:opacity-60"
