@@ -371,6 +371,17 @@ export function AppTour() {
     };
   }, [isCashFlowTourStep, isMobile, pathname]);
 
+  // En Tu Número, baja hasta que la gráfica quede bajo la barra de progreso.
+  useEffect(() => {
+    if (!isMobile && availableSteps[step]?.url === "/retiro" && pathname === "/retiro") {
+      const timer = window.setTimeout(() => {
+        const chart = document.querySelector<HTMLElement>('[data-tour-number-target="chart"]');
+        if (chart) window.scrollTo({ top: window.scrollY + chart.getBoundingClientRect().top - window.innerHeight * 0.42, behavior: "smooth" });
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [step, pathname, isMobile]);
+
   // Abre cada sección cuando le toca.
   useEffect(() => {
     if (current && pathname !== current.url) navigate({ to: current.url });
@@ -506,8 +517,8 @@ export function AppTour() {
                 ? "sm:bottom-auto sm:right-6 sm:top-[38vh]"
                 : isCashFlowStep || isNumberStep
                   ? sidebarState === "expanded"
-                    ? `sm:bottom-auto sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:top-auto sm:bottom-6" : "sm:top-[clamp(21rem,44vh,27rem)]"}`
-                    : `sm:bottom-auto sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:top-auto sm:bottom-6" : "sm:top-[clamp(21rem,44vh,27rem)]"}`
+                    ? `sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-6" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
+                    : `sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-6" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
                   : "sm:right-6",
         )}
       >
