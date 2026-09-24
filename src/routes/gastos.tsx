@@ -1351,8 +1351,14 @@ function Gastos() {
                     e.preventDefault();
                     if (dragTx) {
                       if (dragTx.from !== c.name) {
-                        moveTxToCategory(dragTx.id, c.name);
-                        toast.success(t(`Movido a ${tc(c.name)}`, `Moved to ${tc(c.name)}`));
+                        moveTxToCategory(dragTx.ids, c.name);
+                        const n = dragTx.ids.length;
+                        toast.success(
+                          n > 1
+                            ? t(`${n} movimientos movidos a ${tc(c.name)}`, `${n} transactions moved to ${tc(c.name)}`)
+                            : t(`Movido a ${tc(c.name)}`, `Moved to ${tc(c.name)}`),
+                        );
+                        setSelTx({ from: "", ids: new Set() });
                       }
                       setDragTx(null);
                     }
@@ -1461,7 +1467,8 @@ function Gastos() {
                               </div>
                               <span className="numeric ml-auto text-sm font-medium">{fmt(Math.abs(tx.amount))}</span>
                             </li>
-                          ))}
+                            );
+                          })}
                       </ul>
                     )}
                   </AccordionContent>
