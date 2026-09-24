@@ -413,8 +413,8 @@ export function AppTour() {
   useEffect(() => {
     if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/retiro" && pathname === "/retiro") {
       const timer = window.setTimeout(() => {
-        const chart = document.querySelector<HTMLElement>('[data-tour-number-target="chart"]');
-        if (chart) window.scrollTo({ top: window.scrollY + chart.getBoundingClientRect().top - window.innerHeight * 0.42, behavior: "smooth" });
+      const numberCard = document.querySelector<HTMLElement>('[data-tour-number-target="number"]');
+      if (numberCard) window.scrollTo({ top: window.scrollY + numberCard.getBoundingClientRect().top - 80, behavior: "smooth" });
       }, 400);
       return () => clearTimeout(timer);
     }
