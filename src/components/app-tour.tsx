@@ -506,7 +506,7 @@ export function AppTour() {
       setPortfolioMarkers({
         value: { x: value.left + value.width * 0.2, y: value.top + value.height * 0.52 },
         chart: { x: chart.left + chart.width * 0.52, y: chart.top + 116 },
-        assets: { x: assets.left + assets.width * 0.5, y: Math.min(assets.top + 42, window.innerHeight - 42) },
+        assets: { x: assets.left + Math.min(96, assets.width * 0.18), y: Math.min(assets.top + 42, window.innerHeight - 42) },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
@@ -703,9 +703,7 @@ export function AppTour() {
                     ? `sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
                     : `sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
                   : isPortfolioStep
-                    ? sidebarState === "expanded"
-                      ? "sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto"
-                      : "sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto"
+                    ? "sm:bottom-8 sm:left-auto sm:right-6"
                     : "sm:right-6",
         )}
       >
@@ -1029,16 +1027,16 @@ export function AppTour() {
               </marker>
             </defs>
             <path
-              d={`M ${portfolioMarkers.box.x + 50} ${portfolioMarkers.box.y - 4} Q ${(portfolioMarkers.box.x + portfolioMarkers.value.x) / 2} ${portfolioMarkers.value.y + 110} ${portfolioMarkers.value.x} ${portfolioMarkers.value.y + 14}`}
-              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive/70"
+              d={`M ${portfolioMarkers.box.x + 40} ${portfolioMarkers.box.y - 4} Q ${(portfolioMarkers.box.x + portfolioMarkers.value.x) / 2} ${portfolioMarkers.value.y + 80} ${portfolioMarkers.value.x} ${portfolioMarkers.value.y + 14}`}
+              fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive"
             />
             <path
               d={`M ${portfolioMarkers.box.x - 4} ${portfolioMarkers.box.y + portfolioMarkers.box.height * 0.36} Q ${(portfolioMarkers.box.x + portfolioMarkers.chart.x) / 2} ${portfolioMarkers.chart.y + 55} ${portfolioMarkers.chart.x} ${portfolioMarkers.chart.y}`}
-              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive/70"
+              fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive"
             />
             <path
-              d={`M ${portfolioMarkers.box.x + portfolioMarkers.box.width * 0.72} ${portfolioMarkers.box.y + portfolioMarkers.box.height + 4} Q ${portfolioMarkers.assets.x - 80} ${portfolioMarkers.assets.y - 80} ${portfolioMarkers.assets.x} ${portfolioMarkers.assets.y}`}
-              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive/70"
+              d={`M ${portfolioMarkers.box.x - 4} ${portfolioMarkers.box.y + portfolioMarkers.box.height * 0.72} Q ${portfolioMarkers.assets.x + 150} ${portfolioMarkers.assets.y - 55} ${portfolioMarkers.assets.x} ${portfolioMarkers.assets.y}`}
+              fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive"
             />
           </svg>
           {([

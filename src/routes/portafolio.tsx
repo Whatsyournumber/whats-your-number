@@ -1940,10 +1940,10 @@ function PortafolioContent() {
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div data-tour-portfolio-target="value" className="relative h-full">
-          <span className="absolute left-[7.15rem] top-[1.9rem] z-10 h-2 w-2 animate-pulse rounded-full bg-positive shadow-[0_0_0_4px_var(--color-positive-muted)]" aria-hidden="true" />
           <KpiCard
             label={t("Valor actual", "Current value")}
             value={fmt(totalValue)}
+            valueTrailing={<span className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full bg-positive shadow-[0_0_0_4px_var(--color-positive-muted)]" aria-hidden="true" />}
             accent
             index={0}
           />
