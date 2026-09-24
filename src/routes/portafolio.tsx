@@ -1589,7 +1589,7 @@ function PortafolioContent() {
                   {tk && prices[tk] ? fmtUsd(prices[tk]) : "—"}
                 </p>
                 <p className="numeric text-[11px] text-muted-foreground">
-                  {t("Compra", "Purchase")} {h.strike && h.strike > 0 ? fmtUsd(h.strike) : "—"}
+                  {t("Precio compra", "Buy price")} {h.strike && h.strike > 0 ? fmtUsd(h.strike) : "—"}
                 </p>
               </div>
               <div>
@@ -1604,7 +1604,7 @@ function PortafolioContent() {
                 <p className="numeric text-[11px] text-muted-foreground">
                   {h.units
                     ? `${h.units.toLocaleString(lang === "es" ? "es-ES" : "en-US", { maximumFractionDigits: 4 })} ${h.ticker}`
-                    : `${t("Compra", "Purchase")} ${fmt(h.cost)}`}
+                    : `${t("Compra total", "Total purchase")} ${fmt(h.cost)}`}
                 </p>
               </div>
               <div>
