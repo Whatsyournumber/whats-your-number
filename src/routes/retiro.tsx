@@ -341,7 +341,7 @@ function RetiroContent() {
             <>
               <div className="relative flex items-start justify-between gap-3">
                 <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">WhatsYournumber</p>
-                <Pencil className="h-4 w-4 text-muted-foreground" />
+                <Pencil className="h-4 w-4 text-muted-foreground" data-tour-number-target="pencil" />
               </div>
               <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">{fmt(plan.targetCapital)}</p>
               <div className="relative mt-2 flex items-center gap-2">
