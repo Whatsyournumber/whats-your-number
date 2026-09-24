@@ -373,7 +373,7 @@ export function AppTour() {
 
   // En Tu Número, baja hasta que la gráfica quede bajo la barra de progreso.
   useEffect(() => {
-    if (!isMobile && availableSteps[step]?.url === "/retiro" && pathname === "/retiro") {
+    if (!isMobile && step && availableSteps[step - 1]?.url === "/retiro" && pathname === "/retiro") {
       const timer = window.setTimeout(() => {
         const chart = document.querySelector<HTMLElement>('[data-tour-number-target="chart"]');
         if (chart) window.scrollTo({ top: window.scrollY + chart.getBoundingClientRect().top - window.innerHeight * 0.42, behavior: "smooth" });
