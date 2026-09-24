@@ -395,7 +395,7 @@ function CancelPlanDialog({
   );
 }
 
-const PortalAction = React.forwardRef<
+const PortalAction = forwardRef<
   HTMLButtonElement,
   {
     icon: typeof CreditCard;
@@ -403,7 +403,7 @@ const PortalAction = React.forwardRef<
     hint: string;
     loading: boolean;
     disabled?: boolean;
-  } & React.ComponentPropsWithoutRef<"button">
+  } & ComponentPropsWithoutRef<"button">
 >(function PortalAction({ icon: Icon, label, hint, loading, disabled, onClick, ...props }, ref) {
   return (
     <Button
