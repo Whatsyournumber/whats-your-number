@@ -488,7 +488,7 @@ export function AppTour() {
   const [portfolioMarkers, setPortfolioMarkers] = useState<{
     value: { x: number; y: number };
     chart: { x: number; y: number };
-    configuration: { x: number; y: number };
+    assets: { x: number; y: number };
     box: { x: number; y: number; width: number; height: number };
   } | null>(null);
   useEffect(() => {
@@ -499,14 +499,14 @@ export function AppTour() {
     let cancelled = false;
     const measure = () => {
       const value = document.querySelector<HTMLElement>('[data-tour-portfolio-target="value"]')?.getBoundingClientRect();
-      const chart = document.querySelector<HTMLElement>('[data-tour-portfolio-target="return"]')?.getBoundingClientRect();
-      const configuration = document.getElementById("tour-portfolio-configuration")?.getBoundingClientRect();
+      const chart = document.getElementById("tour-portfolio-chart")?.getBoundingClientRect();
+      const assets = document.getElementById("tour-portfolio-assets")?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
-      if (!value || !chart || !configuration || !box || cancelled) return;
+      if (!value || !chart || !assets || !box || cancelled) return;
       setPortfolioMarkers({
         value: { x: value.left + value.width * 0.2, y: value.top + value.height * 0.52 },
-        chart: { x: chart.left + chart.width * 0.5, y: chart.top + chart.height * 0.5 },
-        configuration: { x: configuration.left + configuration.width * 0.42, y: configuration.top + 74 },
+        chart: { x: chart.left + chart.width * 0.52, y: chart.top + 116 },
+        assets: { x: assets.left + assets.width * 0.5, y: Math.min(assets.top + 42, window.innerHeight - 42) },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
@@ -1020,7 +1020,7 @@ export function AppTour() {
           ))}
         </div>
       )}
-      {isPortfolioStep && portfolioMarkers?.value && portfolioMarkers?.chart && portfolioMarkers?.configuration && portfolioMarkers?.box && (
+      {isPortfolioStep && portfolioMarkers?.value && portfolioMarkers?.chart && portfolioMarkers?.assets && portfolioMarkers?.box && (
         <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
           <svg className="absolute inset-0 h-full w-full overflow-visible">
             <defs>
@@ -1037,14 +1037,14 @@ export function AppTour() {
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive/70"
             />
             <path
-              d={`M ${portfolioMarkers.box.x + portfolioMarkers.box.width * 0.72} ${portfolioMarkers.box.y - 4} Q ${portfolioMarkers.configuration.x + 80} ${portfolioMarkers.box.y - 70} ${portfolioMarkers.configuration.x} ${portfolioMarkers.configuration.y}`}
+              d={`M ${portfolioMarkers.box.x + portfolioMarkers.box.width * 0.72} ${portfolioMarkers.box.y + portfolioMarkers.box.height + 4} Q ${portfolioMarkers.assets.x - 80} ${portfolioMarkers.assets.y - 80} ${portfolioMarkers.assets.x} ${portfolioMarkers.assets.y}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive/70"
             />
           </svg>
           {([
             [portfolioMarkers.value.x - 14, portfolioMarkers.value.y - 36, 1],
             [portfolioMarkers.chart.x - 14, portfolioMarkers.chart.y - 36, 2],
-            [portfolioMarkers.configuration.x - 14, portfolioMarkers.configuration.y - 36, 3],
+            [portfolioMarkers.assets.x - 14, portfolioMarkers.assets.y - 36, 3],
           ] as const).map(([left, top, label]) => (
             <span
               key={label}
