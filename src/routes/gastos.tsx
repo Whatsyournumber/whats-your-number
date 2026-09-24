@@ -1664,17 +1664,6 @@ function Gastos() {
             </div>
           </div>
 
-          <div className="mt-4 space-y-2">
-            <CategoryChat
-              categories={categories.names}
-              items={categories.items}
-              customRules={categories.rules.map((r) => ({ name: r.name, keywords: r.hints }))}
-              merchants={merchantsForAi}
-              onCreate={(name, keywords) => categories.add(name, keywords)}
-              onUpdate={categories.update}
-              onRemove={categories.remove}
-            />
-          </div>
         </Panel>
 
         <Panel
