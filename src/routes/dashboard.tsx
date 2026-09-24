@@ -48,7 +48,7 @@ import { lifestyles, minMonthlyForRetirement, num } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 import { readDemoSnapshot, type DemoSnapshot } from "@/lib/demo-snapshot";
-import { translateGoalName, translateGoalNote } from "@/lib/i18n-data";
+import { translateCategory, translateGoalName, translateGoalNote } from "@/lib/i18n-data";
 import { buildTravelDays, categorizeTxWithTravel } from "@/lib/categorize";
 
 const EMPTY_MONEY_BUCKETS: Record<string, "needs" | "savings" | "wants" | "excluded"> = {};
@@ -385,6 +385,50 @@ function Dashboard() {
     : 0;
   // El plan se supera cuando el gasto real pasa del objetivo del mes.
   const spendPlanOver = spendPlanUsed > 100;
+  /** Las 3 fuentes de gasto que más pesan en el mes elegido (mismo cálculo que el análisis). */
+  const topSources = useMemo(() => {
+    const monthTx = transactions.filter(
+      (tx) => tx.tx_date?.slice(0, 7) === activeKey && Number(tx.amount) < 0,
+    );
+    const fixedRows = fixed.items
+      .filter((item) => Number(item.amount) > 0)
+      .map((item) => ({ amount: Math.abs(Number(item.amount)).toFixed(2), name: item.name }));
+    const isFixedTx = (tx: Tx) =>
+      fixedRows.some(
+        (row) =>
+          row.amount === Math.abs(Number(tx.amount)).toFixed(2) &&
+          (sameMerchant(row.name, tx.merchant) || sameMerchant(row.name, tx.description)),
+      );
+    const travelDays = buildTravelDays(monthTx as Tx[], rules);
+    const map = new Map<string, { name: string; amount: number; count: number; category: string }>();
+    let total = 0;
+    for (const tx of monthTx) {
+      if (isFixedTx(tx as Tx)) continue;
+      const name = (tx.merchant ?? tx.description ?? "").trim();
+      if (!name) continue;
+      const amount = Math.abs(Number(tx.amount));
+      const key = name.toUpperCase();
+      const prev = map.get(key);
+      if (prev) {
+        prev.amount += amount;
+        prev.count += 1;
+      } else {
+        map.set(key, { name, amount, count: 1, category: categorizeTxWithTravel(tx as Tx, rules, travelDays) });
+      }
+      total += amount;
+    }
+    if (total <= 0) return [] as { name: string; amount: number; count: number; category: string; pct: number }[];
+    return [...map.values()]
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 3)
+      .map((m) => ({
+        name: m.name,
+        amount: m.amount,
+        count: m.count,
+        category: translateCategory(m.category, lang),
+        pct: (m.amount / total) * 100,
+      }));
+  }, [activeKey, fixed.items, lang, rules, transactions]);
   const spendPlanBadge = spendPlanOver
     ? "bg-negative/12 text-negative"
     : "bg-positive/12 text-positive";
@@ -1084,6 +1128,10 @@ function Dashboard() {
               const pct = isYourNumber
                 ? numberProgress
                 : (g.progressPct ?? (targetBase > 0 ? Math.min(100, (left / targetBase) * 100) : 0));
+              // Gastos del mes: el porcentaje que se muestra es el real del plan, aunque pase del 100%.
+              const displayPct = isMonthlyExpenses && spendTarget > 0
+                ? (monthlyExpenses / spendTarget) * 100
+                : pct;
               const remaining = Math.max(0, right - left);
               const portfolioRate = (() => {
                 // El rendimiento de la cartera excluye cripto y ETF para reflejar la ganancia operativa neta.
@@ -1194,7 +1242,7 @@ function Dashboard() {
               }
 
               const goalTextColor = isMonthlyExpenses
-                ? spendTextColor(pct)
+                ? spendTextColor(displayPct)
                 : isCityGoal
                   ? cityReached
                     ? "text-positive"
@@ -1225,7 +1273,7 @@ function Dashboard() {
                           {isMonthlyExpenses ? t("Gastos del mes", "Monthly spending") : translateGoalName(g.name, lang)}
                         </span>
                         <span className={cn("numeric ml-auto shrink-0 text-sm font-semibold", goalTextColor)}>
-                          {pct.toFixed(0)}%
+                          {displayPct.toFixed(0)}%
                         </span>
                         <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
                       </div>
@@ -1233,10 +1281,10 @@ function Dashboard() {
                         {fmtCompact(left)} {t("de", "of")} {fmtCompact(right)}
                       </p>
                       <Progress
-                        value={pct}
+                        value={Math.min(100, displayPct)}
                         indicatorClassName={
                           isMonthlyExpenses
-                            ? spendBarColor(pct)
+                            ? spendBarColor(displayPct)
                             : isCityGoal
                               ? cityReached
                                 ? "bg-positive"
@@ -1247,6 +1295,28 @@ function Dashboard() {
                         className="mt-1.5 h-1.5"
                       />
                       <p className="mt-1 truncate text-[11px] text-muted-foreground">{subtitle}</p>
+                      {isMonthlyExpenses && topSources.length > 0 && (
+                        <div className="mt-2.5 border-t border-border/60 pt-2.5">
+                          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                            {t("Tus mayores fuentes de gasto", "Your biggest spending sources")}
+                          </p>
+                          <div className="mt-1.5 space-y-1">
+                            {topSources.map((s, i) => (
+                              <div key={s.name} className="flex items-baseline gap-2">
+                                <span
+                                  className="h-2 w-2 shrink-0 translate-y-[-1px] rounded-full"
+                                  style={{ background: `var(--color-chart-${(i % 7) + 1})` }}
+                                />
+                                <span className="min-w-0 flex-1 text-xs leading-snug">{s.name}</span>
+                                <span className="numeric shrink-0 text-xs font-semibold">{fmt(s.amount)}</span>
+                                <span className="numeric w-10 shrink-0 text-right text-[11px] text-muted-foreground">
+                                  {s.pct.toFixed(0)}%
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </Link>
                 </li>
