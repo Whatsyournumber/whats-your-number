@@ -562,29 +562,40 @@ function PortafolioContent() {
 
   const positions = detailed.length ? detailed : fallback;
 
-  const enriched = positions.map((h) => ({
-    ...h,
-    avgCost: h.cost,
-    dividends:
-      h.income > 0
-        ? h.income
-        : Math.round(
-            h.type === "ETF"
-              ? h.value * 0.018
-              : h.type === "Retiro"
-                ? 0
-              : h.type === "Acción"
-                ? h.value * 0.012
-                : h.type === "Renta fija" || h.type === "Estructurado"
-                  ? h.value * h.growth
-                  : 0,
-          ),
-    gain: h.value - h.cost,
-    // Con precio de mercado mostramos el retorno real; sin cotización mostramos el rendimiento ingresado.
-    ret: h.priceRet !== null ? h.priceRet : h.growth * 100,
-    cagr:
-      h.cost > 0 && h.years > 0 ? (Math.pow(h.value / h.cost, 1 / h.years) - 1) * 100 : null,
-  }));
+  const enriched = positions.map((h) => {
+    const currentPrice = prices[h.ticker?.toUpperCase()] ?? null;
+    const marketSecurity = h.type === "ETF" || h.type === "Acción";
+    const calculatedUnits = h.units ?? (h.strike && h.cost > 0 ? h.cost / h.strike : null);
+    const value = marketSecurity && currentPrice && calculatedUnits
+      ? currentPrice * calculatedUnits
+      : h.value;
+    const gain = value - h.cost;
+
+    return {
+      ...h,
+      value,
+      avgCost: h.cost,
+      dividends:
+        h.income > 0
+          ? h.income
+          : Math.round(
+              h.type === "ETF"
+                ? value * 0.018
+                : h.type === "Retiro"
+                  ? 0
+                : h.type === "Acción"
+                  ? value * 0.012
+                  : h.type === "Renta fija" || h.type === "Estructurado"
+                    ? value * h.growth
+                    : 0,
+            ),
+      gain,
+      // Con precio de mercado mostramos el retorno real; sin cotización mostramos el rendimiento ingresado.
+      ret: marketSecurity && h.cost > 0 ? (gain / h.cost) * 100 : h.priceRet !== null ? h.priceRet : h.growth * 100,
+      cagr:
+        h.cost > 0 && h.years > 0 ? (Math.pow(value / h.cost, 1 / h.years) - 1) * 100 : null,
+    };
+  });
 
 
   const totalValue = enriched.reduce((s, h) => s + h.value, 0);
