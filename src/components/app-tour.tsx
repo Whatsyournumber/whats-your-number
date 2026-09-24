@@ -589,7 +589,8 @@ export function AppTour() {
   const isExpenseStep = current.url === "/registro-gastos";
   const isAnalysisStep = current.url === "/gastos";
   const isCashFlowStep = current.url === "/cash-flow";
-  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep;
+  const isHipotecaStep = current.url === "/hipoteca";
+  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep || isHipotecaStep;
 
   return (
     <>
@@ -605,8 +606,10 @@ export function AppTour() {
               : "sm:bottom-auto sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto sm:top-[clamp(22rem,42vh,28rem)]"
             : isExpenseStep
               ? "sm:bottom-auto sm:right-6 sm:top-[clamp(18rem,48vh,24rem)]"
-              : isAnalysisStep
-                ? "sm:bottom-auto sm:right-6 sm:top-[38vh]"
+            : isAnalysisStep
+              ? "sm:bottom-auto sm:right-6 sm:top-[38vh]"
+              : isHipotecaStep
+                ? "sm:bottom-auto sm:right-6 sm:top-[clamp(10rem,30vh,16rem)]"
                 : isCashFlowStep || isNumberStep
                   ? sidebarState === "expanded"
                     ? `sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
