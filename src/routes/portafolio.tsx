@@ -1332,11 +1332,17 @@ function PortafolioContent() {
     stock: t("Acción", "Stock"),
     crypto: t("Cripto", "Crypto"),
     cash: t("Efectivo", "Cash"),
+    bank: t("Cuenta bancaria", "Bank account"),
+    money_market: t("Mercado monetario", "Money market"),
     property: t("Propiedad", "Property"),
     reit: t("REITs", "REITs"),
     bond: t("Renta fija", "Fixed income"),
+    tbill: t("Letra del tesoro", "Treasury bill"),
+    note: t("Nota", "Note"),
     structured: t("Nota estructurada", "Structured note"),
     retirement: t("Fondo de retiro", "Retirement fund"),
+    future: t("Futuros", "Futures"),
+    debt: t("Préstamo", "Loan"),
     other: t("Otros", "Other"),
   };
 
