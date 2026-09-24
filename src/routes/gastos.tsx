@@ -27,6 +27,7 @@ import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
@@ -318,7 +319,8 @@ function Gastos() {
 
   // Categorías con gastos visibles por defecto; toggle para ver vacías
   const showEmptyCategories = false;
-  const [dragTx, setDragTx] = useState<{ ids: string[]; from: string } | null>(null);
+  const [dragTx, setDragTx] = useState<{ ids: string[]; from: string; total: number } | null>(null);
+  const [dragPoint, setDragPoint] = useState<{ x: number; y: number } | null>(null);
   const [selTx, setSelTx] = useState<{ from: string; ids: Set<string> }>({ from: "", ids: new Set() });
   const toggleSel = (from: string, id: string) =>
     setSelTx((prev) => {
@@ -1361,6 +1363,7 @@ function Gastos() {
                         setSelTx({ from: "", ids: new Set() });
                       }
                       setDragTx(null);
+                      setDragPoint(null);
                     }
                   }}
                 >
@@ -1440,32 +1443,44 @@ function Gastos() {
                               onDragStart={(e) => {
                                 e.stopPropagation();
                                 const ids = isSel ? [...selTx.ids] : [tx.id];
-                                setDragTx({ ids, from: c.name });
+                                const idSet = new Set(ids);
+                                const total = c.items
+                                  .filter((x: Tx) => idSet.has(x.id))
+                                  .reduce((s: number, x: Tx) => s + Math.abs(x.amount), 0);
+                                setDragTx({ ids, from: c.name, total });
+                                e.dataTransfer.effectAllowed = "move";
+                                e.dataTransfer.setData("text/plain", ids.join("\n"));
                               }}
-                              onDragEnd={() => setDragTx(null)}
+                              onDrag={(e) => {
+                                if (e.clientX && e.clientY) setDragPoint({ x: e.clientX, y: e.clientY });
+                              }}
+                              onDragEnd={() => {
+                                setDragTx(null);
+                                setDragPoint(null);
+                              }}
                               title={t("Selecciona varios y arrástralos a otra categoría", "Select several and drag them to another category")}
                               className={cn(
-                                "flex cursor-grab items-center gap-3 rounded-lg px-2 py-1 hover:bg-elevated/50 active:cursor-grabbing",
-                                isSel && "bg-primary/10",
+                                "flex cursor-grab items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-elevated/50 active:cursor-grabbing",
+                                isSel && "bg-positive/5",
                                 dragTx?.ids.includes(tx.id) && "opacity-50",
                               )}
                             >
-                              <input
-                                type="checkbox"
+                              <GripVertical className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                              <Checkbox
                                 checked={isSel}
-                                onChange={() => toggleSel(c.name, tx.id)}
+                                onCheckedChange={() => toggleSel(c.name, tx.id)}
+                                onClick={(e) => e.stopPropagation()}
                                 aria-label={t("Seleccionar movimiento", "Select transaction")}
-                                className="h-3.5 w-3.5 shrink-0 cursor-pointer accent-[var(--color-primary)]"
+                                className="h-4 w-4 rounded-full"
                               />
-                              <GripVertical className="h-3 w-3 shrink-0 text-muted-foreground/40" />
-                              <span className="w-16 shrink-0 text-xs text-muted-foreground">
-                                {format(parseISO(tx.tx_date!), "d MMM", { locale: es })}
-                              </span>
-                              <div className="min-w-0">
+                              <div className="min-w-0 flex-1">
                                 <p className="truncate text-sm">{tx.merchant}</p>
-                                <p className="truncate text-xs text-muted-foreground">{tx.subcategory ?? t("Sin subcategoría", "No subcategory")}</p>
+                                <p className="truncate text-[11px] text-muted-foreground">
+                                  {format(parseISO(tx.tx_date!), "d MMM", { locale: es })}
+                                  {tx.subcategory ? ` · ${tx.subcategory}` : ""}
+                                </p>
                               </div>
-                              <span className="numeric ml-auto text-sm font-medium">{fmt(Math.abs(tx.amount))}</span>
+                              <span className="numeric shrink-0 text-sm font-medium">{fmt(Math.abs(tx.amount))}</span>
                             </li>
                             );
                           })}
@@ -1476,6 +1491,24 @@ function Gastos() {
               );
             })}
           </Accordion>
+
+          {dragTx && (
+            <div
+              aria-hidden="true"
+              className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-[calc(100%+16px)] select-none"
+              style={dragPoint ? { left: dragPoint.x, top: dragPoint.y } : { left: "50%", top: "22%" }}
+            >
+              <div className="flex items-center gap-2 whitespace-nowrap rounded-full border border-positive/40 bg-background/95 px-3 py-1.5 shadow-xl shadow-black/40 backdrop-blur-sm">
+                <span className="numeric text-sm font-semibold">{fmt(dragTx.total)}</span>
+                <span className="h-3 w-px bg-border" />
+                <span className="text-xs text-muted-foreground">
+                  {dragTx.ids.length === 1
+                    ? t("1 gasto", "1 expense")
+                    : t(`${dragTx.ids.length} gastos`, `${dragTx.ids.length} expenses`)}
+                </span>
+              </div>
+            </div>
+          )}
 
           {detailCat && (
             <CategoryDetailDialog
