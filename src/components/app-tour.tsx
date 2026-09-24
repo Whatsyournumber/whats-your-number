@@ -683,7 +683,7 @@ export function AppTour() {
           </span>
         </div>
       )}
-      {isCashFlowStep && cashFlowMarkers && (
+      {isCashFlowStep && cashFlowMarkers?.edit && cashFlowMarkers?.blocks && cashFlowMarkers?.box && (
         <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
           <svg className="absolute inset-0 h-full w-full overflow-visible">
             <defs>
