@@ -465,7 +465,7 @@ export function MortgageModule() {
             </div>
           )}
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" data-tour-hipoteca-target="inputs">
             <div>
               <p className="text-xs text-muted-foreground">{t("Monto pendiente", "Outstanding balance")}</p>
               <div className="relative mt-1.5">
