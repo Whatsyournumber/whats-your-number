@@ -49,14 +49,14 @@ const STEPS: Step[] = [
   },
   {
     url: "/registro-gastos", icon: ReceiptText, minPlan: "free",
-    es: ["Registra tus gastos", "Trackea tus gastos del día a día.",
-      "Crea o repasa tu presupuesto mensual.",
-      "Cárgalos por voz, foto del recibo o con el botón +.",
-      "La IA te avisa cuando estés cerca de pasarte."],
-    en: ["Track your expenses", "Track your day-to-day spending.",
-      "Create or review your monthly budget.",
-      "Log by voice, receipt photo or the + button.",
-      "AI alerts you when you're close to going over."],
+    es: ["Registra tus gastos", "Controla tus gastos del día a día y mantente dentro de tu plan.",
+      "Tu presupuesto mensual (edítalo aquí)",
+      "Añade tus gastos",
+      "Gasto diario vs. presupuesto"],
+    en: ["Track your expenses", "Track your daily expenses and stay within your plan.",
+      "Your monthly budget (edit it here)",
+      "Add your expenses",
+      "Daily spending vs. budget"],
   },
   {
     url: "/gastos", icon: ChartPie, minPlan: "free",
@@ -220,6 +220,7 @@ export function AppTour() {
 
   const current = step && step > 0 ? availableSteps[step - 1] ?? null : null;
   const isDashboardTourStep = current?.url === "/dashboard";
+  const isExpenseTourStep = current?.url === "/registro-gastos";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
@@ -259,6 +260,41 @@ export function AppTour() {
       window.removeEventListener("resize", measure);
     };
   }, [isDashboardTourStep, isMobile, pathname]);
+
+  // Señala presupuesto, botón de añadir y gráfica en el paso Registro de gastos.
+  const [expenseMarkers, setExpenseMarkers] = useState<{
+    budget: { x: number; y: number };
+    add: { x: number; y: number };
+    chart: { x: number; y: number };
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isExpenseTourStep || isMobile) {
+      setExpenseMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    const measure = () => {
+      const budget = document.querySelector<HTMLElement>('[data-tour-expense-target="budget"]')?.getBoundingClientRect();
+      const add = document.querySelector<HTMLElement>('[data-tour-expense-target="add"]')?.getBoundingClientRect();
+      const chart = document.querySelector<HTMLElement>('[data-tour-expense-target="chart"]')?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!budget || !add || !chart || !box || cancelled) return;
+      setExpenseMarkers({
+        budget: { x: budget.right, y: budget.top + budget.height / 2 },
+        add: { x: add.left + add.width / 2, y: add.bottom },
+        chart: { x: chart.left + chart.width * 0.58, y: chart.top + 18 },
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+    };
+  }, [isExpenseTourStep, isMobile, pathname]);
 
   // Abre cada sección cuando le toca.
   useEffect(() => {
@@ -372,6 +408,7 @@ export function AppTour() {
   const StepIcon = current.icon;
   const isNumberStep = current.url === "/retiro";
   const isDashboardStep = current.url === "/dashboard";
+  const isExpenseStep = current.url === "/registro-gastos";
 
   return (
     <>
@@ -426,7 +463,7 @@ export function AppTour() {
               const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
               return (
                 <li key={i} className="flex items-start gap-2 whitespace-nowrap text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
-                  {isDashboardStep ? (
+                  {isDashboardStep || isExpenseStep ? (
                     <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-positive text-[9px] font-semibold text-white sm:h-5 sm:w-5 sm:text-[10px]">
                       {i + 1}
                     </span>
@@ -491,6 +528,42 @@ export function AppTour() {
           >
             2
           </span>
+        </div>
+      )}
+      {isExpenseStep && expenseMarkers && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            <defs>
+              <marker id="tour-expense-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
+              </marker>
+            </defs>
+            <path
+              d={`M ${expenseMarkers.box.x + 50} ${expenseMarkers.box.y} Q ${expenseMarkers.box.x - 30} ${expenseMarkers.box.y - 70} ${expenseMarkers.budget.x} ${expenseMarkers.budget.y}`}
+              fill="none" strokeWidth={1.75} markerEnd="url(#tour-expense-arrow)" className="stroke-positive"
+            />
+            <path
+              d={`M ${expenseMarkers.box.x + expenseMarkers.box.width - 42} ${expenseMarkers.box.y} Q ${expenseMarkers.add.x + 85} ${expenseMarkers.box.y - 95} ${expenseMarkers.add.x} ${expenseMarkers.add.y}`}
+              fill="none" strokeWidth={1.75} markerEnd="url(#tour-expense-arrow)" className="stroke-positive"
+            />
+            <path
+              d={`M ${expenseMarkers.box.x + 38} ${expenseMarkers.box.y + expenseMarkers.box.height * 0.46} Q ${expenseMarkers.box.x - 90} ${expenseMarkers.box.y + 30} ${expenseMarkers.chart.x} ${expenseMarkers.chart.y}`}
+              fill="none" strokeWidth={1.75} markerEnd="url(#tour-expense-arrow)" className="stroke-positive"
+            />
+          </svg>
+          {([
+            [expenseMarkers.budget.x + 8, expenseMarkers.budget.y - 34, 1],
+            [expenseMarkers.add.x - 12, expenseMarkers.add.y - 58, 2],
+            [expenseMarkers.chart.x - 12, expenseMarkers.chart.y - 12, 3],
+          ] as const).map(([left, top, label]) => (
+            <span
+              key={label}
+              className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+              style={{ left, top }}
+            >
+              {label}
+            </span>
+          ))}
         </div>
       )}
     </>
