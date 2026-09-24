@@ -316,7 +316,7 @@ export function AppTour() {
       if (!importBtn || !chart || !box || cancelled) return;
       setAnalysisMarkers({
         importBtn: { x: importBtn.left + importBtn.width / 2, y: importBtn.top },
-        chart: { x: chart.left + 44, y: chart.top + 64 },
+        chart: { x: chart.left + 90, y: Math.max(chart.top + 64, chart.bottom - 200) },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
