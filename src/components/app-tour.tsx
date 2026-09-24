@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   ArrowLeft, ArrowRight, ChartPie, Check, Compass, Crown, Globe2, Home, LayoutDashboard,
-  Lightbulb, Map, ReceiptText, Scale, Sparkles, Sprout, Target,
+  Lightbulb, Map, MousePointerClick, ReceiptText, Scale, Sparkles, Sprout, Target,
   TrendingUp, UserRound, Users, Wallet, X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -169,6 +169,7 @@ const STEPS: Step[] = [
       "It remembers your conversations to follow up with you."],
   },
 ];
+const BULLET_ICONS = [MousePointerClick, Lightbulb, Check];
 
 export function AppTour() {
   const t = useT();
@@ -230,10 +231,6 @@ export function AppTour() {
     if (!current) return;
     const el = document.querySelector(`[data-sidebar="sidebar"] a[href="${current.url}"]`);
     el?.setAttribute("data-tour-active", "true");
-    // En el Dashboard resalta además las tarjetas clave (KPIs y Tu Número).
-    if (current.url === "/dashboard") {
-      document.querySelectorAll("[data-tour-box]").forEach((el) => el.setAttribute("data-tour-active", "true"));
-    }
   }, [current, pathname]);
 
   const close = () => {
@@ -274,7 +271,7 @@ export function AppTour() {
       [Target, t("Alcanza tu libertad financiera", "Reach financial freedom")],
     ];
     return (
-      <div className="fixed inset-0 z-[100] grid place-items-center p-4">
+      <div className="fixed inset-0 z-[100] grid place-items-center bg-background/60 p-4 backdrop-blur-[2px]">
         <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-tour-border bg-tour-surface p-5 pt-6 text-center text-tour-foreground shadow-2xl shadow-positive/15 sm:p-6 sm:pt-7">
           <div className="pointer-events-none absolute -top-24 left-1/2 h-40 w-72 -translate-x-1/2 rounded-full bg-positive/15 blur-3xl" />
           <span className="numeric absolute right-5 top-4 text-xs font-medium text-tour-muted">1 / {total}</span>
@@ -332,12 +329,13 @@ export function AppTour() {
   const [title, intro, ...points] = t(current.es.join("|"), current.en.join("|")).split("|");
   const last = step === availableSteps.length;
   const StepIcon = current.icon;
+  const isNumberStep = current.url === "/retiro";
   const isDashboardStep = current.url === "/dashboard";
 
   return (
     <>
-      {/* Bloquea toques fuera del paso sin oscurecer el fondo: el modal blanco ya contrasta */}
-      <div className="fixed inset-0 z-[90]" />
+      {/* Oscurece ligeramente el fondo para que el paso resalte sin ocultarlo */}
+      <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/20" : "bg-background/40"}`} />
       <div
         className={cn(
           "fixed inset-x-3 bottom-16 z-[100] sm:inset-x-auto sm:bottom-6 sm:w-[400px] lg:bottom-8",
@@ -369,12 +367,20 @@ export function AppTour() {
               </div>
             </div>
           </div>
-          <p className="relative mt-2.5 text-[13px] leading-relaxed text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
-          {points.length > 0 && (
-            <p className="relative mt-1.5 text-[13px] leading-relaxed text-tour-foreground/75 sm:mt-2 sm:text-sm">
-              {points.join(" ")}
-            </p>
-          )}
+          <p className="relative mt-2.5 text-[13px] leading-snug text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
+          <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
+            {points.map((p, i) => {
+              const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
+              return (
+                <li key={i} className="flex items-start gap-2 text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
+                  <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-positive/10 text-positive sm:h-5 sm:w-5">
+                    <B className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                  </span>
+                  {p}
+                </li>
+              );
+            })}
+          </ul>
           <div className="relative mt-3 h-1 overflow-hidden rounded-full bg-tour-foreground/10 sm:mt-4">
             <div className="h-full rounded-full bg-positive transition-all duration-500" style={{ width: `${((step + 1) / total) * 100}%` }} />
           </div>

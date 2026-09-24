@@ -915,7 +915,7 @@ function Dashboard() {
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <Link to="/patrimonio" data-tour-box="kpi" className="block transition-transform hover:-translate-y-0.5">
+        <Link to="/patrimonio" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Patrimonio neto", "Net worth")}
             value={fmt(current.netWorth)}
@@ -938,7 +938,6 @@ function Dashboard() {
             index={0}
           />
         </Link>
-        <div data-tour-box="kpi" className="h-full">
         <EditableKpiCard
           label={household ? t("Ingresos (en pareja)", "Income (as a couple)") : t("Ingresos", "Income")}
           value={fmt(current.income)}
@@ -948,8 +947,7 @@ function Dashboard() {
           icon={Banknote}
           index={1}
         />
-        </div>
-        <Link to="/gastos" data-tour-box="kpi" className="block transition-transform hover:-translate-y-0.5">
+        <Link to="/gastos" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Gastos", "Expenses")}
             value={fmt(monthlyExpenses)}
@@ -959,7 +957,7 @@ function Dashboard() {
             index={2}
           />
         </Link>
-        <Link to="/cash-flow" data-tour-box="kpi" className="block transition-transform hover:-translate-y-0.5">
+        <Link to="/cash-flow" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Ahorro", "Savings")}
             value={fmt(monthlySavings)}
@@ -968,10 +966,10 @@ function Dashboard() {
             index={3}
           />
         </Link>
-        <Link to="/cash-flow" data-tour-box="kpi" className="block transition-transform hover:-translate-y-0.5">
+        <Link to="/cash-flow" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} hint={savingsRateHint} icon={ArrowUpRight} index={4} />
         </Link>
-        <Link to="/hipoteca" data-tour-box="kpi" className="block transition-transform hover:-translate-y-0.5">
+        <Link to="/hipoteca" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Hipoteca", "Mortgage")}
             value={fmt(mortgageBalance)}
@@ -1025,7 +1023,7 @@ function Dashboard() {
           </ResponsiveContainer>
         </Panel>
 
-        <Panel data-tour-box="number" title={numberTitle} description={numberDescription} className="flex h-full flex-col lg:col-span-2">
+        <Panel title={numberTitle} description={numberDescription} className="flex h-full flex-col lg:col-span-2">
           <div className="flex h-full flex-1 flex-col gap-4">
             <div>
               <p

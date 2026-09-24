@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -60,7 +60,6 @@ export function Panel({
   bleedMobile = false,
   actionsBelowMobile = false,
   children,
-  ...rest
 }: {
   id?: string;
   title?: ReactNode;
@@ -74,11 +73,10 @@ export function Panel({
   bleedMobile?: boolean;
   actionsBelowMobile?: boolean;
   children: ReactNode;
-} & ComponentPropsWithoutRef<"section">) {
+}) {
   return (
     <section
       id={id}
-      {...rest}
       className={cn(
         "overflow-hidden p-5",
         bleedMobile && "px-2 py-4 sm:p-5",
