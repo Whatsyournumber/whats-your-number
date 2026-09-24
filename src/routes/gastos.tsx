@@ -1404,6 +1404,20 @@ function Gastos() {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
+                    {selTx.from === c.name && selTx.ids.size > 0 && (
+                      <div className="mb-1 flex items-center justify-between gap-2 pl-6 pr-2 text-xs text-muted-foreground">
+                        <span>
+                          {t(`${selTx.ids.size} seleccionados · arrástralos juntos`, `${selTx.ids.size} selected · drag them together`)}
+                        </span>
+                        <button
+                          type="button"
+                          className="rounded-full px-2 py-0.5 hover:bg-elevated hover:text-foreground"
+                          onClick={() => setSelTx({ from: "", ids: new Set() })}
+                        >
+                          {t("Quitar selección", "Clear")}
+                        </button>
+                      </div>
+                    )}
                     {c.items.length === 0 ? (
                       <p className="pl-6 text-sm text-muted-foreground">{t("Sin gastos de esta categoría en el periodo.", "No expenses in this category for the period.")}</p>
                     ) : (
@@ -1411,21 +1425,32 @@ function Gastos() {
                         {c.items
                           .slice()
                           .sort((a: Tx, b: Tx) => (a.tx_date! < b.tx_date! ? 1 : -1))
-                          .map((tx: Tx) => (
+                          .map((tx: Tx) => {
+                            const isSel = selTx.from === c.name && selTx.ids.has(tx.id);
+                            return (
                             <li
                               key={tx.id}
                               draggable
                               onDragStart={(e) => {
                                 e.stopPropagation();
-                                setDragTx({ id: tx.id, from: c.name });
+                                const ids = isSel ? [...selTx.ids] : [tx.id];
+                                setDragTx({ ids, from: c.name });
                               }}
                               onDragEnd={() => setDragTx(null)}
-                              title={t("Arrastra a otra categoría para reasignarlo", "Drag to another category to reassign")}
+                              title={t("Selecciona varios y arrástralos a otra categoría", "Select several and drag them to another category")}
                               className={cn(
                                 "flex cursor-grab items-center gap-3 rounded-lg px-2 py-1 hover:bg-elevated/50 active:cursor-grabbing",
-                                dragTx?.id === tx.id && "opacity-50",
+                                isSel && "bg-primary/10",
+                                dragTx?.ids.includes(tx.id) && "opacity-50",
                               )}
                             >
+                              <input
+                                type="checkbox"
+                                checked={isSel}
+                                onChange={() => toggleSel(c.name, tx.id)}
+                                aria-label={t("Seleccionar movimiento", "Select transaction")}
+                                className="h-3.5 w-3.5 shrink-0 cursor-pointer accent-[var(--color-primary)]"
+                              />
                               <GripVertical className="h-3 w-3 shrink-0 text-muted-foreground/40" />
                               <span className="w-16 shrink-0 text-xs text-muted-foreground">
                                 {format(parseISO(tx.tx_date!), "d MMM", { locale: es })}
