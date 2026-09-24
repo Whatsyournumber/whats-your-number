@@ -82,14 +82,14 @@ const STEPS: Step[] = [
   },
   {
     url: "/retiro", icon: Target, minPlan: "pro",
-    es: ["Tu número de libertad financiera", "El capital que necesitas para vivir de tus inversiones.",
-      "Convierte el ingreso mensual que deseas en una meta de capital.",
-      "Descubre en qué año llegas y cuánto aportar cada mes.",
-      "Compara retiros del 4% al 12%; el 7% marca Tu Número."],
-    en: ["Your financial freedom number", "The capital you need to live off your investments.",
-      "Turn your desired monthly income into a capital target.",
-      "See the year you get there and how much to add each month.",
-      "Compare 4% to 12% withdrawals; 7% marks Your Number."],
+    es: ["Tu número de libertad financiera", "Calcula cuánto dinero necesitas para vivir de tus inversiones. Este número se usará en todas partes para ayudarte a llegar.",
+      "Mira tu número de retiro; puedes editarlo según cuánto quieras vivir al mes.",
+      "Mira el progreso de tu número vs el año de retiro.",
+      "Simula tu retiro con más aporte mensual, rentabilidad y edad para planificarte mejor."],
+    en: ["Your financial freedom number", "Calculate how much money you need to live off your investments. This number is used everywhere to help you get there.",
+      "See your retirement number; edit it to match the monthly income you want.",
+      "See your number's progress vs your retirement year.",
+      "Simulate retirement with higher contributions, returns and age to plan better."],
   },
   {
     url: "/hipoteca", icon: Home, minPlan: "free",
@@ -556,8 +556,8 @@ export function AppTour() {
                 ? "sm:bottom-auto sm:right-6 sm:top-[38vh]"
                 : isCashFlowStep || isNumberStep
                   ? sidebarState === "expanded"
-                    ? `sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-6" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
-                    : `sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-6" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
+                    ? `sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
+                    : `sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
                   : "sm:right-6",
         )}
       >
