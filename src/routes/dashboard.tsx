@@ -48,7 +48,7 @@ import { lifestyles, minMonthlyForRetirement, num } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 import { readDemoSnapshot, type DemoSnapshot } from "@/lib/demo-snapshot";
-import { translateGoalName, translateGoalNote } from "@/lib/i18n-data";
+import { translateCategory, translateGoalName, translateGoalNote } from "@/lib/i18n-data";
 import { buildTravelDays, categorizeTxWithTravel } from "@/lib/categorize";
 
 const EMPTY_MONEY_BUCKETS: Record<string, "needs" | "savings" | "wants" | "excluded"> = {};
