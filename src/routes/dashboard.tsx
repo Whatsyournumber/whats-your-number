@@ -385,6 +385,50 @@ function Dashboard() {
     : 0;
   // El plan se supera cuando el gasto real pasa del objetivo del mes.
   const spendPlanOver = spendPlanUsed > 100;
+  /** Las 3 fuentes de gasto que más pesan en el mes elegido (mismo cálculo que el análisis). */
+  const topSources = useMemo(() => {
+    const monthTx = transactions.filter(
+      (tx) => tx.tx_date?.slice(0, 7) === activeKey && Number(tx.amount) < 0,
+    );
+    const fixedRows = fixed.items
+      .filter((item) => Number(item.amount) > 0)
+      .map((item) => ({ amount: Math.abs(Number(item.amount)).toFixed(2), name: item.name }));
+    const isFixedTx = (tx: Tx) =>
+      fixedRows.some(
+        (row) =>
+          row.amount === Math.abs(Number(tx.amount)).toFixed(2) &&
+          (sameMerchant(row.name, tx.merchant) || sameMerchant(row.name, tx.description)),
+      );
+    const travelDays = buildTravelDays(monthTx as Tx[], rules);
+    const map = new Map<string, { name: string; amount: number; count: number; category: string }>();
+    let total = 0;
+    for (const tx of monthTx) {
+      if (isFixedTx(tx as Tx)) continue;
+      const name = (tx.merchant ?? tx.description ?? "").trim();
+      if (!name) continue;
+      const amount = Math.abs(Number(tx.amount));
+      const key = name.toUpperCase();
+      const prev = map.get(key);
+      if (prev) {
+        prev.amount += amount;
+        prev.count += 1;
+      } else {
+        map.set(key, { name, amount, count: 1, category: categorizeTxWithTravel(tx as Tx, rules, travelDays) });
+      }
+      total += amount;
+    }
+    if (total <= 0) return [] as { name: string; amount: number; count: number; category: string; pct: number }[];
+    return [...map.values()]
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 3)
+      .map((m) => ({
+        name: m.name,
+        amount: m.amount,
+        count: m.count,
+        category: translateCategory(m.category, lang),
+        pct: (m.amount / total) * 100,
+      }));
+  }, [activeKey, fixed.items, lang, rules, transactions]);
   const spendPlanBadge = spendPlanOver
     ? "bg-negative/12 text-negative"
     : "bg-positive/12 text-positive";
