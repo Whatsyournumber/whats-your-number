@@ -614,7 +614,7 @@ export function AppTour() {
               </marker>
             </defs>
             <path
-              d={`M ${analysisMarkers.box.x + 40} ${analysisMarkers.box.y + analysisMarkers.box.height - 12} Q ${analysisMarkers.box.x - 160} ${(analysisMarkers.box.y + analysisMarkers.importBtn.y) / 2} ${analysisMarkers.importBtn.x} ${analysisMarkers.importBtn.y - 12}`}
+              d={`M ${analysisMarkers.box.x + 12} ${analysisMarkers.box.y + analysisMarkers.box.height * 0.45} Q ${(analysisMarkers.box.x + analysisMarkers.importBtn.x) / 2} ${analysisMarkers.importBtn.y - 60} ${analysisMarkers.importBtn.x} ${analysisMarkers.importBtn.y - 12}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-analysis-arrow)" className="stroke-positive/70"
             />
             <path
