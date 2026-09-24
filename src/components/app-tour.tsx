@@ -506,7 +506,7 @@ export function AppTour() {
       setPortfolioMarkers({
         value: { x: value.left + value.width * 0.2, y: value.top + value.height * 0.52 },
         chart: { x: chart.left + chart.width * 0.52, y: chart.top + 116 },
-        assets: { x: assets.left + assets.width * 0.5, y: Math.min(assets.top + 42, window.innerHeight - 42) },
+        assets: { x: assets.left + Math.min(96, assets.width * 0.18), y: Math.min(assets.top + 42, window.innerHeight - 42) },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
@@ -1035,7 +1035,7 @@ export function AppTour() {
               fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive"
             />
             <path
-              d={`M ${portfolioMarkers.box.x - 4} ${portfolioMarkers.box.y + portfolioMarkers.box.height * 0.72} Q ${portfolioMarkers.assets.x + 120} ${portfolioMarkers.assets.y - 70} ${portfolioMarkers.assets.x} ${portfolioMarkers.assets.y}`}
+              d={`M ${portfolioMarkers.box.x - 4} ${portfolioMarkers.box.y + portfolioMarkers.box.height * 0.72} Q ${portfolioMarkers.assets.x + 150} ${portfolioMarkers.assets.y - 55} ${portfolioMarkers.assets.x} ${portfolioMarkers.assets.y}`}
               fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive"
             />
           </svg>
