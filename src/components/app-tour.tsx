@@ -223,6 +223,7 @@ export function AppTour() {
   const isExpenseTourStep = current?.url === "/registro-gastos";
   const isAnalysisTourStep = current?.url === "/gastos";
   const isCashFlowTourStep = current?.url === "/cash-flow";
+  const isNumberTourStep = current?.url === "/retiro";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
@@ -371,12 +372,49 @@ export function AppTour() {
     };
   }, [isCashFlowTourStep, isMobile, pathname]);
 
+  // Señala la tarjeta WhatsYourNumber, la barra de progreso y el simulador.
+  const [numberMarkers, setNumberMarkers] = useState<{
+    number: { x: number; y: number };
+    progress: { x: number; y: number };
+    simulator: { x: number; y: number };
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isNumberTourStep || isMobile) {
+      setNumberMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    const measure = () => {
+      const number = document.querySelector<HTMLElement>('[data-tour-number-target="number"]')?.getBoundingClientRect();
+      const progress = document.querySelector<HTMLElement>('[data-tour-number-target="progress"]')?.getBoundingClientRect();
+      const simulator = document.querySelector<HTMLElement>('[data-tour-number-target="simulator"]')?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!number || !progress || !simulator || !box || cancelled) return;
+      setNumberMarkers({
+        number: { x: number.left + number.width * 0.5, y: number.top + number.height * 0.5 },
+        progress: { x: progress.left + progress.width * 0.5, y: progress.top + progress.height * 0.55 },
+        simulator: { x: simulator.left + simulator.width * 0.4, y: simulator.top + 40 },
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure);
+    };
+  }, [isNumberTourStep, isMobile, pathname]);
+
   // En Tu Número, baja hasta que la gráfica quede bajo la barra de progreso.
   useEffect(() => {
     if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/retiro" && pathname === "/retiro") {
       const timer = window.setTimeout(() => {
-        const chart = document.querySelector<HTMLElement>('[data-tour-number-target="chart"]');
-        if (chart) window.scrollTo({ top: window.scrollY + chart.getBoundingClientRect().top - window.innerHeight * 0.42, behavior: "smooth" });
+      const numberCard = document.querySelector<HTMLElement>('[data-tour-number-target="number"]');
+      if (numberCard) window.scrollTo({ top: window.scrollY + numberCard.getBoundingClientRect().top - 80, behavior: "smooth" });
       }, 400);
       return () => clearTimeout(timer);
     }
@@ -724,6 +762,42 @@ export function AppTour() {
           >
             2
           </span>
+        </div>
+      )}
+      {isNumberStep && numberMarkers?.number && numberMarkers?.progress && numberMarkers?.simulator && numberMarkers?.box && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            <defs>
+              <marker id="tour-number-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
+              </marker>
+            </defs>
+            <path
+              d={`M ${numberMarkers.box.x + 40} ${numberMarkers.box.y - 4} Q ${(numberMarkers.box.x + 40 + numberMarkers.number.x) / 2} ${numberMarkers.number.y + 90} ${numberMarkers.number.x} ${numberMarkers.number.y + 14}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-number-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${numberMarkers.box.x + numberMarkers.box.width * 0.55} ${numberMarkers.box.y - 4} Q ${(numberMarkers.box.x + numberMarkers.box.width * 0.55 + numberMarkers.progress.x) / 2} ${numberMarkers.progress.y + 110} ${numberMarkers.progress.x} ${numberMarkers.progress.y + 14}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-number-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${numberMarkers.box.x + numberMarkers.box.width - 24} ${numberMarkers.box.y + numberMarkers.box.height * 0.3} Q ${(numberMarkers.box.x + numberMarkers.box.width + numberMarkers.simulator.x) / 2} ${numberMarkers.simulator.y - 60} ${numberMarkers.simulator.x} ${numberMarkers.simulator.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-number-arrow)" className="stroke-positive/70"
+            />
+          </svg>
+          {([
+            [numberMarkers.number.x - 14, numberMarkers.number.y - 36, 1],
+            [numberMarkers.progress.x - 14, numberMarkers.progress.y - 36, 2],
+            [numberMarkers.simulator.x - 14, numberMarkers.simulator.y - 14, 3],
+          ] as const).map(([left, top, label]) => (
+            <span
+              key={label}
+              className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+              style={{ left, top }}
+            >
+              {label}
+            </span>
+          ))}
         </div>
       )}
     </>

@@ -334,6 +334,7 @@ function RetiroContent() {
           transition={{ duration: 0.35, delay: 0.05, ease: "easeOut" }}
           className={cn("surface relative overflow-hidden p-5 glow", editing ? "ring-1 ring-primary/20" : "cursor-pointer hover:bg-elevated/40")}
           onClick={() => !editing && setEditing(true)}
+          data-tour-number-target="number"
         >
           <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
           {!editing ? (
@@ -652,7 +653,7 @@ function RetiroContent() {
 
 
       </div>
-      <div className="surface p-5">
+      <div className="surface p-5" data-tour-number-target="progress">
         <p className="text-sm text-muted-foreground">
           {t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}
           {isGoal && goalNote ? `: ${goalNote}` : ""}
@@ -733,6 +734,7 @@ function RetiroContent() {
 
 
 
+        <div data-tour-number-target="simulator">
         <Panel
           title={<span className="text-base font-semibold tracking-tight">{t("Simulador", "Simulator")}</span>}
           description={isGoal ? `${goalLabel} · ${fmt(plan.targetCapital)}` : t("Ajusta y mira el impacto", "Adjust and see the impact")}
@@ -904,6 +906,7 @@ function RetiroContent() {
             ) : null}
           </div>
         </Panel>
+        </div>
       </div>
 
       {/* Standard of living = ingreso/gasto mensual objetivo. El usuario lo edita en "Tu número". */}
