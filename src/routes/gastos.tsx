@@ -27,6 +27,7 @@ import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
@@ -1490,6 +1491,24 @@ function Gastos() {
               );
             })}
           </Accordion>
+
+          {dragTx && (
+            <div
+              aria-hidden="true"
+              className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-[calc(100%+16px)] select-none"
+              style={dragPoint ? { left: dragPoint.x, top: dragPoint.y } : { left: "50%", top: "22%" }}
+            >
+              <div className="flex items-center gap-2 whitespace-nowrap rounded-full border border-positive/40 bg-background/95 px-3 py-1.5 shadow-xl shadow-black/40 backdrop-blur-sm">
+                <span className="numeric text-sm font-semibold">{fmt(dragTx.total)}</span>
+                <span className="h-3 w-px bg-border" />
+                <span className="text-xs text-muted-foreground">
+                  {dragTx.ids.length === 1
+                    ? t("1 gasto", "1 expense")
+                    : t(`${dragTx.ids.length} gastos`, `${dragTx.ids.length} expenses`)}
+                </span>
+              </div>
+            </div>
+          )}
 
           {detailCat && (
             <CategoryDetailDialog
