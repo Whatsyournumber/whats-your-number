@@ -639,7 +639,8 @@ export function AppTour() {
   const isAnalysisStep = current.url === "/gastos";
   const isCashFlowStep = current.url === "/cash-flow";
   const isHipotecaStep = current.url === "/hipoteca";
-  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep || isHipotecaStep;
+  const isPatrimonioStep = current.url === "/patrimonio";
+  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep || isHipotecaStep || isPatrimonioStep;
 
   return (
     <>
@@ -703,7 +704,7 @@ export function AppTour() {
             {points.map((p, i) => {
               const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
               return (
-                <li key={i} className="flex items-start gap-2 whitespace-nowrap text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
+                <li key={i} className="flex items-start gap-2 text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
                   {hasNumberedBullets ? (
                     <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-positive text-[9px] font-semibold text-white sm:h-5 sm:w-5 sm:text-[10px]">
                       {i + 1}
@@ -930,6 +931,42 @@ export function AppTour() {
             [hipotecaMarkers.inputs.x - 28, hipotecaMarkers.inputs.y + 20, 1],
             [hipotecaMarkers.strategies.x - 28, hipotecaMarkers.strategies.y - 34, 2],
             [hipotecaMarkers.simulator.x - 28, hipotecaMarkers.simulator.y - 34, 3],
+          ] as const).map(([left, top, label]) => (
+            <span
+              key={label}
+              className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+              style={{ left, top }}
+            >
+              {label}
+            </span>
+          ))}
+        </div>
+      )}
+      {isPatrimonioStep && patrimonioMarkers?.cards && patrimonioMarkers?.chart && patrimonioMarkers?.allocation && patrimonioMarkers?.box && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            <defs>
+              <marker id="tour-patrimonio-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
+              </marker>
+            </defs>
+            <path
+              d={`M ${patrimonioMarkers.box.x + 70} ${patrimonioMarkers.box.y - 4} Q ${(patrimonioMarkers.box.x + 70 + patrimonioMarkers.cards.x) / 2} ${patrimonioMarkers.cards.y + 90} ${patrimonioMarkers.cards.x} ${patrimonioMarkers.cards.y + 12}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-patrimonio-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${patrimonioMarkers.box.x - 4} ${patrimonioMarkers.box.y + patrimonioMarkers.box.height * 0.3} Q ${(patrimonioMarkers.box.x + patrimonioMarkers.chart.x) / 2 - 40} ${patrimonioMarkers.chart.y - 60} ${patrimonioMarkers.chart.x} ${patrimonioMarkers.chart.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-patrimonio-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${patrimonioMarkers.box.x + patrimonioMarkers.box.width * 0.6} ${patrimonioMarkers.box.y - 4} Q ${(patrimonioMarkers.box.x + patrimonioMarkers.box.width * 0.6 + patrimonioMarkers.allocation.x) / 2} ${patrimonioMarkers.allocation.y + 80} ${patrimonioMarkers.allocation.x} ${patrimonioMarkers.allocation.y + 12}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-patrimonio-arrow)" className="stroke-positive/70"
+            />
+          </svg>
+          {([
+            [patrimonioMarkers.cards.x - 14, patrimonioMarkers.cards.y + 20, 1],
+            [patrimonioMarkers.chart.x - 14, patrimonioMarkers.chart.y - 36, 2],
+            [patrimonioMarkers.allocation.x - 14, patrimonioMarkers.allocation.y + 20, 3],
           ] as const).map(([left, top, label]) => (
             <span
               key={label}

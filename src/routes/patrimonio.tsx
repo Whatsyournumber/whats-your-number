@@ -627,7 +627,7 @@ function PatrimonioContent() {
         actions={<MonthEvolutionPicker availableKeys={realKeys} value={evoMonth} onChange={setEvoMonth} />}
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-tour-patrimonio-target="cards">
         <KpiCard
           label={t("Patrimonio neto", "Net worth")}
           labelSm={t("Patrimonio", "Net worth")}
@@ -662,6 +662,7 @@ function PatrimonioContent() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
+          id="tour-pat-chart"
           title={comparing ? t("Rendimiento", "Performance") : t("Evolución", "Growth")}
           {...(comparing ? { description: t(`vs ${benchName} · ${compareLen}m`, `vs ${benchName} · ${compareLen}m`) } : {})}
           className="flex flex-col p-3 md:p-5 lg:col-span-2"
@@ -780,7 +781,7 @@ function PatrimonioContent() {
           </div>
         </Panel>
 
-        <Panel title={t("Asset allocation", "Asset allocation")} className="flex flex-col" bleedMobile>
+        <Panel id="tour-pat-allocation" title={t("Asset allocation", "Asset allocation")} className="flex flex-col" bleedMobile>
           {assetRows.length === 0 ? (
             <div className="space-y-3 px-5 py-8 text-center sm:px-0">
               <p className="text-sm text-muted-foreground">{t("Aún no registras activos.", "You haven't recorded any assets yet.")}</p>
