@@ -332,7 +332,6 @@ export function AppTour() {
   const [title, intro, ...points] = t(current.es.join("|"), current.en.join("|")).split("|");
   const last = step === availableSteps.length;
   const StepIcon = current.icon;
-  const isNumberStep = current.url === "/retiro";
   const isDashboardStep = current.url === "/dashboard";
 
   return (
@@ -370,20 +369,12 @@ export function AppTour() {
               </div>
             </div>
           </div>
-          <p className="relative mt-2.5 text-[13px] leading-snug text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
-          <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
-            {points.map((p, i) => {
-              const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
-              return (
-                <li key={i} className="flex items-start gap-2 text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
-                  <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-positive/10 text-positive sm:h-5 sm:w-5">
-                    <B className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                  </span>
-                  {p}
-                </li>
-              );
-            })}
-          </ul>
+          <p className="relative mt-2.5 text-[13px] leading-relaxed text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
+          {points.length > 0 && (
+            <p className="relative mt-1.5 text-[13px] leading-relaxed text-tour-foreground/75 sm:mt-2 sm:text-sm">
+              {points.join(" ")}
+            </p>
+          )}
           <div className="relative mt-3 h-1 overflow-hidden rounded-full bg-tour-foreground/10 sm:mt-4">
             <div className="h-full rounded-full bg-positive transition-all duration-500" style={{ width: `${((step + 1) / total) * 100}%` }} />
           </div>
