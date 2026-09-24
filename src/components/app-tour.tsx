@@ -856,6 +856,42 @@ export function AppTour() {
           ))}
         </div>
       )}
+      {isHipotecaStep && hipotecaMarkers?.inputs && hipotecaMarkers?.strategies && hipotecaMarkers?.simulator && hipotecaMarkers?.box && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            <defs>
+              <marker id="tour-hipoteca-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
+              </marker>
+            </defs>
+            <path
+              d={`M ${hipotecaMarkers.box.x + 70} ${hipotecaMarkers.box.y - 4} Q ${(hipotecaMarkers.box.x + 70 + hipotecaMarkers.inputs.x) / 2} ${hipotecaMarkers.inputs.y + 120} ${hipotecaMarkers.inputs.x} ${hipotecaMarkers.inputs.y + 12}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-hipoteca-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${hipotecaMarkers.box.x + 50} ${hipotecaMarkers.box.y + hipotecaMarkers.box.height + 4} Q ${(hipotecaMarkers.box.x + 50 + hipotecaMarkers.strategies.x) / 2} ${hipotecaMarkers.strategies.y + 90} ${hipotecaMarkers.strategies.x} ${hipotecaMarkers.strategies.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-hipoteca-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${hipotecaMarkers.box.x + hipotecaMarkers.box.width - 90} ${hipotecaMarkers.box.y + hipotecaMarkers.box.height + 4} Q ${(hipotecaMarkers.box.x + hipotecaMarkers.box.width - 90 + hipotecaMarkers.simulator.x) / 2} ${hipotecaMarkers.simulator.y + 60} ${hipotecaMarkers.simulator.x} ${hipotecaMarkers.simulator.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-hipoteca-arrow)" className="stroke-positive/70"
+            />
+          </svg>
+          {([
+            [hipotecaMarkers.inputs.x - 28, hipotecaMarkers.inputs.y + 20, 1],
+            [hipotecaMarkers.strategies.x - 28, hipotecaMarkers.strategies.y - 34, 2],
+            [hipotecaMarkers.simulator.x - 28, hipotecaMarkers.simulator.y - 34, 3],
+          ] as const).map(([left, top, label]) => (
+            <span
+              key={label}
+              className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+              style={{ left, top }}
+            >
+              {label}
+            </span>
+          ))}
+        </div>
+      )}
     </>
   );
 }
