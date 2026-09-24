@@ -2,7 +2,7 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "rea
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, CalendarDays, Camera, ChevronDown, ChevronRight, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { FolderIcon, GalleryIcon, GooglePhotosIcon } from "@/components/expense-source-icons";
@@ -45,7 +45,8 @@ import { captureExpense } from "@/lib/expense-capture.functions";
 import { translateCategory } from "@/lib/i18n-data";
 import { saveExpense } from "@/lib/manual-expense";
 import { supabase } from "@/integrations/supabase/client";
-import { SPEND_PLAN_FIELDS, getWynMoneyLocale, money } from "@/lib/onboarding";
+import { SPEND_PLAN_FIELDS, compact, getWynMoneyLocale, money } from "@/lib/onboarding";
+import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { cn } from "@/lib/utils";
 
 type DraftItem = { name: string; amount: number; category: string };
@@ -260,6 +261,7 @@ export function ExpenseLog() {
 
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
+  const fmtCompact = (n: number) => compact(n, currency);
   const currencySymbol = useMemo(() => {
     try {
       return (
@@ -281,6 +283,8 @@ export function ExpenseLog() {
   const [period, setPeriod] = useState<"day" | "week" | "month">("month");
   // Día de la columna del gráfico diario que el usuario está mirando (hover o toque).
   const [hoverDay, setHoverDay] = useState<number | null>(null);
+  // Categoría cuyo análisis detallado (gráfica + movimientos) está abierto.
+  const [analysisCat, setAnalysisCat] = useState<string | null>(null);
 
   const daysInMonth = monthEnd.getDate();
   const periodDays = period === "day" ? 1 : period === "week" ? 7 : daysInMonth;
@@ -594,6 +598,25 @@ export function ExpenseLog() {
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [planLines, expenseTx, expenseFixedItems, match, periodFactor, spent, t, categories.rules, catOverrides]);
+
+  // Gasto del periodo anterior equivalente, por categoría, para el "vs periodo
+  // anterior" del análisis (misma ventana de días justo antes del periodo actual).
+  const prevByCategory = useMemo(() => {
+    const prevEnd = subDays(periodStart, 1);
+    const prevStart = subDays(periodStart, periodDays);
+    const map = new Map<string, number>();
+    for (const x of transactions) {
+      if (x.amount >= 0 || !x.tx_date) continue;
+      const d = parseISO(x.tx_date);
+      if (d < prevStart || d > prevEnd) continue;
+      if (isSavingsName(`${x.merchant} ${x.description ?? ""}`)) continue;
+      const name = categorizeTx(x as Tx, categories.rules);
+      const id = catOverrides[x.id] ?? match(name) ?? "others";
+      map.set(id, (map.get(id) ?? 0) + Math.abs(x.amount));
+    }
+    return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transactions, periodStart.getTime(), periodDays, categories.rules, catOverrides, match]);
 
   const [dismissed, setDismissed] = useState<string[]>([]);
 
@@ -2005,6 +2028,22 @@ export function ExpenseLog() {
                             type="button"
                             onClick={(event) => {
                               event.stopPropagation();
+                              setAnalysisCat(r.id);
+                            }}
+                            className="flex h-7 shrink-0 items-center gap-1.5 rounded-full px-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                            aria-label={t(`Ver análisis de ${r.name}`, `View ${r.name} analysis`)}
+                          >
+                            <BarChart3 className="h-3.5 w-3.5" />
+                            <span className="numeric rounded-full bg-muted px-1.5 py-0.5 text-[10px] leading-3">
+                              {r.items.length} {t("movs.", "txs")}
+                            </span>
+                          </button>
+                        )}
+                        {r.items.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
                               setExpandedCategory(expandedCat ? null : r.id);
                             }}
                             className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
@@ -2095,6 +2134,32 @@ export function ExpenseLog() {
             </div>
 
           )}
+
+          {/* Análisis del rubro: misma gráfica y detalle que en Análisis de gastos. */}
+          {analysisCat && (() => {
+            const row = rows.find((r) => r.id === analysisCat);
+            if (!row) return null;
+            const items = row.items.map((it) => ({
+              id: it.key,
+              amount: -Math.abs(it.amount),
+              merchant: it.label,
+              tx_date: it.date ?? null,
+            })) as unknown as Tx[];
+            return (
+              <CategoryDetailDialog
+                open={Boolean(analysisCat)}
+                onOpenChange={(v) => !v && setAnalysisCat(null)}
+                name={row.name}
+                items={items}
+                amount={row.actual}
+                prevAmount={prevByCategory.get(row.id) ?? 0}
+                periodTotal={rows.reduce((s, r) => s + r.actual, 0)}
+                days={periodDays}
+                fmt={fmt}
+                fmtCompact={fmtCompact}
+              />
+            );
+          })()}
 
 
         <div ref={latestExpensesRef} className="scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6">
