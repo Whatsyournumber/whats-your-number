@@ -74,6 +74,10 @@ button:disabled,
   --color-tree: var(--positive);
   --color-negative: var(--negative);
   --color-warning: var(--warning);
+  --color-tour-surface: var(--tour-surface);
+  --color-tour-foreground: var(--tour-foreground);
+  --color-tour-muted: var(--tour-muted);
+  --color-tour-border: var(--tour-border);
 
   --color-border: var(--border);
   --color-input: var(--input);
@@ -120,6 +124,10 @@ button:disabled,
   --positive: oklch(0.66 0.14 162);
   --negative: oklch(0.62 0.19 22);
   --warning: oklch(0.76 0.14 78);
+  --tour-surface: oklch(0.995 0.002 165);
+  --tour-foreground: oklch(0.2 0.018 260);
+  --tour-muted: oklch(0.48 0.018 260);
+  --tour-border: oklch(0.83 0.045 165);
   --border: oklch(0.91 0.008 260);
   --input: oklch(0.91 0.008 260);
   --ring: oklch(0.62 0.13 165);
@@ -175,6 +183,10 @@ button:disabled,
   --positive: oklch(0.78 0.15 165);
   --negative: oklch(0.7 0.17 22);
   --warning: oklch(0.82 0.14 82);
+  --tour-surface: oklch(0.995 0.002 165);
+  --tour-foreground: oklch(0.2 0.018 260);
+  --tour-muted: oklch(0.48 0.018 260);
+  --tour-border: oklch(0.83 0.045 165);
   --border: oklch(1 0 0 / 9%);
   --input: oklch(1 0 0 / 14%);
   --ring: oklch(0.78 0.15 165);
