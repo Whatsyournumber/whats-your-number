@@ -1194,7 +1194,7 @@ function Dashboard() {
               }
 
               const goalTextColor = isMonthlyExpenses
-                ? spendTextColor(pct)
+                ? spendTextColor(displayPct)
                 : isCityGoal
                   ? cityReached
                     ? "text-positive"
