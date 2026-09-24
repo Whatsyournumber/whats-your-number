@@ -906,6 +906,7 @@ function RetiroContent() {
             ) : null}
           </div>
         </Panel>
+        </div>
       </div>
 
       {/* Standard of living = ingreso/gasto mensual objetivo. El usuario lo edita en "Tu número". */}
