@@ -508,7 +508,7 @@ export function AppTour() {
       const chart = chartLabel?.getBoundingClientRect();
       const assets = assetsLabel?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
-      if (!value || !chart || !assets || !box || cancelled) return;
+      if (!valueLabel || !chartLabel || !assetsLabel || !value || !chart || !assets || !box || cancelled) return;
       valueLabel.setAttribute("data-tour-point", "1");
       chartLabel.setAttribute("data-tour-point", "2");
       assetsLabel.setAttribute("data-tour-point", "3");
