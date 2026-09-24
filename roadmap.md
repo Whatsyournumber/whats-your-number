@@ -8,3 +8,4 @@
 - [x] ETF y acciones: precio actual, compra, mercado, ganancia/pérdida y variación diaria
 - [x] Insights: análisis de las mayores fuentes de gasto dentro del texto del insight #2 (resumido a 4 líneas)
 - [x] Card "Gastos del mes": insignia "Excedido 107%" visible sin cortes en la vista actual
+- [x] Tutorial: fondo blanco y paso del Dashboard colocado sobre la gráfica en escritorio
