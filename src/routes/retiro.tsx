@@ -683,7 +683,7 @@ function RetiroContent() {
       </div>
 
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-3" data-tour-number-target="chart">
         <Panel
           title={
             <span className="text-base font-semibold tracking-tight">

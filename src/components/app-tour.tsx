@@ -82,14 +82,14 @@ const STEPS: Step[] = [
   },
   {
     url: "/retiro", icon: Target, minPlan: "pro",
-    es: ["Tu número de libertad financiera", "WhatsYourNumber calcula el capital que necesitas para vivir de tus inversiones y alcanzar tu libertad financiera.",
-      "Tu Número convierte el ingreso mensual que deseas en una meta concreta de capital.",
-      "Descubre el año estimado en que alcanzarás tu libertad y cuánto aportar cada mes.",
-      "Compara tasas de retiro del 4% al 12%; el escenario del 7% destaca Tu Número."],
-    en: ["Your financial freedom number", "WhatsYourNumber calculates the capital you need to live off your investments and reach financial freedom.",
-      "Your Number turns your desired monthly income into a clear capital target.",
-      "See your estimated freedom year and how much to contribute each month.",
-      "Compare withdrawal rates from 4% to 12%; the 7% scenario highlights Your Number."],
+    es: ["Tu número de libertad financiera", "El capital que necesitas para vivir de tus inversiones.",
+      "Convierte el ingreso mensual que deseas en una meta de capital.",
+      "Descubre en qué año llegas y cuánto aportar cada mes.",
+      "Compara retiros del 4% al 12%; el 7% marca Tu Número."],
+    en: ["Your financial freedom number", "The capital you need to live off your investments.",
+      "Turn your desired monthly income into a capital target.",
+      "See the year you get there and how much to add each month.",
+      "Compare 4% to 12% withdrawals; 7% marks Your Number."],
   },
   {
     url: "/hipoteca", icon: Home, minPlan: "free",
@@ -371,6 +371,18 @@ export function AppTour() {
     };
   }, [isCashFlowTourStep, isMobile, pathname]);
 
+  // En Tu Número, baja hasta que la gráfica quede bajo la barra de progreso.
+  useEffect(() => {
+    if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/retiro" && pathname === "/retiro") {
+      const timer = window.setTimeout(() => {
+        const chart = document.querySelector<HTMLElement>('[data-tour-number-target="chart"]');
+        if (chart) window.scrollTo({ top: window.scrollY + chart.getBoundingClientRect().top - window.innerHeight * 0.42, behavior: "smooth" });
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [step, pathname, isMobile]);
+
   // Abre cada sección cuando le toca.
   useEffect(() => {
     if (current && pathname !== current.url) navigate({ to: current.url });
@@ -486,7 +498,7 @@ export function AppTour() {
   const isExpenseStep = current.url === "/registro-gastos";
   const isAnalysisStep = current.url === "/gastos";
   const isCashFlowStep = current.url === "/cash-flow";
-  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep;
+  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep;
 
   return (
     <>
@@ -504,10 +516,10 @@ export function AppTour() {
               ? "sm:bottom-auto sm:right-6 sm:top-[clamp(18rem,48vh,24rem)]"
               : isAnalysisStep
                 ? "sm:bottom-auto sm:right-6 sm:top-[38vh]"
-                : isCashFlowStep
+                : isCashFlowStep || isNumberStep
                   ? sidebarState === "expanded"
-                    ? "sm:bottom-auto sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto sm:top-[clamp(21rem,44vh,27rem)]"
-                    : "sm:bottom-auto sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto sm:top-[clamp(21rem,44vh,27rem)]"
+                    ? `sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-6" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
+                    : `sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-6" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
                   : "sm:right-6",
         )}
       >
