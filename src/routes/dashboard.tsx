@@ -1144,7 +1144,14 @@ function Dashboard() {
               const goalBarColor = (value: number) =>
                 value >= 75 ? "bg-positive" : value >= 50 ? "bg-warning" : "bg-negative";
 
+              // Gastos del mes: aquí subir es malo. Amarillo desde el 80%, rojo al llegar o pasar el objetivo.
+              const spendBarColor = (value: number) =>
+                value >= 100 ? "bg-negative" : value >= 80 ? "bg-warning" : "bg-positive";
+              const spendTextColor = (value: number) =>
+                value >= 100 ? "text-negative" : value >= 80 ? "text-warning" : "text-positive";
+
               if (g.name === "Cartera de inversión") {
+
                 const noInvestments = portfolioValue <= 0;
                 const diff = portfolioReturn - sp500Rate;
                 const progress = noInvestments
@@ -1186,15 +1193,18 @@ function Dashboard() {
                 );
               }
 
-              const goalTextColor = isCityGoal
-                ? cityReached
-                  ? "text-positive"
-                  : "text-negative"
-                : pct >= 75
-                  ? "text-positive"
-                  : pct >= 50
-                    ? "text-warning"
-                    : "text-negative";
+              const goalTextColor = isMonthlyExpenses
+                ? spendTextColor(pct)
+                : isCityGoal
+                  ? cityReached
+                    ? "text-positive"
+                    : "text-negative"
+                  : pct >= 75
+                    ? "text-positive"
+                    : pct >= 50
+                      ? "text-warning"
+                      : "text-negative";
+
               const goalHref = isCityGoal
                 ? "/ciudades"
                 : isMonthlyExpenses
@@ -1224,7 +1234,16 @@ function Dashboard() {
                       </p>
                       <Progress
                         value={pct}
-                        indicatorClassName={isCityGoal ? (cityReached ? "bg-positive" : "bg-negative") : goalBarColor(pct)}
+                        indicatorClassName={
+                          isMonthlyExpenses
+                            ? spendBarColor(pct)
+                            : isCityGoal
+                              ? cityReached
+                                ? "bg-positive"
+                                : "bg-negative"
+                              : goalBarColor(pct)
+                        }
+
                         className="mt-1.5 h-1.5"
                       />
                       <p className="mt-1 truncate text-[11px] text-muted-foreground">{subtitle}</p>
