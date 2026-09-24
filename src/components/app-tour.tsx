@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   ArrowLeft, ArrowRight, ChartPie, Check, Compass, Crown, Globe2, Home, LayoutDashboard,
-  Lightbulb, Map, MousePointerClick, ReceiptText, Scale, Sparkles, Sprout, Target,
+  Lightbulb, Map, ReceiptText, Scale, Sparkles, Sprout, Target,
   TrendingUp, UserRound, Users, Wallet, X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -169,7 +169,6 @@ const STEPS: Step[] = [
       "It remembers your conversations to follow up with you."],
   },
 ];
-const BULLET_ICONS = [MousePointerClick, Lightbulb, Check];
 
 export function AppTour() {
   const t = useT();
@@ -231,6 +230,10 @@ export function AppTour() {
     if (!current) return;
     const el = document.querySelector(`[data-sidebar="sidebar"] a[href="${current.url}"]`);
     el?.setAttribute("data-tour-active", "true");
+    // En el Dashboard resalta además las tarjetas clave (KPIs y Tu Número).
+    if (current.url === "/dashboard") {
+      document.querySelectorAll("[data-tour-box]").forEach((el) => el.setAttribute("data-tour-active", "true"));
+    }
   }, [current, pathname]);
 
   const close = () => {
@@ -271,7 +274,7 @@ export function AppTour() {
       [Target, t("Alcanza tu libertad financiera", "Reach financial freedom")],
     ];
     return (
-      <div className="fixed inset-0 z-[100] grid place-items-center bg-background/60 p-4 backdrop-blur-[2px]">
+      <div className="fixed inset-0 z-[100] grid place-items-center p-4">
         <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-tour-border bg-tour-surface p-5 pt-6 text-center text-tour-foreground shadow-2xl shadow-positive/15 sm:p-6 sm:pt-7">
           <div className="pointer-events-none absolute -top-24 left-1/2 h-40 w-72 -translate-x-1/2 rounded-full bg-positive/15 blur-3xl" />
           <span className="numeric absolute right-5 top-4 text-xs font-medium text-tour-muted">1 / {total}</span>
@@ -334,8 +337,8 @@ export function AppTour() {
 
   return (
     <>
-      {/* Oscurece ligeramente el fondo para que el paso resalte sin ocultarlo */}
-      <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/20" : "bg-background/40"}`} />
+      {/* Bloquea toques fuera del paso sin oscurecer el fondo: el modal blanco ya contrasta */}
+      <div className="fixed inset-0 z-[90]" />
       <div
         className={cn(
           "fixed inset-x-3 bottom-16 z-[100] sm:inset-x-auto sm:bottom-6 sm:w-[400px] lg:bottom-8",
