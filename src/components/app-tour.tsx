@@ -321,8 +321,8 @@ export function AppTour() {
       });
     };
     const scrollTimer = window.setTimeout(() => {
-      const btn = document.querySelector<HTMLElement>('[data-tour-analysis-target="import"]');
-      if (btn) window.scrollTo({ top: btn.getBoundingClientRect().top + window.scrollY - 140, behavior: "smooth" });
+      const chart = document.querySelector<HTMLElement>('[data-tour-analysis-target="chart"]');
+      if (chart) window.scrollTo({ top: chart.getBoundingClientRect().top + window.scrollY - 90, behavior: "smooth" });
     }, 250);
     const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
     window.addEventListener("resize", measure);
@@ -467,7 +467,7 @@ export function AppTour() {
             : isExpenseStep
               ? "sm:bottom-auto sm:right-6 sm:top-[clamp(18rem,48vh,24rem)]"
               : isAnalysisStep
-                ? "sm:bottom-6 sm:right-6 sm:top-auto"
+                ? "sm:bottom-auto sm:right-6 sm:top-[clamp(15rem,38vh,18rem)]"
                 : "sm:right-6",
         )}
       >
