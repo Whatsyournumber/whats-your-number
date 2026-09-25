@@ -921,7 +921,7 @@ export function AppTour() {
             />
           ))}
           {(() => {
-            const spot = spots[0];
+            const spot = spots[0]!;
             const sheetTop = window.innerHeight * 0.64;
             const y1 = spot.y + spot.h + 6;
             if (sheetTop - y1 < 28) return null;
