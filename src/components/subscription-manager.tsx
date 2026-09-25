@@ -50,7 +50,12 @@ export function SubscriptionManager() {
 
   const planLabel = tier === "patrimonio" ? "Familiar" : tier === "pro" ? "Pro" : "Free";
   const benefits = tier === "free"
-    ? [t("Registro de gastos", "Expense tracking"), t("Presupuesto mensual", "Monthly budget"), t("Asistente IA", "AI assistant")]
+    ? [
+        t("Tu número de libertad financiera", "Your financial freedom number"),
+        t("Registro y análisis de gastos", "Expense tracking and analysis"),
+        t("Plan de gasto mensual", "Monthly spending plan"),
+        t("Simulador de retiro", "Retirement simulator"),
+      ]
     : tier === "pro"
       ? [t("Análisis de gastos con IA", "AI spending analysis"), t("Simulador de hipoteca", "Mortgage simulator"), t("Portafolio e inversiones", "Portfolio & investments"), "Life Planner"]
       : [t("Todo lo incluido en Pro", "Everything in Pro"), t("Perfiles familiares", "Family profiles"), t("Planificación en pareja", "Couples planning"), t("Soporte prioritario", "Priority support")];
