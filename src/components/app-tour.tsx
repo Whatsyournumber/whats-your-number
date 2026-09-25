@@ -903,15 +903,22 @@ export function AppTour() {
       {isMobile && spots.length > 0 ? (
         <div className="pointer-events-none fixed inset-0 z-[110]" aria-hidden="true">
           {/* Capa oscura con un "hueco" por cada foco, para que todos se vean iluminados completos */}
-          <div
-            className="absolute inset-0 transition-all duration-300"
-            style={{
-              background: "color-mix(in oklab, var(--background) 72%, transparent)",
-              clipPath: `polygon(evenodd, 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, ${spots
-                .map((s) => `${s.x}px ${s.y}px, ${s.x}px ${s.y + s.h}px, ${s.x + s.w}px ${s.y + s.h}px, ${s.x + s.w}px ${s.y}px, ${s.x}px ${s.y}px`)
-                .join(", ")})`,
-            }}
-          />
+          <svg className="absolute inset-0 h-full w-full">
+            <defs>
+              <mask id="tour-dim-mask">
+                <rect width="100%" height="100%" fill="white" />
+                {spots.map((s, i) => (
+                  <rect key={i} x={s.x} y={s.y} width={s.w} height={s.h} rx={16} fill="black" />
+                ))}
+              </mask>
+            </defs>
+            <rect
+              width="100%"
+              height="100%"
+              mask="url(#tour-dim-mask)"
+              style={{ fill: "color-mix(in oklab, var(--background) 72%, transparent)" }}
+            />
+          </svg>
           {spots.map((s, i) => (
             <div
               key={i}
