@@ -219,8 +219,8 @@ export function AppTour() {
         host.endsWith(".lovableproject-dev.com") ||
         /^id-preview--.*\.lovable\.app$/.test(host)
       );
-      if (mobilePreview && !sessionStorage.getItem("yn.tour.mobile-preview-welcome-20260925")) {
-        sessionStorage.setItem("yn.tour.mobile-preview-welcome-20260925", "1");
+      if (mobilePreview && !sessionStorage.getItem("yn.tour.mobile-preview-welcome-20260925b")) {
+        sessionStorage.setItem("yn.tour.mobile-preview-welcome-20260925b", "1");
         setOpenMobile(false);
         setStep(0);
         return;
