@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
+import { useSubscription } from "@/hooks/use-subscription";
 import { useTransactions } from "@/hooks/use-transactions";
 import { askAdvisor } from "@/lib/ask-advisor.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
@@ -101,6 +102,7 @@ function ThinkingIndicator({ txCount }: { txCount: number }) {
 
 export function AskAiSearch() {
   const t = useT();
+  const { isPro } = useSubscription();
   const { lang } = useLanguage();
   const { profile } = useProfile();
   const { transactions } = useTransactions();
@@ -189,6 +191,8 @@ ${cats || "- sin datos"}`;
     t("¿Cómo bajo mis gastos un 15%?", "How do I cut my expenses by 15%?"),
     t("¿En qué invierto mi ahorro mensual?", "Where should I invest my monthly savings?"),
   ];
+
+  if (!isPro) return null;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

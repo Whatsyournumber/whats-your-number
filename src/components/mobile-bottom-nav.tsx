@@ -14,8 +14,8 @@ export function MobileBottomNav() {
     { title: t("Tu número", "Your number"), url: "/retiro", icon: Target },
     ...(isPro
       ? [{ title: t("Portfolio", "Portfolio"), url: "/portafolio", icon: LineChart }]
-      : [{ title: t("Mis datos extra", "Extra data"), url: "/mi-perfil", icon: UserRound }]),
-    { title: "IA", url: "/advisor", icon: Sparkles },
+      : [{ title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserRound }]),
+    ...(isPro ? [{ title: "IA", url: "/advisor", icon: Sparkles }] : []),
   ];
 
   return (
