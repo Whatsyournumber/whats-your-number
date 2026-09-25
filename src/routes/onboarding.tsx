@@ -317,6 +317,11 @@ function OnboardingPage() {
     // Sin prueba automática: toda cuenta nueva entra en el plan gratis.
   };
 
+  // Show the final celebration at the top even if the questionnaire was scrolled down.
+  useEffect(() => {
+    if (step === SUMMARY_STEP) window.scrollTo({ top: 0, behavior: "instant" });
+  }, [step]);
+
 
   if (loading || !ready) {
     return (
@@ -351,12 +356,6 @@ function OnboardingPage() {
   const progress = (Math.min(step, QUESTIONS) / QUESTIONS) * 100;
   const isBuilding = step === BUILD_STEP;
   const isSummary = step === SUMMARY_STEP;
-
-  // The final result must begin at its celebration, even when the previous
-  // questionnaire was scrolled to the bottom on a small screen.
-  useEffect(() => {
-    if (step === SUMMARY_STEP) window.scrollTo({ top: 0, behavior: "instant" });
-  }, [step]);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
