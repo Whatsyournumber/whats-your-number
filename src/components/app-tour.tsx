@@ -277,7 +277,7 @@ export function AppTour() {
     };
     const find = (): HTMLElement | null => {
       if (current.url === "/gastos") {
-        const btn = [...document.querySelectorAll<HTMLElement>("button")]
+        const btn = [...document.querySelectorAll<HTMLElement>("main a, main button")]
           .filter((b) => /import/i.test(b.textContent ?? "") && b.getBoundingClientRect().height > 0 && !b.closest("[data-tour-box]"))
           .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)[0];
         if (btn) return btn;
