@@ -546,9 +546,10 @@ export function AppTour() {
     let cancelled = false;
     // Cada punto solo se dibuja mientras su objetivo esté dentro de la vista;
     // si el usuario se desplaza, se oculta en vez de fijarse arriba.
+    // Basta con que el título (parte de arriba) esté visible; los paneles altos no caben enteros.
     const pointFor = (r: DOMRect, anchor: "left" | "right") =>
-      r.top >= 0 && r.bottom <= window.innerHeight
-        ? { x: anchor === "left" ? r.left + 170 : r.right - 60, y: Math.max(70, r.top + 14) }
+      r.top + 14 >= 60 && r.top + 14 <= window.innerHeight - 40
+        ? { x: anchor === "left" ? r.left + 170 : r.right - 60, y: r.top + 14 }
         : null;
     const measure = () => {
       const filters = document.querySelector<HTMLElement>('[data-tour-ciudades-target="filters"]')?.getBoundingClientRect();
