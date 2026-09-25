@@ -329,8 +329,8 @@ function LifePlannerContent() {
       </Panel>
 
       <div data-tour-planner-target="goals" className="flex flex-wrap items-end justify-between gap-3">
-        <div data-tour-planner-target="decisions">
-          <h2 className="text-lg font-semibold">{t("Tus metas de vida", "Your life goals")}</h2>
+        <div>
+          <h2 data-tour-planner-target="decisions" className="text-lg font-semibold">{t("Tus metas de vida", "Your life goals")}</h2>
           <p className="text-xs text-muted-foreground">
             {t("Cada decisión que tomas impacta tu fecha de retiro.", "Every decision you make moves your retirement date.")}
           </p>
