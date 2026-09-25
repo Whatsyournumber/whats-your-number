@@ -533,9 +533,9 @@ export function AppTour() {
   }, [isPortfolioTourStep, isMobile, pathname]);
 
   const [ciudadesMarkers, setCiudadesMarkers] = useState<{
-    filters: { x: number; y: number };
-    results: { x: number; y: number };
-    cards: { x: number; y: number };
+    filters: { x: number; y: number } | null;
+    results: { x: number; y: number } | null;
+    cards: { x: number; y: number } | null;
     box: { x: number; y: number; width: number; height: number };
   } | null>(null);
   useEffect(() => {
@@ -544,7 +544,9 @@ export function AppTour() {
       return;
     }
     let cancelled = false;
-    const clampY = (y: number) => Math.max(24, Math.min(y, window.innerHeight - 48));
+    // Cada punto solo se dibuja mientras su objetivo esté dentro de la vista;
+    // si el usuario se desplaza, se oculta en vez de fijarse arriba.
+    const pointFor = (r: DOMRect) => (r.top >= 0 && r.bottom <= window.innerHeight ? { x: r.right - 60, y: r.top + 14 } : null);
     const measure = () => {
       const filters = document.querySelector<HTMLElement>('[data-tour-ciudades-target="filters"]')?.getBoundingClientRect();
       const results = document.getElementById("tour-ciudades-results")?.getBoundingClientRect();
@@ -552,9 +554,9 @@ export function AppTour() {
       const box = tourBoxRef.current?.getBoundingClientRect();
       if (!filters || !results || !cards || !box || cancelled) return;
       setCiudadesMarkers({
-        filters: { x: filters.right - 80, y: clampY(filters.top + 18) },
-        results: { x: results.right - 56, y: clampY(results.top + 12) },
-        cards: { x: cards.right - 56, y: clampY(cards.top + 28) },
+        filters: pointFor(filters),
+        results: pointFor(results),
+        cards: pointFor(cards),
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
@@ -1102,7 +1104,7 @@ export function AppTour() {
           </svg>
         </div>
       )}
-      {isCiudadesStep && ciudadesMarkers?.filters && ciudadesMarkers?.results && ciudadesMarkers?.cards && ciudadesMarkers?.box && (
+      {isCiudadesStep && ciudadesMarkers?.box && (
         <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
           <svg className="absolute inset-0 h-full w-full overflow-visible">
             <defs>
@@ -1110,32 +1112,40 @@ export function AppTour() {
                 <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
               </marker>
             </defs>
-            <path
-              d={`M ${ciudadesMarkers.box.x + 40} ${ciudadesMarkers.box.y - 4} Q ${(ciudadesMarkers.box.x + ciudadesMarkers.filters.x) / 2} ${ciudadesMarkers.filters.y + 120} ${ciudadesMarkers.filters.x} ${ciudadesMarkers.filters.y + 12}`}
-              fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-ciudades-arrow)" className="stroke-positive"
-            />
-            <path
-              d={`M ${ciudadesMarkers.box.x - 4} ${ciudadesMarkers.box.y + ciudadesMarkers.box.height * 0.36} Q ${(ciudadesMarkers.box.x + ciudadesMarkers.results.x) / 2 - 40} ${ciudadesMarkers.results.y - 60} ${ciudadesMarkers.results.x} ${ciudadesMarkers.results.y}`}
-              fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-ciudades-arrow)" className="stroke-positive"
-            />
-            <path
-              d={`M ${ciudadesMarkers.box.x - 4} ${ciudadesMarkers.box.y + ciudadesMarkers.box.height * 0.72} Q ${ciudadesMarkers.cards.x + 120} ${ciudadesMarkers.cards.y - 55} ${ciudadesMarkers.cards.x} ${ciudadesMarkers.cards.y}`}
-              fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-ciudades-arrow)" className="stroke-positive"
-            />
+            {ciudadesMarkers.filters && (
+              <path
+                d={`M ${ciudadesMarkers.box.x + 40} ${ciudadesMarkers.box.y - 4} Q ${(ciudadesMarkers.box.x + ciudadesMarkers.filters.x) / 2} ${ciudadesMarkers.filters.y + 120} ${ciudadesMarkers.filters.x} ${ciudadesMarkers.filters.y + 12}`}
+                fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-ciudades-arrow)" className="stroke-positive"
+              />
+            )}
+            {ciudadesMarkers.results && (
+              <path
+                d={`M ${ciudadesMarkers.box.x - 4} ${ciudadesMarkers.box.y + ciudadesMarkers.box.height * 0.36} Q ${(ciudadesMarkers.box.x + ciudadesMarkers.results.x) / 2 - 40} ${ciudadesMarkers.results.y - 60} ${ciudadesMarkers.results.x} ${ciudadesMarkers.results.y}`}
+                fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-ciudades-arrow)" className="stroke-positive"
+              />
+            )}
+            {ciudadesMarkers.cards && (
+              <path
+                d={`M ${ciudadesMarkers.box.x - 4} ${ciudadesMarkers.box.y + ciudadesMarkers.box.height * 0.72} Q ${ciudadesMarkers.cards.x + 120} ${ciudadesMarkers.cards.y - 55} ${ciudadesMarkers.cards.x} ${ciudadesMarkers.cards.y}`}
+                fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-ciudades-arrow)" className="stroke-positive"
+              />
+            )}
           </svg>
           {([
-            [ciudadesMarkers.filters.x - 14, ciudadesMarkers.filters.y - 6, 1],
-            [ciudadesMarkers.results.x - 14, ciudadesMarkers.results.y - 6, 2],
-            [ciudadesMarkers.cards.x - 14, ciudadesMarkers.cards.y - 6, 3],
-          ] as const).map(([left, top, label]) => (
-            <span
-              key={label}
-              className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
-              style={{ left, top }}
-            >
-              {label}
-            </span>
-          ))}
+            [ciudadesMarkers.filters, 1],
+            [ciudadesMarkers.results, 2],
+            [ciudadesMarkers.cards, 3],
+          ] as const).flatMap(([pt, label]) =>
+            pt ? [(
+              <span
+                key={label}
+                className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+                style={{ left: pt.x - 14, top: pt.y - 6 }}
+              >
+                {label}
+              </span>
+            )] : []
+          )}
         </div>
       )}
     </>
