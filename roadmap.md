@@ -14,4 +14,4 @@
 - [x] Tutorial móvil: bottom sheet 30–40% con solo los puntos clave, mismo recorrido (verificado en vivo)
 - [x] Tutorial móvil corto: 5 paradas (Inicio, Gastos, Tu número, Portfolio, IA) con foco en los botones de la barra inferior (verificado en vivo)
 - [x] Plan gratis: Tu número accesible, Hipoteca Pro, Mis datos en barra móvil y botones del tutorial navegables
-- [x] Plan gratis: IA bloqueada y oculta de la barra inferior y del menú; tutorial Pro solamente
+- [x] Plan gratis: IA bloqueada y oculta de la barra inferior, el menú y el buscador; tutorial Pro solamente
