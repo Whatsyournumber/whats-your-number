@@ -973,7 +973,7 @@ export function AppTour() {
           })()}
         </div>
       ) : (
-        <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/20" : isMobile ? "bg-background/70" : "bg-background/40"}`} />
+         <div className={`pointer-events-none fixed inset-0 z-[90] ${isNumberStep ? "bg-background/20" : isMobile ? "bg-background/70" : "bg-background/40"}`} />
       )}
       <div
         className={cn(
