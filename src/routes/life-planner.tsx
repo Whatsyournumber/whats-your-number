@@ -272,7 +272,7 @@ function LifePlannerContent() {
             <p className="mt-1 text-sm text-muted-foreground">
               {t("Cada decisión de vida te acerca o aleja de tu número.", "Every life decision brings you closer to or further from your number.")}
             </p>
-            <div className="mt-5 flex items-center gap-3">
+            <div data-tour-planner-target="bar" className="mt-5 flex items-center gap-3">
               <div className="relative h-2.5 flex-1 overflow-hidden rounded-full bg-muted">
               {/* Referencia sin metas de vida */}
               <div
@@ -329,7 +329,7 @@ function LifePlannerContent() {
       </Panel>
 
       <div data-tour-planner-target="goals" className="flex flex-wrap items-end justify-between gap-3">
-        <div>
+        <div data-tour-planner-target="decisions">
           <h2 className="text-lg font-semibold">{t("Tus metas de vida", "Your life goals")}</h2>
           <p className="text-xs text-muted-foreground">
             {t("Cada decisión que tomas impacta tu fecha de retiro.", "Every decision you make moves your retirement date.")}
