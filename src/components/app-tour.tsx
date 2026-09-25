@@ -308,7 +308,7 @@ export function AppTour() {
     const timers = [120, 500, 1100].map((ms, i) =>
       window.setTimeout(() => {
         const el = find();
-        if (el && i < 2) {
+        if (el && i < 2 && !el.hasAttribute("data-tour-nav")) {
           el.style.scrollMarginTop = "88px";
           el.scrollIntoView({ block: "start", behavior: i === 0 ? "auto" : "smooth" });
         }
