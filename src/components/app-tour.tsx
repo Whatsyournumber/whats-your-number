@@ -262,15 +262,15 @@ export function AppTour() {
   }, [step, isMobile]);
 
   // Móvil: foco (spotlight) sobre el elemento clave de cada paso + flecha desde el bottom sheet.
-  const [spot, setSpot] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  const [spots, setSpots] = useState<{ x: number; y: number; w: number; h: number }[]>([]);
   useEffect(() => {
     if (!isMobile || !current || pathname !== current.url) {
-      setSpot(null);
+      setSpots([]);
       return;
     }
     const SELECTORS: Record<string, string[]> = {
       "/dashboard": ["main [class*='grid'] > *"],
-      "/registro-gastos": ["[data-tour-expense-target='add']", "[data-tour-expense-target='budget']"],
+      "/registro-gastos": ["[data-tour-expense-target='plan']", "[data-tour-expense-target='add-mobile']", "[data-tour-expense-target='add']", "[data-tour-expense-target='budget']"],
       "/gastos": ["[data-tour-analysis-target='import']"],
       "/cash-flow": ["[data-tour-cashflow-target='blocks']", "[data-tour-cashflow-target='cards']"],
       "/retiro": ["[data-tour-number-target='number']", "[data-tour-number-target='progress']"],
@@ -280,35 +280,49 @@ export function AppTour() {
       "/ciudades": ["[data-tour-ciudades-target='filters']"],
       "/life-planner": ["#tour-planner-hero", "[data-tour-planner-target='add']"],
     };
-    const find = (): HTMLElement | null => {
-      // En móvil el foco va al botón de la barra inferior correspondiente al paso.
-      const navBtn = document.querySelector<HTMLElement>(`[data-tour-nav="${current.url}"]`);
-      if (navBtn && navBtn.getBoundingClientRect().height > 0) return navBtn;
+    const find = (): HTMLElement[] => {
+      const out: HTMLElement[] = [];
+      const seen = new Set<HTMLElement>();
+      const push = (el: HTMLElement | null) => {
+        if (el && el.getBoundingClientRect().height > 0 && !el.closest("[data-tour-box]") && !seen.has(el)) {
+          seen.add(el);
+          out.push(el);
+        }
+      };
+      // En móvil el foco va a los elementos clave de la página + el botón de la barra inferior.
       if (current.url === "/gastos") {
         const btn = [...document.querySelectorAll<HTMLElement>("main a, main button")]
           .filter((b) => /import/i.test(b.textContent ?? "") && b.getBoundingClientRect().height > 0 && !b.closest("[data-tour-box]"))
           .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)[0];
-        if (btn) return btn;
+        push(btn ?? null);
       }
-      for (const s of [...(SELECTORS[current.url] ?? []), "main h1", "main h2", "h1"]) {
-        const el = document.querySelector<HTMLElement>(s);
-        if (el && el.getBoundingClientRect().height > 0) return el;
+      for (const s of SELECTORS[current.url] ?? []) push(document.querySelector<HTMLElement>(s));
+      if (out.length === 0) {
+        for (const s of ["main h1", "main h2", "h1"]) {
+          const el = document.querySelector<HTMLElement>(s);
+          if (el && el.getBoundingClientRect().height > 0) { push(el); break; }
+        }
       }
-      return null;
+      push(document.querySelector<HTMLElement>(`[data-tour-nav="${current.url}"]`));
+      return out;
     };
     let cancelled = false;
     const measure = () => {
       if (cancelled) return;
-      const el = find();
-      if (!el) return setSpot(null);
-      const r = el.getBoundingClientRect();
+      const els = find();
+      if (els.length === 0) return setSpots([]);
       const maxH = window.innerHeight * 0.62 - 80;
-      setSpot({ x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) });
+      setSpots(
+        els.map((el) => {
+          const r = el.getBoundingClientRect();
+          return { x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) };
+        }),
+      );
     };
     const timers = [120, 500, 1100].map((ms, i) =>
       window.setTimeout(() => {
-        const el = find();
-        if (el && i < 2 && !el.hasAttribute("data-tour-nav")) {
+        const el = find().find((e) => !e.hasAttribute("data-tour-nav"));
+        if (el && i < 2) {
           el.style.scrollMarginTop = "88px";
           el.scrollIntoView({ block: "start", behavior: i === 0 ? "auto" : "smooth" });
         }
@@ -886,13 +900,35 @@ export function AppTour() {
   return (
     <>
       {/* Oscurece ligeramente el fondo para que el paso resalte sin ocultarlo */}
-      {isMobile && spot ? (
+      {isMobile && spots.length > 0 ? (
         <div className="pointer-events-none fixed inset-0 z-[110]" aria-hidden="true">
-          <div
-            data-tour-spot className="absolute rounded-2xl border-2 border-positive shadow-[0_0_0_9999px_color-mix(in_oklab,var(--background)_72%,transparent)] transition-all duration-300"
-            style={{ left: spot.x, top: spot.y, width: spot.w, height: spot.h }}
-          />
+          {/* Capa oscura con un "hueco" por cada foco, para que todos se vean iluminados completos */}
+          <svg className="absolute inset-0 h-full w-full">
+            <defs>
+              <mask id="tour-dim-mask">
+                <rect width="100%" height="100%" fill="white" />
+                {spots.map((s, i) => (
+                  <rect key={i} x={s.x} y={s.y} width={s.w} height={s.h} rx={16} fill="black" />
+                ))}
+              </mask>
+            </defs>
+            <rect
+              width="100%"
+              height="100%"
+              mask="url(#tour-dim-mask)"
+              style={{ fill: "color-mix(in oklab, var(--background) 72%, transparent)" }}
+            />
+          </svg>
+          {spots.map((s, i) => (
+            <div
+              key={i}
+              data-tour-spot
+              className="absolute rounded-2xl border-2 border-positive transition-all duration-300"
+              style={{ left: s.x, top: s.y, width: s.w, height: s.h }}
+            />
+          ))}
           {(() => {
+            const spot = spots[0]!;
             const sheetTop = window.innerHeight * 0.64;
             const y1 = spot.y + spot.h + 6;
             if (sheetTop - y1 < 28) return null;
