@@ -797,7 +797,7 @@ export function AppTour() {
       <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/20" : "bg-background/40"}`} />
       <div
         className={cn(
-          "fixed inset-x-3 bottom-16 z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
+          "fixed inset-x-0 bottom-0 z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
           hasNumberedBullets ? "sm:w-[560px]" : "sm:w-[400px]",
           isDashboardStep
             ? sidebarState === "expanded"
@@ -824,7 +824,12 @@ export function AppTour() {
                          : "sm:right-6",
         )}
       >
-        <div ref={tourBoxRef} data-tour-box className="relative overflow-hidden rounded-2xl border border-tour-border bg-tour-surface p-4 text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25 sm:rounded-3xl sm:p-5">
+        <div ref={tourBoxRef} data-tour-box className={cn("relative border border-tour-border bg-tour-surface text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25", isMobile ? "max-h-[38dvh] overflow-y-auto rounded-t-3xl border-b-0 p-4 pb-7" : "overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-5")}>
+          {isMobile && (
+            <div className="sticky top-0 z-10 -mx-4 -mt-4 mb-1.5 bg-tour-surface/95 pb-1.5 pt-2.5 backdrop-blur">
+              <div className="mx-auto h-1 w-10 rounded-full bg-tour-foreground/25" />
+            </div>
+          )}
           <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-64 -translate-x-1/2 rounded-full bg-primary/25 blur-3xl" />
           <div className="relative flex items-start gap-2.5 sm:gap-3">
             {isDashboardStep ? (
@@ -858,7 +863,7 @@ export function AppTour() {
           </div>
           <p className="relative mt-2.5 whitespace-pre-line text-[13px] leading-snug text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
           <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
-            {points.map((p, i) => {
+            {(isMobile ? points.slice(0, 2) : points).map((p, i) => {
               const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
               return (
                 <li key={i} className="flex items-start gap-2 text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
