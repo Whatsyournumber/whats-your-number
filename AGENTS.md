@@ -9,4 +9,4 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-Free-plan navigation hides every Pro-gated section (mortgage, net worth, portfolio, cities, life planner, AI) from the sidebar and mobile tabs — no locked entries listed; routes stay protected by PlanGate — keeps WhatsYournumber accessible, and uses the mobile My data tab in place of Portfolio; the tour follows only tabs actually present for each tier so every highlighted destination is reachable.
+Free-plan navigation keeps WhatsYournumber accessible, gates mortgage and AI at Pro, and uses the mobile My data tab in place of Portfolio; the mobile tour follows only tabs actually present for each tier so every highlighted destination is reachable.

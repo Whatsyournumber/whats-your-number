@@ -62,22 +62,18 @@ export function AppSidebar() {
   const { affiliate } = useMyAffiliate();
   const { user } = useAuth();
   const { avatarUrl: googleAvatar } = useProfileAvatar();
-  // Secciones Pro: ocultas en el plan gratis (las rutas siguen protegidas por PlanGate).
-  const proItems = [
-    { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home },
-    { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark },
-    { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart },
-    { title: "Lifestyle Simulator", url: "/ciudades", icon: Globe },
-    { title: "Life Planner", url: "/life-planner", icon: Target },
-  ] as const;
-
   const primary = [
     { title: t("Dashboard", "Dashboard"), url: "/dashboard", icon: LayoutDashboard },
     { title: t("Registro de gastos", "Expense Tracker"), url: "/registro-gastos", icon: ReceiptText },
     { title: t("Análisis de Gastos", "Spending Analysis"), url: "/gastos", icon: PieChart },
     { title: t("Distribución del dinero", "Money Distribution"), url: "/cash-flow", icon: Waves },
+    { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home },
     { title: "WhatsYournumber", url: "/retiro", icon: PiggyBank },
-    ...(tier !== "free" ? proItems : []),
+    { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark },
+    { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart },
+
+    { title: "Lifestyle Simulator", url: "/ciudades", icon: Globe },
+    { title: "Life Planner", url: "/life-planner", icon: Target },
   ] as const;
 
 
