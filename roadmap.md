@@ -13,3 +13,4 @@
 - [x] Tutorial paso 10 (Ciudades): textos reordenados + líneas y badges 1-2-3, marcadores ocultos fuera de vista
 - [x] Tutorial móvil: bottom sheet 30–40% con solo los puntos clave, mismo recorrido (verificado en vivo)
 - [x] Tutorial móvil corto: 5 paradas (Inicio, Gastos, Tu número, Portfolio, IA) con foco en los botones de la barra inferior (verificado en vivo)
+- [x] Plan gratis: Tu número accesible, Hipoteca Pro, Mis datos extra en barra móvil y botones del tutorial navegables
