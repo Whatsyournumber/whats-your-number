@@ -84,6 +84,7 @@ export function KpiCard({
               label
             )}
           </p>
+          {labelTrailing}
           {tooltip && (
             <Tooltip>
               <TooltipTrigger asChild>
