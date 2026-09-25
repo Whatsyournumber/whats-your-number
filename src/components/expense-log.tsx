@@ -1179,7 +1179,7 @@ export function ExpenseLog() {
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-positive/10 sm:h-11 sm:w-11">
                 <Wallet className="h-4 w-4 text-positive sm:h-5 sm:w-5" />
               </span>
-              <h3 className="min-w-0 whitespace-nowrap text-lg font-semibold sm:text-xl lg:text-2xl">
+              <h3 data-tour-expense-target="plan-title" className="min-w-0 whitespace-nowrap text-lg font-semibold sm:text-xl lg:text-2xl">
                 {t("Tu plan de gasto mensual", "Your monthly spending plan")}
               </h3>
               {period === "month" && (
