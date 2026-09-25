@@ -210,7 +210,7 @@ export function AppTour() {
   useEffect(() => {
     if (!user || subscriptionLoading) return;
     try {
-      // En la vista previa móvil, mostrar el primer paso directamente, incluso
+      // En la vista previa móvil, mostrar la bienvenida directamente, incluso
       // cuando el tutorial ya se haya completado. Solo una vez por pestaña.
       const host = window.location.hostname;
       const mobilePreview = isMobile && pathname === "/dashboard" && (
@@ -219,10 +219,10 @@ export function AppTour() {
         host.endsWith(".lovableproject-dev.com") ||
         /^id-preview--.*\.lovable\.app$/.test(host)
       );
-      if (mobilePreview && !sessionStorage.getItem("yn.tour.mobile-preview-20260925")) {
-        sessionStorage.setItem("yn.tour.mobile-preview-20260925", "1");
+      if (mobilePreview && !sessionStorage.getItem("yn.tour.mobile-preview-welcome-20260925")) {
+        sessionStorage.setItem("yn.tour.mobile-preview-welcome-20260925", "1");
         setOpenMobile(false);
-        setStep(1);
+        setStep(0);
         return;
       }
       const forced = new URLSearchParams(window.location.search).get("tour") === "1";
