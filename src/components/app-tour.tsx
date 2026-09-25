@@ -190,10 +190,15 @@ export function AppTour() {
     }
     return tier;
   }, [tier]);
-  const availableSteps = useMemo(
-    () => STEPS.filter((tourStep) => planMeetsTier(tourStep.minPlan, tourTier)),
-    [tourTier],
-  );
+  const availableSteps = useMemo(() => {
+    // En móvil el tour es corto: una parada por cada botón de la barra inferior.
+    const MOBILE_URLS = ["/dashboard", "/registro-gastos", "/retiro", "/portafolio", "/advisor"];
+    return STEPS.filter(
+      (tourStep) =>
+        planMeetsTier(tourStep.minPlan, tourTier) &&
+        (!isMobile || MOBILE_URLS.includes(tourStep.url)),
+    );
+  }, [tourTier, isMobile]);
   const total = availableSteps.length + 1;
 
   // Nombre para saludar: perfil > Google > correo.
