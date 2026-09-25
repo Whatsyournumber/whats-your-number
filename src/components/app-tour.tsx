@@ -705,7 +705,7 @@ export function AppTour() {
             : isExpenseStep
               ? "sm:bottom-auto sm:right-6 sm:top-[clamp(18rem,48vh,24rem)]"
             : isAnalysisStep
-              ? "sm:bottom-auto sm:right-6 sm:top-[54vh]"
+              ? "sm:bottom-6 sm:right-6 lg:bottom-8"
               : isHipotecaStep
                 ? "sm:bottom-auto sm:right-6 sm:top-[clamp(10rem,30vh,16rem)]"
                 : isCashFlowStep || isNumberStep
