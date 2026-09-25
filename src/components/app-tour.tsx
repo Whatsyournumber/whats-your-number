@@ -255,6 +255,67 @@ export function AppTour() {
   useEffect(() => {
     if (isMobile && tourBoxRef.current) tourBoxRef.current.scrollTop = 0;
   }, [step, isMobile]);
+
+  // Móvil: foco (spotlight) sobre el elemento clave de cada paso + flecha desde el bottom sheet.
+  const [spot, setSpot] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  useEffect(() => {
+    if (!isMobile || !current || pathname !== current.url) {
+      setSpot(null);
+      return;
+    }
+    const SELECTORS: Record<string, string[]> = {
+      "/dashboard": ["main [class*='grid'] > *"],
+      "/registro-gastos": ["[data-tour-expense-target='add']", "[data-tour-expense-target='budget']"],
+      "/gastos": ["[data-tour-analysis-target='import']"],
+      "/cash-flow": ["[data-tour-cashflow-target='blocks']", "[data-tour-cashflow-target='cards']"],
+      "/retiro": ["[data-tour-number-target='number']", "[data-tour-number-target='progress']"],
+      "/hipoteca": ["[data-tour-hipoteca-target='inputs']"],
+      "/patrimonio": ["[data-tour-patrimonio-target='cards']", "#tour-pat-chart"],
+      "/portafolio": ["[data-tour-portfolio-target='value']", "#tour-portfolio-chart"],
+      "/ciudades": ["[data-tour-ciudades-target='filters']"],
+      "/life-planner": ["#tour-planner-hero", "[data-tour-planner-target='add']"],
+    };
+    const find = (): HTMLElement | null => {
+      if (current.url === "/gastos") {
+        const btn = [...document.querySelectorAll<HTMLElement>("main a, main button")]
+          .filter((b) => /import/i.test(b.textContent ?? "") && b.getBoundingClientRect().height > 0 && !b.closest("[data-tour-box]"))
+          .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)[0];
+        if (btn) return btn;
+      }
+      for (const s of [...(SELECTORS[current.url] ?? []), "main h1", "main h2", "h1"]) {
+        const el = document.querySelector<HTMLElement>(s);
+        if (el && el.getBoundingClientRect().height > 0) return el;
+      }
+      return null;
+    };
+    let cancelled = false;
+    const measure = () => {
+      if (cancelled) return;
+      const el = find();
+      if (!el) return setSpot(null);
+      const r = el.getBoundingClientRect();
+      const maxH = window.innerHeight * 0.62 - 80;
+      setSpot({ x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) });
+    };
+    const timers = [120, 500, 1100].map((ms, i) =>
+      window.setTimeout(() => {
+        const el = find();
+        if (el && i < 2) {
+          el.style.scrollMarginTop = "88px";
+          el.scrollIntoView({ block: "start", behavior: i === 0 ? "auto" : "smooth" });
+        }
+        window.setTimeout(measure, 350);
+      }, ms),
+    );
+    window.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelled = true;
+      timers.forEach(clearTimeout);
+      window.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+    };
+  }, [isMobile, current, pathname]);
   const [markers, setMarkers] = useState<{ kpi: { x: number; y: number }; number: { x: number; y: number }; box: { x: number; y: number } } | null>(null);
   useEffect(() => {
     if (!isDashboardTourStep || isMobile) {
@@ -817,7 +878,28 @@ export function AppTour() {
   return (
     <>
       {/* Oscurece ligeramente el fondo para que el paso resalte sin ocultarlo */}
-      <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/20" : "bg-background/40"}`} />
+      {isMobile && spot ? (
+        <div className="pointer-events-none fixed inset-0 z-[90]" aria-hidden="true">
+          <div
+            data-tour-spot className="absolute rounded-2xl border-2 border-positive shadow-[0_0_0_9999px_color-mix(in_oklab,var(--background)_72%,transparent)] transition-all duration-300"
+            style={{ left: spot.x, top: spot.y, width: spot.w, height: spot.h }}
+          />
+          {(() => {
+            const sheetTop = window.innerHeight * 0.64;
+            const y1 = spot.y + spot.h + 6;
+            if (sheetTop - y1 < 28) return null;
+            const x = Math.min(Math.max(spot.x + spot.w / 2, 40), window.innerWidth - 40);
+            return (
+              <svg className="absolute inset-0 h-full w-full">
+                <line x1={x} y1={sheetTop - 8} x2={x} y2={y1 + 6} strokeWidth={2} className="stroke-positive" />
+                <path d={`M ${x - 6} ${y1 + 12} L ${x} ${y1 + 3} L ${x + 6} ${y1 + 12}`} fill="none" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="stroke-positive" />
+              </svg>
+            );
+          })()}
+        </div>
+      ) : (
+        <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/20" : isMobile ? "bg-background/70" : "bg-background/40"}`} />
+      )}
       <div
         className={cn(
           "fixed inset-x-0 bottom-0 z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
