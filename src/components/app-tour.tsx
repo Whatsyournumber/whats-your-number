@@ -815,7 +815,7 @@ export function AppTour() {
                     : `sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
                   : isPortfolioStep
                     ? "sm:bottom-8 sm:left-auto sm:right-6"
-                     : isCiudadesStep
+                     : isCiudadesStep || isPlannerStep
                        ? sidebarState === "expanded"
                          ? "sm:left-4 sm:right-auto lg:left-[calc(var(--sidebar-width)+1.5rem)]"
                          : "sm:left-4 sm:right-auto lg:left-[calc(var(--sidebar-width-icon)+1.5rem)]"
