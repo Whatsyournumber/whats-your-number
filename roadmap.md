@@ -1,5 +1,6 @@
 # Roadmap
 
+- [x] Plan gratis: ocultar del menú lateral todas las secciones bloqueadas (Hipoteca, Patrimonio, Portafolio, Lifestyle Simulator, Life Planner), como ya se hizo con la IA
 - [x] Portafolio tablet: filas sin montarse (grid 2 col hasta lg)
 - [x] Botón Eliminar en popups de editar (portafolio + patrimonio)
 - [x] Resumir texto de ayuda en ambos popups
@@ -11,7 +12,7 @@
 - [x] Tutorial: fondo blanco y paso del Dashboard colocado sobre la gráfica en escritorio
 - [x] Tutorial de Portafolio: textos, tres líneas y estado de valor en tiempo real
 - [x] Tutorial paso 10 (Ciudades): textos reordenados + líneas y badges 1-2-3, marcadores ocultos fuera de vista
-- [x] Tutorial móvil: bottom sheet 30–40% con solo los puntos clave, mismo recorrido (verificado en vivo)
+- [x] Plan gratis: ocultar del menú lateral todas las secciones bloqueadas (Hipoteca, Patrimonio, Portafolio, Lifestyle Simulator, Life Planner), como ya se hizo con la IA
 - [x] Tutorial móvil corto: 5 paradas (Inicio, Gastos, Tu número, Portfolio, IA) con foco en los botones de la barra inferior (verificado en vivo)
 - [x] Plan gratis: Tu número accesible, Hipoteca Pro, Mis datos en barra móvil y botones del tutorial navegables
 - [x] Plan gratis: IA bloqueada y oculta de la barra inferior, el menú y el buscador; tutorial Pro solamente
