@@ -702,7 +702,19 @@ export function AppTour() {
     navigate({ to: "/dashboard" });
   };
 
-  if (step === null) return null;
+  if (step === null) {
+    // Solo en el preview de desarrollo: botón flotante para relanzar el tour.
+    if (!import.meta.env.DEV || !user || subscriptionLoading) return null;
+    return (
+      <button
+        type="button"
+        onClick={() => setStep(0)}
+        className="fixed bottom-24 right-3 z-[100] rounded-full bg-tour px-4 py-2 text-xs font-semibold text-tour-foreground shadow-lg"
+      >
+        ▶ Tutorial
+      </button>
+    );
+  }
 
   const planLabel =
     tourTier === "patrimonio"
