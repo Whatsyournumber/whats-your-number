@@ -317,12 +317,14 @@ export function AppTour() {
         setSpot({ x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) });
       }
       const extras = (EXTRA_SELECTORS[current.url] ?? [])
-        .map((s) => document.querySelector<HTMLElement>(s))
-        .filter((e): e is HTMLElement => !!e && e.getBoundingClientRect().height > 0)
-        .map((e) => {
+        .map(({ sel, badge }) => {
+          const e = document.querySelector<HTMLElement>(sel);
+          if (!e) return null;
           const r = e.getBoundingClientRect();
-          return { x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) };
-        });
+          if (r.height <= 0) return null;
+          return { x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH), badge };
+        })
+        .filter((e): e is NonNullable<typeof e> => !!e);
       setExtraSpots(extras);
     };
     const timers = [120, 500, 1100].map((ms, i) =>
