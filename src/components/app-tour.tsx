@@ -276,6 +276,10 @@ export function AppTour() {
       "/life-planner": ["#tour-planner-hero", "[data-tour-planner-target='add']"],
     };
     const find = (): HTMLElement | null => {
+      if (current.url === "/gastos") {
+        const btn = [...document.querySelectorAll<HTMLElement>("main button")].find((b) => /import/i.test(b.textContent ?? "") && b.getBoundingClientRect().height > 0);
+        if (btn) return btn;
+      }
       for (const s of [...(SELECTORS[current.url] ?? []), "main h1", "main h2", "h1"]) {
         const el = document.querySelector<HTMLElement>(s);
         if (el && el.getBoundingClientRect().height > 0) return el;
