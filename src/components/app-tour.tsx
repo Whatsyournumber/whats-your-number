@@ -81,7 +81,7 @@ const STEPS: Step[] = [
       "It starts from your plan, then uses your real spending."],
   },
   {
-    url: "/retiro", icon: Target, minPlan: "pro",
+    url: "/retiro", icon: Target, minPlan: "free",
     es: ["Tu número de libertad financiera", "Calcula cuánto dinero necesitas para vivir de tus inversiones.",
       "Mira tu número de retiro; puedes editarlo según cuánto quieras vivir al mes.",
       "Mira el progreso de tu número vs el año de retiro.",
@@ -92,7 +92,7 @@ const STEPS: Step[] = [
       "Simulate retirement with higher contributions, returns and age to plan better."],
   },
   {
-    url: "/hipoteca", icon: Home, minPlan: "free",
+    url: "/hipoteca", icon: Home, minPlan: "pro",
     es: ["Análisis de hipoteca", "Compra vs alquiler, con tus datos reales.",
       "Edita tu información para ver tu renta mensual y cuántos intereses pagarás.",
       "La IA te ayuda a entender si es mejor abonar, bajar la tasa o pagar mensual.",
@@ -192,7 +192,7 @@ export function AppTour() {
   }, [tier]);
   const availableSteps = useMemo(() => {
     // En móvil el tour es corto: una parada por cada botón de la barra inferior.
-    const MOBILE_URLS = ["/dashboard", "/registro-gastos", "/retiro", "/portafolio", "/advisor"];
+    const MOBILE_URLS = ["/dashboard", "/registro-gastos", "/retiro", "/portafolio", "/mi-perfil", "/advisor"];
     return STEPS.filter(
       (tourStep) =>
         planMeetsTier(tourStep.minPlan, tourTier) &&

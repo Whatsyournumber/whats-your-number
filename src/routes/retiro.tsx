@@ -5,7 +5,6 @@ import { motion } from "motion/react";
 import { Pencil, X } from "lucide-react";
 import { ScrollXButtons, useScrollX } from "@/components/scroll-x";
 
-import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -1006,10 +1005,6 @@ function RetiroContent() {
 }
 
 function Retiro() {
-  return (
-    <PlanGate required="pro">
-      <RetiroContent />
-    </PlanGate>
-  );
+  return <RetiroContent />;
 }
 
