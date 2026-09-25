@@ -138,11 +138,11 @@ const STEPS: Step[] = [
   {
     url: "/life-planner", icon: Map, minPlan: "pro",
     es: ["Life Planner", "Simula decisiones de vida antes de tomarlas.",
-      "Mudarte, cambiar de trabajo, tener hijos y más.",
+      "Agrega una nueva meta: mudarte, cambiar de trabajo, tener hijos y más.",
       "Cada decisión recalcula tu número al instante.",
       "Todo parte de tu situación real, no de cero."],
     en: ["Life Planner", "Simulate life decisions before making them.",
-      "Moving, changing jobs, having kids and more.",
+      "Add a new goal: moving, changing jobs, having kids and more.",
       "Every decision recalculates your number instantly.",
       "Everything starts from your real situation, not from scratch."],
   },
@@ -228,6 +228,7 @@ export function AppTour() {
   const isPatrimonioTourStep = current?.url === "/patrimonio";
   const isPortfolioTourStep = current?.url === "/portafolio";
   const isCiudadesTourStep = current?.url === "/ciudades";
+  const isPlannerTourStep = current?.url === "/life-planner";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
