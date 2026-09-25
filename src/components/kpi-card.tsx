@@ -31,6 +31,7 @@ export function KpiCard({
   labelSm?: string;
   value: string;
   valueTrailing?: ReactNode;
+  labelTrailing?: ReactNode;
   delta?: number;
   deltaValue?: string | undefined;
   hint?: ReactNode;

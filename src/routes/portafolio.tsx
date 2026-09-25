@@ -1942,13 +1942,13 @@ function PortafolioContent() {
         <div data-tour-portfolio-target="value" className="relative h-full">
           <KpiCard
             label={t("Valor actual", "Current value")}
-            value={fmt(totalValue)}
-            valueTrailing={(
+            labelTrailing={(
               <span
                 className="portfolio-live-dot ml-1.5 inline-block h-3 w-3 shrink-0 self-center rounded-full bg-positive"
                 aria-hidden="true"
               />
             )}
+            value={fmt(totalValue)}
             accent
             index={0}
           />
