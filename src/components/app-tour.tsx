@@ -232,6 +232,11 @@ export function AppTour() {
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
+
+  // Bottom sheet móvil: volver arriba al cambiar de paso (evita texto tapado por la cabecera fija)
+  useEffect(() => {
+    if (isMobile && tourBoxRef.current) tourBoxRef.current.scrollTop = 0;
+  }, [step, isMobile]);
   const [markers, setMarkers] = useState<{ kpi: { x: number; y: number }; number: { x: number; y: number }; box: { x: number; y: number } } | null>(null);
   useEffect(() => {
     if (!isDashboardTourStep || isMobile) {
