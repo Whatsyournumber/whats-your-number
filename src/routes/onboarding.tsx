@@ -352,6 +352,12 @@ function OnboardingPage() {
   const isBuilding = step === BUILD_STEP;
   const isSummary = step === SUMMARY_STEP;
 
+  // The final result must begin at its celebration, even when the previous
+  // questionnaire was scrolled to the bottom on a small screen.
+  useEffect(() => {
+    if (step === SUMMARY_STEP) window.scrollTo({ top: 0, behavior: "instant" });
+  }, [step]);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
       <div className="wealth-gradient pointer-events-none absolute -top-48 left-1/2 h-[560px] w-[960px] -translate-x-1/2 rounded-full opacity-[0.10] blur-3xl" />
@@ -396,7 +402,7 @@ function OnboardingPage() {
 
       <div
         className={`relative mx-auto flex min-h-[calc(100vh-57px)] flex-col justify-center px-5 ${
-          isSummary ? "max-w-5xl py-4 sm:py-5" : "max-w-2xl py-10 sm:py-16"
+          isSummary ? "max-w-5xl justify-start py-4 sm:py-5" : "max-w-2xl py-10 sm:py-16"
         }`}
       >
         <AnimatePresence mode="wait">
