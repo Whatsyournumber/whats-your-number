@@ -262,10 +262,10 @@ export function AppTour() {
   }, [step, isMobile]);
 
   // Móvil: foco (spotlight) sobre el elemento clave de cada paso + flecha desde el bottom sheet.
-  const [spot, setSpot] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  const [spots, setSpots] = useState<{ x: number; y: number; w: number; h: number }[]>([]);
   useEffect(() => {
     if (!isMobile || !current || pathname !== current.url) {
-      setSpot(null);
+      setSpots([]);
       return;
     }
     const SELECTORS: Record<string, string[]> = {
