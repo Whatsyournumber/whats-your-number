@@ -262,7 +262,7 @@ export function AppTour() {
   }, [step, isMobile]);
 
   // Móvil: foco (spotlight) sobre el elemento clave de cada paso + flecha desde el bottom sheet.
-  const [spot, setSpot] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  const [spot, setSpot] = useState<{ x: number; y: number; w: number; h: number; badge?: number } | null>(null);
   const [extraSpots, setExtraSpots] = useState<{ x: number; y: number; w: number; h: number; badge?: number }[]>([]);
   useEffect(() => {
     if (!isMobile || !current || pathname !== current.url) {
