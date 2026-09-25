@@ -2039,7 +2039,7 @@ export function SummaryScreen({
   const firstName = (data.full_name || "").trim().split(/\s+/)[0] ?? "";
 
   return (
-    <div className="mx-auto -mt-6 flex w-full max-w-5xl flex-col gap-3 sm:-mt-8 sm:gap-4">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 sm:gap-4">
       <div className="flex flex-col items-center text-center">
         <PartyPopper />
         <h2 className="font-display -mt-1 text-2xl font-semibold sm:text-3xl">
