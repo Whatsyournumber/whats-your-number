@@ -127,12 +127,12 @@ const STEPS: Step[] = [
   {
     url: "/ciudades", icon: Globe2, minPlan: "pro",
     es: ["Lifestyle Simulator", "Ciudades donde tu dinero rinde más.",
-      "Compara tu ciudad con destinos del mismo continente.",
       "Filtra por presupuesto, estilo de vida e hijos.",
+      "Compara tu ciudad con destinos del mismo continente.",
       "Ve en cuántas llegarías antes a tu libertad financiera."],
     en: ["Lifestyle Simulator", "Cities where your money goes further.",
-      "Compare your city with destinations on the same continent.",
       "Filter by budget, lifestyle and kids.",
+      "Compare your city with destinations on the same continent.",
       "See where you'd reach financial freedom sooner."],
   },
   {
@@ -227,6 +227,7 @@ export function AppTour() {
   const isHipotecaTourStep = current?.url === "/hipoteca";
   const isPatrimonioTourStep = current?.url === "/patrimonio";
   const isPortfolioTourStep = current?.url === "/portafolio";
+  const isCiudadesTourStep = current?.url === "/ciudades";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
@@ -531,6 +532,60 @@ export function AppTour() {
     };
   }, [isPortfolioTourStep, isMobile, pathname]);
 
+  const [ciudadesMarkers, setCiudadesMarkers] = useState<{
+    filters: { x: number; y: number } | null;
+    results: { x: number; y: number } | null;
+    cards: { x: number; y: number } | null;
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isCiudadesTourStep || isMobile) {
+      setCiudadesMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    // Cada punto solo se dibuja mientras su objetivo esté dentro de la vista;
+    // si el usuario se desplaza, se oculta en vez de fijarse arriba.
+    const pointFor = (r: DOMRect, anchor: "left" | "right") =>
+      r.top >= 0 && r.bottom <= window.innerHeight
+        ? { x: anchor === "left" ? r.left + 170 : r.right - 60, y: Math.max(70, r.top + 14) }
+        : null;
+    const measure = () => {
+      const filters = document.querySelector<HTMLElement>('[data-tour-ciudades-target="filters"]')?.getBoundingClientRect();
+      const results = document.getElementById("tour-ciudades-results")?.getBoundingClientRect();
+      const cards = document.querySelector<HTMLElement>('[data-tour-ciudades-target="cards"]')?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!filters || !results || !cards || !box || cancelled) return;
+      setCiudadesMarkers({
+        filters: pointFor(filters, "left"),
+        results: pointFor(results, "right"),
+        cards: pointFor(cards, "right"),
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure);
+    };
+  }, [isCiudadesTourStep, isMobile, pathname]);
+
+  // En Ciudades, baja lo justo para que se vean los filtros arriba y las sugerencias debajo.
+  useEffect(() => {
+    if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/ciudades" && pathname === "/ciudades") {
+      const timer = window.setTimeout(() => {
+        const filters = document.querySelector<HTMLElement>('[data-tour-ciudades-target="filters"]');
+        if (filters) window.scrollTo({ top: Math.max(0, window.scrollY + filters.getBoundingClientRect().top - 90), behavior: "smooth" });
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [step, pathname, isMobile]);
+
   // En Análisis de hipoteca, baja lo justo para ver los campos de arriba y las estrategias a la vez.
   useEffect(() => {
     if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/hipoteca" && pathname === "/hipoteca") {
@@ -688,7 +743,8 @@ export function AppTour() {
   const isHipotecaStep = current.url === "/hipoteca";
   const isPatrimonioStep = current.url === "/patrimonio";
   const isPortfolioStep = current.url === "/portafolio";
-  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep || isHipotecaStep || isPatrimonioStep || isPortfolioStep;
+  const isCiudadesStep = current.url === "/ciudades";
+  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep || isHipotecaStep || isPatrimonioStep || isPortfolioStep || isCiudadesStep;
 
   return (
     <>
@@ -1049,6 +1105,50 @@ export function AppTour() {
               fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-portfolio-arrow)" className="stroke-positive"
             />
           </svg>
+        </div>
+      )}
+      {isCiudadesStep && ciudadesMarkers?.box && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            <defs>
+              <marker id="tour-ciudades-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
+              </marker>
+            </defs>
+            {ciudadesMarkers.filters && (
+              <path
+                d={`M ${ciudadesMarkers.box.x + 40} ${ciudadesMarkers.box.y - 4} Q ${(ciudadesMarkers.box.x + ciudadesMarkers.filters.x) / 2} ${ciudadesMarkers.filters.y + 120} ${ciudadesMarkers.filters.x} ${ciudadesMarkers.filters.y + 12}`}
+                fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-ciudades-arrow)" className="stroke-positive"
+              />
+            )}
+            {ciudadesMarkers.results && (
+              <path
+                d={`M ${ciudadesMarkers.box.x - 4} ${ciudadesMarkers.box.y + ciudadesMarkers.box.height * 0.36} Q ${(ciudadesMarkers.box.x + ciudadesMarkers.results.x) / 2 - 40} ${ciudadesMarkers.results.y - 60} ${ciudadesMarkers.results.x} ${ciudadesMarkers.results.y}`}
+                fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-ciudades-arrow)" className="stroke-positive"
+              />
+            )}
+            {ciudadesMarkers.cards && (
+              <path
+                d={`M ${ciudadesMarkers.box.x - 4} ${ciudadesMarkers.box.y + ciudadesMarkers.box.height * 0.72} Q ${ciudadesMarkers.cards.x + 120} ${ciudadesMarkers.cards.y - 55} ${ciudadesMarkers.cards.x} ${ciudadesMarkers.cards.y}`}
+                fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-ciudades-arrow)" className="stroke-positive"
+              />
+            )}
+          </svg>
+          {([
+            [ciudadesMarkers.filters, 1],
+            [ciudadesMarkers.results, 2],
+            [ciudadesMarkers.cards, 3],
+          ] as const).flatMap(([pt, label]) =>
+            pt ? [(
+              <span
+                key={label}
+                className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+                style={{ left: pt.x - 14, top: pt.y - 6 }}
+              >
+                {label}
+              </span>
+            )] : []
+          )}
         </div>
       )}
     </>

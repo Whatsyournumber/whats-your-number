@@ -412,7 +412,7 @@ function LifestyleSimulatorContent() {
         )}
       />
 
-      <div className="surface overflow-hidden rounded-2xl border border-border">
+      <div data-tour-ciudades-target="filters" className="surface overflow-hidden rounded-2xl border border-border">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border/70 bg-elevated/30 px-4 py-2.5 sm:flex sm:flex-wrap sm:justify-between">
           <div className="flex min-w-0 items-center gap-2">
             <SlidersHorizontal className="h-3.5 w-3.5 shrink-0 text-primary" />
@@ -782,6 +782,7 @@ function SuggestedForYou({
 
   return (
     <Panel
+      id="tour-ciudades-results"
       title={picks.length > 0 ? t("Mis ciudades", "My cities") : t("Sugeridas para ti", "Suggested for you")}
       description={
         picks.length > 0
@@ -800,7 +801,7 @@ function SuggestedForYou({
 
 
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div data-tour-ciudades-target="cards" className="grid gap-3 sm:grid-cols-3">
 
         {top.map((r, i) => {
           const st = stabilityBadge(r.city.country, t);

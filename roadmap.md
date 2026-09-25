@@ -10,3 +10,4 @@
 - [x] Card "Gastos del mes": insignia "Excedido 107%" visible sin cortes en la vista actual
 - [x] Tutorial: fondo blanco y paso del Dashboard colocado sobre la gráfica en escritorio
 - [x] Tutorial de Portafolio: textos, tres líneas y estado de valor en tiempo real
+- [x] Tutorial paso 10 (Ciudades): textos reordenados + líneas y badges 1-2-3, marcadores ocultos fuera de vista
