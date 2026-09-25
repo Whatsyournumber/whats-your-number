@@ -557,9 +557,9 @@ export function AppTour() {
       const box = tourBoxRef.current?.getBoundingClientRect();
       if (!filters || !results || !cards || !box || cancelled) return;
       setCiudadesMarkers({
-        filters: pointFor(filters),
-        results: pointFor(results),
-        cards: pointFor(cards),
+        filters: pointFor(filters, "left"),
+        results: pointFor(results, "right"),
+        cards: pointFor(cards, "right"),
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
