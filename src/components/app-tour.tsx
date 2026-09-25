@@ -280,35 +280,49 @@ export function AppTour() {
       "/ciudades": ["[data-tour-ciudades-target='filters']"],
       "/life-planner": ["#tour-planner-hero", "[data-tour-planner-target='add']"],
     };
-    const find = (): HTMLElement | null => {
-      // En móvil el foco va al botón de la barra inferior correspondiente al paso.
-      const navBtn = document.querySelector<HTMLElement>(`[data-tour-nav="${current.url}"]`);
-      if (navBtn && navBtn.getBoundingClientRect().height > 0) return navBtn;
+    const find = (): HTMLElement[] => {
+      const out: HTMLElement[] = [];
+      const seen = new Set<HTMLElement>();
+      const push = (el: HTMLElement | null) => {
+        if (el && el.getBoundingClientRect().height > 0 && !el.closest("[data-tour-box]") && !seen.has(el)) {
+          seen.add(el);
+          out.push(el);
+        }
+      };
+      // En móvil el foco va a los elementos clave de la página + el botón de la barra inferior.
       if (current.url === "/gastos") {
         const btn = [...document.querySelectorAll<HTMLElement>("main a, main button")]
           .filter((b) => /import/i.test(b.textContent ?? "") && b.getBoundingClientRect().height > 0 && !b.closest("[data-tour-box]"))
           .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)[0];
-        if (btn) return btn;
+        push(btn ?? null);
       }
-      for (const s of [...(SELECTORS[current.url] ?? []), "main h1", "main h2", "h1"]) {
-        const el = document.querySelector<HTMLElement>(s);
-        if (el && el.getBoundingClientRect().height > 0) return el;
+      for (const s of SELECTORS[current.url] ?? []) push(document.querySelector<HTMLElement>(s));
+      if (out.length === 0) {
+        for (const s of ["main h1", "main h2", "h1"]) {
+          const el = document.querySelector<HTMLElement>(s);
+          if (el && el.getBoundingClientRect().height > 0) { push(el); break; }
+        }
       }
-      return null;
+      push(document.querySelector<HTMLElement>(`[data-tour-nav="${current.url}"]`));
+      return out;
     };
     let cancelled = false;
     const measure = () => {
       if (cancelled) return;
-      const el = find();
-      if (!el) return setSpot(null);
-      const r = el.getBoundingClientRect();
+      const els = find();
+      if (els.length === 0) return setSpots([]);
       const maxH = window.innerHeight * 0.62 - 80;
-      setSpot({ x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) });
+      setSpots(
+        els.map((el) => {
+          const r = el.getBoundingClientRect();
+          return { x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) };
+        }),
+      );
     };
     const timers = [120, 500, 1100].map((ms, i) =>
       window.setTimeout(() => {
-        const el = find();
-        if (el && i < 2 && !el.hasAttribute("data-tour-nav")) {
+        const el = find().find((e) => !e.hasAttribute("data-tour-nav"));
+        if (el && i < 2) {
           el.style.scrollMarginTop = "88px";
           el.scrollIntoView({ block: "start", behavior: i === 0 ? "auto" : "smooth" });
         }
