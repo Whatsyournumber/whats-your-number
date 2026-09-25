@@ -272,7 +272,7 @@ export function AppTour() {
     }
     // Focos extra por paso (además del botón de la barra inferior).
     const EXTRA_SELECTORS: Record<string, string[]> = {
-      "/registro-gastos": ["[data-tour-expense-target='add-mobile']", "[data-tour-expense-target='plan']"],
+      "/registro-gastos": ["[data-tour-expense-target='add-mobile']", "[data-tour-expense-target='plan-title']"],
     };
     const SELECTORS: Record<string, string[]> = {
       "/dashboard": ["main [class*='grid'] > *"],
