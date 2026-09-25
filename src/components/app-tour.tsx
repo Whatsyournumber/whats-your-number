@@ -546,7 +546,10 @@ export function AppTour() {
     let cancelled = false;
     // Cada punto solo se dibuja mientras su objetivo esté dentro de la vista;
     // si el usuario se desplaza, se oculta en vez de fijarse arriba.
-    const pointFor = (r: DOMRect) => (r.top >= 0 && r.bottom <= window.innerHeight ? { x: r.right - 60, y: r.top + 14 } : null);
+    const pointFor = (r: DOMRect, anchor: "left" | "right") =>
+      r.top >= 0 && r.bottom <= window.innerHeight
+        ? { x: anchor === "left" ? r.left + 170 : r.right - 60, y: Math.max(70, r.top + 14) }
+        : null;
     const measure = () => {
       const filters = document.querySelector<HTMLElement>('[data-tour-ciudades-target="filters"]')?.getBoundingClientRect();
       const results = document.getElementById("tour-ciudades-results")?.getBoundingClientRect();
