@@ -738,7 +738,8 @@ export function AppTour() {
   const isHipotecaStep = current.url === "/hipoteca";
   const isPatrimonioStep = current.url === "/patrimonio";
   const isPortfolioStep = current.url === "/portafolio";
-  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep || isHipotecaStep || isPatrimonioStep || isPortfolioStep;
+  const isCiudadesStep = current.url === "/ciudades";
+  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep || isHipotecaStep || isPatrimonioStep || isPortfolioStep || isCiudadesStep;
 
   return (
     <>
