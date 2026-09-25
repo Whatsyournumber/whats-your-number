@@ -29,6 +29,7 @@ export function MobileBottomNav() {
             <Link
               key={tab.url}
               to={tab.url}
+              data-tour-nav={tab.url}
               className="group flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-1 transition-colors"
             >
               <tab.icon

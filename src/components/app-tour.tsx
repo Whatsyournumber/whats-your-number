@@ -190,10 +190,15 @@ export function AppTour() {
     }
     return tier;
   }, [tier]);
-  const availableSteps = useMemo(
-    () => STEPS.filter((tourStep) => planMeetsTier(tourStep.minPlan, tourTier)),
-    [tourTier],
-  );
+  const availableSteps = useMemo(() => {
+    // En móvil el tour es corto: una parada por cada botón de la barra inferior.
+    const MOBILE_URLS = ["/dashboard", "/registro-gastos", "/retiro", "/portafolio", "/advisor"];
+    return STEPS.filter(
+      (tourStep) =>
+        planMeetsTier(tourStep.minPlan, tourTier) &&
+        (!isMobile || MOBILE_URLS.includes(tourStep.url)),
+    );
+  }, [tourTier, isMobile]);
   const total = availableSteps.length + 1;
 
   // Nombre para saludar: perfil > Google > correo.
@@ -219,8 +224,8 @@ export function AppTour() {
         host.endsWith(".lovableproject-dev.com") ||
         /^id-preview--.*\.lovable\.app$/.test(host)
       );
-      if (mobilePreview && !sessionStorage.getItem("yn.tour.mobile-preview-welcome-20260925b")) {
-        sessionStorage.setItem("yn.tour.mobile-preview-welcome-20260925b", "1");
+      if (mobilePreview && !sessionStorage.getItem("yn.tour.mobile-preview-nav-20260925")) {
+        sessionStorage.setItem("yn.tour.mobile-preview-nav-20260925", "1");
         setOpenMobile(false);
         setStep(0);
         return;
@@ -276,6 +281,9 @@ export function AppTour() {
       "/life-planner": ["#tour-planner-hero", "[data-tour-planner-target='add']"],
     };
     const find = (): HTMLElement | null => {
+      // En móvil el foco va al botón de la barra inferior correspondiente al paso.
+      const navBtn = document.querySelector<HTMLElement>(`[data-tour-nav="${current.url}"]`);
+      if (navBtn && navBtn.getBoundingClientRect().height > 0) return navBtn;
       if (current.url === "/gastos") {
         const btn = [...document.querySelectorAll<HTMLElement>("main a, main button")]
           .filter((b) => /import/i.test(b.textContent ?? "") && b.getBoundingClientRect().height > 0 && !b.closest("[data-tour-box]"))
@@ -300,7 +308,7 @@ export function AppTour() {
     const timers = [120, 500, 1100].map((ms, i) =>
       window.setTimeout(() => {
         const el = find();
-        if (el && i < 2) {
+        if (el && i < 2 && !el.hasAttribute("data-tour-nav")) {
           el.style.scrollMarginTop = "88px";
           el.scrollIntoView({ block: "start", behavior: i === 0 ? "auto" : "smooth" });
         }
@@ -879,7 +887,7 @@ export function AppTour() {
     <>
       {/* Oscurece ligeramente el fondo para que el paso resalte sin ocultarlo */}
       {isMobile && spot ? (
-        <div className="pointer-events-none fixed inset-0 z-[90]" aria-hidden="true">
+        <div className="pointer-events-none fixed inset-0 z-[110]" aria-hidden="true">
           <div
             data-tour-spot className="absolute rounded-2xl border-2 border-positive shadow-[0_0_0_9999px_color-mix(in_oklab,var(--background)_72%,transparent)] transition-all duration-300"
             style={{ left: spot.x, top: spot.y, width: spot.w, height: spot.h }}
@@ -902,7 +910,7 @@ export function AppTour() {
       )}
       <div
         className={cn(
-          "fixed inset-x-0 bottom-0 z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
+          "fixed inset-x-0 bottom-[78px] z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
           hasNumberedBullets ? "sm:w-[560px]" : "sm:w-[400px]",
           isDashboardStep
             ? sidebarState === "expanded"
