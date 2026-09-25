@@ -532,6 +532,55 @@ export function AppTour() {
     };
   }, [isPortfolioTourStep, isMobile, pathname]);
 
+  const [ciudadesMarkers, setCiudadesMarkers] = useState<{
+    filters: { x: number; y: number };
+    results: { x: number; y: number };
+    cards: { x: number; y: number };
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isCiudadesTourStep || isMobile) {
+      setCiudadesMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    const clampY = (y: number) => Math.max(24, Math.min(y, window.innerHeight - 48));
+    const measure = () => {
+      const filters = document.querySelector<HTMLElement>('[data-tour-ciudades-target="filters"]')?.getBoundingClientRect();
+      const results = document.getElementById("tour-ciudades-results")?.getBoundingClientRect();
+      const cards = document.querySelector<HTMLElement>('[data-tour-ciudades-target="cards"]')?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!filters || !results || !cards || !box || cancelled) return;
+      setCiudadesMarkers({
+        filters: { x: filters.right - 80, y: clampY(filters.top + 18) },
+        results: { x: results.right - 56, y: clampY(results.top + 12) },
+        cards: { x: cards.right - 56, y: clampY(cards.top + 28) },
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure);
+    };
+  }, [isCiudadesTourStep, isMobile, pathname]);
+
+  // En Ciudades, baja lo justo para que se vean los filtros arriba y las sugerencias debajo.
+  useEffect(() => {
+    if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/ciudades" && pathname === "/ciudades") {
+      const timer = window.setTimeout(() => {
+        const filters = document.querySelector<HTMLElement>('[data-tour-ciudades-target="filters"]');
+        if (filters) window.scrollTo({ top: Math.max(0, window.scrollY + filters.getBoundingClientRect().top - 90), behavior: "smooth" });
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [step, pathname, isMobile]);
+
   // En Análisis de hipoteca, baja lo justo para ver los campos de arriba y las estrategias a la vez.
   useEffect(() => {
     if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/hipoteca" && pathname === "/hipoteca") {
