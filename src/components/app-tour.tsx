@@ -263,11 +263,17 @@ export function AppTour() {
 
   // Móvil: foco (spotlight) sobre el elemento clave de cada paso + flecha desde el bottom sheet.
   const [spot, setSpot] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  const [extraSpots, setExtraSpots] = useState<{ x: number; y: number; w: number; h: number }[]>([]);
   useEffect(() => {
     if (!isMobile || !current || pathname !== current.url) {
       setSpot(null);
+      setExtraSpots([]);
       return;
     }
+    // Focos extra por paso (además del botón de la barra inferior).
+    const EXTRA_SELECTORS: Record<string, string[]> = {
+      "/registro-gastos": ["[data-tour-expense-target='add-mobile']", "[data-tour-expense-target='plan']"],
+    };
     const SELECTORS: Record<string, string[]> = {
       "/dashboard": ["main [class*='grid'] > *"],
       "/registro-gastos": ["[data-tour-expense-target='add']", "[data-tour-expense-target='budget']"],
@@ -300,10 +306,21 @@ export function AppTour() {
     const measure = () => {
       if (cancelled) return;
       const el = find();
-      if (!el) return setSpot(null);
-      const r = el.getBoundingClientRect();
       const maxH = window.innerHeight * 0.62 - 80;
-      setSpot({ x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) });
+      if (!el) {
+        setSpot(null);
+      } else {
+        const r = el.getBoundingClientRect();
+        setSpot({ x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) });
+      }
+      const extras = (EXTRA_SELECTORS[current.url] ?? [])
+        .map((s) => document.querySelector<HTMLElement>(s))
+        .filter((e): e is HTMLElement => !!e && e.getBoundingClientRect().height > 0)
+        .map((e) => {
+          const r = e.getBoundingClientRect();
+          return { x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) };
+        });
+      setExtraSpots(extras);
     };
     const timers = [120, 500, 1100].map((ms, i) =>
       window.setTimeout(() => {
@@ -888,10 +905,32 @@ export function AppTour() {
       {/* Oscurece ligeramente el fondo para que el paso resalte sin ocultarlo */}
       {isMobile && spot ? (
         <div className="pointer-events-none fixed inset-0 z-[90]" aria-hidden="true">
-          <div
-            data-tour-spot className="absolute rounded-2xl border-2 border-positive shadow-[0_0_0_9999px_color-mix(in_oklab,var(--background)_72%,transparent)] transition-all duration-300"
-            style={{ left: spot.x, top: spot.y, width: spot.w, height: spot.h }}
-          />
+          {extraSpots.length > 0 ? (
+            <>
+              <svg className="absolute inset-0 h-full w-full">
+                <path
+                  fillRule="evenodd"
+                  className="fill-background/70"
+                  d={`M0 0 H${window.innerWidth} V${window.innerHeight} H0 Z ${[spot, ...extraSpots]
+                    .map((s) => `M${s.x} ${s.y} h${s.w} v${s.h} h${-s.w} Z`)
+                    .join(" ")}`}
+                />
+              </svg>
+              {[spot, ...extraSpots].map((s, i) => (
+                <div
+                  key={i}
+                  data-tour-spot={i === 0 ? true : undefined}
+                  className="absolute rounded-2xl border-2 border-positive transition-all duration-300"
+                  style={{ left: s.x, top: s.y, width: s.w, height: s.h }}
+                />
+              ))}
+            </>
+          ) : (
+            <div
+              data-tour-spot className="absolute rounded-2xl border-2 border-positive shadow-[0_0_0_9999px_color-mix(in_oklab,var(--background)_72%,transparent)] transition-all duration-300"
+              style={{ left: spot.x, top: spot.y, width: spot.w, height: spot.h }}
+            />
+          )}
           {(() => {
             const sheetTop = window.innerHeight * 0.64;
             const y1 = spot.y + spot.h + 6;
