@@ -210,8 +210,11 @@ export function AppTour() {
   useEffect(() => {
     if (!user || subscriptionLoading) return;
     try {
-      if (localStorage.getItem(doneKey(user.id))) return;
-      if (localStorage.getItem(PENDING_KEY) !== "1") return;
+      const forced = new URLSearchParams(window.location.search).get("tour") === "1";
+      if (!forced) {
+        if (localStorage.getItem(doneKey(user.id))) return;
+        if (localStorage.getItem(PENDING_KEY) !== "1") return;
+      }
       setStep(0);
     } catch {
       /* noop */
