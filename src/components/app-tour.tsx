@@ -263,16 +263,19 @@ export function AppTour() {
 
   // Móvil: foco (spotlight) sobre el elemento clave de cada paso + flecha desde el bottom sheet.
   const [spot, setSpot] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
-  const [extraSpots, setExtraSpots] = useState<{ x: number; y: number; w: number; h: number }[]>([]);
+  const [extraSpots, setExtraSpots] = useState<{ x: number; y: number; w: number; h: number; badge?: number }[]>([]);
   useEffect(() => {
     if (!isMobile || !current || pathname !== current.url) {
       setSpot(null);
       setExtraSpots([]);
       return;
     }
-    // Focos extra por paso (además del botón de la barra inferior).
-    const EXTRA_SELECTORS: Record<string, string[]> = {
-      "/registro-gastos": ["[data-tour-expense-target='add-mobile']", "[data-tour-expense-target='plan-title']", "[data-tour-expense-target='plan-pencil']"],
+    // Focos extra por paso (además del botón de la barra inferior), con badge numerado opcional.
+    const EXTRA_SELECTORS: Record<string, { sel: string; badge: number }[]> = {
+      "/registro-gastos": [
+        { sel: "[data-tour-expense-target='add-mobile']", badge: 1 },
+        { sel: "[data-tour-expense-target='plan']", badge: 2 },
+      ],
     };
     const SELECTORS: Record<string, string[]> = {
       "/dashboard": ["main [class*='grid'] > *"],
@@ -314,12 +317,14 @@ export function AppTour() {
         setSpot({ x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) });
       }
       const extras = (EXTRA_SELECTORS[current.url] ?? [])
-        .map((s) => document.querySelector<HTMLElement>(s))
-        .filter((e): e is HTMLElement => !!e && e.getBoundingClientRect().height > 0)
-        .map((e) => {
+        .map(({ sel, badge }) => {
+          const e = document.querySelector<HTMLElement>(sel);
+          if (!e) return null;
           const r = e.getBoundingClientRect();
-          return { x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) };
-        });
+          if (r.height <= 0) return null;
+          return { x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH), badge };
+        })
+        .filter((e): e is NonNullable<typeof e> => !!e);
       setExtraSpots(extras);
     };
     const timers = [120, 500, 1100].map((ms, i) =>
@@ -922,7 +927,13 @@ export function AppTour() {
                   data-tour-spot={i === 0 ? true : undefined}
                   className="absolute rounded-2xl border-2 border-positive transition-all duration-300"
                   style={{ left: s.x, top: s.y, width: s.w, height: s.h }}
-                />
+                >
+                  {s.badge != null && (
+                    <span className="absolute -left-2.5 -top-2.5 grid h-5 w-5 place-items-center rounded-full bg-positive text-[10px] font-semibold text-white ring-2 ring-background">
+                      {s.badge}
+                    </span>
+                  )}
+                </div>
               ))}
             </>
           ) : (
