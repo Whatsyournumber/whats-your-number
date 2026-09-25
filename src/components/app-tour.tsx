@@ -263,16 +263,19 @@ export function AppTour() {
 
   // Móvil: foco (spotlight) sobre el elemento clave de cada paso + flecha desde el bottom sheet.
   const [spot, setSpot] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
-  const [extraSpots, setExtraSpots] = useState<{ x: number; y: number; w: number; h: number }[]>([]);
+  const [extraSpots, setExtraSpots] = useState<{ x: number; y: number; w: number; h: number; badge?: number }[]>([]);
   useEffect(() => {
     if (!isMobile || !current || pathname !== current.url) {
       setSpot(null);
       setExtraSpots([]);
       return;
     }
-    // Focos extra por paso (además del botón de la barra inferior).
-    const EXTRA_SELECTORS: Record<string, string[]> = {
-      "/registro-gastos": ["[data-tour-expense-target='add-mobile']", "[data-tour-expense-target='plan-title']", "[data-tour-expense-target='plan-pencil']"],
+    // Focos extra por paso (además del botón de la barra inferior), con badge numerado opcional.
+    const EXTRA_SELECTORS: Record<string, { sel: string; badge: number }[]> = {
+      "/registro-gastos": [
+        { sel: "[data-tour-expense-target='add-mobile']", badge: 1 },
+        { sel: "[data-tour-expense-target='plan']", badge: 2 },
+      ],
     };
     const SELECTORS: Record<string, string[]> = {
       "/dashboard": ["main [class*='grid'] > *"],
