@@ -255,6 +255,61 @@ export function AppTour() {
   useEffect(() => {
     if (isMobile && tourBoxRef.current) tourBoxRef.current.scrollTop = 0;
   }, [step, isMobile]);
+
+  // Móvil: foco (spotlight) sobre el elemento clave de cada paso + flecha desde el bottom sheet.
+  const [spot, setSpot] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  useEffect(() => {
+    if (!isMobile || !current || pathname !== current.url) {
+      setSpot(null);
+      return;
+    }
+    const SELECTORS: Record<string, string[]> = {
+      "/dashboard": ["main [class*='grid'] > *"],
+      "/registro-gastos": ["[data-tour-expense-target='add']", "[data-tour-expense-target='budget']"],
+      "/gastos": ["[data-tour-analysis-target='chart']", "[data-tour-analysis-target='import']"],
+      "/cash-flow": ["[data-tour-cashflow-target='blocks']", "[data-tour-cashflow-target='cards']"],
+      "/retiro": ["[data-tour-number-target='number']", "[data-tour-number-target='progress']"],
+      "/hipoteca": ["[data-tour-hipoteca-target='inputs']"],
+      "/patrimonio": ["[data-tour-patrimonio-target='cards']", "#tour-pat-chart"],
+      "/portafolio": ["[data-tour-portfolio-target='value']", "#tour-portfolio-chart"],
+      "/ciudades": ["[data-tour-ciudades-target='filters']"],
+      "/life-planner": ["#tour-planner-hero", "[data-tour-planner-target='add']"],
+    };
+    const find = (): HTMLElement | null => {
+      for (const s of [...(SELECTORS[current.url] ?? []), "main h1"]) {
+        const el = document.querySelector<HTMLElement>(s);
+        if (el && el.getBoundingClientRect().height > 0) return el;
+      }
+      return null;
+    };
+    let cancelled = false;
+    const measure = () => {
+      if (cancelled) return;
+      const el = find();
+      if (!el) return setSpot(null);
+      const r = el.getBoundingClientRect();
+      const maxH = window.innerHeight * 0.62 - 80;
+      setSpot({ x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) });
+    };
+    const timers = [120, 500, 1100].map((ms, i) =>
+      window.setTimeout(() => {
+        const el = find();
+        if (el && i < 2) {
+          const top = el.getBoundingClientRect().top + window.scrollY - 88;
+          window.scrollTo({ top: Math.max(0, top), behavior: i === 0 ? "auto" : "smooth" });
+        }
+        window.setTimeout(measure, 350);
+      }, ms),
+    );
+    window.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelled = true;
+      timers.forEach(clearTimeout);
+      window.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+    };
+  }, [isMobile, current, pathname]);
   const [markers, setMarkers] = useState<{ kpi: { x: number; y: number }; number: { x: number; y: number }; box: { x: number; y: number } } | null>(null);
   useEffect(() => {
     if (!isDashboardTourStep || isMobile) {
