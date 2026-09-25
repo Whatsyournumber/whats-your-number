@@ -910,7 +910,7 @@ export function AppTour() {
       )}
       <div
         className={cn(
-          "fixed inset-x-0 bottom-0 z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
+          "fixed inset-x-0 bottom-[78px] z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
           hasNumberedBullets ? "sm:w-[560px]" : "sm:w-[400px]",
           isDashboardStep
             ? sidebarState === "expanded"
