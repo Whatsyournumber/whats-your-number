@@ -180,25 +180,17 @@ export function AppTour() {
   const { isMobile, setOpenMobile, state: sidebarState } = useSidebar();
   const { profile } = useProfile();
   const [step, setStep] = useState<number | null>(null); // 0 = bienvenida
-  // Permite previsualizar el tour de otro plan con localStorage "yn.tour.tier" = free | pro | patrimonio.
-  const tourTier = useMemo<PlanTier>(() => {
-    try {
-      const forced = localStorage.getItem("yn.tour.tier");
-      if (forced === "free" || forced === "pro" || forced === "patrimonio") return forced;
-    } catch {
-      /* noop */
-    }
-    return tier;
-  }, [tier]);
+  // El tutorial muestra SOLO las paradas incluidas en el plan real del usuario
+  // (gratis, pro o familiar): ninguna clave externa puede ampliarlo.
   const availableSteps = useMemo(() => {
     // En móvil el tour es corto: una parada por cada botón de la barra inferior.
     const MOBILE_URLS = ["/dashboard", "/registro-gastos", "/retiro", "/portafolio", "/mi-perfil", "/advisor"];
     return STEPS.filter(
       (tourStep) =>
-        planMeetsTier(tourStep.minPlan, tourTier) &&
+        planMeetsTier(tourStep.minPlan, tier) &&
         (!isMobile || MOBILE_URLS.includes(tourStep.url)),
     );
-  }, [tourTier, isMobile]);
+  }, [tier, isMobile]);
   const total = availableSteps.length + 1;
 
   // Nombre para saludar: perfil > Google > correo.
