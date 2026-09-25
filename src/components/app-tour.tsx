@@ -434,10 +434,10 @@ export function AppTour() {
     };
   }, [isExpenseTourStep, isMobile, pathname]);
 
-  // Señala el botón de importar y la gráfica comparativa en el paso Análisis de gastos.
+  // Señala el botón de importar y la distribución por categoría en el paso Análisis de gastos.
   const [analysisMarkers, setAnalysisMarkers] = useState<{
     importBtn: { x: number; y: number };
-    chart: { x: number; y: number };
+    distribution: { x: number; y: number };
     box: { x: number; y: number; width: number; height: number };
   } | null>(null);
   useEffect(() => {
@@ -448,12 +448,12 @@ export function AppTour() {
     let cancelled = false;
     const measure = () => {
       const importBtn = document.querySelector<HTMLElement>('[data-tour-analysis-target="import"]')?.getBoundingClientRect();
-      const chart = document.querySelector<HTMLElement>('[data-tour-analysis-target="chart"]')?.getBoundingClientRect();
+      const dist = document.querySelector<HTMLElement>('#tour-analysis-distribution')?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
-      if (!importBtn || !chart || !box || cancelled) return;
+      if (!importBtn || !dist || !box || cancelled) return;
       setAnalysisMarkers({
         importBtn: { x: importBtn.left + importBtn.width / 2, y: importBtn.top },
-        chart: { x: chart.left + chart.width * 0.3, y: chart.top + chart.height * 0.3 },
+        distribution: { x: dist.left + dist.width * 0.18, y: dist.top + 24 },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
