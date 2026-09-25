@@ -588,6 +588,48 @@ export function AppTour() {
     return undefined;
   }, [step, pathname, isMobile]);
 
+  const [plannerMarkers, setPlannerMarkers] = useState<{
+    add: { x: number; y: number } | null;
+    hero: { x: number; y: number } | null;
+    goals: { x: number; y: number } | null;
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isPlannerTourStep || isMobile) {
+      setPlannerMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    // Cada punto solo se dibuja mientras su objetivo esté dentro de la vista;
+    // basta con que la parte de arriba del objetivo sea visible.
+    const pointFor = (r: DOMRect) =>
+      r.top + 14 >= 60 && r.top + 14 <= window.innerHeight - 40
+        ? { x: r.right - 60, y: r.top + 14 }
+        : null;
+    const measure = () => {
+      const add = document.querySelector<HTMLElement>('[data-tour-planner-target="add"]')?.getBoundingClientRect();
+      const hero = document.getElementById("tour-planner-hero")?.getBoundingClientRect();
+      const goals = document.querySelector<HTMLElement>('[data-tour-planner-target="goals"]')?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!add || !hero || !goals || !box || cancelled) return;
+      setPlannerMarkers({
+        add: pointFor(add),
+        hero: pointFor(hero),
+        goals: pointFor(goals),
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure);
+    };
+  }, [isPlannerTourStep, isMobile, pathname]);
+
   // En Análisis de hipoteca, baja lo justo para ver los campos de arriba y las estrategias a la vez.
   useEffect(() => {
     if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/hipoteca" && pathname === "/hipoteca") {
