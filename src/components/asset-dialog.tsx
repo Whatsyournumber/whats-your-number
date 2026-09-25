@@ -55,6 +55,9 @@ const numOr = (v: string, fallbackValue = 0) => {
   return Number.isFinite(n) ? n : fallbackValue;
 };
 
+/** Tipos que cotizan en mercado y pueden llevar ticker. */
+const QUOTED_KINDS: HoldingKind[] = ["etf", "stock", "crypto", "reit", "bond"];
+
 /** Ventana para añadir (o editar) un activo, igual que en Portafolio. */
 export function AssetDialog({
   open,
@@ -255,7 +258,7 @@ export function AssetDialog({
                   </SelectContent>
                 </Select>
               </div>
-              {["etf", "stock", "crypto"].includes(draft.kind) && (
+              {QUOTED_KINDS.includes(draft.kind) && (
                 <>
                   <div className="space-y-1">
                     <Label className="text-[11px] text-muted-foreground">{t("Ticker", "Ticker")}</Label>
@@ -383,7 +386,7 @@ export function AssetDialog({
             </div>
             <div className="flex items-center justify-between gap-3">
               <p className="text-[11px] text-muted-foreground">
-                {["etf", "stock", "crypto"].includes(draft.kind)
+                {QUOTED_KINDS.includes(draft.kind)
                   ? t("En cero, usamos el precio de mercado.", "At zero, we use the market price.")
                   : ""}
               </p>
