@@ -281,6 +281,9 @@ export function AppTour() {
       "/life-planner": ["#tour-planner-hero", "[data-tour-planner-target='add']"],
     };
     const find = (): HTMLElement | null => {
+      // En móvil el foco va al botón de la barra inferior correspondiente al paso.
+      const navBtn = document.querySelector<HTMLElement>(`[data-tour-nav="${current.url}"]`);
+      if (navBtn && navBtn.getBoundingClientRect().height > 0) return navBtn;
       if (current.url === "/gastos") {
         const btn = [...document.querySelectorAll<HTMLElement>("main a, main button")]
           .filter((b) => /import/i.test(b.textContent ?? "") && b.getBoundingClientRect().height > 0 && !b.closest("[data-tour-box]"))
