@@ -602,20 +602,19 @@ export function AppTour() {
     let cancelled = false;
     // Cada punto solo se dibuja mientras su objetivo esté dentro de la vista;
     // basta con que la parte de arriba del objetivo sea visible.
-    const pointFor = (r: DOMRect) =>
-      r.top + 14 >= 60 && r.top + 14 <= window.innerHeight - 40
-        ? { x: r.right - 60, y: r.top + 14 }
-        : null;
+    const inView = (y: number) => y >= 60 && y <= window.innerHeight - 40;
     const measure = () => {
-      const add = document.querySelector<HTMLElement>('[data-tour-planner-target="add"]')?.getBoundingClientRect();
-      const hero = document.getElementById("tour-planner-hero")?.getBoundingClientRect();
-      const goals = document.querySelector<HTMLElement>('[data-tour-planner-target="goals"]')?.getBoundingClientRect();
+      const addR = document.querySelector<HTMLElement>('[data-tour-planner-target="add"]')?.getBoundingClientRect();
+      const heroR = document.getElementById("tour-planner-hero")?.getBoundingClientRect();
+      const goalsR = document.querySelector<HTMLElement>('[data-tour-planner-target="goals"]')?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
-      if (!add || !hero || !goals || !box || cancelled) return;
+      if (!addR || !heroR || !goalsR || !box || cancelled) return;
       setPlannerMarkers({
-        add: pointFor(add),
-        hero: pointFor(hero),
-        goals: pointFor(goals),
+        // 1: a la izquierda del botón "Nueva meta", para no taparlo
+        add: inView(addR.top + 16) ? { x: addR.left - 26, y: addR.top + 16 } : null,
+        hero: inView(heroR.top + 14) ? { x: heroR.right - 60, y: heroR.top + 14 } : null,
+        // 3: algo más arriba, para no rozar el texto "Impacto combinado"
+        goals: inView(goalsR.top + 14) ? { x: goalsR.right - 60, y: goalsR.top + 4 } : null,
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
