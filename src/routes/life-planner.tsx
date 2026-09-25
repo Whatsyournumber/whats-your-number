@@ -255,14 +255,16 @@ function LifePlannerContent() {
           "Simulate your life goals and see how they impact your financial freedom.",
         )}
         actions={
-          <Button onClick={() => setDraft(newDraft())} className="gap-2">
-            <Plus className="h-4 w-4" />
-            {t("Nueva meta", "New goal")}
-          </Button>
+          <div data-tour-planner-target="add" className="inline-flex">
+            <Button onClick={() => setDraft(newDraft())} className="gap-2">
+              <Plus className="h-4 w-4" />
+              {t("Nueva meta", "New goal")}
+            </Button>
+          </div>
         }
       />
 
-      <Panel className="relative overflow-hidden">
+      <Panel id="tour-planner-hero" className="relative overflow-hidden">
         <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.12]" />
         <div className="relative grid gap-6 lg:grid-cols-[1.2fr_2fr]">
           <div className="lg:border-r lg:border-border/60 lg:pr-6">
@@ -270,7 +272,7 @@ function LifePlannerContent() {
             <p className="mt-1 text-sm text-muted-foreground">
               {t("Cada decisión de vida te acerca o aleja de tu número.", "Every life decision brings you closer to or further from your number.")}
             </p>
-            <div className="mt-5 flex items-center gap-3">
+            <div data-tour-planner-target="bar" className="mt-5 flex items-center gap-3">
               <div className="relative h-2.5 flex-1 overflow-hidden rounded-full bg-muted">
               {/* Referencia sin metas de vida */}
               <div
@@ -326,9 +328,9 @@ function LifePlannerContent() {
         </div>
       </Panel>
 
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div data-tour-planner-target="goals" className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold">{t("Tus metas de vida", "Your life goals")}</h2>
+          <h2 data-tour-planner-target="decisions" className="w-fit text-lg font-semibold">{t("Tus metas de vida", "Your life goals")}</h2>
           <p className="text-xs text-muted-foreground">
             {t("Cada decisión que tomas impacta tu fecha de retiro.", "Every decision you make moves your retirement date.")}
           </p>

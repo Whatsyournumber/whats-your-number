@@ -138,11 +138,11 @@ const STEPS: Step[] = [
   {
     url: "/life-planner", icon: Map, minPlan: "pro",
     es: ["Life Planner", "Simula decisiones de vida antes de tomarlas.",
-      "Mudarte, cambiar de trabajo, tener hijos y más.",
+      "Agrega una nueva meta: mudarte, cambiar de trabajo, tener hijos y más.",
       "Cada decisión recalcula tu número al instante.",
       "Todo parte de tu situación real, no de cero."],
     en: ["Life Planner", "Simulate life decisions before making them.",
-      "Moving, changing jobs, having kids and more.",
+      "Add a new goal: moving, changing jobs, having kids and more.",
       "Every decision recalculates your number instantly.",
       "Everything starts from your real situation, not from scratch."],
   },
@@ -228,9 +228,15 @@ export function AppTour() {
   const isPatrimonioTourStep = current?.url === "/patrimonio";
   const isPortfolioTourStep = current?.url === "/portafolio";
   const isCiudadesTourStep = current?.url === "/ciudades";
+  const isPlannerTourStep = current?.url === "/life-planner";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
+
+  // Bottom sheet móvil: volver arriba al cambiar de paso (evita texto tapado por la cabecera fija)
+  useEffect(() => {
+    if (isMobile && tourBoxRef.current) tourBoxRef.current.scrollTop = 0;
+  }, [step, isMobile]);
   const [markers, setMarkers] = useState<{ kpi: { x: number; y: number }; number: { x: number; y: number }; box: { x: number; y: number } } | null>(null);
   useEffect(() => {
     if (!isDashboardTourStep || isMobile) {
@@ -587,6 +593,48 @@ export function AppTour() {
     return undefined;
   }, [step, pathname, isMobile]);
 
+  const [plannerMarkers, setPlannerMarkers] = useState<{
+    add: { x: number; y: number } | null;
+    bar: { x: number; y: number } | null;
+    decisions: { x: number; y: number } | null;
+    box: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+  useEffect(() => {
+    if (!isPlannerTourStep || isMobile) {
+      setPlannerMarkers(null);
+      return;
+    }
+    let cancelled = false;
+    // Cada punto solo se dibuja mientras su objetivo esté dentro de la vista;
+    // basta con que la parte de arriba del objetivo sea visible.
+    const inView = (y: number) => y >= 60 && y <= window.innerHeight - 40;
+    const measure = () => {
+      const addR = document.querySelector<HTMLElement>('[data-tour-planner-target="add"]')?.getBoundingClientRect();
+      const barR = document.querySelector<HTMLElement>('[data-tour-planner-target="bar"]')?.getBoundingClientRect();
+      const decR = document.querySelector<HTMLElement>('[data-tour-planner-target="decisions"]')?.getBoundingClientRect();
+      const box = tourBoxRef.current?.getBoundingClientRect();
+      if (!addR || !barR || !decR || !box || cancelled) return;
+      setPlannerMarkers({
+        // 1: a la izquierda del botón "Nueva meta", para no taparlo
+        add: inView(addR.top + 16) ? { x: addR.left - 26, y: addR.top + 16 } : null,
+        // 2: a la derecha de la barra y el porcentaje
+        bar: inView(barR.top + 12) ? { x: barR.right + 12, y: barR.top + 12 } : null,
+        // 3: junto al título de metas / decisiones tomadas
+        decisions: inView(decR.top + 14) ? { x: decR.right + 14, y: decR.top + 14 } : null,
+        box: { x: box.left, y: box.top, width: box.width, height: box.height },
+      });
+    };
+    const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure);
+    };
+  }, [isPlannerTourStep, isMobile, pathname]);
+
   // En Análisis de hipoteca, baja lo justo para ver los campos de arriba y las estrategias a la vez.
   useEffect(() => {
     if (!isMobile && step != null && step > 0 && availableSteps[step - 1]?.url === "/hipoteca" && pathname === "/hipoteca") {
@@ -745,7 +793,8 @@ export function AppTour() {
   const isPatrimonioStep = current.url === "/patrimonio";
   const isPortfolioStep = current.url === "/portafolio";
   const isCiudadesStep = current.url === "/ciudades";
-  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep || isHipotecaStep || isPatrimonioStep || isPortfolioStep || isCiudadesStep;
+  const isPlannerStep = current.url === "/life-planner";
+  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep || isHipotecaStep || isPatrimonioStep || isPortfolioStep || isCiudadesStep || isPlannerStep;
 
   return (
     <>
@@ -753,7 +802,7 @@ export function AppTour() {
       <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/20" : "bg-background/40"}`} />
       <div
         className={cn(
-          "fixed inset-x-3 bottom-16 z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
+          "fixed inset-x-0 bottom-0 z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
           hasNumberedBullets ? "sm:w-[560px]" : "sm:w-[400px]",
           isDashboardStep
             ? sidebarState === "expanded"
@@ -771,14 +820,21 @@ export function AppTour() {
                     : `sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
                   : isPortfolioStep
                     ? "sm:bottom-8 sm:left-auto sm:right-6"
-                     : isCiudadesStep
-                       ? sidebarState === "expanded"
-                         ? "sm:left-4 sm:right-auto lg:left-[calc(var(--sidebar-width)+1.5rem)]"
-                         : "sm:left-4 sm:right-auto lg:left-[calc(var(--sidebar-width-icon)+1.5rem)]"
-                    : "sm:right-6",
+                     : isPlannerStep
+                       ? "sm:bottom-8 sm:left-auto sm:right-6"
+                       : isCiudadesStep
+                         ? sidebarState === "expanded"
+                           ? "sm:left-4 sm:right-auto lg:left-[calc(var(--sidebar-width)+1.5rem)]"
+                           : "sm:left-4 sm:right-auto lg:left-[calc(var(--sidebar-width-icon)+1.5rem)]"
+                         : "sm:right-6",
         )}
       >
-        <div ref={tourBoxRef} data-tour-box className="relative overflow-hidden rounded-2xl border border-tour-border bg-tour-surface p-4 text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25 sm:rounded-3xl sm:p-5">
+        <div ref={tourBoxRef} data-tour-box className={cn("relative border border-tour-border bg-tour-surface text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25", isMobile ? "max-h-[40dvh] overflow-y-auto overscroll-contain rounded-t-3xl border-b-0 p-4 pb-7" : "overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-5")}>
+          {isMobile && (
+            <div className="-mx-4 -mt-4 mb-1.5 bg-tour-surface pb-1.5 pt-2.5">
+              <div className="mx-auto h-1 w-10 rounded-full bg-tour-foreground/25" />
+            </div>
+          )}
           <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-64 -translate-x-1/2 rounded-full bg-primary/25 blur-3xl" />
           <div className="relative flex items-start gap-2.5 sm:gap-3">
             {isDashboardStep ? (
@@ -812,7 +868,7 @@ export function AppTour() {
           </div>
           <p className="relative mt-2.5 whitespace-pre-line text-[13px] leading-snug text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
           <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
-            {points.map((p, i) => {
+            {(isMobile ? points.slice(0, 2) : points).map((p, i) => {
               const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
               return (
                 <li key={i} className="flex items-start gap-2 text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
@@ -1143,6 +1199,50 @@ export function AppTour() {
             [ciudadesMarkers.filters, 1],
             [ciudadesMarkers.results, 2],
             [ciudadesMarkers.cards, 3],
+          ] as const).flatMap(([pt, label]) =>
+            pt ? [(
+              <span
+                key={label}
+                className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+                style={{ left: pt.x - 14, top: pt.y - 6 }}
+              >
+                {label}
+              </span>
+            )] : []
+          )}
+        </div>
+      )}
+      {isPlannerStep && plannerMarkers?.box && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            <defs>
+              <marker id="tour-planner-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
+              </marker>
+            </defs>
+            {plannerMarkers.add && (
+              <path
+                d={`M ${plannerMarkers.box.x + plannerMarkers.box.width * 0.7} ${plannerMarkers.box.y - 4} Q ${(plannerMarkers.box.x + plannerMarkers.add.x) / 2} ${plannerMarkers.add.y + 90} ${plannerMarkers.add.x} ${plannerMarkers.add.y + 8}`}
+                fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-planner-arrow)" className="stroke-positive"
+              />
+            )}
+            {plannerMarkers.bar && (
+              <path
+                d={`M ${plannerMarkers.box.x - 4} ${plannerMarkers.box.y + plannerMarkers.box.height * 0.3} Q ${(plannerMarkers.box.x + plannerMarkers.bar.x) / 2} ${plannerMarkers.bar.y + 70} ${plannerMarkers.bar.x} ${plannerMarkers.bar.y}`}
+                fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-planner-arrow)" className="stroke-positive"
+              />
+            )}
+            {plannerMarkers.decisions && (
+              <path
+                d={`M ${plannerMarkers.box.x - 4} ${plannerMarkers.box.y + plannerMarkers.box.height * 0.7} Q ${plannerMarkers.box.x - 90} ${plannerMarkers.decisions.y + 55} ${plannerMarkers.decisions.x} ${plannerMarkers.decisions.y}`}
+                fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-planner-arrow)" className="stroke-positive"
+              />
+            )}
+          </svg>
+          {([
+            [plannerMarkers.add, 1],
+            [plannerMarkers.bar, 2],
+            [plannerMarkers.decisions, 3],
           ] as const).flatMap(([pt, label]) =>
             pt ? [(
               <span
