@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+Free-plan navigation keeps WhatsYournumber accessible, gates mortgage at Pro, and uses the mobile Extra data tab in place of Portfolio; the mobile tour follows only tabs actually present for each tier so every highlighted destination is reachable.

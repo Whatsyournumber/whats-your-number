@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { MortgageModule } from "@/components/mortgage-module";
+import { PlanGate } from "@/components/plan-gate";
 import { PageShell } from "@/components/page";
 
 export const Route = createFileRoute("/hipoteca")({
@@ -23,9 +24,11 @@ export const Route = createFileRoute("/hipoteca")({
 
 function Hipoteca() {
   return (
-    <PageShell>
-      <MortgageModule />
-    </PageShell>
+    <PlanGate required="pro" blur={false}>
+      <PageShell>
+        <MortgageModule />
+      </PageShell>
+    </PlanGate>
   );
 }
 

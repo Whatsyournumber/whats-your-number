@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Wallet, Target, LineChart, Sparkles } from "lucide-react";
+import { Home, Wallet, Target, LineChart, Sparkles, UserRound } from "lucide-react";
 import { useT } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
 
@@ -13,16 +13,14 @@ export function MobileBottomNav() {
     { title: t("Tus gastos", "Spending"), url: "/registro-gastos", icon: Wallet },
     { title: t("Tu número", "Your number"), url: "/retiro", icon: Target },
     ...(isPro
-      ? [
-          { title: t("Portfolio", "Portfolio"), url: "/portafolio", icon: LineChart },
-          { title: "IA", url: "/advisor", icon: Sparkles },
-        ]
-      : []),
+      ? [{ title: t("Portfolio", "Portfolio"), url: "/portafolio", icon: LineChart }]
+      : [{ title: t("Mis datos extra", "Extra data"), url: "/mi-perfil", icon: UserRound }]),
+    { title: "IA", url: "/advisor", icon: Sparkles },
   ];
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
-      <div className="flex w-full items-center justify-around bg-background/90 px-2 pb-[max(env(safe-area-inset-bottom,0px),10px)] pt-3 shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+      <div className="flex w-full items-center justify-around bg-background/90 px-1 pb-[max(env(safe-area-inset-bottom,0px),10px)] pt-3 shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.35)] backdrop-blur-xl">
         {tabs.map((tab) => {
           const active = pathname === tab.url;
           return (
@@ -30,7 +28,8 @@ export function MobileBottomNav() {
               key={tab.url}
               to={tab.url}
               data-tour-nav={tab.url}
-              className="group flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-1 transition-colors"
+              onClick={() => window.dispatchEvent(new CustomEvent("wyn:tour-mobile-tab", { detail: tab.url }))}
+              className="group flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 py-1 transition-colors"
             >
               <tab.icon
                 className={`h-6 w-6 shrink-0 transition-colors ${
@@ -39,7 +38,7 @@ export function MobileBottomNav() {
                 strokeWidth={active ? 2.2 : 1.9}
               />
               <span
-                className={`truncate text-[11px] font-medium leading-tight ${
+                  className={`min-h-7 text-center text-[10px] font-medium leading-tight ${
                   active ? "text-primary/90" : "text-muted-foreground group-hover:text-foreground"
                 }`}
               >
