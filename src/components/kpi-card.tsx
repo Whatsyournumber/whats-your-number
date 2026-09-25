@@ -12,6 +12,7 @@ export function KpiCard({
   labelSm,
   value,
   valueTrailing,
+  labelTrailing,
   delta,
   deltaValue,
   hint,
@@ -30,6 +31,7 @@ export function KpiCard({
   labelSm?: string;
   value: string;
   valueTrailing?: ReactNode;
+  labelTrailing?: ReactNode;
   delta?: number;
   deltaValue?: string | undefined;
   hint?: ReactNode;
@@ -82,6 +84,7 @@ export function KpiCard({
               label
             )}
           </p>
+          {labelTrailing}
           {tooltip && (
             <Tooltip>
               <TooltipTrigger asChild>
