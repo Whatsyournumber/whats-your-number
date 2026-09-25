@@ -457,9 +457,9 @@ export function AppTour() {
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
+    // Con el foco en el botón "Importar gastos" de la cabecera basta estar arriba de todo.
     const scrollTimer = window.setTimeout(() => {
-      const btn = document.querySelector<HTMLElement>('[data-tour-analysis-target="import"]');
-      if (btn) window.scrollTo({ top: btn.getBoundingClientRect().top + window.scrollY - (window.innerHeight - 110), behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }, 250);
     const timers = [80, 350, 900, 1400, 1800].map((ms) => window.setTimeout(measure, ms));
     window.addEventListener("resize", measure);
