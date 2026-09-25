@@ -900,13 +900,28 @@ export function AppTour() {
   return (
     <>
       {/* Oscurece ligeramente el fondo para que el paso resalte sin ocultarlo */}
-      {isMobile && spot ? (
+      {isMobile && spots.length > 0 ? (
         <div className="pointer-events-none fixed inset-0 z-[110]" aria-hidden="true">
+          {/* Capa oscura con un "hueco" por cada foco, para que todos se vean iluminados completos */}
           <div
-            data-tour-spot className="absolute rounded-2xl border-2 border-positive shadow-[0_0_0_9999px_color-mix(in_oklab,var(--background)_72%,transparent)] transition-all duration-300"
-            style={{ left: spot.x, top: spot.y, width: spot.w, height: spot.h }}
+            className="absolute inset-0 transition-all duration-300"
+            style={{
+              background: "color-mix(in oklab, var(--background) 72%, transparent)",
+              clipPath: `polygon(evenodd, 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, ${spots
+                .map((s) => `${s.x}px ${s.y}px, ${s.x}px ${s.y + s.h}px, ${s.x + s.w}px ${s.y + s.h}px, ${s.x + s.w}px ${s.y}px, ${s.x}px ${s.y}px`)
+                .join(", ")})`,
+            }}
           />
+          {spots.map((s, i) => (
+            <div
+              key={i}
+              data-tour-spot
+              className="absolute rounded-2xl border-2 border-positive transition-all duration-300"
+              style={{ left: s.x, top: s.y, width: s.w, height: s.h }}
+            />
+          ))}
           {(() => {
+            const spot = spots[0];
             const sheetTop = window.innerHeight * 0.64;
             const y1 = spot.y + spot.h + 6;
             if (sheetTop - y1 < 28) return null;
