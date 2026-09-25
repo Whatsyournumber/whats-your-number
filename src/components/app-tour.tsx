@@ -224,8 +224,8 @@ export function AppTour() {
         host.endsWith(".lovableproject-dev.com") ||
         /^id-preview--.*\.lovable\.app$/.test(host)
       );
-      if (mobilePreview && !sessionStorage.getItem("yn.tour.mobile-preview-welcome-20260925b")) {
-        sessionStorage.setItem("yn.tour.mobile-preview-welcome-20260925b", "1");
+      if (mobilePreview && !sessionStorage.getItem("yn.tour.mobile-preview-nav-20260925")) {
+        sessionStorage.setItem("yn.tour.mobile-preview-nav-20260925", "1");
         setOpenMobile(false);
         setStep(0);
         return;
@@ -887,7 +887,7 @@ export function AppTour() {
     <>
       {/* Oscurece ligeramente el fondo para que el paso resalte sin ocultarlo */}
       {isMobile && spot ? (
-        <div className="pointer-events-none fixed inset-0 z-[90]" aria-hidden="true">
+        <div className="pointer-events-none fixed inset-0 z-[110]" aria-hidden="true">
           <div
             data-tour-spot className="absolute rounded-2xl border-2 border-positive shadow-[0_0_0_9999px_color-mix(in_oklab,var(--background)_72%,transparent)] transition-all duration-300"
             style={{ left: spot.x, top: spot.y, width: spot.w, height: spot.h }}
