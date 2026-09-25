@@ -234,7 +234,7 @@ export function AppTour() {
     } catch {
       /* noop */
     }
-  }, [user, subscriptionLoading, isMobile, pathname, setOpenMobile]);
+  }, [user, subscriptionLoading, isMobile, setOpenMobile]);
 
   const current = step && step > 0 ? availableSteps[step - 1] ?? null : null;
   const isDashboardTourStep = current?.url === "/dashboard";

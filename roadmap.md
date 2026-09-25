@@ -11,4 +11,4 @@
 - [x] Tutorial: fondo blanco y paso del Dashboard colocado sobre la gráfica en escritorio
 - [x] Tutorial de Portafolio: textos, tres líneas y estado de valor en tiempo real
 - [x] Tutorial paso 10 (Ciudades): textos reordenados + líneas y badges 1-2-3, marcadores ocultos fuera de vista
-- [ ] Tutorial móvil: bottom sheet 30–40% con solo los puntos clave, mismo recorrido (verificar en vivo)
+- [x] Tutorial móvil: bottom sheet 30–40% con solo los puntos clave, mismo recorrido (verificado en vivo)
