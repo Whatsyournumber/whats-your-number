@@ -110,7 +110,7 @@ export function AssetDialog({
   // Cambiar el tipo de activo dentro del editor: limpia el ticker si el nuevo tipo no cotiza.
   const changeKind = (kind: HoldingKind) => {
     if (!draft) return;
-    const quoted = ["etf", "stock", "crypto"].includes(kind);
+    const quoted = QUOTED_KINDS.includes(kind);
     setDraft({ ...draft, kind, ticker: quoted ? draft.ticker : "" });
   };
 
@@ -174,11 +174,17 @@ export function AssetDialog({
     ["stock", t("Acción", "Stock"), t("Empresas individuales", "Individual companies")],
     ["crypto", t("Cripto", "Crypto"), t("Activos digitales", "Digital assets")],
     ["cash", t("Efectivo", "Cash"), t("Cuentas y efectivo", "Accounts and cash")],
+    ["bank", t("Cuenta bancaria", "Bank account"), t("Depósitos a la vista", "Demand deposits")],
+    ["money_market", t("Mercado monetario", "Money market"), t("Liquidez a corto plazo", "Short-term liquidity")],
     ["property", t("Propiedad", "Property"), t("Bienes raíces", "Real estate")],
     ["reit", t("REITs", "REITs"), t("Inversión inmobiliaria", "Real estate funds")],
     ["bond", t("Renta fija", "Fixed income"), t("Bonos e instrumentos", "Bonds and instruments")],
+    ["tbill", t("Letra del tesoro", "Treasury bill"), t("Deuda pública a corto plazo", "Short-term government debt")],
+    ["note", t("Nota", "Note"), t("Instrumentos de deuda", "Debt instruments")],
     ["structured", t("Nota estructurada", "Structured note"), t("Productos estructurados", "Structured products")],
     ["retirement", t("Fondo de retiro", "Retirement fund"), t("Planes de pensiones", "Pension plans")],
+    ["future", t("Futuros", "Futures"), t("Contratos de derivados", "Derivative contracts")],
+    ["debt", t("Préstamo", "Loan"), t("Dinero prestado", "Money lent")],
     ["other", t("Otros", "Other"), t("Cualquier otro activo", "Any other asset")],
   ];
 
