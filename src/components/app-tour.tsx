@@ -590,8 +590,8 @@ export function AppTour() {
 
   const [plannerMarkers, setPlannerMarkers] = useState<{
     add: { x: number; y: number } | null;
-    hero: { x: number; y: number } | null;
-    goals: { x: number; y: number } | null;
+    bar: { x: number; y: number } | null;
+    decisions: { x: number; y: number } | null;
     box: { x: number; y: number; width: number; height: number };
   } | null>(null);
   useEffect(() => {
@@ -605,16 +605,17 @@ export function AppTour() {
     const inView = (y: number) => y >= 60 && y <= window.innerHeight - 40;
     const measure = () => {
       const addR = document.querySelector<HTMLElement>('[data-tour-planner-target="add"]')?.getBoundingClientRect();
-      const heroR = document.getElementById("tour-planner-hero")?.getBoundingClientRect();
-      const goalsR = document.querySelector<HTMLElement>('[data-tour-planner-target="goals"]')?.getBoundingClientRect();
+      const barR = document.querySelector<HTMLElement>('[data-tour-planner-target="bar"]')?.getBoundingClientRect();
+      const decR = document.querySelector<HTMLElement>('[data-tour-planner-target="decisions"]')?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
-      if (!addR || !heroR || !goalsR || !box || cancelled) return;
+      if (!addR || !barR || !decR || !box || cancelled) return;
       setPlannerMarkers({
         // 1: a la izquierda del botón "Nueva meta", para no taparlo
         add: inView(addR.top + 16) ? { x: addR.left - 26, y: addR.top + 16 } : null,
-        hero: inView(heroR.top + 14) ? { x: heroR.right - 60, y: heroR.top + 14 } : null,
-        // 3: algo más arriba, para no rozar el texto "Impacto combinado"
-        goals: inView(goalsR.top + 14) ? { x: goalsR.right - 60, y: goalsR.top + 4 } : null,
+        // 2: a la derecha de la barra y el porcentaje
+        bar: inView(barR.top + 12) ? { x: barR.right + 12, y: barR.top + 12 } : null,
+        // 3: junto al título de metas / decisiones tomadas
+        decisions: inView(decR.top + 14) ? { x: decR.right + 14, y: decR.top + 14 } : null,
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
@@ -814,11 +815,13 @@ export function AppTour() {
                     : `sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
                   : isPortfolioStep
                     ? "sm:bottom-8 sm:left-auto sm:right-6"
-                     : isCiudadesStep || isPlannerStep
-                       ? sidebarState === "expanded"
-                         ? "sm:left-4 sm:right-auto lg:left-[calc(var(--sidebar-width)+1.5rem)]"
-                         : "sm:left-4 sm:right-auto lg:left-[calc(var(--sidebar-width-icon)+1.5rem)]"
-                    : "sm:right-6",
+                     : isPlannerStep
+                       ? "sm:bottom-8 sm:left-auto sm:right-6"
+                       : isCiudadesStep
+                         ? sidebarState === "expanded"
+                           ? "sm:left-4 sm:right-auto lg:left-[calc(var(--sidebar-width)+1.5rem)]"
+                           : "sm:left-4 sm:right-auto lg:left-[calc(var(--sidebar-width-icon)+1.5rem)]"
+                         : "sm:right-6",
         )}
       >
         <div ref={tourBoxRef} data-tour-box className="relative overflow-hidden rounded-2xl border border-tour-border bg-tour-surface p-4 text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25 sm:rounded-3xl sm:p-5">
@@ -1209,27 +1212,27 @@ export function AppTour() {
             </defs>
             {plannerMarkers.add && (
               <path
-                d={`M ${plannerMarkers.box.x + plannerMarkers.box.width * 0.6} ${plannerMarkers.box.y - 4} Q ${(plannerMarkers.box.x + plannerMarkers.add.x) / 2} ${plannerMarkers.add.y + 90} ${plannerMarkers.add.x} ${plannerMarkers.add.y + 8}`}
+                d={`M ${plannerMarkers.box.x + plannerMarkers.box.width * 0.7} ${plannerMarkers.box.y - 4} Q ${(plannerMarkers.box.x + plannerMarkers.add.x) / 2} ${plannerMarkers.add.y + 90} ${plannerMarkers.add.x} ${plannerMarkers.add.y + 8}`}
                 fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-planner-arrow)" className="stroke-positive"
               />
             )}
-            {plannerMarkers.hero && (
+            {plannerMarkers.bar && (
               <path
-                d={`M ${plannerMarkers.box.x + plannerMarkers.box.width + 4} ${plannerMarkers.box.y + plannerMarkers.box.height * 0.4} Q ${(plannerMarkers.box.x + plannerMarkers.box.width + plannerMarkers.hero.x) / 2} ${plannerMarkers.hero.y + 70} ${plannerMarkers.hero.x} ${plannerMarkers.hero.y}`}
+                d={`M ${plannerMarkers.box.x - 4} ${plannerMarkers.box.y + plannerMarkers.box.height * 0.3} Q ${(plannerMarkers.box.x + plannerMarkers.bar.x) / 2} ${plannerMarkers.bar.y + 70} ${plannerMarkers.bar.x} ${plannerMarkers.bar.y}`}
                 fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-planner-arrow)" className="stroke-positive"
               />
             )}
-            {plannerMarkers.goals && (
+            {plannerMarkers.decisions && (
               <path
-                d={`M ${plannerMarkers.box.x + plannerMarkers.box.width + 4} ${plannerMarkers.box.y + plannerMarkers.box.height * 0.75} Q ${plannerMarkers.goals.x - 80} ${plannerMarkers.goals.y - 55} ${plannerMarkers.goals.x} ${plannerMarkers.goals.y}`}
+                d={`M ${plannerMarkers.box.x - 4} ${plannerMarkers.box.y + plannerMarkers.box.height * 0.7} Q ${plannerMarkers.box.x - 90} ${plannerMarkers.decisions.y + 55} ${plannerMarkers.decisions.x} ${plannerMarkers.decisions.y}`}
                 fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-planner-arrow)" className="stroke-positive"
               />
             )}
           </svg>
           {([
             [plannerMarkers.add, 1],
-            [plannerMarkers.hero, 2],
-            [plannerMarkers.goals, 3],
+            [plannerMarkers.bar, 2],
+            [plannerMarkers.decisions, 3],
           ] as const).flatMap(([pt, label]) =>
             pt ? [(
               <span
