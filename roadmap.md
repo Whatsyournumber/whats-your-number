@@ -1,5 +1,6 @@
 # Roadmap
 
+- [x] Plan gratis: ocultar del menú lateral todas las secciones bloqueadas (Hipoteca, Patrimonio, Portafolio, Lifestyle Simulator, Life Planner), como ya se hizo con la IA
 - [x] Portafolio tablet: filas sin montarse (grid 2 col hasta lg)
 - [x] Botón Eliminar en popups de editar (portafolio + patrimonio)
 - [x] Resumir texto de ayuda en ambos popups
