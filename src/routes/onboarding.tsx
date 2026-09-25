@@ -149,6 +149,7 @@ export const Route = createFileRoute("/onboarding")({
 const QUESTIONS = 9; // pantallas 1..9
 const BUILD_STEP = 10;
 const SUMMARY_STEP = 11;
+const SUMMARY_SESSION_KEY = "wyn.onboarding.summary";
 
 function OnboardingPage() {
   const { user, loading } = useAuth();
@@ -181,8 +182,9 @@ function OnboardingPage() {
         .eq("user_id", user.id)
         .maybeSingle();
       if (!alive) return;
-      // Si ya completó el onboarding, no lo repetimos.
-      if (row && (row as Record<string, unknown>)["completed"]) {
+       // Keep the just-finished result visible after a reload in this tab.
+       const resumeSummary = sessionStorage.getItem(SUMMARY_SESSION_KEY) === user.id;
+       if (row && (row as Record<string, unknown>)["completed"] && !resumeSummary) {
         navigate({ to: "/dashboard", replace: true });
         return;
       }
@@ -206,7 +208,7 @@ function OnboardingPage() {
         }
         setData(next);
         setLife(nextLife);
-        setStep(Math.min(QUESTIONS, Math.max(1, Number(r["current_step"] ?? 1))));
+         setStep(resumeSummary && r["completed"] ? SUMMARY_STEP : Math.min(QUESTIONS, Math.max(1, Number(r["current_step"] ?? 1))));
       } else {
         const meta = user.user_metadata as Record<string, unknown> | undefined;
         const name = typeof meta?.["full_name"] === "string" ? meta["full_name"] : "";
@@ -304,6 +306,7 @@ function OnboardingPage() {
 
   const finish = () => {
     queueAppTour();
+    if (user) sessionStorage.setItem(SUMMARY_SESSION_KEY, user.id);
     setStep(SUMMARY_STEP);
     void persist({ completed: true, completed_at: new Date().toISOString(), desired_retirement_income: desiredIncome });
     // El plan del onboarding queda listo como plan de gastos personalizado.
@@ -1242,7 +1245,10 @@ function OnboardingPage() {
                 plan={plan}
                 currency={cur}
                 onEdit={() => setStep(1)}
-                onEnter={() => navigate({ to: "/dashboard" })}
+                 onEnter={() => {
+                   sessionStorage.removeItem(SUMMARY_SESSION_KEY);
+                   navigate({ to: "/dashboard" });
+                 }}
               />
             )}
           </motion.div>
