@@ -831,12 +831,12 @@ export function AppTour() {
       >
         <div ref={tourBoxRef} data-tour-box className={cn("relative border border-tour-border bg-tour-surface text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25", isMobile ? "max-h-[40dvh] overflow-y-auto overscroll-contain rounded-t-3xl border-b-0 p-4 pb-7" : "overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-5")}>
           {isMobile && (
-            <div className="sticky top-0 z-10 -mx-4 -mt-4 mb-0 bg-tour-surface pb-2 pt-2.5">
+            <div className="-mx-4 -mt-4 mb-1.5 bg-tour-surface pb-1.5 pt-2.5">
               <div className="mx-auto h-1 w-10 rounded-full bg-tour-foreground/25" />
             </div>
           )}
           <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-64 -translate-x-1/2 rounded-full bg-primary/25 blur-3xl" />
-          <div className={cn("relative flex items-start gap-2.5 sm:gap-3", isMobile && "sticky top-[30px] z-[5] -mx-4 bg-tour-surface px-4 pb-1.5 pt-1")}>
+          <div className="relative flex items-start gap-2.5 sm:gap-3">
             {isDashboardStep ? (
               <div className="min-w-0 flex-1">
                 <span className="numeric text-[11px] font-medium uppercase tracking-wider text-tour-muted">
