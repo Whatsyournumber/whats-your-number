@@ -210,6 +210,21 @@ export function AppTour() {
   useEffect(() => {
     if (!user || subscriptionLoading) return;
     try {
+      // En la vista previa móvil, mostrar el primer paso directamente, incluso
+      // cuando el tutorial ya se haya completado. Solo una vez por pestaña.
+      const host = window.location.hostname;
+      const mobilePreview = isMobile && pathname === "/dashboard" && (
+        host === "localhost" ||
+        host.endsWith(".lovableproject.com") ||
+        host.endsWith(".lovableproject-dev.com") ||
+        /^id-preview--.*\.lovable\.app$/.test(host)
+      );
+      if (mobilePreview && !sessionStorage.getItem("yn.tour.mobile-preview-20260925")) {
+        sessionStorage.setItem("yn.tour.mobile-preview-20260925", "1");
+        setOpenMobile(false);
+        setStep(1);
+        return;
+      }
       const forced = new URLSearchParams(window.location.search).get("tour") === "1";
       if (!forced) {
         if (localStorage.getItem(doneKey(user.id))) return;
@@ -219,7 +234,7 @@ export function AppTour() {
     } catch {
       /* noop */
     }
-  }, [user, subscriptionLoading]);
+  }, [user, subscriptionLoading, isMobile, pathname, setOpenMobile]);
 
   const current = step && step > 0 ? availableSteps[step - 1] ?? null : null;
   const isDashboardTourStep = current?.url === "/dashboard";
@@ -702,19 +717,7 @@ export function AppTour() {
     navigate({ to: "/dashboard" });
   };
 
-  if (step === null) {
-    // Solo en el preview de desarrollo: botón flotante para relanzar el tour.
-    if (!import.meta.env.DEV || !user || subscriptionLoading) return null;
-    return (
-      <button
-        type="button"
-        onClick={() => setStep(0)}
-        className="fixed bottom-24 right-3 z-[100] rounded-full bg-tour px-4 py-2 text-xs font-semibold text-tour-foreground shadow-lg"
-      >
-        ▶ Tutorial
-      </button>
-    );
-  }
+  if (step === null) return null;
 
   const planLabel =
     tourTier === "patrimonio"
