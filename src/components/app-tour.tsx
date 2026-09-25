@@ -1159,11 +1159,11 @@ export function AppTour() {
               </marker>
             </defs>
             <path
-              d={`M ${analysisMarkers.box.x + 12} ${analysisMarkers.box.y + analysisMarkers.box.height * 0.45} Q ${(analysisMarkers.box.x + analysisMarkers.importBtn.x) / 2} ${analysisMarkers.importBtn.y - 60} ${analysisMarkers.importBtn.x} ${analysisMarkers.importBtn.y - 12}`}
+              d={`M ${analysisMarkers.box.x + 12} ${analysisMarkers.box.y + analysisMarkers.box.height * 0.35} Q ${(analysisMarkers.box.x + analysisMarkers.importBtn.x) / 2} ${analysisMarkers.importBtn.y - 60} ${analysisMarkers.importBtn.x} ${analysisMarkers.importBtn.y - 12}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-analysis-arrow)" className="stroke-positive/70"
             />
             <path
-              d={`M ${analysisMarkers.box.x + 30} ${analysisMarkers.box.y - 4} Q ${analysisMarkers.box.x + 30} ${analysisMarkers.box.y - 70} ${analysisMarkers.chart.x} ${analysisMarkers.chart.y - 10}`}
+              d={`M ${analysisMarkers.box.x + 12} ${analysisMarkers.box.y + analysisMarkers.box.height * 0.8} Q ${(analysisMarkers.box.x + analysisMarkers.distribution.x) / 2} ${(analysisMarkers.box.y + analysisMarkers.box.height + analysisMarkers.distribution.y) / 2 - 40} ${analysisMarkers.distribution.x + 6} ${analysisMarkers.distribution.y - 10}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-analysis-arrow)" className="stroke-positive/70"
             />
           </svg>
@@ -1175,7 +1175,7 @@ export function AppTour() {
           </span>
           <span
             className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
-            style={{ left: analysisMarkers.chart.x - 14, top: analysisMarkers.chart.y + 8 }}
+            style={{ left: analysisMarkers.distribution.x - 14, top: analysisMarkers.distribution.y + 4 }}
           >
             2
           </span>
