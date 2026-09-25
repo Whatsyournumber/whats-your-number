@@ -82,11 +82,11 @@ const STEPS: Step[] = [
   },
   {
     url: "/retiro", icon: Target, minPlan: "pro",
-    es: ["Tu número de libertad financiera", "Calcula cuánto dinero necesitas para vivir de tus inversiones.\nEste número se usará en todas partes para ayudarte a llegar.",
+    es: ["Tu número de libertad financiera", "Calcula cuánto dinero necesitas para vivir de tus inversiones.",
       "Mira tu número de retiro; puedes editarlo según cuánto quieras vivir al mes.",
       "Mira el progreso de tu número vs el año de retiro.",
       "Simula tu retiro con más aporte mensual, rentabilidad y edad para planificarte mejor."],
-    en: ["Your financial freedom number", "Calculate how much money you need to live off your investments.\nThis number is used everywhere to help you get there.",
+    en: ["Your financial freedom number", "Calculate how much money you need to live off your investments.",
       "See your retirement number; edit it to match the monthly income you want.",
       "See your number's progress vs your retirement year.",
       "Simulate retirement with higher contributions, returns and age to plan better."],
@@ -275,6 +275,9 @@ export function AppTour() {
       "/registro-gastos": [
         { sel: "[data-tour-expense-target='add-mobile']", badge: 1 },
         { sel: "[data-tour-expense-target='plan']", badge: 2 },
+      ],
+      "/retiro": [
+        { sel: "[data-tour-number-target='number']", badge: 1 },
       ],
     };
     const SELECTORS: Record<string, string[]> = {
