@@ -927,7 +927,13 @@ export function AppTour() {
                   data-tour-spot={i === 0 ? true : undefined}
                   className="absolute rounded-2xl border-2 border-positive transition-all duration-300"
                   style={{ left: s.x, top: s.y, width: s.w, height: s.h }}
-                />
+                >
+                  {s.badge != null && (
+                    <span className="absolute -left-2.5 -top-2.5 grid h-5 w-5 place-items-center rounded-full bg-positive text-[10px] font-semibold text-white ring-2 ring-background">
+                      {s.badge}
+                    </span>
+                  )}
+                </div>
               ))}
             </>
           ) : (
