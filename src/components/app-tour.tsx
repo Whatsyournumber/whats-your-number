@@ -771,6 +771,10 @@ export function AppTour() {
                     : `sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
                   : isPortfolioStep
                     ? "sm:bottom-8 sm:left-auto sm:right-6"
+                     : isCiudadesStep
+                       ? sidebarState === "expanded"
+                         ? "sm:left-4 sm:right-auto lg:left-[calc(var(--sidebar-width)+1.5rem)]"
+                         : "sm:left-4 sm:right-auto lg:left-[calc(var(--sidebar-width-icon)+1.5rem)]"
                     : "sm:right-6",
         )}
       >
@@ -1124,13 +1128,13 @@ export function AppTour() {
             )}
             {ciudadesMarkers.results && (
               <path
-                d={`M ${ciudadesMarkers.box.x - 4} ${ciudadesMarkers.box.y + ciudadesMarkers.box.height * 0.36} Q ${(ciudadesMarkers.box.x + ciudadesMarkers.results.x) / 2 - 40} ${ciudadesMarkers.results.y - 60} ${ciudadesMarkers.results.x} ${ciudadesMarkers.results.y}`}
+                d={`M ${ciudadesMarkers.box.x + ciudadesMarkers.box.width + 4} ${ciudadesMarkers.box.y + ciudadesMarkers.box.height * 0.36} Q ${(ciudadesMarkers.box.x + ciudadesMarkers.box.width + ciudadesMarkers.results.x) / 2} ${ciudadesMarkers.results.y - 60} ${ciudadesMarkers.results.x} ${ciudadesMarkers.results.y}`}
                 fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-ciudades-arrow)" className="stroke-positive"
               />
             )}
             {ciudadesMarkers.cards && (
               <path
-                d={`M ${ciudadesMarkers.box.x - 4} ${ciudadesMarkers.box.y + ciudadesMarkers.box.height * 0.72} Q ${ciudadesMarkers.cards.x + 120} ${ciudadesMarkers.cards.y - 55} ${ciudadesMarkers.cards.x} ${ciudadesMarkers.cards.y}`}
+                d={`M ${ciudadesMarkers.box.x + ciudadesMarkers.box.width + 4} ${ciudadesMarkers.box.y + ciudadesMarkers.box.height * 0.72} Q ${ciudadesMarkers.cards.x - 80} ${ciudadesMarkers.cards.y - 55} ${ciudadesMarkers.cards.x} ${ciudadesMarkers.cards.y}`}
                 fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-ciudades-arrow)" className="stroke-positive"
               />
             )}
