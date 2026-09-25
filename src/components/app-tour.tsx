@@ -434,10 +434,10 @@ export function AppTour() {
     };
   }, [isExpenseTourStep, isMobile, pathname]);
 
-  // Señala el botón de importar y la gráfica comparativa en el paso Análisis de gastos.
+  // Señala el botón de importar y la distribución por categoría en el paso Análisis de gastos.
   const [analysisMarkers, setAnalysisMarkers] = useState<{
     importBtn: { x: number; y: number };
-    chart: { x: number; y: number };
+    distribution: { x: number; y: number };
     box: { x: number; y: number; width: number; height: number };
   } | null>(null);
   useEffect(() => {
@@ -448,12 +448,12 @@ export function AppTour() {
     let cancelled = false;
     const measure = () => {
       const importBtn = document.querySelector<HTMLElement>('[data-tour-analysis-target="import"]')?.getBoundingClientRect();
-      const chart = document.querySelector<HTMLElement>('[data-tour-analysis-target="chart"]')?.getBoundingClientRect();
+      const dist = document.querySelector<HTMLElement>('#tour-analysis-distribution')?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
-      if (!importBtn || !chart || !box || cancelled) return;
+      if (!importBtn || !dist || !box || cancelled) return;
       setAnalysisMarkers({
         importBtn: { x: importBtn.left + importBtn.width / 2, y: importBtn.top },
-        chart: { x: chart.left + chart.width * 0.3, y: chart.top + chart.height * 0.3 },
+        distribution: { x: dist.left + dist.width * 0.18, y: dist.top + 24 },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
@@ -1159,11 +1159,11 @@ export function AppTour() {
               </marker>
             </defs>
             <path
-              d={`M ${analysisMarkers.box.x + 12} ${analysisMarkers.box.y + analysisMarkers.box.height * 0.45} Q ${(analysisMarkers.box.x + analysisMarkers.importBtn.x) / 2} ${analysisMarkers.importBtn.y - 60} ${analysisMarkers.importBtn.x} ${analysisMarkers.importBtn.y - 12}`}
+              d={`M ${analysisMarkers.box.x + 12} ${analysisMarkers.box.y + analysisMarkers.box.height * 0.35} Q ${(analysisMarkers.box.x + analysisMarkers.importBtn.x) / 2} ${analysisMarkers.importBtn.y - 60} ${analysisMarkers.importBtn.x} ${analysisMarkers.importBtn.y - 12}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-analysis-arrow)" className="stroke-positive/70"
             />
             <path
-              d={`M ${analysisMarkers.box.x + 30} ${analysisMarkers.box.y - 4} Q ${analysisMarkers.box.x + 30} ${analysisMarkers.box.y - 70} ${analysisMarkers.chart.x} ${analysisMarkers.chart.y - 10}`}
+              d={`M ${analysisMarkers.box.x + 12} ${analysisMarkers.box.y + analysisMarkers.box.height * 0.8} Q ${(analysisMarkers.box.x + analysisMarkers.distribution.x) / 2} ${(analysisMarkers.box.y + analysisMarkers.box.height + analysisMarkers.distribution.y) / 2 - 40} ${analysisMarkers.distribution.x + 6} ${analysisMarkers.distribution.y - 10}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-analysis-arrow)" className="stroke-positive/70"
             />
           </svg>
@@ -1175,7 +1175,7 @@ export function AppTour() {
           </span>
           <span
             className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
-            style={{ left: analysisMarkers.chart.x - 14, top: analysisMarkers.chart.y + 8 }}
+            style={{ left: analysisMarkers.distribution.x - 14, top: analysisMarkers.distribution.y + 4 }}
           >
             2
           </span>

@@ -1071,7 +1071,7 @@ function Gastos() {
 
 
       <div className="grid items-stretch gap-3 lg:grid-cols-3">
-        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} description={t("Solo gastos variables del periodo seleccionado.", "Variable spend only for the selected period.")} className="flex h-full flex-col" bleedMobile>
+        <Panel variant="minimal" id="tour-analysis-distribution" title={t("Distribución por categoría", "Spend by category")} description={t("Solo gastos variables del periodo seleccionado.", "Variable spend only for the selected period.")} className="flex h-full flex-col" bleedMobile>
 
           {donutData.length === 0 ? (
             <p className="px-5 text-sm text-muted-foreground sm:px-0">{t("Sin movimientos en este rango.", "No transactions in this range.")}</p>
