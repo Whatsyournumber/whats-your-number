@@ -276,7 +276,7 @@ export function AppTour() {
       "/life-planner": ["#tour-planner-hero", "[data-tour-planner-target='add']"],
     };
     const find = (): HTMLElement | null => {
-      for (const s of [...(SELECTORS[current.url] ?? []), "main h1"]) {
+      for (const s of [...(SELECTORS[current.url] ?? []), "main h1", "main h2", "h1"]) {
         const el = document.querySelector<HTMLElement>(s);
         if (el && el.getBoundingClientRect().height > 0) return el;
       }
@@ -295,8 +295,8 @@ export function AppTour() {
       window.setTimeout(() => {
         const el = find();
         if (el && i < 2) {
-          const top = el.getBoundingClientRect().top + window.scrollY - 88;
-          window.scrollTo({ top: Math.max(0, top), behavior: i === 0 ? "auto" : "smooth" });
+          el.style.scrollMarginTop = "88px";
+          el.scrollIntoView({ block: "start", behavior: i === 0 ? "auto" : "smooth" });
         }
         window.setTimeout(measure, 350);
       }, ms),
@@ -875,7 +875,7 @@ export function AppTour() {
       {isMobile && spot ? (
         <div className="pointer-events-none fixed inset-0 z-[90]" aria-hidden="true">
           <div
-            className="absolute rounded-2xl ring-2 ring-positive shadow-[0_0_0_9999px_color-mix(in_oklab,var(--background)_72%,transparent)] transition-all duration-300"
+            data-tour-spot className="absolute rounded-2xl border-2 border-positive shadow-[0_0_0_9999px_color-mix(in_oklab,var(--background)_72%,transparent)] transition-all duration-300"
             style={{ left: spot.x, top: spot.y, width: spot.w, height: spot.h }}
           />
           {(() => {
