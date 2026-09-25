@@ -11,6 +11,7 @@ import {
   LogOut,
   Pencil,
   Plus,
+  PartyPopper as PartyPopperIcon,
   Search,
   Sparkles,
 } from "lucide-react";
@@ -149,6 +150,7 @@ export const Route = createFileRoute("/onboarding")({
 const QUESTIONS = 9; // pantallas 1..9
 const BUILD_STEP = 10;
 const SUMMARY_STEP = 11;
+const SUMMARY_SESSION_KEY = "wyn.onboarding.summary";
 
 function OnboardingPage() {
   const { user, loading } = useAuth();
@@ -181,8 +183,9 @@ function OnboardingPage() {
         .eq("user_id", user.id)
         .maybeSingle();
       if (!alive) return;
-      // Si ya completó el onboarding, no lo repetimos.
-      if (row && (row as Record<string, unknown>)["completed"]) {
+       // Keep the just-finished result visible after a reload in this tab.
+       const resumeSummary = sessionStorage.getItem(SUMMARY_SESSION_KEY) === user.id;
+       if (row && (row as Record<string, unknown>)["completed"] && !resumeSummary) {
         navigate({ to: "/dashboard", replace: true });
         return;
       }
@@ -206,7 +209,7 @@ function OnboardingPage() {
         }
         setData(next);
         setLife(nextLife);
-        setStep(Math.min(QUESTIONS, Math.max(1, Number(r["current_step"] ?? 1))));
+         setStep(resumeSummary && r["completed"] ? SUMMARY_STEP : Math.min(QUESTIONS, Math.max(1, Number(r["current_step"] ?? 1))));
       } else {
         const meta = user.user_metadata as Record<string, unknown> | undefined;
         const name = typeof meta?.["full_name"] === "string" ? meta["full_name"] : "";
@@ -304,6 +307,7 @@ function OnboardingPage() {
 
   const finish = () => {
     queueAppTour();
+    if (user) sessionStorage.setItem(SUMMARY_SESSION_KEY, user.id);
     setStep(SUMMARY_STEP);
     void persist({ completed: true, completed_at: new Date().toISOString(), desired_retirement_income: desiredIncome });
     // El plan del onboarding queda listo como plan de gastos personalizado.
@@ -316,6 +320,11 @@ function OnboardingPage() {
     );
     // Sin prueba automática: toda cuenta nueva entra en el plan gratis.
   };
+
+  // Show the final celebration at the top even if the questionnaire was scrolled down.
+  useEffect(() => {
+    if (step === SUMMARY_STEP) window.scrollTo({ top: 0, behavior: "instant" });
+  }, [step]);
 
 
   if (loading || !ready) {
@@ -396,7 +405,7 @@ function OnboardingPage() {
 
       <div
         className={`relative mx-auto flex min-h-[calc(100vh-57px)] flex-col justify-center px-5 ${
-          isSummary ? "max-w-5xl py-4 sm:py-5" : "max-w-2xl py-10 sm:py-16"
+          isSummary ? "max-w-5xl justify-start py-4 sm:py-5" : "max-w-2xl py-10 sm:py-16"
         }`}
       >
         <AnimatePresence mode="wait">
@@ -1237,7 +1246,10 @@ function OnboardingPage() {
                 plan={plan}
                 currency={cur}
                 onEdit={() => setStep(1)}
-                onEnter={() => navigate({ to: "/dashboard" })}
+                 onEnter={() => {
+                   sessionStorage.removeItem(SUMMARY_SESSION_KEY);
+                   navigate({ to: "/dashboard" });
+                 }}
               />
             )}
           </motion.div>
@@ -1847,9 +1859,9 @@ function PartyPopper() {
           aria-hidden="true"
           initial={{ opacity: 0, x: 0, y: 16, scale: 0.25, rotate: 0 }}
           animate={{
-            opacity: [0, 1, 1, 0],
+            opacity: [0, 1, 1, 1],
             x: [0, p.x * 0.72, p.x, p.x * 1.08],
-            y: [16, p.y * 0.72, p.y, p.y + 28],
+            y: [16, p.y * 0.72, p.y, p.y],
             scale: [0.25, 1.35, 1, 0.7],
             rotate: [0, p.r * 0.55, p.r, p.r * 1.3],
           }}
@@ -1868,9 +1880,9 @@ function PartyPopper() {
           y: [12, -5, 2, -2, 0, 0],
         }}
         transition={{ duration: 1.15, ease: "easeOut", times: [0, 0.22, 0.42, 0.62, 0.8, 1] }}
-        className="relative text-5xl leading-none"
+         className="relative text-primary"
       >
-        🎉
+         <PartyPopperIcon className="h-14 w-14" strokeWidth={1.5} />
       </motion.span>
     </motion.div>
   );
@@ -2028,7 +2040,7 @@ export function SummaryScreen({
   const firstName = (data.full_name || "").trim().split(/\s+/)[0] ?? "";
 
   return (
-    <div className="mx-auto -mt-6 flex w-full max-w-5xl flex-col gap-3 sm:-mt-8 sm:gap-4">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 sm:gap-4">
       <div className="flex flex-col items-center text-center">
         <PartyPopper />
         <h2 className="font-display -mt-1 text-2xl font-semibold sm:text-3xl">
