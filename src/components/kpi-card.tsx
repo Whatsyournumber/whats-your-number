@@ -12,6 +12,7 @@ export function KpiCard({
   labelSm,
   value,
   valueTrailing,
+  labelTrailing,
   delta,
   deltaValue,
   hint,
