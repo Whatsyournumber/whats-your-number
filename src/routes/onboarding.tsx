@@ -11,6 +11,7 @@ import {
   LogOut,
   Pencil,
   Plus,
+  PartyPopper as PartyPopperIcon,
   Search,
   Sparkles,
 } from "lucide-react";
@@ -1858,9 +1859,9 @@ function PartyPopper() {
           aria-hidden="true"
           initial={{ opacity: 0, x: 0, y: 16, scale: 0.25, rotate: 0 }}
           animate={{
-            opacity: [0, 1, 1, 0],
+            opacity: [0, 1, 1, 1],
             x: [0, p.x * 0.72, p.x, p.x * 1.08],
-            y: [16, p.y * 0.72, p.y, p.y + 28],
+            y: [16, p.y * 0.72, p.y, p.y],
             scale: [0.25, 1.35, 1, 0.7],
             rotate: [0, p.r * 0.55, p.r, p.r * 1.3],
           }}
@@ -1879,9 +1880,9 @@ function PartyPopper() {
           y: [12, -5, 2, -2, 0, 0],
         }}
         transition={{ duration: 1.15, ease: "easeOut", times: [0, 0.22, 0.42, 0.62, 0.8, 1] }}
-        className="relative text-5xl leading-none"
+         className="relative text-primary"
       >
-        🎉
+         <PartyPopperIcon className="h-14 w-14" strokeWidth={1.5} />
       </motion.span>
     </motion.div>
   );
