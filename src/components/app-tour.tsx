@@ -1200,6 +1200,50 @@ export function AppTour() {
           )}
         </div>
       )}
+      {isPlannerStep && plannerMarkers?.box && (
+        <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
+          <svg className="absolute inset-0 h-full w-full overflow-visible">
+            <defs>
+              <marker id="tour-planner-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-positive" />
+              </marker>
+            </defs>
+            {plannerMarkers.add && (
+              <path
+                d={`M ${plannerMarkers.box.x + plannerMarkers.box.width * 0.6} ${plannerMarkers.box.y - 4} Q ${(plannerMarkers.box.x + plannerMarkers.add.x) / 2} ${plannerMarkers.add.y + 90} ${plannerMarkers.add.x} ${plannerMarkers.add.y + 8}`}
+                fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-planner-arrow)" className="stroke-positive"
+              />
+            )}
+            {plannerMarkers.hero && (
+              <path
+                d={`M ${plannerMarkers.box.x + plannerMarkers.box.width + 4} ${plannerMarkers.box.y + plannerMarkers.box.height * 0.4} Q ${(plannerMarkers.box.x + plannerMarkers.box.width + plannerMarkers.hero.x) / 2} ${plannerMarkers.hero.y + 70} ${plannerMarkers.hero.x} ${plannerMarkers.hero.y}`}
+                fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-planner-arrow)" className="stroke-positive"
+              />
+            )}
+            {plannerMarkers.goals && (
+              <path
+                d={`M ${plannerMarkers.box.x + plannerMarkers.box.width + 4} ${plannerMarkers.box.y + plannerMarkers.box.height * 0.75} Q ${plannerMarkers.goals.x - 80} ${plannerMarkers.goals.y - 55} ${plannerMarkers.goals.x} ${plannerMarkers.goals.y}`}
+                fill="none" strokeWidth={2} strokeDasharray="5 6" markerEnd="url(#tour-planner-arrow)" className="stroke-positive"
+              />
+            )}
+          </svg>
+          {([
+            [plannerMarkers.add, 1],
+            [plannerMarkers.hero, 2],
+            [plannerMarkers.goals, 3],
+          ] as const).flatMap(([pt, label]) =>
+            pt ? [(
+              <span
+                key={label}
+                className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+                style={{ left: pt.x - 14, top: pt.y - 6 }}
+              >
+                {label}
+              </span>
+            )] : []
+          )}
+        </div>
+      )}
     </>
   );
 }
