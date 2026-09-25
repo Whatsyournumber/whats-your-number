@@ -1186,7 +1186,7 @@ export function ExpenseLog() {
                 <TooltipProvider delayDuration={150}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} className="shrink-0 text-muted-foreground transition-colors hover:text-foreground">
+                      <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} data-tour-expense-target="plan-pencil" className="shrink-0 text-muted-foreground transition-colors hover:text-foreground">
                         <Pencil className="h-4 w-4" />
                       </button>
                     </TooltipTrigger>
