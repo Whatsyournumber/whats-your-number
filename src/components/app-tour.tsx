@@ -872,7 +872,28 @@ export function AppTour() {
   return (
     <>
       {/* Oscurece ligeramente el fondo para que el paso resalte sin ocultarlo */}
-      <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/20" : "bg-background/40"}`} />
+      {isMobile && spot ? (
+        <div className="pointer-events-none fixed inset-0 z-[90]" aria-hidden="true">
+          <div
+            className="absolute rounded-2xl ring-2 ring-positive shadow-[0_0_0_9999px_color-mix(in_oklab,var(--background)_72%,transparent)] transition-all duration-300"
+            style={{ left: spot.x, top: spot.y, width: spot.w, height: spot.h }}
+          />
+          {(() => {
+            const sheetTop = window.innerHeight * 0.64;
+            const y1 = spot.y + spot.h + 6;
+            if (sheetTop - y1 < 28) return null;
+            const x = Math.min(Math.max(spot.x + spot.w / 2, 40), window.innerWidth - 40);
+            return (
+              <svg className="absolute inset-0 h-full w-full">
+                <line x1={x} y1={sheetTop - 8} x2={x} y2={y1 + 6} strokeWidth={2} className="stroke-positive" />
+                <path d={`M ${x - 6} ${y1 + 12} L ${x} ${y1 + 3} L ${x + 6} ${y1 + 12}`} fill="none" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="stroke-positive" />
+              </svg>
+            );
+          })()}
+        </div>
+      ) : (
+        <div className={`fixed inset-0 z-[90] ${isNumberStep ? "bg-background/20" : isMobile ? "bg-background/70" : "bg-background/40"}`} />
+      )}
       <div
         className={cn(
           "fixed inset-x-0 bottom-0 z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
