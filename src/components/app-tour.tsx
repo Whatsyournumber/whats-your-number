@@ -227,6 +227,7 @@ export function AppTour() {
   const isHipotecaTourStep = current?.url === "/hipoteca";
   const isPatrimonioTourStep = current?.url === "/patrimonio";
   const isPortfolioTourStep = current?.url === "/portafolio";
+  const isCiudadesTourStep = current?.url === "/ciudades";
 
   // Marcadores 1 y 2 con líneas punteadas (solo paso Dashboard en escritorio).
   const tourBoxRef = useRef<HTMLDivElement | null>(null);
