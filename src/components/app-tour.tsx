@@ -127,12 +127,12 @@ const STEPS: Step[] = [
   {
     url: "/ciudades", icon: Globe2, minPlan: "pro",
     es: ["Lifestyle Simulator", "Ciudades donde tu dinero rinde más.",
-      "Compara tu ciudad con destinos del mismo continente.",
       "Filtra por presupuesto, estilo de vida e hijos.",
+      "Compara tu ciudad con destinos del mismo continente.",
       "Ve en cuántas llegarías antes a tu libertad financiera."],
     en: ["Lifestyle Simulator", "Cities where your money goes further.",
-      "Compare your city with destinations on the same continent.",
       "Filter by budget, lifestyle and kids.",
+      "Compare your city with destinations on the same continent.",
       "See where you'd reach financial freedom sooner."],
   },
   {
