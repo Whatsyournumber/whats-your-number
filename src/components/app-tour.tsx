@@ -279,6 +279,9 @@ export function AppTour() {
       "/retiro": [
         { sel: "[data-tour-number-target='number']", badge: 1 },
       ],
+      "/portafolio": [
+        { sel: "[data-tour-portfolio-target='value']", badge: 1 },
+      ],
     };
     const SELECTORS: Record<string, string[]> = {
       "/dashboard": ["main [class*='grid'] > *"],
