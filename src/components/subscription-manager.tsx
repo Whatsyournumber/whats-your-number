@@ -51,8 +51,9 @@ export function SubscriptionManager() {
   const planLabel = tier === "patrimonio" ? "Familiar" : tier === "pro" ? "Pro" : "Free";
   const benefits = tier === "free"
     ? [
+        t("Trackea el día a día de tus gastos", "Track your expenses day by day"),
+        t("5 importaciones de estados de cuenta al mes", "5 statement imports per month"),
         t("Tu número de libertad financiera", "Your financial freedom number"),
-        t("Registro y análisis de gastos", "Expense tracking and analysis"),
         t("Plan de gasto mensual", "Monthly spending plan"),
         t("Simulador de retiro", "Retirement simulator"),
       ]
