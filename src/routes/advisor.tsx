@@ -5,6 +5,7 @@ import { AlertTriangle, ArrowUp, Sparkles, TrendingUp } from "lucide-react";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
+import { PlanGate } from "@/components/plan-gate";
 import { Textarea } from "@/components/ui/textarea";
 import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
@@ -18,10 +19,12 @@ export const Route = createFileRoute("/advisor")({
       { name: "description", content: "Resúmenes automáticos y respuestas educativas en lenguaje natural sobre tus propios datos financieros." },
       { property: "og:title", content: "Asistente IA — WhatsYournumber" },
       { property: "og:description", content: "Tu asistente de datos: resúmenes y simulaciones educativas sobre tus finanzas." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  component: Advisor,
+  component: () => <PlanGate required="pro" blur={false}><Advisor /></PlanGate>,
 });
 
 type Msg = { role: "user" | "assistant"; content: string };

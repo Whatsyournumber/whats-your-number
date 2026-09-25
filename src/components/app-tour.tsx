@@ -158,7 +158,7 @@ const STEPS: Step[] = [
       "With the Family plan you manage your household profiles."],
   },
   {
-    url: "/advisor", icon: Sparkles, minPlan: "free",
+    url: "/advisor", icon: Sparkles, minPlan: "pro",
     es: ["Asistente IA", "Tu CFO personal, disponible 24/7.",
       "Analiza tus datos y encuentra oportunidades de ahorro.",
       "Prueba: ¿cuánto ahorro al mes? o ¿cómo va mi fondo de emergencia?",
@@ -906,7 +906,7 @@ export function AppTour() {
   if (!current) return null;
 
    const [stepTitle, intro, ...rawPoints] = t(current.es.join("|"), current.en.join("|")).split("|");
-   const title = isMobile && current.url === "/mi-perfil" && tourTier === "free" ? t("Mis datos extra", "Extra data") : stepTitle;
+   const title = stepTitle;
   const points = rawPoints.filter(Boolean);
   const last = step === availableSteps.length;
   const StepIcon = current.icon;
