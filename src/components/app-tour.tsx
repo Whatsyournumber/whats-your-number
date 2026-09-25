@@ -266,7 +266,7 @@ export function AppTour() {
     const SELECTORS: Record<string, string[]> = {
       "/dashboard": ["main [class*='grid'] > *"],
       "/registro-gastos": ["[data-tour-expense-target='add']", "[data-tour-expense-target='budget']"],
-      "/gastos": ["[data-tour-analysis-target='chart']", "[data-tour-analysis-target='import']"],
+      "/gastos": ["[data-tour-analysis-target='import']"],
       "/cash-flow": ["[data-tour-cashflow-target='blocks']", "[data-tour-cashflow-target='cards']"],
       "/retiro": ["[data-tour-number-target='number']", "[data-tour-number-target='progress']"],
       "/hipoteca": ["[data-tour-hipoteca-target='inputs']"],
