@@ -1001,6 +1001,7 @@ export function ExpenseLog() {
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
+                  data-tour-expense-target="add-mobile"
                   aria-label={t("Añadir gasto", "Add expense")}
                   className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/20 sm:hidden"
                 >
@@ -1173,7 +1174,7 @@ export function ExpenseLog() {
 
 
       <div className="space-y-3">
-          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
+          <div data-tour-expense-target="plan" className="rounded-2xl border border-border bg-card p-4 sm:p-5">
             <div className="flex min-w-0 items-center gap-3">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-positive/10 sm:h-11 sm:w-11">
                 <Wallet className="h-4 w-4 text-positive sm:h-5 sm:w-5" />
