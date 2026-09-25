@@ -819,14 +819,14 @@ export function AppTour() {
   if (step === null) return null;
 
   const planLabel =
-    tourTier === "patrimonio"
+    tier === "patrimonio"
       ? t("Plan Familiar", "Family plan")
-      : tourTier === "pro"
+      : tier === "pro"
         ? isPromo
           ? t("Plan Pro · código", "Pro plan · code")
           : t("Plan Pro", "Pro plan")
         : t("Plan Free", "Free plan");
-  const PlanIcon = tourTier === "patrimonio" ? Users : tourTier === "pro" ? Crown : Sprout;
+  const PlanIcon = tier === "patrimonio" ? Users : tier === "pro" ? Crown : Sprout;
 
   const planBadge = (
     <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary ring-1 ring-primary/25">
