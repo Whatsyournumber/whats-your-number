@@ -40,11 +40,11 @@ const STEPS: Step[] = [
     url: "/dashboard", icon: LayoutDashboard, minPlan: "free",
     es: ["Tu Dashboard", "Aquí tienes el resumen de tu situación financiera, en un solo lugar.",
       "Patrimonio, ingresos, gastos, ahorro e hipoteca de un vistazo.",
-      "Verás tu número para tu libertad financiera y podrás editarlo en el plan Pro.",
+       "Verás tu número para tu libertad financiera y podrás editarlo.",
       "Tus metas e insights se actualizan con cada gasto que registras."],
     en: ["Your Dashboard", "Here's the summary of your financial situation, in one place.",
       "Net worth, income, expenses, savings and mortgage at a glance.",
-      "You'll see your financial freedom number and can edit it on the Pro plan.",
+       "You'll see your financial freedom number and can edit it.",
       "Your goals and insights update with every expense you log."],
   },
   {
@@ -242,6 +242,16 @@ export function AppTour() {
   }, [user, subscriptionLoading, isMobile, setOpenMobile]);
 
   const current = step && step > 0 ? availableSteps[step - 1] ?? null : null;
+  useEffect(() => {
+    if (!isMobile || step === null || step === 0) return;
+    const selectTab = (event: Event) => {
+      const url = (event as CustomEvent<string>).detail;
+      const index = availableSteps.findIndex((item) => item.url === url);
+      if (index >= 0) setStep(index + 1);
+    };
+    window.addEventListener("wyn:tour-mobile-tab", selectTab);
+    return () => window.removeEventListener("wyn:tour-mobile-tab", selectTab);
+  }, [isMobile, step, availableSteps]);
   const isDashboardTourStep = current?.url === "/dashboard";
   const isExpenseTourStep = current?.url === "/registro-gastos";
   const isAnalysisTourStep = current?.url === "/gastos";
@@ -895,7 +905,8 @@ export function AppTour() {
 
   if (!current) return null;
 
-  const [title, intro, ...rawPoints] = t(current.es.join("|"), current.en.join("|")).split("|");
+   const [stepTitle, intro, ...rawPoints] = t(current.es.join("|"), current.en.join("|")).split("|");
+   const title = isMobile && current.url === "/mi-perfil" && tourTier === "free" ? t("Mis datos extra", "Extra data") : stepTitle;
   const points = rawPoints.filter(Boolean);
   const last = step === availableSteps.length;
   const StepIcon = current.icon;

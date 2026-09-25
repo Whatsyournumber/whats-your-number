@@ -28,6 +28,7 @@ export function MobileBottomNav() {
               key={tab.url}
               to={tab.url}
               data-tour-nav={tab.url}
+              onClick={() => window.dispatchEvent(new CustomEvent("wyn:tour-mobile-tab", { detail: tab.url }))}
               className="group flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 py-1 transition-colors"
             >
               <tab.icon
