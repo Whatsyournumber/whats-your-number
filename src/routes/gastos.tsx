@@ -1532,7 +1532,7 @@ function Gastos() {
                  if (!v) {
                    setDetailCat(null);
                    if (search.category) {
-                     navigate({ to: "/gastos", search: (prev) => ({ ...prev, category: undefined }), replace: true, resetScroll: false });
+                     navigate({ to: "/gastos", search: ({ from, to }) => ({ ...(from ? { from } : {}), ...(to ? { to } : {}) }), replace: true, resetScroll: false });
                    }
                  }
                }}
