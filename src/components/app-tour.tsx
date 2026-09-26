@@ -267,7 +267,7 @@ export function AppTour() {
 
   // Móvil: foco (spotlight) sobre el elemento clave de cada paso + flecha desde el bottom sheet.
   const [spot, setSpot] = useState<{ x: number; y: number; w: number; h: number; badge?: number } | null>(null);
-  const [extraSpots, setExtraSpots] = useState<{ x: number; y: number; w: number; h: number; badge?: number }[]>([]);
+  const [extraSpots, setExtraSpots] = useState<{ x: number; y: number; w: number; h: number; badge?: number; caption?: string }[]>([]);
   useEffect(() => {
     if (!isMobile || !current || pathname !== current.url) {
       setSpot(null);
@@ -275,10 +275,18 @@ export function AppTour() {
       return;
     }
     // Focos extra por paso (además del botón de la barra inferior), con badge numerado opcional.
-    const EXTRA_SELECTORS: Record<string, { sel: string; badge: number }[]> = {
+    const EXTRA_SELECTORS: Record<string, { sel: string; badge: number; caption?: [string, string] }[]> = {
       "/registro-gastos": [
-        { sel: "[data-tour-nav-add]", badge: 1 },
+        { sel: "[data-tour-expense-target='add-mobile']", badge: 1 },
         { sel: "[data-tour-expense-target='plan']", badge: 2 },
+        {
+          sel: "[data-tour-nav-add]",
+          badge: 3,
+          caption: [
+            "Toca el + para añadir gastos: manual, por voz o con foto del recibo",
+            "Tap the + to add expenses: manual, by voice or with a receipt photo",
+          ],
+        },
       ],
       "/retiro": [
         { sel: "[data-tour-number-target='number']", badge: 1 },
@@ -327,12 +335,12 @@ export function AppTour() {
         setSpot({ x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) });
       }
       const extras = (EXTRA_SELECTORS[current.url] ?? [])
-        .map(({ sel, badge }) => {
+        .map(({ sel, badge, caption }) => {
           const e = document.querySelector<HTMLElement>(sel);
           if (!e) return null;
           const r = e.getBoundingClientRect();
           if (r.height <= 0) return null;
-          return { x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH), badge };
+          return { x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH), badge, caption: caption ? t(caption[0], caption[1]) : undefined };
         })
         .filter((e): e is NonNullable<typeof e> => !!e);
       setExtraSpots(extras);
