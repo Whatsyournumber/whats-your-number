@@ -64,7 +64,7 @@ const STEPS: Step[] = [
   },
   {
     url: "/registro-gastos", icon: Plus, minPlan: "free", mobileOnly: true,
-    mobileSpot: "[data-tour-nav-add]",
+    mobileSpot: "[data-tour-add-menu]",
     es: ["Botón de gastos diarios", "Toca el botón + de la barra para añadir un gasto.",
       "Manual, por voz o con foto del recibo",
       "Cada gasto actualiza tu plan y tu número al instante",
@@ -387,6 +387,17 @@ export function AppTour() {
       window.removeEventListener("resize", measure);
     };
   }, [isMobile, current, pathname]);
+
+  // Paso del botón +: abre el menú real de "agregar gasto" mientras dura el paso.
+  const isAddSpotTourStep = current?.mobileSpot === "[data-tour-add-menu]";
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("wyn:tour-add-menu", { detail: { open: isAddSpotTourStep } }));
+    return () => {
+      if (isAddSpotTourStep) {
+        window.dispatchEvent(new CustomEvent("wyn:tour-add-menu", { detail: { open: false } }));
+      }
+    };
+  }, [isAddSpotTourStep]);
   const [markers, setMarkers] = useState<{ kpi: { x: number; y: number }; number: { x: number; y: number }; box: { x: number; y: number } } | null>(null);
   useEffect(() => {
     if (!isDashboardTourStep || isMobile) {
