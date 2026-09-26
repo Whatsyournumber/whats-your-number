@@ -1014,7 +1014,7 @@ export function AppTour() {
       )}
       <div
         className={cn(
-          `${isAddSpotStep ? "bottom-[150px]" : "bottom-[78px]"} z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8`,
+          `fixed inset-x-0 ${isAddSpotStep ? "bottom-[150px]" : "bottom-[78px]"} z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8`,
           hasNumberedBullets ? "sm:w-[560px]" : "sm:w-[400px]",
           isDashboardStep
             ? sidebarState === "expanded"
