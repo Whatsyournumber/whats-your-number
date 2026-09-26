@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { HelpCircle, Pencil } from "lucide-react";
+import { ArrowRight, HelpCircle, Lightbulb, Pencil } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory } from "@/lib/i18n-data";
@@ -373,6 +373,17 @@ function CashFlow() {
     [saveAmount, d.retirement.returnAnnualized, savingsYears, d.retirement.currentAge],
   );
   const savingsAtRetire = savingsProjection[savingsProjection.length - 1]?.value ?? 0;
+  // No se presupone que todos los deseos se puedan eliminar: el recorte está
+  // limitado al exceso sobre el objetivo y al gasto de la categoría principal.
+  const topWant = realWantsBreakdown[0] ?? null;
+  const wantsTarget = Math.max(0, totalIncome * 0.2);
+  const monthlyOpportunity = hasReal && topWant
+    ? Math.max(0, Math.min(topWant.amount, wantsAmount - wantsTarget))
+    : 0;
+  const opportunityProjection = monthlyOpportunity > 0
+    ? projectRetirementFrom(monthlyOpportunity, 10, savingsYears, 0, d.retirement.currentAge)
+    : [];
+  const opportunityAtRetire = opportunityProjection[opportunityProjection.length - 1]?.value ?? 0;
 
   return (
     <TooltipProvider delayDuration={150}>
@@ -577,13 +588,43 @@ function CashFlow() {
               : t("Sin ahorro mensual todavía: edita tus categorías para verlo.", "No monthly savings yet: edit your categories to see it.")}
           </p>
         </Panel>
-        <Panel title={t("Eficiencia del flujo", "Flow efficiency")} description={t("Patrimonio construido cada mes", "Net worth built each month")}>
-          <p className="numeric text-4xl font-semibold">
-            {totalIncome > 0 ? ((saveAmount / totalIncome) * 100).toFixed(0) : "0"}%
-          </p>
-          <p className="mt-2 text-xs text-muted-foreground">
-            {fmt(saveAmount)} {t("de cada mes termina construyendo patrimonio.", "each month ends up building net worth.")}
-          </p>
+        <Panel
+          title={t("Oportunidad del mes", "Opportunity of the month")}
+          description={t("Dónde puedes ahorrar e invertir más", "Where you could save and invest more")}
+          icon={<Lightbulb />}
+        >
+          {monthlyOpportunity > 0 && topWant ? (
+            <div className="space-y-4">
+              <div>
+                <p className="numeric text-4xl font-semibold text-positive">{fmt(monthlyOpportunity)}<span className="ml-1 text-base font-normal text-muted-foreground">{t("/mes", "/mo")}</span></p>
+                <p className="mt-1 text-xs text-muted-foreground">{t("de gasto en deseos por encima de tu objetivo", "of wants spending above your target")}</p>
+              </div>
+              <div className="border-t border-border pt-3 text-sm">
+                <div className="flex items-start justify-between gap-3">
+                  <span className="min-w-0 font-medium text-foreground">{topWant.label}</span>
+                  <span className="numeric shrink-0 font-semibold">{fmt(topWant.amount)}</span>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground">{t("Objetivo total de deseos (20%):", "Total wants target (20%):")} {fmt(wantsTarget)}</p>
+              </div>
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                {t("Si reduces ese gasto e inviertes", "If you cut that spending and invest")} {fmt(monthlyOpportunity)} {t("al mes en el S&P 500, podrías tener", "per month in the S&P 500, you could have")} <strong className="text-foreground">{fmt(opportunityAtRetire)}</strong> {t("en", "in")} {savingsYears} {t("años", "years")} {t("(supuesto del 10% anual; no garantizado).", "(assuming 10% a year; not guaranteed).")}
+              </p>
+              <Button asChild size="sm" className="w-full gap-2">
+                <Link to="/gastos">{t("Ver dónde puedo ahorrar", "See where I can save")} <ArrowRight className="h-4 w-4" /></Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                {!hasReal
+                  ? t("Registra tus gastos para detectar tu mejor oportunidad de ahorro.", "Add your expenses to find your best savings opportunity.")
+                  : t("Tus deseos están dentro del objetivo del 20% este mes.", "Your wants are within the 20% target this month.")}
+              </p>
+              <Button asChild size="sm" variant="outline" className="w-full gap-2">
+                <Link to={hasReal ? "/gastos" : "/registro-gastos"}>{hasReal ? t("Ver mis gastos", "View my spending") : t("Registrar gastos", "Add expenses")} <ArrowRight className="h-4 w-4" /></Link>
+              </Button>
+            </div>
+          )}
         </Panel>
       </div>
       <Dialog open={ruleOpen} onOpenChange={setRuleOpen}>
