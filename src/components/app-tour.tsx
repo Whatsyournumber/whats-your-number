@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-  ArrowLeft, ArrowRight, ChartPie, Check, Compass, Crown, Globe2, Home, LayoutDashboard,
-  Lightbulb, Map, MousePointerClick, Plus, ReceiptText, Scale, Sparkles, Sprout, Target,
-  TrendingUp, UserRound, Users, Wallet, X,
+  ArrowLeft, ArrowRight, Camera, ChartPie, Check, Compass, Crown, Globe2, Home, LayoutDashboard,
+  Lightbulb, Map, Mic, MousePointerClick, PencilLine, Plus, ReceiptText, Repeat, Scale, Sparkles,
+  Sprout, Target, TrendingUp, Upload, UserRound, Users, Wallet, X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
@@ -64,7 +64,7 @@ const STEPS: Step[] = [
   },
   {
     url: "/registro-gastos", icon: Plus, minPlan: "free", mobileOnly: true,
-    mobileSpot: "[data-tour-add-menu]",
+    mobileSpot: "[data-tour-nav-add]",
     es: ["Botón de gastos diarios", "Toca el botón + de la barra para añadir un gasto.",
       "Manual, por voz o con foto del recibo",
       "Cada gasto actualiza tu plan y tu número al instante",
@@ -186,6 +186,15 @@ const STEPS: Step[] = [
   },
 ];
 const BULLET_ICONS = [MousePointerClick, Lightbulb, Check];
+
+/** Opciones del menú del botón + (vista previa unificada dentro de la tarjeta del tour). */
+const ADD_OPTIONS: { icon: typeof Plus; es: string; en: string }[] = [
+  { icon: PencilLine, es: "Manual", en: "Manual" },
+  { icon: Mic, es: "Por voz", en: "By voice" },
+  { icon: Camera, es: "Tomar foto", en: "Take photo" },
+  { icon: Upload, es: "Sube foto o captura", en: "Upload photo or screenshot" },
+  { icon: Repeat, es: "Recurrente", en: "Recurring" },
+];
 
 export function AppTour() {
   const t = useT();
@@ -388,15 +397,12 @@ export function AppTour() {
     };
   }, [isMobile, current, pathname]);
 
-  // Paso del botón +: abre el menú real de "agregar gasto" mientras dura el paso.
-  const isAddSpotTourStep = current?.mobileSpot === "[data-tour-add-menu]";
+  // Paso del botón +: tarjeta unificada (menú dentro del box); se cierra el menú real.
+  const isAddSpotTourStep = current?.mobileSpot === "[data-tour-nav-add]";
   useEffect(() => {
-    window.dispatchEvent(new CustomEvent("wyn:tour-add-menu", { detail: { open: isAddSpotTourStep } }));
-    return () => {
-      if (isAddSpotTourStep) {
-        window.dispatchEvent(new CustomEvent("wyn:tour-add-menu", { detail: { open: false } }));
-      }
-    };
+    if (isAddSpotTourStep) {
+      window.dispatchEvent(new CustomEvent("wyn:tour-add-menu", { detail: { open: false } }));
+    }
   }, [isAddSpotTourStep]);
   const [markers, setMarkers] = useState<{ kpi: { x: number; y: number }; number: { x: number; y: number }; box: { x: number; y: number } } | null>(null);
   useEffect(() => {
@@ -950,7 +956,7 @@ export function AppTour() {
   const isDashboardStep = current.url === "/dashboard";
   const isExpenseStep = current.url === "/registro-gastos";
   // Paso del botón + de la barra: ilumina el menú abierto de opciones.
-  const isAddSpotStep = current.mobileSpot === "[data-tour-add-menu]";
+  const isAddSpotStep = current.mobileSpot === "[data-tour-nav-add]";
   const isAnalysisStep = current.url === "/gastos";
   const isCashFlowStep = current.url === "/cash-flow";
   const isHipotecaStep = current.url === "/hipoteca";
@@ -1057,8 +1063,8 @@ export function AppTour() {
                          : "sm:right-6",
         )}
       >
-        <div ref={tourBoxRef} data-tour-box className={cn("relative border border-tour-border bg-tour-surface text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25", isMobile ? "max-h-[40dvh] overflow-y-auto overscroll-contain rounded-t-3xl border-b-0 p-4 pb-7" : "overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-5")}>
-          {isMobile && (
+        <div ref={tourBoxRef} data-tour-box className={cn("relative border border-tour-border bg-tour-surface text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25", isMobile ? (isAddSpotStep ? "mx-3 max-h-[72dvh] overflow-y-auto overscroll-contain rounded-3xl p-4 pb-5" : "max-h-[40dvh] overflow-y-auto overscroll-contain rounded-t-3xl border-b-0 p-4 pb-7") : "overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-5")}>
+          {isMobile && !isAddSpotStep && (
             <div className="-mx-4 -mt-4 mb-1.5 bg-tour-surface pb-1.5 pt-2.5">
               <div className="mx-auto h-1 w-10 rounded-full bg-tour-foreground/25" />
             </div>
@@ -1095,6 +1101,16 @@ export function AppTour() {
             )}
           </div>
           <p className="relative mt-2.5 whitespace-pre-line text-[13px] leading-snug text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
+          {isAddSpotStep && isMobile && (
+            <div className="relative mt-3 rounded-2xl border border-border bg-background p-1.5 shadow-inner">
+              {ADD_OPTIONS.map(({ icon: OptionIcon, es, en }) => (
+                <div key={es} className="flex min-h-11 items-center gap-4 rounded-xl px-3.5 py-2.5 text-[15px] font-medium text-foreground">
+                  <OptionIcon className="h-5 w-5 shrink-0 text-positive" strokeWidth={1.9} />
+                  {t(es, en)}
+                </div>
+              ))}
+            </div>
+          )}
           {(isAddSpotStep ? [] : isMobile ? points.slice(0, 2) : points).length > 0 && (
           <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
             {(isAddSpotStep ? [] : isMobile ? points.slice(0, 2) : points).map((p, i) => {
