@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Repeat } from "lucide-react";
 import { useT } from "@/hooks/use-language";
@@ -10,6 +10,16 @@ export function MobileBottomNav() {
   const { isPro } = useSubscription();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  // El tour del paso del botón + abre el menú real mientras dura el paso.
+  const [tourHold, setTourHold] = useState(false);
+  useEffect(() => {
+    const onTour = (event: Event) => setTourHold(Boolean((event as CustomEvent<{ open?: boolean }>).detail?.open));
+    window.addEventListener("wyn:tour-add-menu", onTour);
+    return () => window.removeEventListener("wyn:tour-add-menu", onTour);
+  }, []);
+  useEffect(() => {
+    setMenuOpen(tourHold);
+  }, [tourHold]);
 
   const tabs = [
     { title: t("Inicio", "Home"), url: "/dashboard", icon: Home },
