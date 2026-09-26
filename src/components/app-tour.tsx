@@ -956,7 +956,7 @@ export function AppTour() {
   const isDashboardStep = current.url === "/dashboard";
   const isExpenseStep = current.url === "/registro-gastos";
   // Paso del botón + de la barra: ilumina el menú abierto de opciones.
-  const isAddSpotStep = current.mobileSpot === "[data-tour-add-menu]";
+  const isAddSpotStep = current.mobileSpot === "[data-tour-nav-add]";
   const isAnalysisStep = current.url === "/gastos";
   const isCashFlowStep = current.url === "/cash-flow";
   const isHipotecaStep = current.url === "/hipoteca";
