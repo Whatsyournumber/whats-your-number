@@ -1102,9 +1102,9 @@ export function AppTour() {
           </div>
           <p className="relative mt-2.5 whitespace-pre-line text-[13px] leading-snug text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
           {isAddSpotStep && isMobile && (
-            <div className="relative mt-3 rounded-2xl border border-border bg-background p-1.5 shadow-inner">
+            <div className="relative mt-3 rounded-2xl border border-tour-border bg-tour-surface p-1.5">
               {ADD_OPTIONS.map(({ icon: OptionIcon, es, en }) => (
-                <div key={es} className="flex min-h-11 items-center gap-4 rounded-xl px-3.5 py-2.5 text-[15px] font-medium text-foreground">
+                <div key={es} className="flex min-h-11 items-center gap-4 rounded-xl px-3.5 py-2.5 text-[15px] font-medium text-tour-foreground">
                   <OptionIcon className="h-5 w-5 shrink-0 text-positive" strokeWidth={1.9} />
                   {t(es, en)}
                 </div>
