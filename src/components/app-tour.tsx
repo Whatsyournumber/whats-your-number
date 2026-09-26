@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   ArrowLeft, ArrowRight, Camera, ChartPie, Check, Compass, Crown, Globe2, Home, LayoutDashboard,
-  Lightbulb, Map, Mic, MousePointerClick, PencilLine, Plus, ReceiptText, Repeat, Scale, Sparkles,
+  FileSpreadsheet, Lightbulb, Map, Mic, MousePointerClick, PencilLine, Plus, ReceiptText, Scale, Sparkles,
   Sprout, Target, TrendingUp, Upload, UserRound, Users, Wallet, X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";

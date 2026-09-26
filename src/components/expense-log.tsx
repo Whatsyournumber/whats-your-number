@@ -746,6 +746,7 @@ export function ExpenseLog() {
   const camRef = useRef<HTMLInputElement | null>(null);
   const docsRef = useRef<HTMLInputElement | null>(null);
   const [photoPickerOpen, setPhotoPickerOpen] = useState(false);
+  const [statementOpen, setStatementOpen] = useState(false);
   const latestExpensesRef = useRef<HTMLDivElement | null>(null);
   const isMobile = useIsMobile();
 
@@ -909,6 +910,7 @@ export function ExpenseLog() {
     else if (actionParam === "photo") camRef.current?.click();
     else if (actionParam === "upload") (isMobile ? setPhotoPickerOpen(true) : fileRef.current?.click());
     else if (actionParam === "recurring") openNewRecurring();
+    else if (actionParam === "statement") setStatementOpen(true);
     router.navigate({ to: "/registro-gastos", search: {}, replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actionParam]);
