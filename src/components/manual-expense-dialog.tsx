@@ -316,24 +316,24 @@ export function ManualExpenseDialog({
             <Label>{t("Categoría", "Category")}</Label>
             {creating ? (
               <div className="grid gap-2">
+                <Input
+                  autoFocus
+                  value={newCat}
+                  onChange={(e) => setNewCat(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      confirmNewCategory();
+                    }
+                    if (e.key === "Escape") {
+                      e.preventDefault();
+                      setCreating(false);
+                      setNewCat("");
+                    }
+                  }}
+                  placeholder={t("Nombre de la categoría", "Category name")}
+                />
                 <div className="flex gap-2">
-                  <Input
-                    autoFocus
-                    value={newCat}
-                    onChange={(e) => setNewCat(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        confirmNewCategory();
-                      }
-                      if (e.key === "Escape") {
-                        e.preventDefault();
-                        setCreating(false);
-                        setNewCat("");
-                      }
-                    }}
-                    placeholder={t("Nombre de la categoría", "Category name")}
-                  />
                   <Button type="button" onClick={confirmNewCategory} disabled={!canCreateNew}>
                     {t("Añadir", "Add")}
                   </Button>
