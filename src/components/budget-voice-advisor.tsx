@@ -120,7 +120,10 @@ Metas: ${d.goals.map((g) => `${g.name} ${g.current.toFixed(0)}/${g.target.toFixe
       });
       return res.answer;
     },
-    onSuccess: (answer) => setMessages((m) => [...m, { role: "assistant", content: answer }]),
+    onSuccess: (answer) => {
+      setMessages((m) => [...m, { role: "assistant", content: answer }]);
+      void speak(answer);
+    },
     onError: (e: unknown) =>
       setMessages((m) => [
         ...m,
@@ -176,7 +179,10 @@ Metas: ${d.goals.map((g) => `${g.name} ${g.current.toFixed(0)}/${g.target.toFixe
   };
 
   useEffect(() => {
-    if (!open) stopListening();
+    if (!open) {
+      stopListening();
+      stopSpeaking();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
