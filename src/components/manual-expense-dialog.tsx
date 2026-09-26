@@ -158,6 +158,9 @@ export function ManualExpenseDialog({
       setMerchant("");
       setAmount(0);
       setOpen(false);
+      const monthStart = format(new Date(effectiveDate.getFullYear(), effectiveDate.getMonth(), 1), "yyyy-MM-dd");
+      const monthEnd = format(new Date(effectiveDate.getFullYear(), effectiveDate.getMonth() + 1, 0), "yyyy-MM-dd");
+      void navigate({ to: "/gastos", search: { from: monthStart, to: monthEnd, category } });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : String(error));
     } finally {
