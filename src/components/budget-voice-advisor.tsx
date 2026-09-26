@@ -148,6 +148,7 @@ Metas: ${d.goals.map((g) => `${g.name} ${g.current.toFixed(0)}/${g.target.toFixe
   };
 
   const startListening = () => {
+    stopSpeaking();
     const w = window as unknown as { SpeechRecognition?: AnyRecognition; webkitSpeechRecognition?: AnyRecognition };
     const SR = w.SpeechRecognition ?? w.webkitSpeechRecognition;
     if (!SR) {
