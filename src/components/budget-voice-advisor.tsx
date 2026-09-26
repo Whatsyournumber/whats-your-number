@@ -53,6 +53,15 @@ export function BudgetVoiceAdvisor({ open, onOpenChange }: { open: boolean; onOp
     const overDay = daily > 0 && budget > spent ? Math.ceil(budget / daily) : null;
     const overDate =
       overDay && overDay <= daysInMonth ? `día ${overDay} de este mes` : spent >= budget ? "ya superado" : "no se pasaría este mes";
+    const catLines =
+      budgetLines
+        .filter((l) => Number(l.amount) > 0)
+        .map((l) => {
+          const cat = findBudgetCategory(l.id);
+          const label = cat ? (lang === "en" ? cat.en : cat.es) : (l.label ?? l.id);
+          return `${cat?.emoji ?? l.emoji ?? ""} ${label}: ${Number(l.amount).toFixed(0)}`.trim();
+        })
+        .join(", ") || "sin datos";
 
     return `MODO: Consejos de presupuesto. El usuario pregunta si puede tomar una decisión de gasto.
 Responde en máximo ~90 palabras: 1) veredicto claro al inicio en negrita (Sí puedes / Con cuidado / Mejor no), 2) cuánto le queda del presupuesto del mes tras esa decisión, 3) si va bien o no al ritmo actual y en qué fecha se pasaría del presupuesto (recalcula con el nuevo gasto), 4) una alternativa concreta. Usa solo estas cifras.
