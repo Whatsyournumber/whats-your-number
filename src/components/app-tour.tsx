@@ -293,6 +293,10 @@ export function AppTour() {
     }
     // Focos extra por paso (además del botón de la barra inferior), con badge numerado opcional.
     const EXTRA_SELECTORS: Record<string, { sel: string; badge: number; caption?: [string, string] }[]> = {
+      "/registro-gastos": [
+        { sel: "[data-tour-expense-target='plan']", badge: 1 },
+        { sel: "[data-tour-expense-target='add-mobile']", badge: 2 },
+      ],
       "/retiro": [
         { sel: "[data-tour-number-target='number']", badge: 1 },
       ],
@@ -1008,7 +1012,7 @@ export function AppTour() {
       )}
       <div
         className={cn(
-          "fixed inset-x-0 bottom-[148px] z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
+          "fixed inset-x-0 bottom-[78px] z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
           hasNumberedBullets ? "sm:w-[560px]" : "sm:w-[400px]",
           isDashboardStep
             ? sidebarState === "expanded"
