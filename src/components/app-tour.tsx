@@ -937,6 +937,8 @@ export function AppTour() {
   const isNumberStep = current.url === "/retiro";
   const isDashboardStep = current.url === "/dashboard";
   const isExpenseStep = current.url === "/registro-gastos";
+  // Paso del botón + de la barra: la hoja sube para dejarlo visible.
+  const isAddSpotStep = current.mobileSpot === "[data-tour-nav-add]";
   const isAnalysisStep = current.url === "/gastos";
   const isCashFlowStep = current.url === "/cash-flow";
   const isHipotecaStep = current.url === "/hipoteca";
