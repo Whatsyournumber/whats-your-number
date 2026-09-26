@@ -187,6 +187,15 @@ const STEPS: Step[] = [
 ];
 const BULLET_ICONS = [MousePointerClick, Lightbulb, Check];
 
+/** Opciones del menú del botón + (vista previa unificada dentro de la tarjeta del tour). */
+const ADD_OPTIONS: { icon: typeof Plus; es: string; en: string }[] = [
+  { icon: PencilLine, es: "Manual", en: "Manual" },
+  { icon: Mic, es: "Por voz", en: "By voice" },
+  { icon: Camera, es: "Tomar foto", en: "Take photo" },
+  { icon: Upload, es: "Sube foto o captura", en: "Upload photo or screenshot" },
+  { icon: Repeat, es: "Recurrente", en: "Recurring" },
+];
+
 export function AppTour() {
   const t = useT();
   const { user } = useAuth();
@@ -388,15 +397,12 @@ export function AppTour() {
     };
   }, [isMobile, current, pathname]);
 
-  // Paso del botón +: abre el menú real de "agregar gasto" mientras dura el paso.
-  const isAddSpotTourStep = current?.mobileSpot === "[data-tour-add-menu]";
+  // Paso del botón +: tarjeta unificada (menú dentro del box); se cierra el menú real.
+  const isAddSpotTourStep = current?.mobileSpot === "[data-tour-nav-add]";
   useEffect(() => {
-    window.dispatchEvent(new CustomEvent("wyn:tour-add-menu", { detail: { open: isAddSpotTourStep } }));
-    return () => {
-      if (isAddSpotTourStep) {
-        window.dispatchEvent(new CustomEvent("wyn:tour-add-menu", { detail: { open: false } }));
-      }
-    };
+    if (isAddSpotTourStep) {
+      window.dispatchEvent(new CustomEvent("wyn:tour-add-menu", { detail: { open: false } }));
+    }
   }, [isAddSpotTourStep]);
   const [markers, setMarkers] = useState<{ kpi: { x: number; y: number }; number: { x: number; y: number }; box: { x: number; y: number } } | null>(null);
   useEffect(() => {
