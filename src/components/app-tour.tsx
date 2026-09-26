@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   ArrowLeft, ArrowRight, ChartPie, Check, Compass, Crown, Globe2, Home, LayoutDashboard,
-  Lightbulb, Map, MousePointerClick, ReceiptText, Scale, Sparkles, Sprout, Target,
+  Lightbulb, Map, MousePointerClick, Plus, ReceiptText, Scale, Sparkles, Sprout, Target,
   TrendingUp, UserRound, Users, Wallet, X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,6 +33,10 @@ type Step = {
   minPlan: PlanTier;
   es: [string, string, string, string, string];
   en: [string, string, string, string, string];
+  /** Solo en el tour móvil (se omite en escritorio). */
+  mobileOnly?: boolean;
+  /** Selector del elemento a iluminar en móvil; por defecto el botón de la barra inferior. */
+  mobileSpot?: string;
 };
 
 const STEPS: Step[] = [
@@ -57,6 +61,18 @@ const STEPS: Step[] = [
       "Create or edit your monthly budget",
       "Add expenses via voice, receipt photos (like groceries) or file uploads",
       "See how your daily spending is going by category"],
+  },
+  {
+    url: "/registro-gastos", icon: Plus, minPlan: "free", mobileOnly: true,
+    mobileSpot: "[data-tour-nav-add]",
+    es: ["Agregar gastos", "Toca el botón + de la barra para añadir un gasto.",
+      "Manual, por voz o con foto del recibo",
+      "Cada gasto actualiza tu plan y tu número al instante",
+      "Tus gastos y análisis se mantienen al día solos"],
+    en: ["Add expenses", "Tap the + button in the bar to log an expense.",
+      "Manual, by voice or with a receipt photo",
+      "Every expense updates your plan and number instantly",
+      "Your tracking and analysis stay up to date on their own"],
   },
   {
     url: "/gastos", icon: ChartPie, minPlan: "free",
@@ -188,6 +204,7 @@ export function AppTour() {
     return STEPS.filter(
       (tourStep) =>
         planMeetsTier(tourStep.minPlan, tier) &&
+        (!tourStep.mobileOnly || isMobile) &&
         (!isMobile || MOBILE_URLS.includes(tourStep.url)),
     );
   }, [tier, isMobile]);
@@ -276,18 +293,6 @@ export function AppTour() {
     }
     // Focos extra por paso (además del botón de la barra inferior), con badge numerado opcional.
     const EXTRA_SELECTORS: Record<string, { sel: string; badge: number; caption?: [string, string] }[]> = {
-      "/registro-gastos": [
-        { sel: "[data-tour-expense-target='add-mobile']", badge: 1 },
-        { sel: "[data-tour-expense-target='plan']", badge: 2 },
-        {
-          sel: "[data-tour-nav-add]",
-          badge: 3,
-          caption: [
-            "Toca el + para añadir gastos: manual, por voz o con foto del recibo",
-            "Tap the + to add expenses: manual, by voice or with a receipt photo",
-          ],
-        },
-      ],
       "/retiro": [
         { sel: "[data-tour-number-target='number']", badge: 1 },
       ],
@@ -308,6 +313,11 @@ export function AppTour() {
       "/life-planner": ["#tour-planner-hero", "[data-tour-planner-target='add']"],
     };
     const find = (): HTMLElement | null => {
+      // El paso puede señalar un elemento concreto (p. ej. el botón + del medio).
+      if (current.mobileSpot) {
+        const spotEl = document.querySelector<HTMLElement>(current.mobileSpot);
+        if (spotEl && spotEl.getBoundingClientRect().height > 0) return spotEl;
+      }
       // En móvil el foco va al botón de la barra inferior correspondiente al paso.
       const navBtn = document.querySelector<HTMLElement>(`[data-tour-nav="${current.url}"]`);
       if (navBtn && navBtn.getBoundingClientRect().height > 0) return navBtn;
