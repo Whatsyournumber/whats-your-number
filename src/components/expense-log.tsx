@@ -111,6 +111,13 @@ export function ExpenseLog() {
   const [planOpen, setPlanOpen] = useState(false);
   const [recOpen, setRecOpen] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
+  const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
+  const router = useRouter();
+  useEffect(() => {
+    if (addParam !== true) return;
+    setManualOpen(true);
+    router.navigate({ to: "/registro-gastos", search: {}, replace: true });
+  }, [addParam, router]);
   const [recName, setRecName] = useState("");
   const [recAmount, setRecAmount] = useState(0);
   const [recDay, setRecDay] = useState(1);
