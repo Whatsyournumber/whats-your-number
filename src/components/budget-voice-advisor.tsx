@@ -239,6 +239,22 @@ Metas: ${d.goals.map((g) => `${g.name} ${g.current.toFixed(0)}/${g.target.toFixe
         </div>
 
         <div className="flex flex-col items-center gap-2">
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => {
+                if (voiceOn) stopSpeaking();
+                setVoiceOn((v) => !v);
+              }}
+              aria-label={voiceOn ? t("Silenciar voz", "Mute voice") : t("Activar voz", "Enable voice")}
+              className={cn(
+                "grid h-10 w-10 place-items-center rounded-full border border-border text-muted-foreground transition-colors",
+                voiceOn && "border-primary/40 text-primary",
+                speaking && "animate-pulse",
+              )}
+            >
+              {voiceOn ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+            </button>
           <button
             type="button"
             onClick={listening ? stopListening : startListening}
