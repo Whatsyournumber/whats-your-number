@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { ArrowUp, Mic, MicOff, Sparkles } from "lucide-react";
+import { ArrowUp, Mic, MicOff, Sparkles, Volume2, VolumeX } from "lucide-react";
 
 import { Rich, ThinkingIndicator } from "@/components/ask-ai-search";
 import { Button } from "@/components/ui/button";
@@ -31,8 +31,40 @@ export function BudgetVoiceAdvisor({ open, onOpenChange }: { open: boolean; onOp
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [listening, setListening] = useState(false);
+  const [voiceOn, setVoiceOn] = useState(true);
+  const [speaking, setSpeaking] = useState(false);
   const recRef = useRef<AnyRecognition>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
+
+  const stopSpeaking = () => {
+    audioRef.current?.pause();
+    audioRef.current = null;
+    setSpeaking(false);
+  };
+
+  const speak = async (text: string) => {
+    if (!voiceOn) return;
+    stopSpeaking();
+    setSpeaking(true);
+    try {
+      const plain = text.replace(/[*_#`>]/g, "").slice(0, 1200);
+      const res = await fetch("/api/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: plain, lang: lang === "en" ? "en" : "es" }),
+      });
+      if (!res.ok) throw new Error("tts");
+      const url = URL.createObjectURL(await res.blob());
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => setSpeaking(false);
+      audio.onerror = () => setSpeaking(false);
+      await audio.play();
+    } catch {
+      setSpeaking(false);
+    }
+  };
 
   const d = buildDataset(profile);
 
