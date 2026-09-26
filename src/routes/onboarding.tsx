@@ -27,7 +27,7 @@ const ONBOARDING_FIXED_KEYS: SpendPlanKey[] = [
   "fixed_housing",
   "fixed_utilities",
   "fixed_insurance",
-  "fixed_transport",
+  "fixed_gym",
   "fixed_subscriptions",
 ];
 const ONBOARDING_VARIABLE_KEYS: SpendPlanKey[] = [
