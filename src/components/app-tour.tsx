@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-  ArrowLeft, ArrowRight, ChartPie, Check, Compass, Crown, Globe2, Home, LayoutDashboard,
-  Lightbulb, Map, MousePointerClick, Plus, ReceiptText, Scale, Sparkles, Sprout, Target,
-  TrendingUp, UserRound, Users, Wallet, X,
+  ArrowLeft, ArrowRight, Camera, ChartPie, Check, Compass, Crown, Globe2, Home, LayoutDashboard,
+  Lightbulb, Map, Mic, MousePointerClick, PencilLine, Plus, ReceiptText, Repeat, Scale, Sparkles,
+  Sprout, Target, TrendingUp, Upload, UserRound, Users, Wallet, X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
@@ -64,7 +64,7 @@ const STEPS: Step[] = [
   },
   {
     url: "/registro-gastos", icon: Plus, minPlan: "free", mobileOnly: true,
-    mobileSpot: "[data-tour-add-menu]",
+    mobileSpot: "[data-tour-nav-add]",
     es: ["Botón de gastos diarios", "Toca el botón + de la barra para añadir un gasto.",
       "Manual, por voz o con foto del recibo",
       "Cada gasto actualiza tu plan y tu número al instante",
