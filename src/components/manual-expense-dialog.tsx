@@ -41,6 +41,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useAuth } from "@/hooks/use-auth";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
+import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { supabase } from "@/integrations/supabase/client";
 import { translateCategory } from "@/lib/i18n-data";
 import { cn } from "@/lib/utils";
@@ -93,6 +94,7 @@ export function ManualExpenseDialog({
   const { lang } = useLanguage();
   const { user } = useAuth();
   const { profile } = useProfile();
+  const budgets = useSpendBudgets();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -112,6 +114,7 @@ export function ManualExpenseDialog({
   const [catQuery, setCatQuery] = useState("");
   const [creating, setCreating] = useState(false);
   const [newCat, setNewCat] = useState("");
+  const [newCatKind, setNewCatKind] = useState<"fixed" | "variable">("variable");
 
   const currency = (profile?.currency as string) || "EUR";
 
@@ -124,7 +127,37 @@ export function ManualExpenseDialog({
     if (!canCreateNew) return;
     onAddCategory?.(trimmedNew);
     setCategory(trimmedNew);
+    // La categoría nueva entra en el plan de gastos como línea propia.
+    const planId = `custom:cat:${trimmedNew.toLowerCase().replace(/\s+/g, "-")}`;
+    const alreadyInPlan = budgets.lines.some(
+      (line) =>
+        line.id === planId ||
+        (line.label ?? "").trim().toLowerCase() === trimmedNew.toLowerCase(),
+    );
+    if (!alreadyInPlan) {
+      budgets.save([
+        ...budgets.lines,
+        {
+          id: planId,
+          label: trimmedNew,
+          emoji: newCatKind === "fixed" ? "📌" : "🏷️",
+          keywords: [trimmedNew.toLowerCase()],
+          group: newCatKind === "fixed" ? "essentials" : "lifestyle",
+          amount: 0,
+        },
+      ]);
+      toast.success(
+        t("Categoría añadida a tu plan", "Category added to your plan"),
+        {
+          description:
+            newCatKind === "fixed"
+              ? t("Como gasto fijo mensual", "As a monthly fixed expense")
+              : t("Como gasto variable mensual", "As a monthly variable expense"),
+        },
+      );
+    }
     setNewCat("");
+    setNewCatKind("variable");
     setCreating(false);
   };
 
@@ -282,37 +315,63 @@ export function ManualExpenseDialog({
           <div className="grid gap-1.5">
             <Label>{t("Categoría", "Category")}</Label>
             {creating ? (
-              <div className="flex gap-2">
-                <Input
-                  autoFocus
-                  value={newCat}
-                  onChange={(e) => setNewCat(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      confirmNewCategory();
-                    }
-                    if (e.key === "Escape") {
-                      e.preventDefault();
+              <div className="grid gap-2">
+                <div className="flex gap-2">
+                  <Input
+                    autoFocus
+                    value={newCat}
+                    onChange={(e) => setNewCat(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        confirmNewCategory();
+                      }
+                      if (e.key === "Escape") {
+                        e.preventDefault();
+                        setCreating(false);
+                        setNewCat("");
+                      }
+                    }}
+                    placeholder={t("Nombre de la categoría", "Category name")}
+                  />
+                  <Button type="button" onClick={confirmNewCategory} disabled={!canCreateNew}>
+                    {t("Añadir", "Add")}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => {
                       setCreating(false);
                       setNewCat("");
-                    }
-                  }}
-                  placeholder={t("Nombre de la categoría", "Category name")}
-                />
-                <Button type="button" onClick={confirmNewCategory} disabled={!canCreateNew}>
-                  {t("Añadir", "Add")}
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => {
-                    setCreating(false);
-                    setNewCat("");
-                  }}
-                >
-                  {t("Cancelar", "Cancel")}
-                </Button>
+                    }}
+                  >
+                    {t("Cancelar", "Cancel")}
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">
+                    {t("Tipo de gasto", "Expense type")}
+                  </span>
+                  <div className="flex rounded-md border border-white/10 p-0.5 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setNewCatKind("fixed")}
+                      className={cn("rounded px-2 py-0.5 transition", newCatKind === "fixed" ? "bg-white/15 text-white" : "text-muted-foreground")}
+                    >
+                      {t("Fijo", "Fixed")}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setNewCatKind("variable")}
+                      className={cn("rounded px-2 py-0.5 transition", newCatKind === "variable" ? "bg-white/15 text-white" : "text-muted-foreground")}
+                    >
+                      {t("Variable", "Variable")}
+                    </button>
+                  </div>
+                  <span className="text-[11px] text-muted-foreground">
+                    {t("Se añade a tu plan", "Added to your plan")}
+                  </span>
+                </div>
               </div>
             ) : (
               <div className="flex gap-2">
