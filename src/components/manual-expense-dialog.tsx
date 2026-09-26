@@ -41,6 +41,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useAuth } from "@/hooks/use-auth";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
+import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { supabase } from "@/integrations/supabase/client";
 import { translateCategory } from "@/lib/i18n-data";
 import { cn } from "@/lib/utils";
