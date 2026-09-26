@@ -1122,6 +1122,10 @@ export function ExpenseLog() {
         onAddCategory={(name) => categories.add(name)}
         open={manualOpen}
         onOpenChange={setManualOpen}
+        onSaved={() => {
+          setPeriod("month");
+          window.setTimeout(() => latestExpensesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
+        }}
       />
 
       <Dialog
