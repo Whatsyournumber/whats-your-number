@@ -366,13 +366,30 @@ function CashFlow() {
   }, [fixed.items, monthTx, matchesFixed, customWants, rules, travelDays, lang, retirementFundAmount]);
 
 
-  // Uso del ahorro: proyecta el ahorro mensual actual con interés compuesto hasta la edad de retiro.
+  // Uso del ahorro: proyecta el ahorro mensual actual invertido en el S&P 500
+  // (10% anual histórico) hasta la edad de retiro del plan.
+  const SP500_RATE = 10;
   const savingsYears = Math.max(1, (d.retirement.retireAge ?? 65) - d.retirement.currentAge);
   const savingsProjection = useMemo(
-    () => projectRetirementFrom(saveAmount, d.retirement.returnAnnualized, savingsYears, 0, d.retirement.currentAge),
-    [saveAmount, d.retirement.returnAnnualized, savingsYears, d.retirement.currentAge],
+    () => projectRetirementFrom(saveAmount, SP500_RATE, savingsYears, 0, d.retirement.currentAge),
+    [saveAmount, savingsYears, d.retirement.currentAge],
   );
   const savingsAtRetire = savingsProjection[savingsProjection.length - 1]?.value ?? 0;
+  const savingsYear1 = savingsProjection[1]?.value ?? 0;
+  // Conclusión de la regla 40/40/20: el desvío más grande frente al objetivo.
+  const needsPct = totalIncome > 0 ? (needsAmount / totalIncome) * 100 : 0;
+  const savePct = totalIncome > 0 ? (saveAmount / totalIncome) * 100 : 0;
+  const wantsPct = totalIncome > 0 ? (wantsAmount / totalIncome) * 100 : 0;
+  const ruleDeviations = hasReal
+    ? [
+        { label: t("Necesidades", "Needs"), over: needsPct - 40, under: false, link: "/gastos" },
+        { label: t("Ahorro", "Savings"), over: 40 - savePct, under: true, link: "/registro-gastos" },
+        { label: t("Deseos", "Wants"), over: wantsPct - 20, under: false, link: "/gastos" },
+      ]
+        .filter((d) => d.over > 1)
+        .sort((a, b) => b.over - a.over)
+    : [];
+  const topDeviation = ruleDeviations[0] ?? null;
   // No se presupone que todos los deseos se puedan eliminar: el recorte está
   // limitado al exceso sobre el objetivo y al gasto de la categoría principal.
   // El detalle de Análisis de gastos se basa en movimientos variables; los
