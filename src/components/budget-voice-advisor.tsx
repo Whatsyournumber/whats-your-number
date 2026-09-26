@@ -266,6 +266,7 @@ Metas: ${d.goals.map((g) => `${g.name} ${g.current.toFixed(0)}/${g.target.toFixe
           >
             {listening ? <MicOff className="h-7 w-7" /> : <Mic className="h-7 w-7" />}
           </button>
+          </div>
           <span className="text-xs text-muted-foreground">
             {listening ? t("Te escucho…", "Listening…") : t("Toca y pregunta en voz alta", "Tap and ask out loud")}
           </span>
