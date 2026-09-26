@@ -16,3 +16,4 @@
 - [x] Plan gratis: Tu número accesible, Hipoteca Pro, Mis datos en barra móvil y botones del tutorial navegables
 - [x] Plan gratis: IA bloqueada y oculta de la barra inferior, el menú y el buscador; tutorial Pro solamente
 - [x] Plan gratis: beneficios de precios y suscripción alineados con los accesos actuales
+- [x] Distribución del dinero: oportunidad mensual en deseos y proyección del ahorro en S&P 500
