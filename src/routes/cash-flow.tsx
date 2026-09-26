@@ -21,8 +21,7 @@ import { useSyncedSetting } from "@/hooks/use-synced-setting";
 import { sameMerchant, useTransactions, type Tx } from "@/hooks/use-transactions";
 import { findBudgetCategory } from "@/lib/budget-categories";
 import { buildTravelDays, categorizeTxWithTravel } from "@/lib/categorize";
-import { money } from "@/lib/onboarding";
-import { buildDataset } from "@/lib/profile-data";
+import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 
 export const Route = createFileRoute("/cash-flow")({
   head: () => ({
@@ -367,9 +366,13 @@ function CashFlow() {
   }, [fixed.items, monthTx, matchesFixed, customWants, rules, travelDays, lang, retirementFundAmount]);
 
 
-  const cash = profile.assets_cash + profile.assets_bank;
-  const monthlySpend = hasReal ? spend.total : d.expenses;
-  const runway = monthlySpend > 0 ? cash / monthlySpend : 0;
+  // Uso del ahorro: proyecta el ahorro mensual actual con interés compuesto hasta la edad de retiro.
+  const savingsYears = Math.max(1, (d.retirement.retireAge ?? 65) - d.retirement.currentAge);
+  const savingsProjection = useMemo(
+    () => projectRetirementFrom(saveAmount, d.retirement.returnAnnualized, savingsYears, 0, d.retirement.currentAge),
+    [saveAmount, d.retirement.returnAnnualized, savingsYears, d.retirement.currentAge],
+  );
+  const savingsAtRetire = savingsProjection[savingsProjection.length - 1]?.value ?? 0;
 
   return (
     <TooltipProvider delayDuration={150}>
@@ -563,10 +566,15 @@ function CashFlow() {
             />
           </div>
         </Panel>
-        <Panel title={t("Runway", "Runway")} description={t("Meses cubiertos con tu efectivo", "Months covered with your cash")}>
-          <p className="numeric text-4xl font-semibold text-primary">{runway.toFixed(1)}</p>
+        <Panel title={t("Uso del ahorro", "Use of savings")} description={t("Si ahorras a este ritmo, lo que tendrás al retirarte", "If you keep saving at this pace, what you'll have when you retire")}>
+          <p className="numeric text-4xl font-semibold text-primary">{fmt(savingsAtRetire)}</p>
           <p className="mt-2 text-xs text-muted-foreground">
-            {t("Con", "With")} {money(cash, d.currency)} {t("en efectivo y un gasto de", "in cash and a spend of")} {fmt(monthlySpend)} {t("al mes.", "per month.")}
+            {saveAmount > 0
+              ? <>
+                  {t("Ahorras", "You save")} {fmt(saveAmount)} {t("al mes", "per month")} {t("al", "at")} {d.retirement.returnAnnualized}%
+                  {` ${t("durante", "for")} ${savingsYears} ${t("años", "years")}.`}
+                </>
+              : t("Sin ahorro mensual todavía: edita tus categorías para verlo.", "No monthly savings yet: edit your categories to see it.")}
           </p>
         </Panel>
         <Panel title={t("Eficiencia del flujo", "Flow efficiency")} description={t("Patrimonio construido cada mes", "Net worth built each month")}>
