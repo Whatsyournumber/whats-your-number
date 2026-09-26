@@ -839,7 +839,7 @@ export function AppTour() {
 
   if (step === 0) {
     const welcomePoints: [typeof Compass, string][] = [
-      [ReceiptText, t("Trackea tus gastos", "Track your expenses")],
+      [ReceiptText, t("Trackea tus gastos diarios", "Track your daily spending")],
       [Lightbulb, t("Encuentra oportunidades", "Find opportunities")],
       [Target, t("Alcanza tu libertad financiera", "Reach financial freedom")],
     ];
