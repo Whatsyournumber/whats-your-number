@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { ArrowUp, Mic, MicOff, Sparkles } from "lucide-react";
+import { ArrowUp, Mic, MicOff, Sparkles, Volume2, VolumeX } from "lucide-react";
 
 import { Rich, ThinkingIndicator } from "@/components/ask-ai-search";
 import { Button } from "@/components/ui/button";
@@ -31,8 +31,40 @@ export function BudgetVoiceAdvisor({ open, onOpenChange }: { open: boolean; onOp
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [listening, setListening] = useState(false);
+  const [voiceOn, setVoiceOn] = useState(true);
+  const [speaking, setSpeaking] = useState(false);
   const recRef = useRef<AnyRecognition>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
+
+  const stopSpeaking = () => {
+    audioRef.current?.pause();
+    audioRef.current = null;
+    setSpeaking(false);
+  };
+
+  const speak = async (text: string) => {
+    if (!voiceOn) return;
+    stopSpeaking();
+    setSpeaking(true);
+    try {
+      const plain = text.replace(/[*_#`>]/g, "").slice(0, 1200);
+      const res = await fetch("/api/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: plain, lang: lang === "en" ? "en" : "es" }),
+      });
+      if (!res.ok) throw new Error("tts");
+      const url = URL.createObjectURL(await res.blob());
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => setSpeaking(false);
+      audio.onerror = () => setSpeaking(false);
+      await audio.play();
+    } catch {
+      setSpeaking(false);
+    }
+  };
 
   const d = buildDataset(profile);
 
@@ -88,7 +120,10 @@ Metas: ${d.goals.map((g) => `${g.name} ${g.current.toFixed(0)}/${g.target.toFixe
       });
       return res.answer;
     },
-    onSuccess: (answer) => setMessages((m) => [...m, { role: "assistant", content: answer }]),
+    onSuccess: (answer) => {
+      setMessages((m) => [...m, { role: "assistant", content: answer }]);
+      void speak(answer);
+    },
     onError: (e: unknown) =>
       setMessages((m) => [
         ...m,
@@ -113,6 +148,7 @@ Metas: ${d.goals.map((g) => `${g.name} ${g.current.toFixed(0)}/${g.target.toFixe
   };
 
   const startListening = () => {
+    stopSpeaking();
     const w = window as unknown as { SpeechRecognition?: AnyRecognition; webkitSpeechRecognition?: AnyRecognition };
     const SR = w.SpeechRecognition ?? w.webkitSpeechRecognition;
     if (!SR) {
@@ -144,7 +180,10 @@ Metas: ${d.goals.map((g) => `${g.name} ${g.current.toFixed(0)}/${g.target.toFixe
   };
 
   useEffect(() => {
-    if (!open) stopListening();
+    if (!open) {
+      stopListening();
+      stopSpeaking();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
@@ -201,6 +240,22 @@ Metas: ${d.goals.map((g) => `${g.name} ${g.current.toFixed(0)}/${g.target.toFixe
         </div>
 
         <div className="flex flex-col items-center gap-2">
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => {
+                if (voiceOn) stopSpeaking();
+                setVoiceOn((v) => !v);
+              }}
+              aria-label={voiceOn ? t("Silenciar voz", "Mute voice") : t("Activar voz", "Enable voice")}
+              className={cn(
+                "grid h-10 w-10 place-items-center rounded-full border border-border text-muted-foreground transition-colors",
+                voiceOn && "border-primary/40 text-primary",
+                speaking && "animate-pulse",
+              )}
+            >
+              {voiceOn ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+            </button>
           <button
             type="button"
             onClick={listening ? stopListening : startListening}
@@ -212,6 +267,7 @@ Metas: ${d.goals.map((g) => `${g.name} ${g.current.toFixed(0)}/${g.target.toFixe
           >
             {listening ? <MicOff className="h-7 w-7" /> : <Mic className="h-7 w-7" />}
           </button>
+          </div>
           <span className="text-xs text-muted-foreground">
             {listening ? t("Te escucho…", "Listening…") : t("Toca y pregunta en voz alta", "Tap and ask out loud")}
           </span>
