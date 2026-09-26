@@ -347,10 +347,15 @@ export function AppTour() {
     };
     const timers = [120, 500, 1100].map((ms, i) =>
       window.setTimeout(() => {
-        const el = find();
-        if (el && i < 2 && !el.hasAttribute("data-tour-nav")) {
-          el.style.scrollMarginTop = "88px";
-          el.scrollIntoView({ block: "start", behavior: i === 0 ? "auto" : "smooth" });
+        if (current.url === "/registro-gastos") {
+          // Arriba de todo para que se vean el + de la cabecera y el plan juntos.
+          window.scrollTo({ top: 0, behavior: i === 0 ? "auto" : "smooth" });
+        } else {
+          const el = find();
+          if (el && i < 2 && !el.hasAttribute("data-tour-nav")) {
+            el.style.scrollMarginTop = "88px";
+            el.scrollIntoView({ block: "start", behavior: i === 0 ? "auto" : "smooth" });
+          }
         }
         window.setTimeout(measure, 350);
       }, ms),
@@ -954,6 +959,17 @@ export function AppTour() {
                   )}
                 </div>
               ))}
+              {extraSpots
+                .filter((s) => s.caption)
+                .map((s, i) => (
+                  <span
+                    key={`cap-${i}`}
+                    className="absolute max-w-[240px] -translate-x-1/2 rounded-2xl bg-positive px-3 py-1.5 text-center text-[10px] font-semibold leading-snug text-white shadow-lg shadow-positive/30"
+                    style={{ left: Math.min(Math.max(s.x + s.w / 2, 120), window.innerWidth - 120), top: s.y - 38 }}
+                  >
+                    {s.caption}
+                  </span>
+                ))}
             </>
           ) : (
             <div
@@ -962,7 +978,7 @@ export function AppTour() {
             />
           )}
           {(() => {
-            const sheetTop = window.innerHeight * 0.64;
+            const sheetTop = tourBoxRef.current?.getBoundingClientRect().top ?? window.innerHeight * 0.62;
             const y1 = spot.y + spot.h + 6;
             if (sheetTop - y1 < 28) return null;
             const x = Math.min(Math.max(spot.x + spot.w / 2, 40), window.innerWidth - 40);
@@ -979,7 +995,7 @@ export function AppTour() {
       )}
       <div
         className={cn(
-          "fixed inset-x-0 bottom-[78px] z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
+          "fixed inset-x-0 bottom-[148px] z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8",
           hasNumberedBullets ? "sm:w-[560px]" : "sm:w-[400px]",
           isDashboardStep
             ? sidebarState === "expanded"
