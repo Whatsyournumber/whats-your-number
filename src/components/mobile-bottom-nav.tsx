@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Repeat } from "lucide-react";
 import { useT } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
+import { cn } from "@/lib/utils";
 
 export function MobileBottomNav() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
@@ -10,6 +11,16 @@ export function MobileBottomNav() {
   const { isPro } = useSubscription();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  // El tour del paso del botón + abre el menú real mientras dura el paso.
+  const [tourHold, setTourHold] = useState(false);
+  useEffect(() => {
+    const onTour = (event: Event) => setTourHold(Boolean((event as CustomEvent<{ open?: boolean }>).detail?.open));
+    window.addEventListener("wyn:tour-add-menu", onTour);
+    return () => window.removeEventListener("wyn:tour-add-menu", onTour);
+  }, []);
+  useEffect(() => {
+    setMenuOpen(tourHold);
+  }, [tourHold]);
 
   const tabs = [
     { title: t("Inicio", "Home"), url: "/dashboard", icon: Home },
@@ -64,12 +75,20 @@ export function MobileBottomNav() {
     <nav className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
       {menuOpen && (
         <>
+          {!tourHold && (
+            <div
+              className="fixed inset-0 bg-background/60 backdrop-blur-sm"
+              onClick={() => setMenuOpen(false)}
+              aria-hidden
+            />
+          )}
           <div
-            className="fixed inset-0 bg-background/60 backdrop-blur-sm"
-            onClick={() => setMenuOpen(false)}
-            aria-hidden
-          />
-          <div className="absolute inset-x-3 bottom-full mb-3 rounded-2xl border border-border bg-card p-2 shadow-2xl">
+            data-tour-add-menu
+            className={cn(
+              "absolute inset-x-3 rounded-2xl border border-border bg-card p-2 shadow-2xl",
+              tourHold ? "bottom-[calc(100%+200px)]" : "bottom-full mb-3",
+            )}
+          >
             {addOptions.map((opt) => (
               <button
                 key={opt.label}

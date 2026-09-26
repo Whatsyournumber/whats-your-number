@@ -64,7 +64,7 @@ const STEPS: Step[] = [
   },
   {
     url: "/registro-gastos", icon: Plus, minPlan: "free", mobileOnly: true,
-    mobileSpot: "[data-tour-nav-add]",
+    mobileSpot: "[data-tour-add-menu]",
     es: ["Botón de gastos diarios", "Toca el botón + de la barra para añadir un gasto.",
       "Manual, por voz o con foto del recibo",
       "Cada gasto actualiza tu plan y tu número al instante",
@@ -387,6 +387,17 @@ export function AppTour() {
       window.removeEventListener("resize", measure);
     };
   }, [isMobile, current, pathname]);
+
+  // Paso del botón +: abre el menú real de "agregar gasto" mientras dura el paso.
+  const isAddSpotTourStep = current?.mobileSpot === "[data-tour-add-menu]";
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("wyn:tour-add-menu", { detail: { open: isAddSpotTourStep } }));
+    return () => {
+      if (isAddSpotTourStep) {
+        window.dispatchEvent(new CustomEvent("wyn:tour-add-menu", { detail: { open: false } }));
+      }
+    };
+  }, [isAddSpotTourStep]);
   const [markers, setMarkers] = useState<{ kpi: { x: number; y: number }; number: { x: number; y: number }; box: { x: number; y: number } } | null>(null);
   useEffect(() => {
     if (!isDashboardTourStep || isMobile) {
@@ -938,8 +949,8 @@ export function AppTour() {
   const isNumberStep = current.url === "/retiro";
   const isDashboardStep = current.url === "/dashboard";
   const isExpenseStep = current.url === "/registro-gastos";
-  // Paso del botón + de la barra: la hoja sube para dejarlo visible.
-  const isAddSpotStep = current.mobileSpot === "[data-tour-nav-add]";
+  // Paso del botón + de la barra: ilumina el menú abierto de opciones.
+  const isAddSpotStep = current.mobileSpot === "[data-tour-add-menu]";
   const isAnalysisStep = current.url === "/gastos";
   const isCashFlowStep = current.url === "/cash-flow";
   const isHipotecaStep = current.url === "/hipoteca";
@@ -1019,7 +1030,7 @@ export function AppTour() {
       )}
       <div
         className={cn(
-          `fixed inset-x-0 ${isAddSpotStep ? "bottom-[150px]" : "bottom-[78px]"} z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8`,
+          `fixed inset-x-0 bottom-[78px] z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8`,
           hasNumberedBullets ? "sm:w-[560px]" : "sm:w-[400px]",
           isDashboardStep
             ? sidebarState === "expanded"
@@ -1084,8 +1095,9 @@ export function AppTour() {
             )}
           </div>
           <p className="relative mt-2.5 whitespace-pre-line text-[13px] leading-snug text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
+          {(isAddSpotStep ? [] : isMobile ? points.slice(0, 2) : points).length > 0 && (
           <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
-            {(isMobile ? points.slice(0, 2) : points).map((p, i) => {
+            {(isAddSpotStep ? [] : isMobile ? points.slice(0, 2) : points).map((p, i) => {
               const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
               return (
                 <li key={i} className="flex items-start gap-2 text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
@@ -1103,6 +1115,7 @@ export function AppTour() {
               );
             })}
           </ul>
+          )}
           <div className="relative mt-3 h-1 overflow-hidden rounded-full bg-tour-foreground/10 sm:mt-4">
             <div className="h-full rounded-full bg-positive transition-all duration-500" style={{ width: `${((step + 1) / total) * 100}%` }} />
           </div>
