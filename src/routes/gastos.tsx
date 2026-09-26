@@ -361,6 +361,7 @@ function Gastos() {
       }, 350);
       return () => window.clearTimeout(timer);
     }
+    return undefined;
   }, [search.category, detailRows]);
 
 
