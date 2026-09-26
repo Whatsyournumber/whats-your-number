@@ -568,10 +568,15 @@ function CashFlow() {
             />
           </div>
         </Panel>
-        <Panel title={t("Runway", "Runway")} description={t("Meses cubiertos con tu efectivo", "Months covered with your cash")}>
-          <p className="numeric text-4xl font-semibold text-primary">{runway.toFixed(1)}</p>
+        <Panel title={t("Uso del ahorro", "Use of savings")} description={t("Si ahorras a este ritmo, lo que tendrás al retirarte", "If you keep saving at this pace, what you'll have when you retire")}>
+          <p className="numeric text-4xl font-semibold text-primary">{fmt(savingsAtRetire)}</p>
           <p className="mt-2 text-xs text-muted-foreground">
-            {t("Con", "With")} {money(cash, d.currency)} {t("en efectivo y un gasto de", "in cash and a spend of")} {fmt(monthlySpend)} {t("al mes.", "per month.")}
+            {saveAmount > 0
+              ? <>
+                  {t("Ahorras", "You save")} {fmt(saveAmount)} {t("al mes", "per month")} {t("al", "at")} {d.retirement.returnAnnualized}%
+                  {` ${t("durante", "for")} ${savingsYears} ${t("años", "years")}.`}
+                </>
+              : t("Sin ahorro mensual todavía: edita tus categorías para verlo.", "No monthly savings yet: edit your categories to see it.")}
           </p>
         </Panel>
         <Panel title={t("Eficiencia del flujo", "Flow efficiency")} description={t("Patrimonio construido cada mes", "Net worth built each month")}>
