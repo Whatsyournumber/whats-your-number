@@ -629,7 +629,7 @@ function CashFlow() {
             </div>
           )}
         </Panel>
-        <Panel className="flex flex-col" title={t("Uso del ahorro", "Use of savings")} description={t("Lo que tendrás al retirarte", "What you'll have at retirement")} icon={<PiggyBank />}>
+        <Panel className="flex flex-col" title={t("Uso del ahorro", "Use of savings")} description={t("Si ahorras así, lo que tendrías al retirarte", "If you save like this, what you'd have at retirement")} icon={<PiggyBank />}>
           <p className="numeric text-4xl font-semibold text-primary">{fmt(savingsAtRetire)}</p>
           <p className="mt-1.5 text-xs text-muted-foreground">
             {saveAmount > 0
