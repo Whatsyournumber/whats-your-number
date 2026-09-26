@@ -325,7 +325,11 @@ export function ExpenseLog() {
           const d = parseISO(x.tx_date!);
           return d >= periodStart && d <= monthEnd;
         })
-        .sort((a, b) => (a.tx_date! < b.tx_date! ? 1 : -1)),
+        // Orden cronológico: por fecha y, a igual fecha, por hora de alta — el último añadido queda abajo.
+        .sort((a, b) => {
+          if (a.tx_date! !== b.tx_date!) return a.tx_date! < b.tx_date! ? -1 : 1;
+          return (a.created_at ?? "").localeCompare(b.created_at ?? "");
+        }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [transactions, periodStart.getTime(), monthEnd.getTime()],
   );

@@ -21,6 +21,8 @@ export type Tx = {
   category: string | null;
   subcategory: string | null;
   excluded: boolean;
+  /** Fecha y hora de alta del registro; desempata gastos del mismo día. */
+  created_at?: string;
 };
 
 const normalizeTransactionText = (value: string | null | undefined) =>
@@ -77,7 +79,7 @@ export function useTransactions() {
       if (!userId) return [];
       const { data, error } = await supabase
         .from("imported_transactions")
-        .select("id,statement_id,tx_date,merchant,description,amount,currency,category,subcategory,excluded")
+        .select("id,statement_id,tx_date,merchant,description,amount,currency,category,subcategory,excluded,created_at")
         .eq("user_id", userId)
         .order("tx_date", { ascending: false })
         .limit(5000);
