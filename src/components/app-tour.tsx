@@ -277,7 +277,7 @@ export function AppTour() {
     // Focos extra por paso (además del botón de la barra inferior), con badge numerado opcional.
     const EXTRA_SELECTORS: Record<string, { sel: string; badge: number }[]> = {
       "/registro-gastos": [
-        { sel: "[data-tour-expense-target='add-mobile']", badge: 1 },
+        { sel: "[data-tour-nav-add]", badge: 1 },
         { sel: "[data-tour-expense-target='plan']", badge: 2 },
       ],
       "/retiro": [
