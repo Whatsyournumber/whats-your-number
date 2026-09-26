@@ -227,8 +227,9 @@ export function AppTour() {
       // En la vista previa móvil, mostrar la bienvenida directamente solo si el
       // usuario no ha completado/descartado el tutorial: el auto-apertura
       // respeta el mismo flag "ya visto" que el flujo normal.
+      const forced = new URLSearchParams(window.location.search).get("tour") === "1";
       const done = localStorage.getItem(doneKey(user.id));
-      if (done) return;
+      if (done && !forced) return;
       const host = window.location.hostname;
       const mobilePreview = isMobile && pathname === "/dashboard" && (
         host === "localhost" ||
@@ -236,13 +237,12 @@ export function AppTour() {
         host.endsWith(".lovableproject-dev.com") ||
         /^id-preview--.*\.lovable\.app$/.test(host)
       );
-      if (mobilePreview && !sessionStorage.getItem("yn.tour.mobile-preview-nav-20260925")) {
+      if (!forced && mobilePreview && !sessionStorage.getItem("yn.tour.mobile-preview-nav-20260925")) {
         sessionStorage.setItem("yn.tour.mobile-preview-nav-20260925", "1");
         setOpenMobile(false);
         setStep(0);
         return;
       }
-      const forced = new URLSearchParams(window.location.search).get("tour") === "1";
       if (!forced) {
         if (localStorage.getItem(PENDING_KEY) !== "1") return;
       }
