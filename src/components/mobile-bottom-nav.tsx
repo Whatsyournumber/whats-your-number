@@ -33,7 +33,7 @@ export function MobileBottomNav() {
     { icon: Repeat, label: t("Recurrente", "Recurring"), search: { action: "recurring" } as const },
   ];
 
-  const renderTab = (tab: { title: string; url: string; icon: typeof Home }) => {
+  const renderTab = (tab: { title: string; url: string; icon: typeof Home }, extraClass = "") => {
     const active = pathname === tab.url;
     return (
       <Link
@@ -41,7 +41,7 @@ export function MobileBottomNav() {
         to={tab.url}
         data-tour-nav={tab.url}
         onClick={() => window.dispatchEvent(new CustomEvent("wyn:tour-mobile-tab", { detail: tab.url }))}
-        className="group flex min-w-0 flex-col items-center gap-1 px-0.5 py-1 transition-colors"
+        className={`group flex min-w-0 flex-col items-center gap-1 px-0.5 py-1 transition-colors ${extraClass}`}
       >
         <tab.icon
           className={`h-6 w-6 shrink-0 transition-colors ${
