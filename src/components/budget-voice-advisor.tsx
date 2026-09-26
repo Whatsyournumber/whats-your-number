@@ -48,11 +48,14 @@ export function BudgetVoiceAdvisor({ open, onOpenChange }: { open: boolean; onOp
     stopSpeaking();
     setSpeaking(true);
     try {
-      const plain = text.replace(/[*_#`>]/g, "").slice(0, 1200);
+      const plain = text.replace(/[*_#`>]/g, "");
+      // Resumen hablado: veredicto + datos clave, sin la explicación larga.
+      const sentences = plain.split(/(?<=[.!?])\s+/).filter(Boolean);
+      const summary = (sentences.length > 2 ? [sentences[0], sentences[sentences.length - 1]].join(" ") : plain).slice(0, 400);
       const res = await fetch("/api/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: plain, lang: lang === "en" ? "en" : "es" }),
+        body: JSON.stringify({ text: summary, lang: lang === "en" ? "en" : "es" }),
       });
       if (!res.ok) throw new Error("tts");
       const url = URL.createObjectURL(await res.blob());
