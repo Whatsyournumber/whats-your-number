@@ -1063,8 +1063,8 @@ export function AppTour() {
                          : "sm:right-6",
         )}
       >
-        <div ref={tourBoxRef} data-tour-box className={cn("relative border border-tour-border bg-tour-surface text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25", isMobile ? "max-h-[40dvh] overflow-y-auto overscroll-contain rounded-t-3xl border-b-0 p-4 pb-7" : "overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-5")}>
-          {isMobile && (
+        <div ref={tourBoxRef} data-tour-box className={cn("relative border border-tour-border bg-tour-surface text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25", isMobile ? (isAddSpotStep ? "mx-3 max-h-[72dvh] overflow-y-auto overscroll-contain rounded-3xl p-4 pb-5" : "max-h-[40dvh] overflow-y-auto overscroll-contain rounded-t-3xl border-b-0 p-4 pb-7") : "overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-5")}>
+          {isMobile && !isAddSpotStep && (
             <div className="-mx-4 -mt-4 mb-1.5 bg-tour-surface pb-1.5 pt-2.5">
               <div className="mx-auto h-1 w-10 rounded-full bg-tour-foreground/25" />
             </div>
@@ -1101,6 +1101,16 @@ export function AppTour() {
             )}
           </div>
           <p className="relative mt-2.5 whitespace-pre-line text-[13px] leading-snug text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
+          {isAddSpotStep && isMobile && (
+            <div className="relative mt-3 rounded-2xl border border-border bg-background p-1.5 shadow-inner">
+              {ADD_OPTIONS.map(({ icon: OptionIcon, es, en }) => (
+                <div key={es} className="flex min-h-11 items-center gap-4 rounded-xl px-3.5 py-2.5 text-[15px] font-medium text-foreground">
+                  <OptionIcon className="h-5 w-5 shrink-0 text-positive" strokeWidth={1.9} />
+                  {t(es, en)}
+                </div>
+              ))}
+            </div>
+          )}
           {(isAddSpotStep ? [] : isMobile ? points.slice(0, 2) : points).length > 0 && (
           <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
             {(isAddSpotStep ? [] : isMobile ? points.slice(0, 2) : points).map((p, i) => {
