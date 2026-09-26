@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 type Msg = { role: "user" | "assistant"; content: string };
 
 /** Renderizado mínimo de markdown (negritas, viñetas y títulos). */
-function Rich({ text }: { text: string }) {
+export function Rich({ text }: { text: string }) {
   const lines = text.split("\n").filter((l) => l.trim().length > 0);
   return (
     <div className="space-y-1.5">
@@ -64,7 +64,7 @@ function Rich({ text }: { text: string }) {
 }
 
 /** Indicador de progreso con etapas y cronómetro. */
-function ThinkingIndicator({ txCount }: { txCount: number }) {
+export function ThinkingIndicator({ txCount }: { txCount: number }) {
   const t = useT();
   const [ms, setMs] = useState(0);
   useEffect(() => {
