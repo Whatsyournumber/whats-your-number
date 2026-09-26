@@ -629,36 +629,38 @@ function CashFlow() {
             </div>
           )}
         </Panel>
-        <Panel title={t("Uso del ahorro", "Use of savings")} description={t("Lo que tendrás al retirarte", "What you'll have at retirement")} icon={<PiggyBank />}>
+        <Panel className="flex flex-col" title={t("Uso del ahorro", "Use of savings")} description={t("Lo que tendrás al retirarte", "What you'll have at retirement")} icon={<PiggyBank />}>
           <p className="numeric text-4xl font-semibold text-primary">{fmt(savingsAtRetire)}</p>
           <p className="mt-1.5 text-xs text-muted-foreground">
             {saveAmount > 0
               ? <>{t("Ahorras", "You save")} {fmt(saveAmount)}{t("/mes", "/mo")} · {t("S&P 500 al", "S&P 500 at")} {SP500_RATE}% · {savingsYears} {t("años", "years")}</>
               : t("Sin ahorro mensual todavía: edita tus categorías para verlo.", "No monthly savings yet: edit your categories to see it.")}
           </p>
-          {saveAmount > 0 && savingsYears > 1 && (
-            <div className="mt-4 grid grid-cols-3 divide-x divide-border rounded-2xl border border-border bg-elevated/60 py-3 text-center">
-              <div className="px-2">
-                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("Hoy", "Today")}</p>
-                <p className="numeric mt-1 text-sm font-medium">{fmt(0)}</p>
-              </div>
-              <div className="px-2">
-                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">1 {t("año", "year")}</p>
-                <p className="numeric mt-1 text-sm font-medium">{fmt(savingsYear1)}</p>
-              </div>
-              <div className="px-2">
-                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{savingsYears} {t("años", "years")}</p>
-                <p className="numeric mt-1 text-sm font-semibold text-positive">{fmt(savingsAtRetire)}</p>
-              </div>
-            </div>
-          )}
           {saveAmount > 0 && (
-            <p className="mt-2 text-xs text-muted-foreground">
-              {t(
-                `Manteniendo este ritmo al ${SP500_RATE}% anual (S&P 500).`,
-                `Keeping this pace at ${SP500_RATE}% a year (S&P 500).`,
+            <div className="mt-auto pt-4">
+              {savingsYears > 1 && (
+                <div className="grid grid-cols-3 divide-x divide-border rounded-2xl border border-border bg-elevated/60 py-3 text-center">
+                  <div className="px-2">
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("Hoy", "Today")}</p>
+                    <p className="numeric mt-1 text-sm font-medium">{fmt(0)}</p>
+                  </div>
+                  <div className="px-2">
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">1 {t("año", "year")}</p>
+                    <p className="numeric mt-1 text-sm font-medium">{fmt(savingsYear1)}</p>
+                  </div>
+                  <div className="px-2">
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{savingsYears} {t("años", "years")}</p>
+                    <p className="numeric mt-1 text-sm font-semibold text-positive">{fmt(savingsAtRetire)}</p>
+                  </div>
+                </div>
               )}
-            </p>
+              <p className={savingsYears > 1 ? "mt-2 text-xs text-muted-foreground" : "text-xs text-muted-foreground"}>
+                {t(
+                  `Manteniendo este ritmo al ${SP500_RATE}% anual (S&P 500).`,
+                  `Keeping this pace at ${SP500_RATE}% a year (S&P 500).`,
+                )}
+              </p>
+            </div>
           )}
         </Panel>
         <Panel
