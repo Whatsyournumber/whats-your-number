@@ -569,8 +569,8 @@ function CashFlow() {
       </Panel>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel className="hidden lg:block" title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")} icon={<PieChart />}>
-          <div className="space-y-3 text-sm">
+        <Panel className="hidden lg:flex flex-col" title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")} icon={<PieChart />}>
+          <div className="space-y-3 pb-4 text-sm">
             <Row
               label={t("Necesidades", "Needs")}
               value={needsAmount}
@@ -600,30 +600,30 @@ function CashFlow() {
           {topDeviation ? (
             <Link
               to={topDeviation.link}
-              className="mt-4 flex items-center gap-3 rounded-xl border border-negative/25 bg-negative/10 p-3 transition hover:bg-negative/15"
+              className="mt-auto flex items-center gap-3 rounded-xl border border-negative/25 bg-negative/10 p-3 transition hover:bg-negative/15"
             >
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-negative/20">
                 <AlertCircle className="h-4 w-4 text-negative" />
               </span>
-              <p className="min-w-0 flex-1 text-sm leading-snug text-foreground">
+              <p className="min-w-0 flex-1 whitespace-nowrap text-[13px] leading-snug text-foreground">
                 {topDeviation.under
                   ? t(
-                      `${topDeviation.label} está ${Math.round(topDeviation.over)}% por debajo de tu objetivo.`,
-                      `${topDeviation.label} is ${Math.round(topDeviation.over)}% below your target.`,
+                      `${topDeviation.label}: ${Math.round(topDeviation.over)}% ${t("bajo tu objetivo", "below your target")}`,
+                      `${topDeviation.label}: ${Math.round(topDeviation.over)}% below your target.`,
                     )
                   : t(
-                      `${topDeviation.label} está ${Math.round(topDeviation.over)}% por encima de tu objetivo.`,
-                      `${topDeviation.label} are ${Math.round(topDeviation.over)}% above your target.`,
+                      `${topDeviation.label}: ${Math.round(topDeviation.over)}% ${t("sobre tu objetivo", "above your target")}`,
+                      `${topDeviation.label}: ${Math.round(topDeviation.over)}% above your target.`,
                     )}
               </p>
               <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
             </Link>
           ) : (
-            <div className="mt-4 flex items-center gap-3 rounded-xl border border-positive/25 bg-positive/10 p-3">
+            <div className="mt-auto flex items-center gap-3 rounded-xl border border-positive/25 bg-positive/10 p-3">
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-positive/20">
                 <CheckCircle2 className="h-4 w-4 text-positive" />
               </span>
-              <p className="min-w-0 flex-1 text-sm leading-snug text-foreground">
+              <p className="min-w-0 flex-1 whitespace-nowrap text-[13px] leading-snug text-foreground">
                 {t("Tu regla 40/40/20 va bien este mes.", "Your 40/40/20 rule is on track this month.")}
               </p>
             </div>
