@@ -43,7 +43,7 @@ export function MobileBottomNav() {
     { icon: Mic, label: t("Por voz", "By voice"), search: { action: "voice" } as const },
     { icon: Camera, label: t("Tomar foto", "Take photo"), search: { action: "photo" } as const },
     { icon: Upload, label: t("Sube foto o captura", "Upload photo or screenshot"), search: { action: "upload" } as const },
-    { icon: FileSpreadsheet, label: t("Subir estados financieros", "Upload bank statements"), search: { action: "statement" } as const },
+    { icon: FileSpreadsheet, label: t("Subir tus estados de cuenta", "Upload your bank statements"), search: { action: "statement" } as const },
     ...(isPro
       ? [{ icon: Sparkles, label: t("Consejos con IA", "AI advice"), onClick: () => { setMenuOpen(false); setAdviceOpen(true); } }]
       : []),
