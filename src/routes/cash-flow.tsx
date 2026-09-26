@@ -655,8 +655,8 @@ function CashFlow() {
           {saveAmount > 0 && (
             <p className="mt-2 text-xs text-muted-foreground">
               {t(
-                `Manteniendo este ritmo al ${SP500_RATE}% anual (histórico del S&P 500).`,
-                `Keeping this pace at ${SP500_RATE}% a year (S&P 500 historical average).`,
+                `Manteniendo este ritmo al ${SP500_RATE}% anual (S&P 500).`,
+                `Keeping this pace at ${SP500_RATE}% a year (S&P 500).`,
               )}
             </p>
           )}
