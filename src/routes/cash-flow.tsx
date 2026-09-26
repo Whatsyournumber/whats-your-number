@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { ArrowLeftRight, ArrowRight, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank } from "lucide-react";
+import { AlertCircle, ArrowLeftRight, ArrowRight, CheckCircle2, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory } from "@/lib/i18n-data";
@@ -366,13 +366,30 @@ function CashFlow() {
   }, [fixed.items, monthTx, matchesFixed, customWants, rules, travelDays, lang, retirementFundAmount]);
 
 
-  // Uso del ahorro: proyecta el ahorro mensual actual con interés compuesto hasta la edad de retiro.
+  // Uso del ahorro: proyecta el ahorro mensual actual invertido en el S&P 500
+  // (10% anual histórico) hasta la edad de retiro del plan.
+  const SP500_RATE = 10;
   const savingsYears = Math.max(1, (d.retirement.retireAge ?? 65) - d.retirement.currentAge);
   const savingsProjection = useMemo(
-    () => projectRetirementFrom(saveAmount, d.retirement.returnAnnualized, savingsYears, 0, d.retirement.currentAge),
-    [saveAmount, d.retirement.returnAnnualized, savingsYears, d.retirement.currentAge],
+    () => projectRetirementFrom(saveAmount, SP500_RATE, savingsYears, 0, d.retirement.currentAge),
+    [saveAmount, savingsYears, d.retirement.currentAge],
   );
   const savingsAtRetire = savingsProjection[savingsProjection.length - 1]?.value ?? 0;
+  const savingsYear1 = savingsProjection[1]?.value ?? 0;
+  // Conclusión de la regla 40/40/20: el desvío más grande frente al objetivo.
+  const needsPct = totalIncome > 0 ? (needsAmount / totalIncome) * 100 : 0;
+  const savePct = totalIncome > 0 ? (saveAmount / totalIncome) * 100 : 0;
+  const wantsPct = totalIncome > 0 ? (wantsAmount / totalIncome) * 100 : 0;
+  const ruleDeviations = hasReal
+    ? [
+        { label: t("Necesidades", "Needs"), over: needsPct - 40, under: false, link: "/gastos" },
+        { label: t("Ahorro", "Savings"), over: 40 - savePct, under: true, link: "/registro-gastos" },
+        { label: t("Deseos", "Wants"), over: wantsPct - 20, under: false, link: "/gastos" },
+      ]
+        .filter((d) => d.over > 1)
+        .sort((a, b) => b.over - a.over)
+    : [];
+  const topDeviation = ruleDeviations[0] ?? null;
   // No se presupone que todos los deseos se puedan eliminar: el recorte está
   // limitado al exceso sobre el objetivo y al gasto de la categoría principal.
   // El detalle de Análisis de gastos se basa en movimientos variables; los
@@ -577,19 +594,71 @@ function CashFlow() {
               total={totalIncome}
               target={20}
               fmt={fmt}
-              legend={t("Viajes, restaurantes, salidas, compras, tecnología, apps, hobbies y lifestyle.", "Travel, dining out, entertainment, shopping, technology, apps, hobbies and lifestyle.")}
+                legend={t("Viajes, restaurantes, salidas, compras, tecnología, apps, hobbies y lifestyle.", "Travel, dining out, entertainment, shopping, technology, apps, hobbies and lifestyle.")}
             />
           </div>
+          {topDeviation ? (
+            <Link
+              to={topDeviation.link}
+              className="mt-4 flex items-center gap-3 rounded-xl border border-negative/25 bg-negative/10 p-3 transition hover:bg-negative/15"
+            >
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-negative/20">
+                <AlertCircle className="h-4 w-4 text-negative" />
+              </span>
+              <p className="min-w-0 flex-1 text-sm leading-snug text-foreground">
+                {topDeviation.under
+                  ? t(
+                      `${topDeviation.label} está ${Math.round(topDeviation.over)}% por debajo de tu objetivo.`,
+                      `${topDeviation.label} is ${Math.round(topDeviation.over)}% below your target.`,
+                    )
+                  : t(
+                      `${topDeviation.label} está ${Math.round(topDeviation.over)}% por encima de tu objetivo.`,
+                      `${topDeviation.label} are ${Math.round(topDeviation.over)}% above your target.`,
+                    )}
+              </p>
+              <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+            </Link>
+          ) : (
+            <div className="mt-4 flex items-center gap-3 rounded-xl border border-positive/25 bg-positive/10 p-3">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-positive/20">
+                <CheckCircle2 className="h-4 w-4 text-positive" />
+              </span>
+              <p className="min-w-0 flex-1 text-sm leading-snug text-foreground">
+                {t("Tu regla 40/40/20 va bien este mes.", "Your 40/40/20 rule is on track this month.")}
+              </p>
+            </div>
+          )}
         </Panel>
         <Panel title={t("Uso del ahorro", "Use of savings")} description={t("Lo que tendrás al retirarte", "What you'll have at retirement")} icon={<PiggyBank />}>
           <p className="numeric text-4xl font-semibold text-primary">{fmt(savingsAtRetire)}</p>
           <p className="mt-1.5 text-xs text-muted-foreground">
             {saveAmount > 0
-              ? <>{t("Ahorras", "You save")} {fmt(saveAmount)}{t("/mes", "/mo")} · {d.retirement.returnAnnualized}% · {savingsYears} {t("años", "years")}</>
+              ? <>{t("Ahorras", "You save")} {fmt(saveAmount)}{t("/mes", "/mo")} · {t("S&P 500 al", "S&P 500 at")} {SP500_RATE}% · {savingsYears} {t("años", "years")}</>
               : t("Sin ahorro mensual todavía: edita tus categorías para verlo.", "No monthly savings yet: edit your categories to see it.")}
           </p>
-          {saveAmount > 0 && savingsProjection.length > 1 && (
-            <Sparkline values={savingsProjection.map((p) => p.value)} className="mt-4 text-primary" />
+          {saveAmount > 0 && savingsYears > 1 && (
+            <div className="mt-4 grid grid-cols-3 divide-x divide-border rounded-2xl border border-border bg-elevated/60 py-3 text-center">
+              <div className="px-2">
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("Hoy", "Today")}</p>
+                <p className="numeric mt-1 text-sm font-medium">{fmt(0)}</p>
+              </div>
+              <div className="px-2">
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">1 {t("año", "year")}</p>
+                <p className="numeric mt-1 text-sm font-medium">{fmt(savingsYear1)}</p>
+              </div>
+              <div className="px-2">
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{savingsYears} {t("años", "years")}</p>
+                <p className="numeric mt-1 text-sm font-semibold text-positive">{fmt(savingsAtRetire)}</p>
+              </div>
+            </div>
+          )}
+          {saveAmount > 0 && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              {t(
+                `Manteniendo este ritmo al ${SP500_RATE}% anual (S&P 500).`,
+                `Keeping this pace at ${SP500_RATE}% a year (S&P 500).`,
+              )}
+            </p>
           )}
         </Panel>
         <Panel
@@ -787,24 +856,3 @@ function BreakdownTooltip({
   );
 }
 
-function Sparkline({ values, className }: { values: number[]; className?: string }) {
-  if (values.length < 2) return null;
-  const w = 100;
-  const h = 34;
-  const max = Math.max(...values);
-  const min = Math.min(...values);
-  const range = max - min || 1;
-  const points = values.map((v, i) => {
-    const x = (i / (values.length - 1)) * w;
-    const y = h - 2 - ((v - min) / range) * (h - 4);
-    return `${x.toFixed(2)},${y.toFixed(2)}`;
-  });
-  const line = `M${points.join(" L")}`;
-  const area = `${line} L${w},${h} L0,${h} Z`;
-  return (
-    <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className={className} aria-hidden>
-      <path d={area} fill="currentColor" opacity={0.12} />
-      <path d={line} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
-</svg>
-  );
-}
