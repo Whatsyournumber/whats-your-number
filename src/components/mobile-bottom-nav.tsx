@@ -3,6 +3,7 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Repeat } from "lucide-react";
 import { useT } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
+import { cn } from "@/lib/utils";
 
 export function MobileBottomNav() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
@@ -72,14 +73,20 @@ export function MobileBottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
-      {menuOpen && (
+      {menuOpen && !tourHold && (
         <>
           <div
             className="fixed inset-0 bg-background/60 backdrop-blur-sm"
             onClick={() => setMenuOpen(false)}
             aria-hidden
           />
-          <div className="absolute inset-x-3 bottom-full mb-3 rounded-2xl border border-border bg-card p-2 shadow-2xl">
+          <div
+            data-tour-add-menu
+            className={cn(
+              "absolute inset-x-3 rounded-2xl border border-border bg-card p-2 shadow-2xl",
+              tourHold ? "bottom-[calc(100%+200px)]" : "bottom-full mb-3",
+            )}
+          >
             {addOptions.map((opt) => (
               <button
                 key={opt.label}
