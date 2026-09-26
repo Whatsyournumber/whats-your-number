@@ -472,7 +472,7 @@ export const emptyLife: LifeData = {
 export const goals = [
   { value: "libertad", emoji: "💰", label: "Alcanzar la libertad financiera" },
   { value: "patrimonio", emoji: "📈", label: "Hacer crecer mi patrimonio" },
-  { value: "gastos", emoji: "💳", label: "Entender, controlar y trackear mis gastos" },
+  { value: "gastos", emoji: "💳", label: "Entender y trackear mis gastos diarios" },
   { value: "vivienda", emoji: "🏡", label: "Ahorrar para una vivienda" },
   { value: "negocio", emoji: "🚀", label: "Montar mi negocio" },
   { value: "otro", emoji: "✍️", label: "Otro objetivo (escríbelo)" },
