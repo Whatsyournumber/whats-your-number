@@ -367,9 +367,14 @@ function CashFlow() {
   }, [fixed.items, monthTx, matchesFixed, customWants, rules, travelDays, lang, retirementFundAmount]);
 
 
-  const cash = profile.assets_cash + profile.assets_bank;
   const monthlySpend = hasReal ? spend.total : d.expenses;
-  const runway = monthlySpend > 0 ? cash / monthlySpend : 0;
+  // Uso del ahorro: proyecta el ahorro mensual actual con interés compuesto hasta la edad de retiro.
+  const savingsYears = Math.max(1, (d.retirement.retireAge ?? 65) - d.retirement.currentAge);
+  const savingsProjection = useMemo(
+    () => projectRetirementFrom(saveAmount, d.retirement.returnAnnualized, savingsYears, 0, d.retirement.currentAge),
+    [saveAmount, d.retirement.returnAnnualized, savingsYears, d.retirement.currentAge],
+  );
+  const savingsAtRetire = savingsProjection[savingsProjection.length - 1]?.value ?? 0;
 
   return (
     <TooltipProvider delayDuration={150}>
