@@ -78,6 +78,7 @@ export function ManualExpenseDialog({
   trigger,
   open: openProp,
   onOpenChange,
+  onSaved,
 }: {
   categories: string[];
   onAddCategory?: (name: string) => void;
@@ -85,6 +86,8 @@ export function ManualExpenseDialog({
   trigger?: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  /** Al guardarse: por defecto lleva al análisis; con onSaved la pantalla decide (p. ej. ir a "Últimos gastos"). */
+  onSaved?: () => void;
 }) {
   const t = useT();
   const { lang } = useLanguage();
@@ -158,9 +161,13 @@ export function ManualExpenseDialog({
       setMerchant("");
       setAmount(0);
       setOpen(false);
-      const monthStart = format(new Date(effectiveDate.getFullYear(), effectiveDate.getMonth(), 1), "yyyy-MM-dd");
-      const monthEnd = format(new Date(effectiveDate.getFullYear(), effectiveDate.getMonth() + 1, 0), "yyyy-MM-dd");
-      void navigate({ to: "/gastos", search: { from: monthStart, to: monthEnd, category } });
+      if (onSaved) {
+        onSaved();
+      } else {
+        const monthStart = format(new Date(effectiveDate.getFullYear(), effectiveDate.getMonth(), 1), "yyyy-MM-dd");
+        const monthEnd = format(new Date(effectiveDate.getFullYear(), effectiveDate.getMonth() + 1, 0), "yyyy-MM-dd");
+        void navigate({ to: "/gastos", search: { from: monthStart, to: monthEnd, category } });
+      }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : String(error));
     } finally {
