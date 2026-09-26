@@ -381,9 +381,6 @@ export function ManualExpenseDialog({
                     </button>
                   </div>
                 </div>
-                <span className="text-[11px] text-muted-foreground">
-                  {t("Se añade a tu plan", "Added to your plan")}
-                </span>
               </div>
             ) : (
               <div className="flex gap-2">
