@@ -27,6 +27,7 @@ export function BudgetVoiceAdvisor({ open, onOpenChange }: { open: boolean; onOp
   const { lang } = useLanguage();
   const { profile } = useProfile();
   const { transactions } = useTransactions();
+  const { lines: budgetLines } = useSpendBudgets();
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [listening, setListening] = useState(false);
