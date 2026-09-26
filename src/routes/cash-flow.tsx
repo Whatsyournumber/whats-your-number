@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { ArrowLeftRight, ArrowRight, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank } from "lucide-react";
+import { AlertCircle, ArrowLeftRight, ArrowRight, CheckCircle2, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory } from "@/lib/i18n-data";
@@ -594,9 +594,40 @@ function CashFlow() {
               total={totalIncome}
               target={20}
               fmt={fmt}
-              legend={t("Viajes, restaurantes, salidas, compras, tecnología, apps, hobbies y lifestyle.", "Travel, dining out, entertainment, shopping, technology, apps, hobbies and lifestyle.")}
+                legend={t("Viajes, restaurantes, salidas, compras, tecnología, apps, hobbies y lifestyle.", "Travel, dining out, entertainment, shopping, technology, apps, hobbies and lifestyle.")}
             />
           </div>
+          {topDeviation ? (
+            <Link
+              to={topDeviation.link}
+              className="mt-4 flex items-center gap-3 rounded-xl border border-negative/25 bg-negative/10 p-3 transition hover:bg-negative/15"
+            >
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-negative/20">
+                <AlertCircle className="h-4 w-4 text-negative" />
+              </span>
+              <p className="min-w-0 flex-1 text-sm leading-snug text-foreground">
+                {topDeviation.under
+                  ? t(
+                      `${topDeviation.label} está ${Math.round(topDeviation.over)}% por debajo de tu objetivo.`,
+                      `${topDeviation.label} is ${Math.round(topDeviation.over)}% below your target.`,
+                    )
+                  : t(
+                      `${topDeviation.label} está ${Math.round(topDeviation.over)}% por encima de tu objetivo.`,
+                      `${topDeviation.label} are ${Math.round(topDeviation.over)}% above your target.`,
+                    )}
+              </p>
+              <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+            </Link>
+          ) : (
+            <div className="mt-4 flex items-center gap-3 rounded-xl border border-positive/25 bg-positive/10 p-3">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-positive/20">
+                <CheckCircle2 className="h-4 w-4 text-positive" />
+              </span>
+              <p className="min-w-0 flex-1 text-sm leading-snug text-foreground">
+                {t("Tu regla 40/40/20 va bien este mes.", "Your 40/40/20 rule is on track this month.")}
+              </p>
+            </div>
+          )}
         </Panel>
         <Panel title={t("Uso del ahorro", "Use of savings")} description={t("Lo que tendrás al retirarte", "What you'll have at retirement")} icon={<PiggyBank />}>
           <p className="numeric text-4xl font-semibold text-primary">{fmt(savingsAtRetire)}</p>
