@@ -1035,6 +1035,7 @@ export function AppTour() {
          <div className={`pointer-events-none fixed inset-0 z-[90] ${isNumberStep ? "bg-background/20" : isMobile ? "bg-background/70" : "bg-background/40"}`} />
       )}
       <div
+        style={isMobile && isAddSpotStep && spot ? { bottom: `${window.innerHeight - spot.y + 12}px` } : undefined}
         className={cn(
           `fixed inset-x-0 bottom-[78px] z-[100] sm:inset-x-auto sm:bottom-6 lg:bottom-8`,
           hasNumberedBullets ? "sm:w-[560px]" : "sm:w-[400px]",
@@ -1063,7 +1064,7 @@ export function AppTour() {
                          : "sm:right-6",
         )}
       >
-        <div ref={tourBoxRef} data-tour-box className={cn("relative border border-tour-border bg-tour-surface text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25", isMobile ? (isAddSpotStep ? "mx-3 max-h-[72dvh] overflow-y-auto overscroll-contain rounded-3xl p-4 pb-5" : "max-h-[40dvh] overflow-y-auto overscroll-contain rounded-t-3xl border-b-0 p-4 pb-7") : "overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-5")}>
+        <div ref={tourBoxRef} data-tour-box style={isMobile && isAddSpotStep && spot ? { maxHeight: `${Math.max(200, spot.y - 24)}px` } : undefined} className={cn("relative border border-tour-border bg-tour-surface text-tour-foreground shadow-[0_0_50px_-8px] shadow-primary/35 ring-2 ring-primary/25", isMobile ? (isAddSpotStep ? "mx-3 max-h-[72dvh] overflow-y-auto overscroll-contain rounded-3xl p-4 pb-5" : "max-h-[40dvh] overflow-y-auto overscroll-contain rounded-t-3xl border-b-0 p-4 pb-7") : "overflow-hidden rounded-2xl p-4 sm:rounded-3xl sm:p-5")}>
           {isMobile && !isAddSpotStep && (
             <div className="-mx-4 -mt-4 mb-1.5 bg-tour-surface pb-1.5 pt-2.5">
               <div className="mx-auto h-1 w-10 rounded-full bg-tour-foreground/25" />
