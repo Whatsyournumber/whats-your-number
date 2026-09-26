@@ -684,27 +684,31 @@ function CashFlow() {
                   {t("Invertido en el S&P 500:", "Invested in the S&P 500:")} <strong className="text-foreground">{fmt(opportunityAtRetire)}</strong> {t("en", "in")} {savingsYears} {t("años", "years")}
                 </p>
               </div>
-              <Button asChild size="sm" className="w-full gap-2">
-                <Link
-                  to="/gastos"
-                  search={{
-                    from: `${activeMonth}-01`,
-                    to: `${activeMonth}-${new Date(Number(activeMonth?.slice(0, 4)), Number(activeMonth?.slice(5, 7)), 0).getDate()}`,
-                    category: topWant.category,
-                  }}
-                >{t("Ver dónde puedo ahorrar", "See where I can save")} <ArrowRight className="h-4 w-4" /></Link>
-              </Button>
+              <div className="mt-auto">
+                <Button asChild size="sm" className="w-full gap-2">
+                  <Link
+                    to="/gastos"
+                    search={{
+                      from: `${activeMonth}-01`,
+                      to: `${activeMonth}-${new Date(Number(activeMonth?.slice(0, 4)), Number(activeMonth?.slice(5, 7)), 0).getDate()}`,
+                      category: topWant.category,
+                    }}
+                  >{t("Ver dónde puedo ahorrar", "See where I can save")} <ArrowRight className="h-4 w-4" /></Link>
+                </Button>
+              </div>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
               <p className="text-sm text-muted-foreground">
                 {!hasReal
                   ? t("Registra tus gastos para detectar tu mejor oportunidad de ahorro.", "Add your expenses to find your best savings opportunity.")
                   : t("Tus deseos están dentro del objetivo del 20% este mes.", "Your wants are within the 20% target this month.")}
               </p>
-              <Button asChild size="sm" variant="outline" className="w-full gap-2">
-                <Link to={hasReal ? "/gastos" : "/registro-gastos"}>{hasReal ? t("Ver mis gastos", "View my spending") : t("Registrar gastos", "Add expenses")} <ArrowRight className="h-4 w-4" /></Link>
-              </Button>
+              <div className="mt-auto">
+                <Button asChild size="sm" variant="outline" className="w-full gap-2">
+                  <Link to={hasReal ? "/gastos" : "/registro-gastos"}>{hasReal ? t("Ver mis gastos", "View my spending") : t("Registrar gastos", "Add expenses")} <ArrowRight className="h-4 w-4" /></Link>
+                </Button>
+              </div>
             </div>
           )}
         </Panel>
