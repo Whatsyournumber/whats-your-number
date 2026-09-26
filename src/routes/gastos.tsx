@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   differenceInCalendarDays,
   endOfMonth,
@@ -83,9 +83,10 @@ export const Route = createFileRoute("/gastos")({
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  validateSearch: (search: Record<string, unknown>): { from?: string; to?: string } => ({
+  validateSearch: (search: Record<string, unknown>): { from?: string; to?: string; category?: string } => ({
     ...(typeof search["from"] === "string" ? { from: search["from"] as string } : {}),
     ...(typeof search["to"] === "string" ? { to: search["to"] as string } : {}),
+    ...(typeof search["category"] === "string" ? { category: search["category"] as string } : {}),
   }),
   component: Gastos,
 });
@@ -167,6 +168,7 @@ function sum(list: Tx[]) {
 
 function Gastos() {
   const t = useT();
+  const navigate = useNavigate({ from: "/gastos" });
   const isMobile = useIsMobile();
   const presets = useMemo(() => buildPresets(t), [t]);
   const { profile } = useProfile();
@@ -345,6 +347,14 @@ function Gastos() {
     // Siempre del monto más alto al más bajo, sin importar el mes seleccionado.
     return [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
   }, [byCategory, categories.names, categories.items, showEmptyCategories]);
+
+  // El enlace desde «Oportunidad del mes» espera a que terminen de cargar
+  // los movimientos y abre exactamente el rubro del mes seleccionado.
+  useEffect(() => {
+    if (search.category && detailRows.some((row) => row.name === search.category && row.items.length > 0)) {
+      setDetailCat(search.category);
+    }
+  }, [search.category, detailRows]);
 
 
 
@@ -1518,7 +1528,14 @@ function Gastos() {
           {detailCat && (
             <CategoryDetailDialog
               open={Boolean(detailCat)}
-              onOpenChange={(v) => !v && setDetailCat(null)}
+               onOpenChange={(v) => {
+                 if (!v) {
+                   setDetailCat(null);
+                   if (search.category) {
+                     navigate({ to: "/gastos", search: ({ from, to }) => ({ ...(from ? { from } : {}), ...(to ? { to } : {}) }), replace: true, resetScroll: false });
+                   }
+                 }
+               }}
               name={tc(detailCat)}
               items={detailRows.find((r) => r.name === detailCat)?.items ?? []}
               amount={detailRows.find((r) => r.name === detailCat)?.amount ?? 0}
