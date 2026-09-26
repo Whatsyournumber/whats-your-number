@@ -17,3 +17,4 @@
 - [x] Plan gratis: IA bloqueada y oculta de la barra inferior, el menú y el buscador; tutorial Pro solamente
 - [x] Plan gratis: beneficios de precios y suscripción alineados con los accesos actuales
 - [x] Distribución del dinero: oportunidad mensual en deseos y proyección del ahorro en S&P 500
+- [x] Abrir el detalle del rubro señalado al pulsar «Ver dónde puedo ahorrar»

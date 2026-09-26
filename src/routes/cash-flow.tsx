@@ -618,7 +618,7 @@ function CashFlow() {
                   to="/gastos"
                   search={{
                     from: `${activeMonth}-01`,
-                    to: new Date(Number(activeMonth?.slice(0, 4)), Number(activeMonth?.slice(5, 7)), 0).toISOString().slice(0, 10),
+                    to: `${activeMonth}-${new Date(Number(activeMonth?.slice(0, 4)), Number(activeMonth?.slice(5, 7)), 0).getDate()}`,
                     category: topWant.category,
                   }}
                 >{t("Ver dónde puedo ahorrar", "See where I can save")} <ArrowRight className="h-4 w-4" /></Link>
