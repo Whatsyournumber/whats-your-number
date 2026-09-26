@@ -1095,8 +1095,9 @@ export function AppTour() {
             )}
           </div>
           <p className="relative mt-2.5 whitespace-pre-line text-[13px] leading-snug text-tour-foreground/90 sm:mt-3 sm:text-sm sm:leading-relaxed">{intro}</p>
+          {(isAddSpotStep ? [] : isMobile ? points.slice(0, 2) : points).length > 0 && (
           <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
-            {(isMobile ? points.slice(0, 2) : points).map((p, i) => {
+            {(isAddSpotStep ? [] : isMobile ? points.slice(0, 2) : points).map((p, i) => {
               const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
               return (
                 <li key={i} className="flex items-start gap-2 text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
