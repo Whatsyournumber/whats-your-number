@@ -1405,7 +1405,7 @@ function OptionRow({
     >
       {emoji && <span className="text-lg">{emoji}</span>}
       <div className="min-w-0">
-        <p className="text-sm font-medium">{title}</p>
+        <p className="whitespace-nowrap text-[13px] font-medium leading-tight">{title}</p>
         {desc && <p className="mt-0.5 text-xs text-muted-foreground">{desc}</p>}
       </div>
       <span
