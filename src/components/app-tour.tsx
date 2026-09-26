@@ -1115,6 +1115,7 @@ export function AppTour() {
               );
             })}
           </ul>
+          )}
           <div className="relative mt-3 h-1 overflow-hidden rounded-full bg-tour-foreground/10 sm:mt-4">
             <div className="h-full rounded-full bg-positive transition-all duration-500" style={{ width: `${((step + 1) / total) * 100}%` }} />
           </div>
