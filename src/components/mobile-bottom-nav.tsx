@@ -92,7 +92,7 @@ export function MobileBottomNav() {
           onClick={() => setMenuOpen((open) => !open)}
           aria-label={t("Agregar gasto", "Add expense")}
           aria-expanded={menuOpen}
-          className="group -mt-9 flex min-w-0 flex-col items-center gap-1 px-3 py-1"
+          className="group -mt-11 flex min-w-0 flex-col items-center gap-1 px-3 py-1"
         >
           <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/40 ring-4 ring-background transition-transform group-hover:scale-105 group-active:scale-95">
             <Plus className="h-8 w-8" strokeWidth={2.2} />
