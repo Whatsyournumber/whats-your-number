@@ -670,7 +670,7 @@ function CashFlow() {
           icon={<Lightbulb />}
         >
           {monthlyOpportunity > 0 && topWant ? (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-1 flex-col gap-4">
               <div>
                 <p className="numeric text-4xl font-semibold text-positive">{fmt(monthlyOpportunity)}<span className="ml-1 text-base font-normal text-muted-foreground">{t("/mes", "/mo")}</span></p>
                 <p className="mt-1 text-xs text-muted-foreground">{t("de deseos por encima de tu objetivo", "of wants above your target")}</p>
@@ -698,7 +698,7 @@ function CashFlow() {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-1 flex-col gap-3">
               <p className="text-sm text-muted-foreground">
                 {!hasReal
                   ? t("Registra tus gastos para detectar tu mejor oportunidad de ahorro.", "Add your expenses to find your best savings opportunity.")
