@@ -664,12 +664,13 @@ function CashFlow() {
           )}
         </Panel>
         <Panel
+          className="flex flex-col"
           title={t("Oportunidad del mes", "Opportunity of the month")}
           description={t("Dónde puedes ahorrar e invertir más", "Where you could save and invest more")}
           icon={<Lightbulb />}
         >
           {monthlyOpportunity > 0 && topWant ? (
-            <div className="space-y-4">
+            <div className="flex flex-col gap-4">
               <div>
                 <p className="numeric text-4xl font-semibold text-positive">{fmt(monthlyOpportunity)}<span className="ml-1 text-base font-normal text-muted-foreground">{t("/mes", "/mo")}</span></p>
                 <p className="mt-1 text-xs text-muted-foreground">{t("de deseos por encima de tu objetivo", "of wants above your target")}</p>
