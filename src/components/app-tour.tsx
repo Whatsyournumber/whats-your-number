@@ -350,7 +350,10 @@ export function AppTour() {
           if (!e) return null;
           const r = e.getBoundingClientRect();
           if (r.height <= 0) return null;
-          return { x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH), badge, caption: caption ? t(caption[0], caption[1]) : undefined };
+          return {
+            x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH), badge,
+            ...(caption ? { caption: t(caption[0], caption[1]) } : {}),
+          };
         })
         .filter((e): e is NonNullable<typeof e> => !!e);
       setExtraSpots(extras);
