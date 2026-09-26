@@ -375,7 +375,11 @@ function CashFlow() {
   const savingsAtRetire = savingsProjection[savingsProjection.length - 1]?.value ?? 0;
   // No se presupone que todos los deseos se puedan eliminar: el recorte está
   // limitado al exceso sobre el objetivo y al gasto de la categoría principal.
-  const topWant = realWantsBreakdown[0] ?? null;
+  // El detalle de Análisis de gastos se basa en movimientos variables; los
+  // gastos fijos no tienen el mismo desglose de comercios y movimientos.
+  const topWant = [...spend.wantsBy.entries()]
+    .map(([category, amount]) => ({ category, label: translateCategory(category, lang), amount }))
+    .sort((a, b) => b.amount - a.amount)[0] ?? null;
   const wantsTarget = Math.max(0, totalIncome * 0.2);
   const monthlyOpportunity = hasReal && topWant
     ? Math.max(0, Math.min(topWant.amount, wantsAmount - wantsTarget))
@@ -610,7 +614,14 @@ function CashFlow() {
                 {t("Si reduces ese gasto e inviertes", "If you cut that spending and invest")} {fmt(monthlyOpportunity)} {t("al mes en el S&P 500, podrías tener", "per month in the S&P 500, you could have")} <strong className="text-foreground">{fmt(opportunityAtRetire)}</strong> {t("en", "in")} {savingsYears} {t("años", "years")} {t("(supuesto del 10% anual; no garantizado).", "(assuming 10% a year; not guaranteed).")}
               </p>
               <Button asChild size="sm" className="w-full gap-2">
-                <Link to="/gastos">{t("Ver dónde puedo ahorrar", "See where I can save")} <ArrowRight className="h-4 w-4" /></Link>
+                <Link
+                  to="/gastos"
+                  search={{
+                    from: `${activeMonth}-01`,
+                    to: new Date(Number(activeMonth?.slice(0, 4)), Number(activeMonth?.slice(5, 7)), 0).toISOString().slice(0, 10),
+                    category: topWant.category,
+                  }}
+                >{t("Ver dónde puedo ahorrar", "See where I can save")} <ArrowRight className="h-4 w-4" /></Link>
               </Button>
             </div>
           ) : (
