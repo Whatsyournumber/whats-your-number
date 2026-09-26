@@ -207,8 +207,11 @@ export function AppTour() {
   useEffect(() => {
     if (!user || subscriptionLoading) return;
     try {
-      // En la vista previa móvil, mostrar la bienvenida directamente, incluso
-      // cuando el tutorial ya se haya completado. Solo una vez por pestaña.
+      // En la vista previa móvil, mostrar la bienvenida directamente solo si el
+      // usuario no ha completado/descartado el tutorial: el auto-apertura
+      // respeta el mismo flag "ya visto" que el flujo normal.
+      const done = localStorage.getItem(doneKey(user.id));
+      if (done) return;
       const host = window.location.hostname;
       const mobilePreview = isMobile && pathname === "/dashboard" && (
         host === "localhost" ||
@@ -224,7 +227,6 @@ export function AppTour() {
       }
       const forced = new URLSearchParams(window.location.search).get("tour") === "1";
       if (!forced) {
-        if (localStorage.getItem(doneKey(user.id))) return;
         if (localStorage.getItem(PENDING_KEY) !== "1") return;
       }
       setStep(0);
