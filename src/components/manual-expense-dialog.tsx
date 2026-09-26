@@ -94,6 +94,7 @@ export function ManualExpenseDialog({
   const { lang } = useLanguage();
   const { user } = useAuth();
   const { profile } = useProfile();
+  const budgets = useSpendBudgets();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -113,6 +114,7 @@ export function ManualExpenseDialog({
   const [catQuery, setCatQuery] = useState("");
   const [creating, setCreating] = useState(false);
   const [newCat, setNewCat] = useState("");
+  const [newCatKind, setNewCatKind] = useState<"fixed" | "variable">("variable");
 
   const currency = (profile?.currency as string) || "EUR";
 
