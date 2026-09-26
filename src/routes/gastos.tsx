@@ -353,7 +353,15 @@ function Gastos() {
   useEffect(() => {
     if (search.category && detailRows.some((row) => row.name === search.category && row.items.length > 0)) {
       setDetailCat(search.category);
+      const cat = search.category;
+      const timer = window.setTimeout(() => {
+        document
+          .querySelector(`[data-cat-row="${CSS.escape(cat)}"]`)
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 350);
+      return () => window.clearTimeout(timer);
     }
+    return undefined;
   }, [search.category, detailRows]);
 
 
@@ -1357,6 +1365,7 @@ function Gastos() {
                 <AccordionItem
                   key={c.name}
                   value={c.name}
+                  data-cat-row={c.name}
                   className={cn(
                     "border-border transition-colors",
                     dragTx && dragTx.from !== c.name && "rounded-lg ring-1 ring-primary/30",

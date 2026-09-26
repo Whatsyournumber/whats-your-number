@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -90,6 +91,7 @@ export function ManualExpenseDialog({
   const { user } = useAuth();
   const { profile } = useProfile();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const [openState, setOpenState] = useState(false);
   const open = openProp ?? openState;
@@ -156,6 +158,9 @@ export function ManualExpenseDialog({
       setMerchant("");
       setAmount(0);
       setOpen(false);
+      const monthStart = format(new Date(effectiveDate.getFullYear(), effectiveDate.getMonth(), 1), "yyyy-MM-dd");
+      const monthEnd = format(new Date(effectiveDate.getFullYear(), effectiveDate.getMonth() + 1, 0), "yyyy-MM-dd");
+      void navigate({ to: "/gastos", search: { from: monthStart, to: monthEnd, category } });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : String(error));
     } finally {
