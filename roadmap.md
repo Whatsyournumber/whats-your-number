@@ -19,3 +19,4 @@
 - [x] Distribución del dinero: oportunidad mensual en deseos y proyección del ahorro en S&P 500
 - [x] Abrir el detalle del rubro señalado al pulsar «Ver dónde puedo ahorrar»
 - [x] Barra inferior móvil: botón central verde "+ Agregar gasto" que abre el formulario manual; IA quitada del footer
+- [x] Ordenar Últimos gastos por fecha + hora de alta (acai último) y botón + grande centrado en la barra móvil
