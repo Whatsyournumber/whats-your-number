@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { ArrowRight, HelpCircle, Lightbulb, Pencil } from "lucide-react";
+import { ArrowLeftRight, ArrowRight, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory } from "@/lib/i18n-data";
@@ -466,7 +466,7 @@ function CashFlow() {
         />
       </div>
 
-      <Panel title={t("Flujo de dinero", "Money flow")} description={t("Ingresos → destino final", "Income → final destination")}>
+      <Panel title={t("Flujo de dinero", "Money flow")} description={t("Ingresos → destino final", "Income → final destination")} icon={<ArrowLeftRight />}>
         <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_120px_minmax(0,1.3fr)]">
           <div className="space-y-3">
             {incomeLines.slice(0, 8).map((i, idx) => (
@@ -552,7 +552,7 @@ function CashFlow() {
       </Panel>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel className="hidden lg:block" title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")}>
+        <Panel className="hidden lg:block" title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")} icon={<PieChart />}>
           <div className="space-y-3 text-sm">
             <Row
               label={t("Necesidades", "Needs")}
@@ -581,16 +581,16 @@ function CashFlow() {
             />
           </div>
         </Panel>
-        <Panel title={t("Uso del ahorro", "Use of savings")} description={t("Si ahorras a este ritmo, lo que tendrás al retirarte", "If you keep saving at this pace, what you'll have when you retire")}>
+        <Panel title={t("Uso del ahorro", "Use of savings")} description={t("Si ahorras a este ritmo, lo que tendrás al retirarte", "If you keep saving at this pace, what you'll have when you retire")} icon={<PiggyBank />}>
           <p className="numeric text-4xl font-semibold text-primary">{fmt(savingsAtRetire)}</p>
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p className="mt-1.5 text-xs text-muted-foreground">
             {saveAmount > 0
-              ? <>
-                  {t("Ahorras", "You save")} {fmt(saveAmount)} {t("al mes", "per month")} {t("al", "at")} {d.retirement.returnAnnualized}%
-                  {` ${t("durante", "for")} ${savingsYears} ${t("años", "years")}.`}
-                </>
+              ? <>{t("Ahorras", "You save")} {fmt(saveAmount)}{t("/mes", "/mo")} · {d.retirement.returnAnnualized}% · {savingsYears} {t("años", "years")}</>
               : t("Sin ahorro mensual todavía: edita tus categorías para verlo.", "No monthly savings yet: edit your categories to see it.")}
           </p>
+          {saveAmount > 0 && savingsProjection.length > 1 && (
+            <Sparkline values={savingsProjection.map((p) => p.value)} className="mt-4 text-primary" />
+          )}
         </Panel>
         <Panel
           title={t("Oportunidad del mes", "Opportunity of the month")}
@@ -601,18 +601,17 @@ function CashFlow() {
             <div className="space-y-4">
               <div>
                 <p className="numeric text-4xl font-semibold text-positive">{fmt(monthlyOpportunity)}<span className="ml-1 text-base font-normal text-muted-foreground">{t("/mes", "/mo")}</span></p>
-                <p className="mt-1 text-xs text-muted-foreground">{t("de gasto en deseos por encima de tu objetivo", "of wants spending above your target")}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{t("de deseos por encima de tu objetivo", "of wants above your target")}</p>
               </div>
               <div className="border-t border-border pt-3 text-sm">
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center justify-between gap-3">
                   <span className="min-w-0 font-medium text-foreground">{topWant.label}</span>
                   <span className="numeric shrink-0 font-semibold">{fmt(topWant.amount)}</span>
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground">{t("Objetivo total de deseos (20%):", "Total wants target (20%):")} {fmt(wantsTarget)}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {t("Invertido en el S&P 500:", "Invested in the S&P 500:")} <strong className="text-foreground">{fmt(opportunityAtRetire)}</strong> {t("en", "in")} {savingsYears} {t("años", "years")}
+                </p>
               </div>
-              <p className="text-xs leading-relaxed text-muted-foreground">
-                {t("Si reduces ese gasto e inviertes", "If you cut that spending and invest")} {fmt(monthlyOpportunity)} {t("al mes en el S&P 500, podrías tener", "per month in the S&P 500, you could have")} <strong className="text-foreground">{fmt(opportunityAtRetire)}</strong> {t("en", "in")} {savingsYears} {t("años", "years")} {t("(supuesto del 10% anual; no garantizado).", "(assuming 10% a year; not guaranteed).")}
-              </p>
               <Button asChild size="sm" className="w-full gap-2">
                 <Link
                   to="/gastos"
@@ -785,5 +784,27 @@ function BreakdownTooltip({
         </ul>
       )}
     </div>
+  );
+}
+
+function Sparkline({ values, className }: { values: number[]; className?: string }) {
+  if (values.length < 2) return null;
+  const w = 100;
+  const h = 34;
+  const max = Math.max(...values);
+  const min = Math.min(...values);
+  const range = max - min || 1;
+  const points = values.map((v, i) => {
+    const x = (i / (values.length - 1)) * w;
+    const y = h - 2 - ((v - min) / range) * (h - 4);
+    return `${x.toFixed(2)},${y.toFixed(2)}`;
+  });
+  const line = `M${points.join(" L")}`;
+  const area = `${line} L${w},${h} L0,${h} Z`;
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className={className} aria-hidden>
+      <path d={area} fill="currentColor" opacity={0.12} />
+      <path d={line} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+</svg>
   );
 }
