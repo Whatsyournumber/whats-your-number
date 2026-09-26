@@ -8,7 +8,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
+import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { useTransactions } from "@/hooks/use-transactions";
+import { findBudgetCategory } from "@/lib/budget-categories";
 import { askAdvisor } from "@/lib/ask-advisor.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { buildDataset } from "@/lib/profile-data";
@@ -25,6 +27,7 @@ export function BudgetVoiceAdvisor({ open, onOpenChange }: { open: boolean; onOp
   const { lang } = useLanguage();
   const { profile } = useProfile();
   const { transactions } = useTransactions();
+  const { lines: budgetLines } = useSpendBudgets();
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [listening, setListening] = useState(false);
@@ -50,9 +53,19 @@ export function BudgetVoiceAdvisor({ open, onOpenChange }: { open: boolean; onOp
     const overDay = daily > 0 && budget > spent ? Math.ceil(budget / daily) : null;
     const overDate =
       overDay && overDay <= daysInMonth ? `día ${overDay} de este mes` : spent >= budget ? "ya superado" : "no se pasaría este mes";
+    const catLines =
+      budgetLines
+        .filter((l) => Number(l.amount) > 0)
+        .map((l) => {
+          const cat = findBudgetCategory(l.id);
+          const label = cat ? (lang === "en" ? cat.en : cat.es) : (l.label ?? l.id);
+          return `${cat?.emoji ?? l.emoji ?? ""} ${label}: ${Number(l.amount).toFixed(0)}`.trim();
+        })
+        .join(", ") || "sin datos";
 
     return `MODO: Consejos de presupuesto. El usuario pregunta si puede tomar una decisión de gasto.
 Responde en máximo ~90 palabras: 1) veredicto claro al inicio en negrita (Sí puedes / Con cuidado / Mejor no), 2) cuánto le queda del presupuesto del mes tras esa decisión, 3) si va bien o no al ritmo actual y en qué fecha se pasaría del presupuesto (recalcula con el nuevo gasto), 4) una alternativa concreta. Usa solo estas cifras.
+REGLA DE CATEGORÍA: identifica a qué categoría del plan de gasto pertenece lo que el usuario menciona (por lo que dice, no por costumbre) y analiza el gasto DENTRO de esa categoría, con su presupuesto y su alternativa. No repitas siempre la misma categoría: cada pregunta usa la categoría que corresponda.
 Fecha de hoy: ${now.toISOString().slice(0, 10)} (día ${day} de ${daysInMonth})
 Moneda: ${d.currency}
 Ingresos mensuales: ${d.income.toFixed(0)}
@@ -61,6 +74,7 @@ Gastado este mes hasta hoy: ${spent.toFixed(0)}
 Le queda del presupuesto: ${left.toFixed(0)}
 Ritmo diario actual: ${daily.toFixed(0)} — proyección fin de mes: ${projected.toFixed(0)}
 Al ritmo actual se pasaría: ${overDate}
+Categorías del plan de gasto (presupuesto mensual de cada una): ${catLines}
 Ahorro mensual previsto: ${d.savings.toFixed(0)} (tasa ${d.savingsRate.toFixed(0)}%)
 Patrimonio neto: ${d.netWorth.toFixed(0)}
 Metas: ${d.goals.map((g) => `${g.name} ${g.current.toFixed(0)}/${g.target.toFixed(0)}`).join(", ") || "sin datos"}`;
