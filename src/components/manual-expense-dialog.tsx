@@ -348,16 +348,16 @@ export function ManualExpenseDialog({
                     {t("Cancelar", "Cancel")}
                   </Button>
                 </div>
-                <div className="grid gap-1.5">
-                  <span className="text-xs font-medium text-muted-foreground">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-medium text-muted-foreground shrink-0">
                     {t("Tipo de gasto", "Expense type")}
                   </span>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="flex items-center gap-1.5">
                     <button
                       type="button"
                       onClick={() => setNewCatKind("fixed")}
                       className={cn(
-                        "flex items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition",
+                        "flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition",
                         newCatKind === "fixed"
                           ? "border-primary bg-primary/20 text-white"
                           : "border-white/10 bg-white/5 text-muted-foreground"
@@ -370,7 +370,7 @@ export function ManualExpenseDialog({
                       type="button"
                       onClick={() => setNewCatKind("variable")}
                       className={cn(
-                        "flex items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition",
+                        "flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition",
                         newCatKind === "variable"
                           ? "border-primary bg-primary/20 text-white"
                           : "border-white/10 bg-white/5 text-muted-foreground"
@@ -380,10 +380,10 @@ export function ManualExpenseDialog({
                       {t("Variable", "Variable")}
                     </button>
                   </div>
-                  <span className="text-[11px] text-muted-foreground">
-                    {t("Se añade a tu plan", "Added to your plan")}
-                  </span>
                 </div>
+                <span className="text-[11px] text-muted-foreground">
+                  {t("Se añade a tu plan", "Added to your plan")}
+                </span>
               </div>
             ) : (
               <div className="flex gap-2">
