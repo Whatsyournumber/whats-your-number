@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { ArrowRight, HelpCircle, Lightbulb, Pencil } from "lucide-react";
+import { ArrowLeftRight, ArrowRight, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory } from "@/lib/i18n-data";
@@ -466,7 +466,7 @@ function CashFlow() {
         />
       </div>
 
-      <Panel title={t("Flujo de dinero", "Money flow")} description={t("Ingresos → destino final", "Income → final destination")}>
+      <Panel title={t("Flujo de dinero", "Money flow")} description={t("Ingresos → destino final", "Income → final destination")} icon={<ArrowLeftRight />}>
         <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_120px_minmax(0,1.3fr)]">
           <div className="space-y-3">
             {incomeLines.slice(0, 8).map((i, idx) => (
@@ -552,7 +552,7 @@ function CashFlow() {
       </Panel>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel className="hidden lg:block" title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")}>
+        <Panel className="hidden lg:block" title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")} icon={<PieChart />}>
           <div className="space-y-3 text-sm">
             <Row
               label={t("Necesidades", "Needs")}
