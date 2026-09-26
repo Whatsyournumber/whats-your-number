@@ -73,13 +73,15 @@ export function MobileBottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
-      {menuOpen && !tourHold && (
+      {menuOpen && (
         <>
-          <div
-            className="fixed inset-0 bg-background/60 backdrop-blur-sm"
-            onClick={() => setMenuOpen(false)}
-            aria-hidden
-          />
+          {!tourHold && (
+            <div
+              className="fixed inset-0 bg-background/60 backdrop-blur-sm"
+              onClick={() => setMenuOpen(false)}
+              aria-hidden
+            />
+          )}
           <div
             data-tour-add-menu
             className={cn(
