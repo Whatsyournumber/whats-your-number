@@ -43,6 +43,7 @@ import { useSyncedSetting } from "@/hooks/use-synced-setting";
 import { BUDGET_CATEGORIES, findBudgetCategory } from "@/lib/budget-categories";
 import { BASE_CATEGORIES, categorizeTx } from "@/lib/categorize";
 import { captureExpense } from "@/lib/expense-capture.functions";
+import { StatementImporter } from "@/components/statement-importer";
 import { translateCategory } from "@/lib/i18n-data";
 import { saveExpense } from "@/lib/manual-expense";
 import { supabase } from "@/integrations/supabase/client";
@@ -746,6 +747,7 @@ export function ExpenseLog() {
   const camRef = useRef<HTMLInputElement | null>(null);
   const docsRef = useRef<HTMLInputElement | null>(null);
   const [photoPickerOpen, setPhotoPickerOpen] = useState(false);
+  const [statementOpen, setStatementOpen] = useState(false);
   const latestExpensesRef = useRef<HTMLDivElement | null>(null);
   const isMobile = useIsMobile();
 
@@ -909,6 +911,7 @@ export function ExpenseLog() {
     else if (actionParam === "photo") camRef.current?.click();
     else if (actionParam === "upload") (isMobile ? setPhotoPickerOpen(true) : fileRef.current?.click());
     else if (actionParam === "recurring") openNewRecurring();
+    else if (actionParam === "statement") setStatementOpen(true);
     router.navigate({ to: "/registro-gastos", search: {}, replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actionParam]);
@@ -2281,6 +2284,21 @@ export function ExpenseLog() {
           <ul className="divide-y divide-border/60">
             {expenseTx.map(renderLatestTx)}
           </ul>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={statementOpen} onOpenChange={setStatementOpen}>
+        <DialogContent className="max-h-[85vh] w-[calc(100vw-2rem)] max-w-2xl overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{t("Subir estados financieros", "Upload bank statements")}</DialogTitle>
+            <DialogDescription>
+              {t(
+                "Carga tu estado de cuenta y la IA extrae tus gastos automáticamente.",
+                "Upload your bank statement and AI extracts your expenses automatically.",
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <StatementImporter showHeader={false} />
         </DialogContent>
       </Dialog>
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Repeat, Sparkles } from "lucide-react";
+import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, FileSpreadsheet, Sparkles } from "lucide-react";
 import { BudgetVoiceAdvisor } from "@/components/budget-voice-advisor";
 import { useT } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -43,7 +43,7 @@ export function MobileBottomNav() {
     { icon: Mic, label: t("Por voz", "By voice"), search: { action: "voice" } as const },
     { icon: Camera, label: t("Tomar foto", "Take photo"), search: { action: "photo" } as const },
     { icon: Upload, label: t("Sube foto o captura", "Upload photo or screenshot"), search: { action: "upload" } as const },
-    { icon: Repeat, label: t("Recurrente", "Recurring"), search: { action: "recurring" } as const },
+    { icon: FileSpreadsheet, label: t("Subir estados financieros", "Upload bank statements"), search: { action: "statement" } as const },
     ...(isPro
       ? [{ icon: Sparkles, label: t("Consejos con IA", "AI advice"), onClick: () => { setMenuOpen(false); setAdviceOpen(true); } }]
       : []),
