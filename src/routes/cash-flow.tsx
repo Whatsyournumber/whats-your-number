@@ -581,16 +581,16 @@ function CashFlow() {
             />
           </div>
         </Panel>
-        <Panel title={t("Uso del ahorro", "Use of savings")} description={t("Si ahorras a este ritmo, lo que tendrás al retirarte", "If you keep saving at this pace, what you'll have when you retire")}>
+        <Panel title={t("Uso del ahorro", "Use of savings")} description={t("Si ahorras a este ritmo, lo que tendrás al retirarte", "If you keep saving at this pace, what you'll have when you retire")} icon={<PiggyBank />}>
           <p className="numeric text-4xl font-semibold text-primary">{fmt(savingsAtRetire)}</p>
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p className="mt-1.5 text-xs text-muted-foreground">
             {saveAmount > 0
-              ? <>
-                  {t("Ahorras", "You save")} {fmt(saveAmount)} {t("al mes", "per month")} {t("al", "at")} {d.retirement.returnAnnualized}%
-                  {` ${t("durante", "for")} ${savingsYears} ${t("años", "years")}.`}
-                </>
+              ? <>{t("Ahorras", "You save")} {fmt(saveAmount)}{t("/mes", "/mo")} · {d.retirement.returnAnnualized}% · {savingsYears} {t("años", "years")}</>
               : t("Sin ahorro mensual todavía: edita tus categorías para verlo.", "No monthly savings yet: edit your categories to see it.")}
           </p>
+          {saveAmount > 0 && savingsProjection.length > 1 && (
+            <Sparkline values={savingsProjection.map((p) => p.value)} className="mt-4 text-primary" />
+          )}
         </Panel>
         <Panel
           title={t("Oportunidad del mes", "Opportunity of the month")}
@@ -601,18 +601,17 @@ function CashFlow() {
             <div className="space-y-4">
               <div>
                 <p className="numeric text-4xl font-semibold text-positive">{fmt(monthlyOpportunity)}<span className="ml-1 text-base font-normal text-muted-foreground">{t("/mes", "/mo")}</span></p>
-                <p className="mt-1 text-xs text-muted-foreground">{t("de gasto en deseos por encima de tu objetivo", "of wants spending above your target")}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{t("de deseos por encima de tu objetivo", "of wants above your target")}</p>
               </div>
               <div className="border-t border-border pt-3 text-sm">
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center justify-between gap-3">
                   <span className="min-w-0 font-medium text-foreground">{topWant.label}</span>
                   <span className="numeric shrink-0 font-semibold">{fmt(topWant.amount)}</span>
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground">{t("Objetivo total de deseos (20%):", "Total wants target (20%):")} {fmt(wantsTarget)}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {t("Invertido en el S&P 500:", "Invested in the S&P 500:")} <strong className="text-foreground">{fmt(opportunityAtRetire)}</strong> {t("en", "in")} {savingsYears} {t("años", "years")}
+                </p>
               </div>
-              <p className="text-xs leading-relaxed text-muted-foreground">
-                {t("Si reduces ese gasto e inviertes", "If you cut that spending and invest")} {fmt(monthlyOpportunity)} {t("al mes en el S&P 500, podrías tener", "per month in the S&P 500, you could have")} <strong className="text-foreground">{fmt(opportunityAtRetire)}</strong> {t("en", "in")} {savingsYears} {t("años", "years")} {t("(supuesto del 10% anual; no garantizado).", "(assuming 10% a year; not guaranteed).")}
-              </p>
               <Button asChild size="sm" className="w-full gap-2">
                 <Link
                   to="/gastos"
