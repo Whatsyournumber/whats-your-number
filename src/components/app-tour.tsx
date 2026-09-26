@@ -65,11 +65,11 @@ const STEPS: Step[] = [
   {
     url: "/registro-gastos", icon: Plus, minPlan: "free", mobileOnly: true,
     mobileSpot: "[data-tour-nav-add]",
-    es: ["Agregar gastos", "Toca el botón + de la barra para añadir un gasto.",
+    es: ["Botón de gastos diarios", "Toca el botón + de la barra para añadir un gasto.",
       "Manual, por voz o con foto del recibo",
       "Cada gasto actualiza tu plan y tu número al instante",
       "Tus gastos y análisis se mantienen al día solos"],
-    en: ["Add expenses", "Tap the + button in the bar to log an expense.",
+    en: ["Daily spending button", "Tap the + button in the bar to log an expense.",
       "Manual, by voice or with a receipt photo",
       "Every expense updates your plan and number instantly",
       "Your tracking and analysis stay up to date on their own"],
@@ -348,7 +348,8 @@ export function AppTour() {
         const r = el.getBoundingClientRect();
         setSpot({ x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) });
       }
-      const extras = (EXTRA_SELECTORS[current.url] ?? [])
+      // El paso del botón + ilumina solo ese botón: sin focos extra numerados.
+      const extras = (current.mobileSpot ? [] : (EXTRA_SELECTORS[current.url] ?? []))
         .map(({ sel, badge, caption }) => {
           const e = document.querySelector<HTMLElement>(sel);
           if (!e) return null;
@@ -946,7 +947,7 @@ export function AppTour() {
   const isPortfolioStep = current.url === "/portafolio";
   const isCiudadesStep = current.url === "/ciudades";
   const isPlannerStep = current.url === "/life-planner";
-  const hasNumberedBullets = isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep || isHipotecaStep || isPatrimonioStep || isPortfolioStep || isCiudadesStep || isPlannerStep;
+  const hasNumberedBullets = (isDashboardStep || isExpenseStep || isAnalysisStep || isCashFlowStep || isNumberStep || isHipotecaStep || isPatrimonioStep || isPortfolioStep || isCiudadesStep || isPlannerStep) && !isAddSpotStep;
 
   return (
     <>
@@ -992,7 +993,11 @@ export function AppTour() {
             </>
           ) : (
             <div
-              data-tour-spot className="absolute rounded-2xl border-2 border-positive shadow-[0_0_0_9999px_color-mix(in_oklab,var(--background)_72%,transparent)] transition-all duration-300"
+              data-tour-spot
+              className={cn(
+                "absolute rounded-2xl border-2 shadow-[0_0_0_9999px_color-mix(in_oklab,var(--background)_72%,transparent)] transition-all duration-300",
+                isAddSpotStep ? "border-primary ring-2 ring-white/70" : "border-positive",
+              )}
               style={{ left: spot.x, top: spot.y, width: spot.w, height: spot.h }}
             />
           )}
