@@ -569,8 +569,8 @@ function CashFlow() {
       </Panel>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel className="hidden lg:block" title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")} icon={<PieChart />}>
-          <div className="space-y-3 text-sm">
+        <Panel className="hidden lg:flex flex-col" title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")} icon={<PieChart />}>
+          <div className="space-y-3 pb-4 text-sm">
             <Row
               label={t("Necesidades", "Needs")}
               value={needsAmount}
@@ -600,74 +600,77 @@ function CashFlow() {
           {topDeviation ? (
             <Link
               to={topDeviation.link}
-              className="mt-4 flex items-center gap-3 rounded-xl border border-negative/25 bg-negative/10 p-3 transition hover:bg-negative/15"
+              className="mt-auto flex items-center gap-3 rounded-xl border border-negative/25 bg-negative/10 p-3 transition hover:bg-negative/15"
             >
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-negative/20">
                 <AlertCircle className="h-4 w-4 text-negative" />
               </span>
-              <p className="min-w-0 flex-1 text-sm leading-snug text-foreground">
+              <p className="min-w-0 flex-1 whitespace-nowrap text-[13px] leading-snug text-foreground">
                 {topDeviation.under
                   ? t(
-                      `${topDeviation.label} está ${Math.round(topDeviation.over)}% por debajo de tu objetivo.`,
-                      `${topDeviation.label} is ${Math.round(topDeviation.over)}% below your target.`,
+                      `${topDeviation.label}: ${Math.round(topDeviation.over)}% ${t("bajo tu objetivo", "below your target")}`,
+                      `${topDeviation.label}: ${Math.round(topDeviation.over)}% below your target.`,
                     )
                   : t(
-                      `${topDeviation.label} está ${Math.round(topDeviation.over)}% por encima de tu objetivo.`,
-                      `${topDeviation.label} are ${Math.round(topDeviation.over)}% above your target.`,
+                      `${topDeviation.label}: ${Math.round(topDeviation.over)}% ${t("sobre tu objetivo", "above your target")}`,
+                      `${topDeviation.label}: ${Math.round(topDeviation.over)}% above your target.`,
                     )}
               </p>
               <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
             </Link>
           ) : (
-            <div className="mt-4 flex items-center gap-3 rounded-xl border border-positive/25 bg-positive/10 p-3">
+            <div className="mt-auto flex items-center gap-3 rounded-xl border border-positive/25 bg-positive/10 p-3">
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-positive/20">
                 <CheckCircle2 className="h-4 w-4 text-positive" />
               </span>
-              <p className="min-w-0 flex-1 text-sm leading-snug text-foreground">
+              <p className="min-w-0 flex-1 whitespace-nowrap text-[13px] leading-snug text-foreground">
                 {t("Tu regla 40/40/20 va bien este mes.", "Your 40/40/20 rule is on track this month.")}
               </p>
             </div>
           )}
         </Panel>
-        <Panel title={t("Uso del ahorro", "Use of savings")} description={t("Lo que tendrás al retirarte", "What you'll have at retirement")} icon={<PiggyBank />}>
+        <Panel className="flex flex-col" title={t("Uso del ahorro", "Use of savings")} description={t("Lo que tendrás al retirarte", "What you'll have at retirement")} icon={<PiggyBank />}>
           <p className="numeric text-4xl font-semibold text-primary">{fmt(savingsAtRetire)}</p>
           <p className="mt-1.5 text-xs text-muted-foreground">
             {saveAmount > 0
               ? <>{t("Ahorras", "You save")} {fmt(saveAmount)}{t("/mes", "/mo")} · {t("S&P 500 al", "S&P 500 at")} {SP500_RATE}% · {savingsYears} {t("años", "years")}</>
               : t("Sin ahorro mensual todavía: edita tus categorías para verlo.", "No monthly savings yet: edit your categories to see it.")}
           </p>
-          {saveAmount > 0 && savingsYears > 1 && (
-            <div className="mt-4 grid grid-cols-3 divide-x divide-border rounded-2xl border border-border bg-elevated/60 py-3 text-center">
-              <div className="px-2">
-                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("Hoy", "Today")}</p>
-                <p className="numeric mt-1 text-sm font-medium">{fmt(0)}</p>
-              </div>
-              <div className="px-2">
-                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">1 {t("año", "year")}</p>
-                <p className="numeric mt-1 text-sm font-medium">{fmt(savingsYear1)}</p>
-              </div>
-              <div className="px-2">
-                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{savingsYears} {t("años", "years")}</p>
-                <p className="numeric mt-1 text-sm font-semibold text-positive">{fmt(savingsAtRetire)}</p>
-              </div>
-            </div>
-          )}
           {saveAmount > 0 && (
-            <p className="mt-2 text-xs text-muted-foreground">
-              {t(
-                `Manteniendo este ritmo al ${SP500_RATE}% anual (S&P 500).`,
-                `Keeping this pace at ${SP500_RATE}% a year (S&P 500).`,
+            <div className="mt-auto pt-4">
+              {savingsYears > 1 && (
+                <div className="grid grid-cols-3 divide-x divide-border rounded-2xl border border-border bg-elevated/60 py-3 text-center">
+                  <div className="px-2">
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("Hoy", "Today")}</p>
+                    <p className="numeric mt-1 text-sm font-medium">{fmt(0)}</p>
+                  </div>
+                  <div className="px-2">
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">1 {t("año", "year")}</p>
+                    <p className="numeric mt-1 text-sm font-medium">{fmt(savingsYear1)}</p>
+                  </div>
+                  <div className="px-2">
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{savingsYears} {t("años", "years")}</p>
+                    <p className="numeric mt-1 text-sm font-semibold text-positive">{fmt(savingsAtRetire)}</p>
+                  </div>
+                </div>
               )}
-            </p>
+              <p className={savingsYears > 1 ? "mt-2 text-xs text-muted-foreground" : "text-xs text-muted-foreground"}>
+                {t(
+                  `Manteniendo este ritmo al ${SP500_RATE}% anual (S&P 500).`,
+                  `Keeping this pace at ${SP500_RATE}% a year (S&P 500).`,
+                )}
+              </p>
+            </div>
           )}
         </Panel>
         <Panel
+          className="flex flex-col"
           title={t("Oportunidad del mes", "Opportunity of the month")}
           description={t("Dónde puedes ahorrar e invertir más", "Where you could save and invest more")}
           icon={<Lightbulb />}
         >
           {monthlyOpportunity > 0 && topWant ? (
-            <div className="space-y-4">
+            <div className="flex flex-1 flex-col gap-4">
               <div>
                 <p className="numeric text-4xl font-semibold text-positive">{fmt(monthlyOpportunity)}<span className="ml-1 text-base font-normal text-muted-foreground">{t("/mes", "/mo")}</span></p>
                 <p className="mt-1 text-xs text-muted-foreground">{t("de deseos por encima de tu objetivo", "of wants above your target")}</p>
@@ -681,27 +684,31 @@ function CashFlow() {
                   {t("Invertido en el S&P 500:", "Invested in the S&P 500:")} <strong className="text-foreground">{fmt(opportunityAtRetire)}</strong> {t("en", "in")} {savingsYears} {t("años", "years")}
                 </p>
               </div>
-              <Button asChild size="sm" className="w-full gap-2">
-                <Link
-                  to="/gastos"
-                  search={{
-                    from: `${activeMonth}-01`,
-                    to: `${activeMonth}-${new Date(Number(activeMonth?.slice(0, 4)), Number(activeMonth?.slice(5, 7)), 0).getDate()}`,
-                    category: topWant.category,
-                  }}
-                >{t("Ver dónde puedo ahorrar", "See where I can save")} <ArrowRight className="h-4 w-4" /></Link>
-              </Button>
+              <div className="mt-auto">
+                <Button asChild size="sm" className="w-full gap-2">
+                  <Link
+                    to="/gastos"
+                    search={{
+                      from: `${activeMonth}-01`,
+                      to: `${activeMonth}-${new Date(Number(activeMonth?.slice(0, 4)), Number(activeMonth?.slice(5, 7)), 0).getDate()}`,
+                      category: topWant.category,
+                    }}
+                  >{t("Ver dónde puedo ahorrar", "See where I can save")} <ArrowRight className="h-4 w-4" /></Link>
+                </Button>
+              </div>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="flex flex-1 flex-col gap-3">
               <p className="text-sm text-muted-foreground">
                 {!hasReal
                   ? t("Registra tus gastos para detectar tu mejor oportunidad de ahorro.", "Add your expenses to find your best savings opportunity.")
                   : t("Tus deseos están dentro del objetivo del 20% este mes.", "Your wants are within the 20% target this month.")}
               </p>
-              <Button asChild size="sm" variant="outline" className="w-full gap-2">
-                <Link to={hasReal ? "/gastos" : "/registro-gastos"}>{hasReal ? t("Ver mis gastos", "View my spending") : t("Registrar gastos", "Add expenses")} <ArrowRight className="h-4 w-4" /></Link>
-              </Button>
+              <div className="mt-auto">
+                <Button asChild size="sm" variant="outline" className="w-full gap-2">
+                  <Link to={hasReal ? "/gastos" : "/registro-gastos"}>{hasReal ? t("Ver mis gastos", "View my spending") : t("Registrar gastos", "Add expenses")} <ArrowRight className="h-4 w-4" /></Link>
+                </Button>
+              </div>
             </div>
           )}
         </Panel>
