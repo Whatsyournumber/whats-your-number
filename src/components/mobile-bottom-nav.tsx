@@ -85,7 +85,7 @@ export function MobileBottomNav() {
         </>
       )}
       <div className="relative grid w-full grid-cols-5 items-end justify-items-center bg-background/90 px-1 pb-[max(env(safe-area-inset-bottom,0px),10px)] pt-2 shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-        {tabs.slice(0, 2).map(renderTab)}
+        {tabs.slice(0, 2).map((tab, i) => renderTab(tab, i === 1 ? "-translate-x-2" : ""))}
         <button
           type="button"
           data-tour-nav-add
@@ -101,7 +101,7 @@ export function MobileBottomNav() {
             {t("Agregar gasto", "Add expense")}
           </span>
         </button>
-        {tabs.slice(2).map(renderTab)}
+        {tabs.slice(2).map((tab, i) => renderTab(tab, i === 0 ? "translate-x-2" : ""))}
       </div>
     </nav>
   );
