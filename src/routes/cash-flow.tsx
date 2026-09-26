@@ -805,6 +805,6 @@ function Sparkline({ values, className }: { values: number[]; className?: string
     <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className={className} aria-hidden>
       <path d={area} fill="currentColor" opacity={0.12} />
       <path d={line} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
-ed    </svg>
+</svg>
   );
 }
