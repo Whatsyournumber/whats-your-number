@@ -91,6 +91,7 @@ export function ManualExpenseDialog({
   const { user } = useAuth();
   const { profile } = useProfile();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const [openState, setOpenState] = useState(false);
   const open = openProp ?? openState;
