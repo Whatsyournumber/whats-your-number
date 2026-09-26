@@ -348,23 +348,35 @@ export function ManualExpenseDialog({
                     {t("Cancelar", "Cancel")}
                   </Button>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">
+                <div className="grid gap-1.5">
+                  <span className="text-xs font-medium text-muted-foreground">
                     {t("Tipo de gasto", "Expense type")}
                   </span>
-                  <div className="flex rounded-md border border-white/10 p-0.5 text-xs">
+                  <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
                       onClick={() => setNewCatKind("fixed")}
-                      className={cn("rounded px-2 py-0.5 transition", newCatKind === "fixed" ? "bg-white/15 text-white" : "text-muted-foreground")}
+                      className={cn(
+                        "flex items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition",
+                        newCatKind === "fixed"
+                          ? "border-primary bg-primary/20 text-white"
+                          : "border-white/10 bg-white/5 text-muted-foreground"
+                      )}
                     >
+                      <span aria-hidden>📌</span>
                       {t("Fijo", "Fixed")}
                     </button>
                     <button
                       type="button"
                       onClick={() => setNewCatKind("variable")}
-                      className={cn("rounded px-2 py-0.5 transition", newCatKind === "variable" ? "bg-white/15 text-white" : "text-muted-foreground")}
+                      className={cn(
+                        "flex items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition",
+                        newCatKind === "variable"
+                          ? "border-primary bg-primary/20 text-white"
+                          : "border-white/10 bg-white/5 text-muted-foreground"
+                      )}
                     >
+                      <span aria-hidden>🏷️</span>
                       {t("Variable", "Variable")}
                     </button>
                   </div>
