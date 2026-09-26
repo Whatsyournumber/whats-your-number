@@ -54,12 +54,12 @@ export function MobileBottomNav() {
           data-tour-nav-add
           onClick={() => navigate({ to: "/registro-gastos", search: { add: true } })}
           aria-label={t("Agregar gasto", "Add expense")}
-          className="group flex min-w-0 flex-col items-center gap-1 px-0.5 py-1"
+          className="group mx-2 flex min-w-0 flex-col items-center gap-1 px-0.5 py-1 sm:mx-3"
         >
           <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/30 transition-transform group-hover:scale-105 group-active:scale-95">
             <Plus className="h-7 w-7" strokeWidth={2.4} />
           </span>
-          <span className="min-h-7 text-center text-[10px] font-medium leading-tight text-foreground">
+          <span className="min-h-7 whitespace-nowrap text-center text-[9px] font-medium leading-tight tracking-tight text-foreground">
             {t("Agregar gasto", "Add expense")}
           </span>
         </button>
