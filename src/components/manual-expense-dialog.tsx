@@ -315,37 +315,63 @@ export function ManualExpenseDialog({
           <div className="grid gap-1.5">
             <Label>{t("Categoría", "Category")}</Label>
             {creating ? (
-              <div className="flex gap-2">
-                <Input
-                  autoFocus
-                  value={newCat}
-                  onChange={(e) => setNewCat(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      confirmNewCategory();
-                    }
-                    if (e.key === "Escape") {
-                      e.preventDefault();
+              <div className="grid gap-2">
+                <div className="flex gap-2">
+                  <Input
+                    autoFocus
+                    value={newCat}
+                    onChange={(e) => setNewCat(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        confirmNewCategory();
+                      }
+                      if (e.key === "Escape") {
+                        e.preventDefault();
+                        setCreating(false);
+                        setNewCat("");
+                      }
+                    }}
+                    placeholder={t("Nombre de la categoría", "Category name")}
+                  />
+                  <Button type="button" onClick={confirmNewCategory} disabled={!canCreateNew}>
+                    {t("Añadir", "Add")}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => {
                       setCreating(false);
                       setNewCat("");
-                    }
-                  }}
-                  placeholder={t("Nombre de la categoría", "Category name")}
-                />
-                <Button type="button" onClick={confirmNewCategory} disabled={!canCreateNew}>
-                  {t("Añadir", "Add")}
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => {
-                    setCreating(false);
-                    setNewCat("");
-                  }}
-                >
-                  {t("Cancelar", "Cancel")}
-                </Button>
+                    }}
+                  >
+                    {t("Cancelar", "Cancel")}
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">
+                    {t("Tipo de gasto", "Expense type")}
+                  </span>
+                  <div className="flex rounded-md border border-white/10 p-0.5 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setNewCatKind("fixed")}
+                      className={cn("rounded px-2 py-0.5 transition", newCatKind === "fixed" ? "bg-white/15 text-white" : "text-muted-foreground")}
+                    >
+                      {t("Fijo", "Fixed")}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setNewCatKind("variable")}
+                      className={cn("rounded px-2 py-0.5 transition", newCatKind === "variable" ? "bg-white/15 text-white" : "text-muted-foreground")}
+                    >
+                      {t("Variable", "Variable")}
+                    </button>
+                  </div>
+                  <span className="text-[11px] text-muted-foreground">
+                    {t("Se añade a tu plan", "Added to your plan")}
+                  </span>
+                </div>
               </div>
             ) : (
               <div className="flex gap-2">
