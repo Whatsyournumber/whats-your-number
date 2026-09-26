@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter, useRouterState } from "@tanstack/react-router";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
 import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
