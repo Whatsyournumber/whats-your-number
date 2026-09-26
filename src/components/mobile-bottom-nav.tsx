@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Repeat } from "lucide-react";
+import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Repeat, Sparkles } from "lucide-react";
+import { BudgetVoiceAdvisor } from "@/components/budget-voice-advisor";
 import { useT } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
 import { cn } from "@/lib/utils";
@@ -11,6 +12,7 @@ export function MobileBottomNav() {
   const { isPro } = useSubscription();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [adviceOpen, setAdviceOpen] = useState(false);
   // El tour del paso del botón + abre el menú real mientras dura el paso.
   const [tourHold, setTourHold] = useState(false);
   useEffect(() => {
@@ -36,12 +38,15 @@ export function MobileBottomNav() {
     void navigate({ to: "/registro-gastos", search });
   };
 
-  const addOptions = [
+  const addOptions: { icon: typeof Home; label: string; search?: { add?: boolean; action?: string }; onClick?: () => void }[] = [
     { icon: PencilLine, label: t("Manual", "Manual"), search: { add: true } as const },
     { icon: Mic, label: t("Por voz", "By voice"), search: { action: "voice" } as const },
     { icon: Camera, label: t("Tomar foto", "Take photo"), search: { action: "photo" } as const },
     { icon: Upload, label: t("Sube foto o captura", "Upload photo or screenshot"), search: { action: "upload" } as const },
     { icon: Repeat, label: t("Recurrente", "Recurring"), search: { action: "recurring" } as const },
+    ...(isPro
+      ? [{ icon: Sparkles, label: t("Consejos con IA", "AI advice"), onClick: () => { setMenuOpen(false); setAdviceOpen(true); } }]
+      : []),
   ];
 
   const renderTab = (tab: { title: string; url: string; icon: typeof Home }, extraClass = "") => {
@@ -73,6 +78,7 @@ export function MobileBottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
+      {isPro && <BudgetVoiceAdvisor open={adviceOpen} onOpenChange={setAdviceOpen} />}
       {menuOpen && (
         <>
           {!tourHold && (
@@ -93,7 +99,7 @@ export function MobileBottomNav() {
               <button
                 key={opt.label}
                 type="button"
-                onClick={() => goAdd(opt.search)}
+                onClick={() => (opt.onClick ? opt.onClick() : goAdd(opt.search ?? {}))}
                 className="flex min-h-14 w-full items-center gap-4 rounded-xl px-4 py-3 text-left text-[17px] font-medium text-foreground transition-colors hover:bg-muted/50 active:bg-muted"
               >
                 <opt.icon className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
