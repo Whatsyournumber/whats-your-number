@@ -127,7 +127,37 @@ export function ManualExpenseDialog({
     if (!canCreateNew) return;
     onAddCategory?.(trimmedNew);
     setCategory(trimmedNew);
+    // La categoría nueva entra en el plan de gastos como línea propia.
+    const planId = `custom:cat:${trimmedNew.toLowerCase().replace(/\s+/g, "-")}`;
+    const alreadyInPlan = budgets.lines.some(
+      (line) =>
+        line.id === planId ||
+        (line.label ?? "").trim().toLowerCase() === trimmedNew.toLowerCase(),
+    );
+    if (!alreadyInPlan) {
+      budgets.save([
+        ...budgets.lines,
+        {
+          id: planId,
+          label: trimmedNew,
+          emoji: newCatKind === "fixed" ? "📌" : "🏷️",
+          keywords: [trimmedNew.toLowerCase()],
+          group: newCatKind === "fixed" ? "essentials" : "lifestyle",
+          amount: 0,
+        },
+      ]);
+      toast.success(
+        t("Categoría añadida a tu plan", "Category added to your plan"),
+        {
+          description:
+            newCatKind === "fixed"
+              ? t("Como gasto fijo mensual", "As a monthly fixed expense")
+              : t("Como gasto variable mensual", "As a monthly variable expense"),
+        },
+      );
+    }
     setNewCat("");
+    setNewCatKind("variable");
     setCreating(false);
   };
 
