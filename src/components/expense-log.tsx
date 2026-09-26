@@ -2290,7 +2290,7 @@ export function ExpenseLog() {
       <Dialog open={statementOpen} onOpenChange={setStatementOpen}>
         <DialogContent className="max-h-[85vh] w-[calc(100vw-2rem)] max-w-2xl overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{t("Subir estados financieros", "Upload bank statements")}</DialogTitle>
+            <DialogTitle>{t("Subir tus estados de cuenta", "Upload your bank statements")}</DialogTitle>
             <DialogDescription>
               {t(
                 "Carga tu estado de cuenta y la IA extrae tus gastos automáticamente.",
