@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
+import { findBudgetCategory } from "@/lib/budget-categories";
 import { askAdvisor } from "@/lib/ask-advisor.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { buildDataset } from "@/lib/profile-data";
