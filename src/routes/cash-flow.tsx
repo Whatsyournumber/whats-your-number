@@ -21,8 +21,7 @@ import { useSyncedSetting } from "@/hooks/use-synced-setting";
 import { sameMerchant, useTransactions, type Tx } from "@/hooks/use-transactions";
 import { findBudgetCategory } from "@/lib/budget-categories";
 import { buildTravelDays, categorizeTxWithTravel } from "@/lib/categorize";
-import { money } from "@/lib/onboarding";
-import { buildDataset } from "@/lib/profile-data";
+import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 
 export const Route = createFileRoute("/cash-flow")({
   head: () => ({
@@ -367,7 +366,6 @@ function CashFlow() {
   }, [fixed.items, monthTx, matchesFixed, customWants, rules, travelDays, lang, retirementFundAmount]);
 
 
-  const monthlySpend = hasReal ? spend.total : d.expenses;
   // Uso del ahorro: proyecta el ahorro mensual actual con interés compuesto hasta la edad de retiro.
   const savingsYears = Math.max(1, (d.retirement.retireAge ?? 65) - d.retirement.currentAge);
   const savingsProjection = useMemo(
