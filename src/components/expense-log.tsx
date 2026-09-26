@@ -112,6 +112,7 @@ export function ExpenseLog() {
   const [recOpen, setRecOpen] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
+  const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
   const router = useRouter();
   useEffect(() => {
     if (addParam !== true) return;
@@ -896,6 +897,17 @@ export function ExpenseLog() {
   };
 
   const stopRecording = () => recorderRef.current?.stop();
+
+  // Acciones que llegan desde el botón "+" de la barra móvil inferior.
+  useEffect(() => {
+    if (!actionParam) return;
+    if (actionParam === "voice") void startRecording(true);
+    else if (actionParam === "photo") camRef.current?.click();
+    else if (actionParam === "upload") (isMobile ? setPhotoPickerOpen(true) : fileRef.current?.click());
+    else if (actionParam === "recurring") openNewRecurring();
+    router.navigate({ to: "/registro-gastos", search: {}, replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actionParam]);
 
   const onSaveDraft = async () => {
     if (!draft || !user?.id) return;

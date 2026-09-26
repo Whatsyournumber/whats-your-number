@@ -4,8 +4,14 @@ import { ExpenseLog } from "@/components/expense-log";
 import { PageShell } from "@/components/page";
 
 export const Route = createFileRoute("/registro-gastos")({
-  validateSearch: (search: Record<string, unknown>): { add?: boolean } =>
-    search["add"] === true || search["add"] === "1" ? { add: true } : {},
+  validateSearch: (search: Record<string, unknown>): { add?: boolean; action?: string } => {
+    const action = typeof search["action"] === "string" ? search["action"] : undefined;
+    const valid = ["voice", "photo", "upload", "recurring"];
+    return {
+      add: search["add"] === true || search["add"] === "1" ? true : undefined,
+      action: action && valid.includes(action) ? action : undefined,
+    };
+  },
   head: () => ({
     meta: [
       { title: "Expense Tracker — WhatsYourNumber" },
