@@ -4,6 +4,9 @@ import { ExpenseLog } from "@/components/expense-log";
 import { PageShell } from "@/components/page";
 
 export const Route = createFileRoute("/registro-gastos")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    add: search.add === true || search.add === "1" ? true : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Expense Tracker — WhatsYourNumber" },
