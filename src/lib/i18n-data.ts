@@ -81,7 +81,7 @@ const PROFILE_OPTIONS: Record<string, string> = {
   // Objetivo principal
   "Alcanzar la libertad financiera": "Reach financial freedom",
   "Hacer crecer mi patrimonio": "Grow my net worth",
-  "Entender, controlar y trackear mis gastos": "Understand, control and track my spending",
+  "Entender y trackear mis gastos diarios": "Understand and track my daily spending",
   "Ahorrar para una vivienda": "Save for a home",
   "Viajar más": "Travel more",
   "Organizar mejor mi dinero": "Organize my money better",
