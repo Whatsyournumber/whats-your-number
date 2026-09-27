@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, FileSpreadsheet, Sparkles, Users } from "lucide-react";
+import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Sparkles, Users } from "lucide-react";
 import { BudgetVoiceAdvisor } from "@/components/budget-voice-advisor";
 import { SharedExpenseDialog } from "@/components/shared-expense";
 import { useT } from "@/hooks/use-language";
@@ -45,7 +45,6 @@ export function MobileBottomNav() {
     { icon: Mic, label: t("Por voz", "By voice"), search: { action: "voice" } as const },
     { icon: Camera, label: t("Tomar foto", "Take photo"), search: { action: "photo" } as const },
     { icon: Upload, label: t("Sube foto o captura", "Upload photo or screenshot"), search: { action: "upload" } as const },
-    { icon: FileSpreadsheet, label: t("Subir tus estados de cuenta", "Upload your bank statements"), search: { action: "statement" } as const },
     { icon: Users, label: t("Gasto compartido", "Shared expense"), onClick: () => { setMenuOpen(false); setSharedOpen(true); } },
     ...(isPro
       ? [{ icon: Sparkles, label: t("Asesor de gastos con IA", "AI Expense Advisor"), onClick: () => { setMenuOpen(false); setAdviceOpen(true); } }]
