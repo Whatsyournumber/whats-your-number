@@ -17,6 +17,7 @@ import { saveExpense } from "@/lib/manual-expense";
 import { BASE_CATEGORIES } from "@/lib/categorize";
 import { useCategories } from "@/hooks/use-categories";
 import { notifySharedExpense } from "@/lib/shared-expense.functions";
+import { InviteShareActions } from "@/components/invite-share-actions";
 import { useServerFn } from "@tanstack/react-start";
 import { cn } from "@/lib/utils";
 
