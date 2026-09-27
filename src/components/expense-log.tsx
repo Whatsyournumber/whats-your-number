@@ -50,6 +50,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { SPEND_PLAN_FIELDS, compact, getWynMoneyLocale, money } from "@/lib/onboarding";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { cn } from "@/lib/utils";
+import { SharedExpenseInbox, parseShared } from "@/components/shared-expense";
+import { Users } from "lucide-react";
 
 type DraftItem = { name: string; amount: number; category: string };
 type Draft = {
