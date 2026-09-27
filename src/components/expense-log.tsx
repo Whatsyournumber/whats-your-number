@@ -50,7 +50,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SPEND_PLAN_FIELDS, compact, getWynMoneyLocale, money } from "@/lib/onboarding";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { cn } from "@/lib/utils";
-import { SharedExpenseInbox, parseShared, SHARED_PREFIX } from "@/components/shared-expense";
+import { SharedExpenseDialog, SharedExpenseInbox, parseShared, SHARED_PREFIX } from "@/components/shared-expense";
 import { Users } from "lucide-react";
 
 type DraftItem = { name: string; amount: number; category: string };
@@ -114,6 +114,7 @@ export function ExpenseLog() {
   const [planOpen, setPlanOpen] = useState(false);
   const [recOpen, setRecOpen] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
+  const [sharedOpen, setSharedOpen] = useState(false);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
   const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
   const router = useRouter();
@@ -1071,6 +1072,10 @@ export function ExpenseLog() {
               <Repeat className="mr-2.5 h-6 w-6 text-positive" />
               {t("Recurrente", "Recurring")}
             </DropdownMenuItem>
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setSharedOpen(true)}>
+              <Users className="mr-2.5 h-6 w-6 text-positive" />
+              {t("Gasto compartido", "Shared expense")}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -1126,6 +1131,10 @@ export function ExpenseLog() {
               <Repeat className="mr-2.5 h-6 w-6 text-positive" />
               {t("Recurrente", "Recurring")}
             </DropdownMenuItem>
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setSharedOpen(true)}>
+              <Users className="mr-2.5 h-6 w-6 text-positive" />
+              {t("Gasto compartido", "Shared expense")}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -1135,6 +1144,14 @@ export function ExpenseLog() {
         onAddCategory={(name) => categories.add(name)}
         open={manualOpen}
         onOpenChange={setManualOpen}
+        onSaved={() => {
+          setPeriod("month");
+          window.setTimeout(() => latestExpensesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
+        }}
+      />
+      <SharedExpenseDialog
+        open={sharedOpen}
+        onOpenChange={setSharedOpen}
         onSaved={() => {
           setPeriod("month");
           window.setTimeout(() => latestExpensesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
@@ -2250,6 +2267,10 @@ export function ExpenseLog() {
                 <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={openNewRecurring}>
                   <Repeat className="mr-2.5 h-6 w-6 text-positive" />
                   {t("Recurrente", "Recurring")}
+                </DropdownMenuItem>
+                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setSharedOpen(true)}>
+                  <Users className="mr-2.5 h-6 w-6 text-positive" />
+                  {t("Gasto compartido", "Shared expense")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
