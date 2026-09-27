@@ -26,9 +26,7 @@ export function InviteShareActions({ email }: { email: string }) {
     `Hi! I invited you to share an expense on WhatsYournumber 💸\n\nSign up free and we'll split the expense:\n${link}`
   );
 
-  const sendWhatsApp = () => {
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
-  };
+  const waHref = `https://wa.me/?text=${encodeURIComponent(msg)}`;
 
   const copyLink = async () => {
     try {
@@ -58,9 +56,10 @@ export function InviteShareActions({ email }: { email: string }) {
       </div>
 
       <div className="mt-5 flex items-start justify-center gap-10">
-        <button
-          type="button"
-          onClick={sendWhatsApp}
+        <a
+          href={waHref}
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex flex-col items-center gap-2"
           aria-label={t("Enviar por WhatsApp", "Share via WhatsApp")}
         >
@@ -68,7 +67,7 @@ export function InviteShareActions({ email }: { email: string }) {
             <WhatsAppIcon className="h-7 w-7" />
           </span>
           <span className="text-xs font-medium">{t("WhatsApp", "WhatsApp")}</span>
-        </button>
+        </a>
 
         <span className="h-16 w-px bg-border" aria-hidden="true" />
 
