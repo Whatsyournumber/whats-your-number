@@ -73,6 +73,22 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   const [payer, setPayer] = useState<"me" | "partner">("me");
   const [saving, setSaving] = useState(false);
 
+  // Personas con las que ya compartiste gastos: quedan guardadas para reutilizarlas.
+  const { data: knownPartners = [] } = useQuery({
+    queryKey: ["shared-partners", user?.id],
+    enabled: Boolean(user?.id) && open,
+    queryFn: async () => {
+      const { data: rows } = await supabase
+        .from("shared_expense_participants")
+        .select("user_id, display_name, created_at")
+        .neq("user_id", user!.id)
+        .order("created_at", { ascending: false })
+        .limit(100);
+      const seen = new Map<string, Partner>();
+      for (const r of rows ?? []) if (!seen.has(r.user_id)) seen.set(r.user_id, { id: r.user_id, name: r.display_name || "?" });
+      return [...seen.values()];
+    },
+  });
   const cat = category || categories[0] || "Otros";
   const mine = mode === "equal" ? total / 2 : mode === "percent" ? (total * myPct) / 100 : Math.min(myAmount, total);
   const theirs = Math.max(0, total - mine);
@@ -130,6 +146,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
         description: `${SHARED_PREFIX}${split}|${partner.name}`,
       });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      void queryClient.invalidateQueries({ queryKey: ["shared-partners"] });
       await notify({ data: { expenseId } });
       toast.success(t("Gasto compartido guardado", "Shared expense saved"), {
         description: t(`Tu parte: ${fmt(mine)} · ${partner.name} ya lo ve en su app`, `Your share: ${fmt(mine)} · ${partner.name} already sees it in the app`),
@@ -173,21 +190,24 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
 
           <div className="grid gap-2">
             <p className="text-sm font-semibold">{t("¿Con quién?", "With whom?")}</p>
-            <div className="flex items-start gap-4">
-              {partner && (
-                <button type="button" onClick={() => setPartner(null)} className="flex flex-col items-center gap-1">
-                  <span className="relative grid h-14 w-14 place-items-center rounded-full bg-positive/20 text-lg font-semibold ring-2 ring-positive">
-                    {initials(partner.name)}
-                    <Check className="absolute -left-1 -top-1 h-5 w-5 rounded-full bg-positive p-0.5 text-background" />
-                  </span>
-                  <span className="max-w-28 break-words text-center text-xs leading-tight">{partner.name}</span>
-                </button>
-              )}
+            <div className="flex flex-wrap items-start gap-4">
+              {[...(partner && !knownPartners.some((k) => k.id === partner.id) ? [partner] : []), ...knownPartners].map((p) => {
+                const active = partner?.id === p.id;
+                return (
+                  <button key={p.id} type="button" onClick={() => setPartner(active ? null : p)} className="flex flex-col items-center gap-1">
+                    <span className={cn("relative grid h-14 w-14 place-items-center rounded-full text-lg font-semibold", active ? "bg-positive/20 ring-2 ring-positive" : "bg-muted")}>
+                      {initials(p.name)}
+                      {active && <Check className="absolute -left-1 -top-1 h-5 w-5 rounded-full bg-positive p-0.5 text-background" />}
+                    </span>
+                    <span className="max-w-28 break-words text-center text-xs leading-tight">{p.name}</span>
+                  </button>
+                );
+              })}
               <button type="button" onClick={() => setInviting(true)} className="flex flex-col items-center gap-1">
                 <span className="grid h-14 w-14 place-items-center rounded-full border border-border text-muted-foreground">
                   <Plus className="h-5 w-5" />
                 </span>
-                <span className="text-xs text-muted-foreground">{partner ? t("Cambiar", "Change") : t("Invitar", "Invite")}</span>
+                <span className="text-xs text-muted-foreground">{t("Invitar", "Invite")}</span>
               </button>
             </div>
             {inviting && (
