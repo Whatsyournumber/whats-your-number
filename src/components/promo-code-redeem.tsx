@@ -5,6 +5,7 @@ import { Gift, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
@@ -28,6 +29,12 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
 
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const [activatedPlan, setActivatedPlan] = useState<string | null>(null);
+
+  const closeConfirmation = () => {
+    setActivatedPlan(null);
+    void navigate({ to: "/dashboard" });
+  };
 
   const errorText = (key: string) => {
     switch (key) {
@@ -84,12 +91,9 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
         return;
       }
 
-      const until = result.until ? new Date(result.until).toLocaleDateString() : "";
-      toast.success(
-        t("¡Código activado! Acceso Pro hasta ", "Code activated! Pro access until ") + until,
-      );
       setCode("");
-      await qc.invalidateQueries();
+      setActivatedPlan(result.product_id === "patrimonio_plan" ? "Familiar" : "Pro");
+      void qc.invalidateQueries({ queryKey: ["subscription"] });
     } catch {
       toast.error(t("No pudimos canjear el código.", "We couldn't redeem the code."));
     } finally {
@@ -98,6 +102,7 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
   };
 
   return (
+    <>
     <section className={`rounded-2xl border border-primary/20 bg-primary/10 p-4 sm:p-5 ${className ?? ""}`}>
       <div className="grid gap-4 lg:grid-cols-[minmax(260px,1fr)_minmax(320px,1.3fr)] lg:items-center">
         <div className="flex items-center gap-3">
@@ -129,5 +134,22 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
       </div>
       </div>
     </section>
+    <Dialog open={activatedPlan !== null} onOpenChange={(open) => { if (!open) closeConfirmation(); }}>
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-md rounded-lg text-center">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/15 text-primary">
+          <Gift className="h-6 w-6" />
+        </div>
+        <DialogHeader className="text-center sm:text-center">
+          <DialogTitle>{t("¡Código aplicado!", "Code applied!")}</DialogTitle>
+          <DialogDescription>
+            {t(`Ahora puedes disfrutar de tu plan ${activatedPlan ?? "Pro"}.`, `You can now enjoy your ${activatedPlan ?? "Pro"} plan.`)}
+          </DialogDescription>
+        </DialogHeader>
+        <Button onClick={closeConfirmation} className="w-full">
+          {t("Ir al inicio", "Go to dashboard")}
+        </Button>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }
