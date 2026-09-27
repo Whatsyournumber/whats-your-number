@@ -129,9 +129,9 @@ export function SharedExpenseDialog({ open, onOpenChange }: { open: boolean; onO
         description: `${SHARED_PREFIX}${split}|${partner.name}`,
       });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
-      void notify({ data: { expenseId: exp.id } }).catch(() => undefined);
+      await notify({ data: { expenseId: exp.id } });
       toast.success(t("Gasto compartido guardado", "Shared expense saved"), {
-        description: t(`Tu parte: ${fmt(mine)} · ${partner.name} recibirá un correo`, `Your share: ${fmt(mine)} · ${partner.name} will get an email`),
+        description: t(`Tu parte: ${fmt(mine)} · ${partner.name} ya lo ve en su app`, `Your share: ${fmt(mine)} · ${partner.name} already sees it in the app`),
       });
       reset();
       onOpenChange(false);
