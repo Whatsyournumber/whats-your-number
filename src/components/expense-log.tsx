@@ -2615,6 +2615,7 @@ export function ExpenseLog() {
                       </Button>
                     </div>
                   )}
+                  {editInviting && editInvitePending && <InviteShareActions email={editInvitePending} />}
                 </div>
               )}
             </div>
