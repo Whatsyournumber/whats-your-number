@@ -125,7 +125,8 @@ Metas: ${d.goals.map((g) => `${g.name} ${g.current.toFixed(0)}/${g.target.toFixe
       return res.answer;
     },
     onSuccess: (answer) => {
-      setMessages((m) => [...m, { role: "assistant", content: answer }]);
+      const visible = answer.replace(/^VOZ:.*$/m, "").trim();
+      setMessages((m) => [...m, { role: "assistant", content: visible }]);
       void speak(answer);
     },
     onError: (e: unknown) =>
