@@ -859,7 +859,7 @@ function AdminPage() {
                         <TableCell className="font-medium">{u?.full_name ?? u?.email ?? r.user_id.slice(0, 8)}</TableCell>
                         <TableCell className="text-muted-foreground">{r.code}</TableCell>
                         <TableCell className="text-muted-foreground">{u?.email ?? "—"}</TableCell>
-                        <TableCell className="text-muted-foreground">{o?.country ?? u?.country ?? "—"}</TableCell>
+                        <TableCell className="text-muted-foreground">{o?.country ?? "—"}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(r.granted_until)}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(r.created_at)}</TableCell>
                         <TableCell className="text-right">
