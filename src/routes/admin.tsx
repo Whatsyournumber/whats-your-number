@@ -853,10 +853,13 @@ function AdminPage() {
                 <TableBody>
                   {(promos.data?.redemptions ?? []).map((r) => {
                     const u = users.find((x) => x.id === r.user_id);
+                    const o = onbByUser.get(r.user_id);
                     return (
                       <TableRow key={r.id}>
-                        <TableCell className="font-medium">{u?.email ?? r.user_id.slice(0, 8)}</TableCell>
+                        <TableCell className="font-medium">{u?.full_name ?? u?.email ?? r.user_id.slice(0, 8)}</TableCell>
                         <TableCell className="text-muted-foreground">{r.code}</TableCell>
+                        <TableCell className="text-muted-foreground">{u?.email ?? "—"}</TableCell>
+                        <TableCell className="text-muted-foreground">{o?.country ?? "—"}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(r.granted_until)}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(r.created_at)}</TableCell>
                         <TableCell className="text-right">
@@ -873,7 +876,7 @@ function AdminPage() {
                   })}
                   {(promos.data?.redemptions ?? []).length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center text-muted-foreground">{t("Sin canjes", "No redemptions")}</TableCell>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground">{t("Sin canjes", "No redemptions")}</TableCell>
                     </TableRow>
                   )}
 
