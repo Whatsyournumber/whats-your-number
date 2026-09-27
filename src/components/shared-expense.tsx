@@ -243,15 +243,15 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
                 </Button>
               </div>
             )}
-            {inviting && invitePending && <InviteShareActions email={invitePending} />}
+            {inviting && invitePending && <InviteShareActions email={invitePending} onClose={() => setInvitePending(null)} />}
           </div>
 
           <div className="grid gap-2">
             <p className="text-sm font-semibold">{t("¿Cómo dividirlo?", "How to split it?")}</p>
             <div className="flex gap-2">
-              <button type="button" className={seg(mode === "equal")} onClick={() => setMode("equal")}>50 / 50</button>
-              <button type="button" className={seg(mode === "percent")} onClick={() => setMode("percent")}>{t("Porcentaje", "Percent")}</button>
-              <button type="button" className={seg(mode === "amount")} onClick={() => setMode("amount")}>{t("Cantidad", "Amount")}</button>
+              <button type="button" className={seg(effectiveMode === "equal")} onClick={() => setMode("equal")}>{n > 1 ? t("Partes iguales", "Equal parts") : "50 / 50"}</button>
+              <button type="button" className={seg(effectiveMode === "percent")} onClick={() => setMode("percent")} disabled={n > 1}>{t("Porcentaje", "Percent")}</button>
+              <button type="button" className={seg(effectiveMode === "amount")} onClick={() => setMode("amount")} disabled={n > 1}>{t("Cantidad", "Amount")}</button>
             </div>
             {mode === "percent" && (
               <label className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
