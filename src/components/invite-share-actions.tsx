@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link2, Share2, UserRoundPlus } from "lucide-react";
+import { Link2, Share2, UserRoundPlus, X } from "lucide-react";
 import { toast } from "sonner";
 import { useT } from "@/hooks/use-language";
 

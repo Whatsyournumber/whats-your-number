@@ -109,7 +109,11 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   };
 
   const togglePartner = (p: Partner) =>
-    setPartners((prev) => (prev.some((x) => x.id === p.id) ? prev.filter((x) => x.id !== p.id) : [...prev, p]));
+    setPartners((prev) => {
+      const next = prev.some((x) => x.id === p.id) ? prev.filter((x) => x.id !== p.id) : [...prev, p];
+      if (next.length !== 1) setPayer("me");
+      return next;
+    });
 
   async function findPartner() {
     const validEmail = normalizeValidEmail(email);
