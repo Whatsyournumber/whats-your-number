@@ -136,7 +136,7 @@ export function SharedExpenseDialog({ open, onOpenChange }: { open: boolean; onO
       reset();
       onOpenChange(false);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : String(e));
+      toast.error(e instanceof Error ? e.message : ((e as { message?: string })?.message ?? String(e)));
     } finally {
       setSaving(false);
     }
@@ -308,7 +308,7 @@ export function SharedExpenseInbox() {
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
       toast.success(accept ? t("Añadido a tus gastos", "Added to your spending") : t("Gasto rechazado", "Expense declined"));
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : String(e));
+      toast.error(e instanceof Error ? e.message : ((e as { message?: string })?.message ?? String(e)));
     } finally {
       setBusy(null);
     }
