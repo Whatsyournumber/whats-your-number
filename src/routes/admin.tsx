@@ -876,7 +876,7 @@ function AdminPage() {
                   })}
                   {(promos.data?.redemptions ?? []).length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center text-muted-foreground">{t("Sin canjes", "No redemptions")}</TableCell>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground">{t("Sin canjes", "No redemptions")}</TableCell>
                     </TableRow>
                   )}
 
