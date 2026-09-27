@@ -276,7 +276,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
             <div className="flex gap-2">
               <button type="button" className={seg(payer === "me")} onClick={() => setPayer("me")}>{t("Yo", "Me")}</button>
               <button type="button" className={seg(payer === "partner")} onClick={() => setPayer("partner")} disabled={partners.length !== 1}>
-                {partners.length === 1 ? partners[0].name : t("La otra persona", "The other person")}
+                {partners.length === 1 ? (partners[0]?.name ?? "") : t("La otra persona", "The other person")}
               </button>
             </div>
           </div>
