@@ -244,6 +244,8 @@ export function ExpenseLog() {
     setEditAmount(Math.abs(x.amount));
     setEditDate(x.tx_date ?? format(new Date(), "yyyy-MM-dd"));
     setEditCategory(x.category || categorizeTx(x, categories.rules));
+    setEditSharedWith(parseShared(x.description)?.name ?? null);
+    setEditSharePartner(null);
   };
 
   const onSaveEditTx = async () => {
