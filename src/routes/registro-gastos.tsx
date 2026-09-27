@@ -6,7 +6,7 @@ import { PageShell } from "@/components/page";
 export const Route = createFileRoute("/registro-gastos")({
   validateSearch: (search: Record<string, unknown>): { add?: boolean; action?: string } => {
     const action = typeof search["action"] === "string" ? search["action"] : undefined;
-    const valid = ["voice", "photo", "upload", "recurring"];
+    const valid = ["voice", "photo", "upload", "recurring", "statement"];
     const out: { add?: boolean; action?: string } = {};
     if (search["add"] === true || search["add"] === "1") out.add = true;
     if (action && valid.includes(action)) out.action = action;
