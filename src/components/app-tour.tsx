@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   ArrowLeft, ArrowRight, Camera, ChartPie, Check, Compass, Crown, Globe2, Home, LayoutDashboard,
-  FileSpreadsheet, Lightbulb, Map, Mic, MousePointerClick, PencilLine, Plus, ReceiptText, Scale, Sparkles,
+  Lightbulb, Map, Mic, MousePointerClick, PencilLine, Plus, ReceiptText, Scale, Sparkles,
   Sprout, Target, TrendingUp, Upload, UserRound, Users, Wallet, X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -193,7 +193,6 @@ const ADD_OPTIONS: { icon: typeof Plus; es: string; en: string }[] = [
   { icon: Mic, es: "Por voz", en: "By voice" },
   { icon: Camera, es: "Tomar foto", en: "Take photo" },
   { icon: Upload, es: "Sube foto o captura", en: "Upload photo or screenshot" },
-  { icon: FileSpreadsheet, es: "Subir tus estados de cuenta", en: "Upload your bank statements" },
 ];
 
 export function AppTour() {

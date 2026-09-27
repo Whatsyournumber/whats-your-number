@@ -3,10 +3,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, FileSpreadsheet, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
-import { FolderIcon, GalleryIcon, GooglePhotosIcon } from "@/components/expense-source-icons";
+import { FolderIcon, GooglePhotosIcon } from "@/components/expense-source-icons";
 
 import { BudgetDialog } from "@/components/budget-dialog";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
@@ -1572,7 +1572,7 @@ export function ExpenseLog() {
                   {(
                     [
                       { Icon: GooglePhotosIcon, es: "Imágenes", en: "Images", pick: () => fileRef.current?.click() },
-                      { Icon: GalleryIcon, es: "Galería", en: "Gallery", pick: () => fileRef.current?.click() },
+                      { Icon: FileSpreadsheet, es: "Tus estados de cuenta", en: "Your bank statements", pick: () => setStatementOpen(true) },
                       { Icon: FolderIcon, es: "Archivos", en: "Files", pick: () => docsRef.current?.click() },
                     ] as const
                   ).map((o) => (
