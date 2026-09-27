@@ -50,6 +50,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { SPEND_PLAN_FIELDS, compact, getWynMoneyLocale, money } from "@/lib/onboarding";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { cn } from "@/lib/utils";
+import { SharedExpenseInbox, parseShared } from "@/components/shared-expense";
+import { Users } from "lucide-react";
 
 type DraftItem = { name: string; amount: number; category: string };
 type Draft = {
@@ -971,10 +973,11 @@ export function ExpenseLog() {
             </button>
           )}
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium">{x.merchant}</p>
+            <p className="flex items-center gap-1.5 text-sm font-medium">{x.merchant}{parseShared(x.description) && <Users className="h-3.5 w-3.5 text-positive" />}</p>
             <p className="text-[11px] text-muted-foreground">
               {translateCategory(x.category || categorizeTx(x as Tx, categories.rules), lang)}
               {receiptItems.length > 0 ? ` · ${receiptItems.length} ${t("productos", "items")}` : ""}
+              {parseShared(x.description) ? ` · ${parseShared(x.description)!.split} · ${t("con", "with")} ${parseShared(x.description)!.name}` : ""}
             </p>
           </div>
           <span className="shrink-0 text-[11px] text-muted-foreground">
@@ -1009,6 +1012,7 @@ export function ExpenseLog() {
 
   return (
     <section className="space-y-4">
+      <SharedExpenseInbox />
       <div className="sticky top-14 z-30 -mx-4 flex items-center justify-between gap-3 border-b border-border bg-background/95 px-4 py-4 shadow-sm backdrop-blur-xl sm:static sm:mx-0 sm:items-start sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none sm:backdrop-blur-none">
         <div className="min-w-0">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
