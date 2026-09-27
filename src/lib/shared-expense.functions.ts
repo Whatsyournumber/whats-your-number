@@ -24,8 +24,29 @@ export const notifySharedExpense = createServerFn({ method: "POST" })
     if (!other) return { sent: false };
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Sincroniza el gasto en la app de la otra persona: su parte entra en sus gastos.
+    const { data: exp2 } = await supabase.from("shared_expenses").select("tx_date").eq("id", exp.id).single();
+    let { data: st } = await supabaseAdmin
+      .from("statements").select("id").eq("user_id", other.user_id).eq("storage_path", "manual").limit(1).maybeSingle();
+    if (!st) {
+      const created = await supabaseAdmin.from("statements").insert({
+        user_id: other.user_id, file_name: "Gastos manuales", file_type: "manual", file_size: 0, storage_path: "manual", status: "processed",
+      }).select("id").single();
+      if (created.error) throw new Error(created.error.message);
+      st = created.data;
+    }
+    const split = String(exp.split_mode).split("/").reverse().join("/");
+    const ins = await supabaseAdmin.from("imported_transactions").insert({
+      user_id: other.user_id, statement_id: st!.id, tx_date: exp2?.tx_date ?? null,
+      merchant: exp.merchant || exp.category, description: `shared:${split}|${me?.display_name ?? ""}`,
+      amount: -Math.abs(Number(other.share_amount)), currency: exp.currency, category: exp.category,
+    });
+    if (ins.error) throw new Error(ins.error.message);
+    await supabaseAdmin.from("shared_expense_participants").update({ status: "accepted" })
+      .eq("expense_id", exp.id).eq("user_id", other.user_id);
     const { data: prof } = await supabaseAdmin.from("profiles").select("email, full_name").eq("id", other.user_id).maybeSingle();
-    if (!prof?.email) return { sent: false };
+    if (!prof?.email) return { sent: false, synced: true };
 
     const money = (v: number) =>
       new Intl.NumberFormat("es-ES", { style: "currency", currency: exp.currency || "USD" }).format(Number(v));
@@ -41,5 +62,5 @@ export const notifySharedExpense = createServerFn({ method: "POST" })
         split: exp.split_mode,
       },
     });
-    return { sent: result.sent };
+    return { sent: result.sent, synced: true };
   });
