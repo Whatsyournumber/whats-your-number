@@ -51,7 +51,7 @@ export function BudgetVoiceAdvisor({ open, onOpenChange }: { open: boolean; onOp
       const plain = text.replace(/[*_#`>]/g, "");
       // Si la IA incluye la línea "VOZ:", se habla solo eso (veredicto + categoría + presupuesto restante).
       const vozMatch = plain.match(/^VOZ:\s*(.+)$/m);
-      const summary = (vozMatch ? vozMatch[1] : plain).trim().slice(0, 400);
+      const summary = (vozMatch?.[1] ?? plain).trim().slice(0, 400);
       const res = await fetch("/api/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
