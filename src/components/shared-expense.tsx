@@ -253,13 +253,13 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
               <button type="button" className={seg(effectiveMode === "percent")} onClick={() => setMode("percent")} disabled={n > 1}>{t("Porcentaje", "Percent")}</button>
               <button type="button" className={seg(effectiveMode === "amount")} onClick={() => setMode("amount")} disabled={n > 1}>{t("Cantidad", "Amount")}</button>
             </div>
-            {mode === "percent" && (
+            {effectiveMode === "percent" && (
               <label className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
                 {t("Tu porcentaje", "Your percent")}
                 <div className="w-28"><NumberInput value={myPct} onChange={(v) => setMyPct(Math.min(100, Math.max(0, v || 0)))} min={0} /></div>
               </label>
             )}
-            {mode === "amount" && (
+            {effectiveMode === "amount" && (
               <label className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
                 {t("Tu parte", "Your share")}
                 <div className="w-32"><NumberInput value={myAmount} onChange={(v) => setMyAmount(v || 0)} min={0} format /></div>
