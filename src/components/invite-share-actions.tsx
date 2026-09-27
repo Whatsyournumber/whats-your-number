@@ -1,4 +1,4 @@
-import { Link2, UserRoundPlus } from "lucide-react";
+import { Link2, Share2, UserRoundPlus } from "lucide-react";
 import { toast } from "sonner";
 import { useT } from "@/hooks/use-language";
 
@@ -69,7 +69,8 @@ export function InviteShareActions({ email }: { email: string }) {
           <span className="text-xs font-medium">{t("WhatsApp", "WhatsApp")}</span>
         </button>
 
-        <span className="mt-6 h-px w-px self-center" aria-hidden="true" />
+        <span className="h-16 w-px bg-border" aria-hidden="true" />
+
 
         <button
           type="button"
