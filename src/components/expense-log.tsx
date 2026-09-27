@@ -256,13 +256,43 @@ export function ExpenseLog() {
     }
     setSaving(true);
     try {
+      const wasShared = Boolean(parseShared(editTx.description));
+      let amount = -Math.abs(editAmount);
+      let description: string | null | undefined = undefined;
+      if (wasShared && !editSharedWith) {
+        // Quitar a la otra persona: el gasto pasa a ser solo tuyo.
+        description = null;
+      } else if (!wasShared && editSharePartner && user?.id) {
+        // Convertir en compartido 50/50: se sincroniza con la otra persona.
+        const total = Math.abs(editAmount);
+        const half = total / 2;
+        const { data: expenseId, error: shareError } = await supabase.rpc("create_shared_expense", {
+          _partner_id: editSharePartner.id,
+          _payer_id: user.id,
+          _total: total,
+          _currency: currency,
+          _category: editCategory,
+          _merchant: editMerchant.trim(),
+          _tx_date: editDate,
+          _split_mode: "50/50",
+          _creator_name: (profile?.full_name as string | undefined)?.split(" ")[0] || t("Yo", "Me"),
+          _partner_name: editSharePartner.name,
+          _creator_share: half,
+          _partner_share: half,
+        });
+        if (shareError) throw new Error(shareError.message);
+        amount = -half;
+        description = `${SHARED_PREFIX}50/50|${editSharePartner.name}`;
+        if (expenseId) void notifyShared({ data: { expenseId } });
+      }
       const { error } = await supabase
         .from("imported_transactions")
         .update({
           merchant: editMerchant.trim() || translateCategory(editCategory, lang),
-          amount: -Math.abs(editAmount),
+          amount,
           tx_date: editDate,
           category: editCategory,
+          ...(description !== undefined ? { description } : {}),
         })
         .eq("id", editTx.id);
       if (error) throw new Error(error.message);
