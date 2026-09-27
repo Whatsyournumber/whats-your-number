@@ -1,0 +1,1 @@
+ALTER FUNCTION public.create_shared_expense(uuid, uuid, numeric, text, text, text, date, text, text, text, numeric, numeric) SECURITY INVOKER;
