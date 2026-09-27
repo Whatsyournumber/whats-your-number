@@ -212,10 +212,10 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
           <div className="grid gap-2">
             <p className="text-sm font-semibold">{t("¿Con quién?", "With whom?")}</p>
             <div className="flex flex-wrap items-start gap-4">
-              {[...(partner && !knownPartners.some((k) => k.id === partner.id) ? [partner] : []), ...knownPartners].map((p) => {
-                const active = partner?.id === p.id;
+              {[...partners.filter((p) => !knownPartners.some((k) => k.id === p.id)), ...knownPartners].map((p) => {
+                const active = partners.some((x) => x.id === p.id);
                 return (
-                  <button key={p.id} type="button" onClick={() => setPartner(active ? null : p)} className="flex flex-col items-center gap-1">
+                  <button key={p.id} type="button" onClick={() => togglePartner(p)} className="flex flex-col items-center gap-1">
                     <span className={cn("relative grid h-14 w-14 place-items-center rounded-full text-lg font-semibold", active ? "bg-positive/20 ring-2 ring-positive" : "bg-muted")}>
                       {initials(p.name)}
                       {active && <Check className="absolute -left-1 -top-1 h-5 w-5 rounded-full bg-positive p-0.5 text-background" />}
