@@ -40,7 +40,8 @@ export function InviteShareActions({ email }: { email: string }) {
   };
 
   return (
-    <div className="rounded-2xl border border-border bg-muted/20 p-4">
+    <div className="px-1 pb-1">
+
       <div className="flex items-center gap-3">
         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-positive/15 text-positive">
           <UserRoundPlus className="h-5 w-5" />
@@ -63,7 +64,7 @@ export function InviteShareActions({ email }: { email: string }) {
           className="flex flex-col items-center gap-2"
           aria-label={t("Enviar por WhatsApp", "Share via WhatsApp")}
         >
-          <span className="grid h-16 w-16 place-items-center rounded-full border-2 border-positive/60 bg-positive/10 text-positive shadow-[0_0_18px_-4px] shadow-positive/50 transition active:scale-95">
+          <span className="grid h-16 w-16 place-items-center rounded-full border border-positive/50 bg-positive/10 text-positive transition active:scale-95">
             <WhatsAppIcon className="h-7 w-7" />
           </span>
           <span className="text-xs font-medium">{t("WhatsApp", "WhatsApp")}</span>
