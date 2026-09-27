@@ -104,9 +104,12 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
     new Intl.NumberFormat(lang === "es" ? "es-ES" : "en-US", { style: "currency", currency, maximumFractionDigits: 2 }).format(v);
 
   const reset = () => {
-    setTotal(0); setMerchant(""); setPartner(null); setMode("equal"); setMyPct(50); setMyAmount(0); setPayer("me");
+    setTotal(0); setMerchant(""); setPartners([]); setMode("equal"); setMyPct(50); setMyAmount(0); setPayer("me");
     setInvitePending(null);
   };
+
+  const togglePartner = (p: Partner) =>
+    setPartners((prev) => (prev.some((x) => x.id === p.id) ? prev.filter((x) => x.id !== p.id) : [...prev, p]));
 
   async function findPartner() {
     const validEmail = normalizeValidEmail(email);
