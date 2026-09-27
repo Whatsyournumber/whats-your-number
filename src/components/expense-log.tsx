@@ -1572,7 +1572,7 @@ export function ExpenseLog() {
                   {(
                     [
                       { Icon: GooglePhotosIcon, es: "Imágenes", en: "Images", pick: () => fileRef.current?.click() },
-                      { Icon: GalleryIcon, es: "Galería", en: "Gallery", pick: () => fileRef.current?.click() },
+                      { Icon: FileSpreadsheet, es: "Tus estados de cuenta", en: "Your bank statements", pick: () => setStatementOpen(true) },
                       { Icon: FolderIcon, es: "Archivos", en: "Files", pick: () => docsRef.current?.click() },
                     ] as const
                   ).map((o) => (
