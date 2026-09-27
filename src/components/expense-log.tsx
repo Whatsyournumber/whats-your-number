@@ -2525,6 +2525,36 @@ export function ExpenseLog() {
                 </SelectContent>
               </Select>
             </div>
+            <div className="grid gap-1.5">
+              <Label>{t("Compartido", "Shared")}</Label>
+              {editSharedWith ? (
+                <div className="flex items-center justify-between rounded-md border border-border px-3 py-2 text-sm">
+                  <span className="flex items-center gap-1.5">
+                    <Users className="h-4 w-4 text-positive" />
+                    {t("Con", "With")} {editSharedWith}
+                  </span>
+                  <Button type="button" variant="ghost" size="sm" onClick={() => setEditSharedWith(null)}>
+                    {t("Ponerlo solo mío", "Make it just mine")}
+                  </Button>
+                </div>
+              ) : (
+                <Select
+                  value={editSharePartner?.id ?? ""}
+                  onValueChange={(v) => setEditSharePartner(editKnownPartners.find((p) => p.id === v) ?? null)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("Solo mío (o elige con quién compartirlo)", "Just mine (or choose someone to share with)")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {editKnownPartners.map((p) => (
+                      <SelectItem key={p.id} value={p.id}>
+                        {t("Compartir 50/50 con", "Share 50/50 with")} {p.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
           </div>
           <DialogFooter className="gap-2 sm:justify-between">
             <Button type="button" variant="ghost" className="text-negative" onClick={onDeleteEditTx} disabled={saving}>
