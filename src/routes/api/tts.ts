@@ -3,7 +3,7 @@ import { z } from "zod";
 
 const schema = z.object({
   text: z.string().min(1).max(3000),
-  lang: z.enum(["es", "en"]).default("es"),
+  lang: z.enum(["es", "en", "auto"]).default("auto"),
 });
 
 export const Route = createFileRoute("/api/tts")({
@@ -33,7 +33,9 @@ export const Route = createFileRoute("/api/tts")({
                     text:
                       data.lang === "en"
                         ? `Say in a warm, natural tone in English: ${data.text}`
-                        : `Di con un tono cálido y natural en español: ${data.text}`,
+                        : data.lang === "es"
+                          ? `Di con un tono cálido y natural en español: ${data.text}`
+                          : `Detect the language of the following text and say it aloud in a warm, natural tone in that same language: ${data.text}`,
                   },
                 ],
               },
