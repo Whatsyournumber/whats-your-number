@@ -78,6 +78,7 @@ export function InviteShareActions({ email }: { email: string }) {
           href={waHref}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={handleWaClick}
           className="flex flex-col items-center gap-2"
           aria-label={t("Enviar por WhatsApp", "Share via WhatsApp")}
         >
