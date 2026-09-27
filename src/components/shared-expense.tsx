@@ -107,21 +107,22 @@ export function SharedExpenseDialog({ open, onOpenChange }: { open: boolean; onO
     try {
       const date = format(new Date(), "yyyy-MM-dd");
       const split = modeLabel(mode === "equal" ? "equal" : "percent", pct);
-      const { data: exp, error } = await supabase
-        .from("shared_expenses")
-        .insert({
-          created_by: user.id,
-          payer_id: payer === "me" ? user.id : partner.id,
-          total, currency, category: cat, merchant: merchant.trim(), tx_date: date, split_mode: split,
-        })
-        .select("id")
-        .single();
+      const { data: expenseId, error } = await supabase.rpc("create_shared_expense", {
+        _partner_id: partner.id,
+        _payer_id: payer === "me" ? user.id : partner.id,
+        _total: total,
+        _currency: currency,
+        _category: cat,
+        _merchant: merchant.trim(),
+        _tx_date: date,
+        _split_mode: split,
+        _creator_name: myName,
+        _partner_name: partner.name,
+        _creator_share: mine,
+        _partner_share: theirs,
+      });
       if (error) throw error;
-      const { error: pErr } = await supabase.from("shared_expense_participants").insert([
-        { expense_id: exp.id, user_id: user.id, display_name: myName, share_amount: mine, status: "accepted" },
-        { expense_id: exp.id, user_id: partner.id, display_name: partner.name, share_amount: theirs, status: "pending" },
-      ]);
-      if (pErr) throw pErr;
+      if (!expenseId) throw new Error(t("No se pudo crear el gasto compartido", "The shared expense could not be created"));
       // En tu presupuesto solo cuenta tu parte.
       await saveExpense({
         userId: user.id, date, category: cat, currency, amount: mine,
@@ -129,7 +130,7 @@ export function SharedExpenseDialog({ open, onOpenChange }: { open: boolean; onO
         description: `${SHARED_PREFIX}${split}|${partner.name}`,
       });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
-      await notify({ data: { expenseId: exp.id } });
+      await notify({ data: { expenseId } });
       toast.success(t("Gasto compartido guardado", "Shared expense saved"), {
         description: t(`Tu parte: ${fmt(mine)} · ${partner.name} ya lo ve en su app`, `Your share: ${fmt(mine)} · ${partner.name} already sees it in the app`),
       });
