@@ -21,6 +21,20 @@ type RedeemResult = {
   until?: string;
 };
 
+const PRO_PERKS = [
+  { es: "Tu patrimonio completo: portfolio, cuentas e inversiones", en: "Your full net worth: portfolio, accounts and investments" },
+  { es: "Consejos con IA sobre tu presupuesto, por voz o texto", en: "AI advice on your budget, by voice or text" },
+  { es: "Hipoteca y planificador de retiro (Tu número)", en: "Mortgage and retirement planner (Your number)" },
+  { es: "Objetivos de ahorro y simulador de estilo de vida", en: "Savings goals and lifestyle simulator" },
+  { es: "Importación de estados de cuenta sin límite", en: "Unlimited bank statement imports" },
+];
+
+const FAMILY_PERKS = [
+  { es: "Todo lo del plan Pro", en: "Everything in Pro" },
+  { es: "Hasta 3 perfiles: tú, tu pareja e hijos", en: "Up to 3 profiles: you, your partner and kids" },
+  { es: "Análisis individual o de pareja", en: "Individual or couple analysis" },
+];
+
 export function PromoCodeRedeem({ className }: { className?: string }) {
   const t = useT();
   const { user } = useAuth();
@@ -145,6 +159,19 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
             {t(`Ahora puedes disfrutar de tu plan ${activatedPlan ?? "Pro"}.`, `You can now enjoy your ${activatedPlan ?? "Pro"} plan.`)}
           </DialogDescription>
         </DialogHeader>
+        <div className="rounded-2xl border bg-muted/40 p-4 text-left">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("Lo nuevo que desbloqueaste", "What you just unlocked")}
+          </p>
+          <ul className="space-y-2 text-sm">
+            {(activatedPlan === "Familiar" ? FAMILY_PERKS : PRO_PERKS).map((perk) => (
+              <li key={perk.es} className="flex items-start gap-2">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <span>{t(perk.es, perk.en)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
         <Button onClick={closeConfirmation} className="w-full">
           {t("Ir al inicio", "Go to dashboard")}
         </Button>
