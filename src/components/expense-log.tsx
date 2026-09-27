@@ -53,7 +53,13 @@ import { cn } from "@/lib/utils";
 import { SharedExpenseDialog, SharedExpenseInbox, parseShared, SHARED_PREFIX } from "@/components/shared-expense";
 import { notifySharedExpense } from "@/lib/shared-expense.functions";
 import { useServerFn } from "@tanstack/react-start";
-import { Users } from "lucide-react";
+import { Check, Users } from "lucide-react";
+
+const editInitials = (name: string) => {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return "?";
+  return (parts.length > 1 ? parts[0][0] + parts[parts.length - 1][0] : parts[0].slice(0, 2)).toUpperCase();
+};
 
 type DraftItem = { name: string; amount: number; category: string };
 type Draft = {
@@ -138,6 +144,7 @@ export function ExpenseLog() {
   const [editSharePartner, setEditSharePartner] = useState<{ id: string; name: string } | null>(null);
   const [editInviteEmail, setEditInviteEmail] = useState("");
   const [editLooking, setEditLooking] = useState(false);
+  const [editInviting, setEditInviting] = useState(false);
   const notifyShared = useServerFn(notifySharedExpense);
   const { data: editKnownPartners = [] } = useQuery({
     queryKey: ["shared-partners", user?.id],
@@ -249,6 +256,7 @@ export function ExpenseLog() {
     setEditSharedWith(parseShared(x.description)?.name ?? null);
     setEditSharePartner(null);
     setEditInviteEmail("");
+    setEditInviting(false);
   };
 
   const findEditPartner = async () => {
