@@ -50,7 +50,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SPEND_PLAN_FIELDS, compact, getWynMoneyLocale, money } from "@/lib/onboarding";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { cn } from "@/lib/utils";
-import { SharedExpenseInbox, parseShared } from "@/components/shared-expense";
+import { SharedExpenseInbox, parseShared, SHARED_PREFIX } from "@/components/shared-expense";
 import { Users } from "lucide-react";
 
 type DraftItem = { name: string; amount: number; category: string };
@@ -553,7 +553,9 @@ export function ExpenseLog() {
       detail.set(id, arr);
     };
     for (const x of expenseTx) {
-      const name = categorizeTx(x as Tx, categories.rules);
+      // Los gastos compartidos ya traen la categoría elegida por la persona:
+      // se respeta aunque el comercio coincida con otra regla automática.
+      const name = x.description?.startsWith(SHARED_PREFIX) && x.category ? x.category : categorizeTx(x as Tx, categories.rules);
       const id = catOverrides[x.id] ?? match(name) ?? "others";
       push(id, x.id, x.merchant || name, Math.abs(x.amount), x.tx_date ?? undefined);
     }
@@ -626,7 +628,7 @@ export function ExpenseLog() {
       const d = parseISO(x.tx_date);
       if (d < prevStart || d > prevEnd) continue;
       if (isSavingsName(`${x.merchant} ${x.description ?? ""}`)) continue;
-      const name = categorizeTx(x as Tx, categories.rules);
+      const name = x.description?.startsWith(SHARED_PREFIX) && x.category ? x.category : categorizeTx(x as Tx, categories.rules);
       const id = catOverrides[x.id] ?? match(name) ?? "others";
       map.set(id, (map.get(id) ?? 0) + Math.abs(x.amount));
     }
