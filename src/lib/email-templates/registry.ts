@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import { template as contactNotification } from './contact-notification'
 import { template as supportRequest } from './support-request'
+import { template as sharedExpense } from './shared-expense'
 
 export interface TemplateEntry {
   component: ComponentType<any>
@@ -22,4 +23,5 @@ export interface TemplateEntry {
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'contact-notification': contactNotification,
   'support-request': supportRequest,
+  'shared-expense': sharedExpense,
 }
