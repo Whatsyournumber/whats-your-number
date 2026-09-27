@@ -55,6 +55,7 @@ import { notifySharedExpense } from "@/lib/shared-expense.functions";
 import { InviteShareActions } from "@/components/invite-share-actions";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Users } from "lucide-react";
+import { normalizeValidEmail } from "@/lib/email-validation";
 
 const editInitials = (name: string) => {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -263,18 +264,22 @@ export function ExpenseLog() {
   };
 
   const findEditPartner = async () => {
-    if (!editInviteEmail.trim()) return;
+    const validEmail = normalizeValidEmail(editInviteEmail);
+    if (!validEmail) {
+      toast.error(t("Escribe un correo válido", "Enter a valid email"));
+      return;
+    }
     setEditLooking(true);
-    const { data, error } = await supabase.rpc("find_user_by_email", { _email: editInviteEmail });
+    const { data, error } = await supabase.rpc("find_user_by_email", { _email: validEmail });
     setEditLooking(false);
     const row = Array.isArray(data) ? data[0] : null;
     if (error || !row) {
       // Aún no está en la app: mostramos opciones de invitación (WhatsApp / link).
-      setEditInvitePending(editInviteEmail.trim());
+      setEditInvitePending(validEmail);
       return;
     }
     setEditInvitePending(null);
-    setEditSharePartner({ id: row.id, name: (row.full_name as string) || editInviteEmail });
+    setEditSharePartner({ id: row.id, name: (row.full_name as string) || validEmail });
     setEditInviteEmail("");
   };
 
@@ -2606,11 +2611,11 @@ export function ExpenseLog() {
                         autoFocus
                         type="email"
                         value={editInviteEmail}
-                        onChange={(e) => setEditInviteEmail(e.target.value)}
+                        onChange={(e) => { setEditInviteEmail(e.target.value); setEditInvitePending(null); }}
                         onKeyDown={(e) => e.key === "Enter" && void findEditPartner()}
                         placeholder={t("Correo de alguien nuevo", "Someone new's email")}
                       />
-                      <Button type="button" onClick={findEditPartner} disabled={editLooking}>
+                      <Button type="button" onClick={findEditPartner} disabled={editLooking || !normalizeValidEmail(editInviteEmail)}>
                         {editLooking ? <Loader2 className="h-4 w-4 animate-spin" /> : t("Añadir", "Add")}
                       </Button>
                     </div>

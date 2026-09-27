@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link2, Share2, UserRoundPlus } from "lucide-react";
 import { toast } from "sonner";
 import { useT } from "@/hooks/use-language";
@@ -19,6 +20,7 @@ export const nameFromEmail = (email: string) => {
 
 export function InviteShareActions({ email }: { email: string }) {
   const t = useT();
+  const [isMobile, setIsMobile] = useState(false);
   const name = nameFromEmail(email);
   const link = "https://www.whatsyour-number.com/auth?mode=signup";
   const msg = t(
@@ -26,19 +28,18 @@ export function InviteShareActions({ email }: { email: string }) {
     `Hi! I invited you to share an expense on WhatsYournumber 💸\n\nSign up free and we'll split the expense:\n${link}`
   );
 
-  // Mobile: wa.me opens the WhatsApp app. Desktop: web.whatsapp.com opens WhatsApp Web.
-  const isTouchDevice = () =>
-    typeof window !== "undefined" &&
-    (window.matchMedia?.("(pointer: coarse)").matches || "ontouchstart" in window);
+  useEffect(() => {
+    const query = window.matchMedia("(pointer: coarse)");
+    const update = () => setIsMobile(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
 
-  // Plain new-tab link (no JS navigation): never loads WhatsApp inside a frame.
-  const handleWaClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!isTouchDevice()) {
-      e.currentTarget.href = `https://web.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
-    }
-  };
-
-  const waHref = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+  const encodedMessage = encodeURIComponent(msg);
+  const waHref = isMobile
+    ? `https://wa.me/?text=${encodedMessage}`
+    : `https://web.whatsapp.com/send?text=${encodedMessage}`;
 
   const copyLink = async () => {
     try {
@@ -70,8 +71,8 @@ export function InviteShareActions({ email }: { email: string }) {
       <div className="mt-5 flex items-start justify-center gap-10">
         <a
           href={waHref}
-          target="_top"
-          onClick={handleWaClick}
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex flex-col items-center gap-2"
           aria-label={t("Enviar por WhatsApp", "Share via WhatsApp")}
         >
