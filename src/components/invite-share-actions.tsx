@@ -9,8 +9,6 @@ function WhatsAppIcon({ className }: { className?: string }) {
     </svg>
   );
 }
-import { toast } from "sonner";
-import { useT } from "@/hooks/use-language";
 
 export const nameFromEmail = (email: string) => {
   const local = email.split("@")[0] ?? "";
