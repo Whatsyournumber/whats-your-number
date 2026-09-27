@@ -1063,8 +1063,8 @@ export function ExpenseLog() {
             </button>
           )}
           <div className="min-w-0 flex-1">
-            <p className="flex items-center gap-1.5 text-sm font-medium">{x.merchant}{parseShared(x.description) && <Users className="h-3.5 w-3.5 text-positive" />}</p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="flex min-w-0 items-center gap-1.5 break-words text-sm font-medium">{x.merchant}{parseShared(x.description) && <Users className="h-3.5 w-3.5 shrink-0 text-positive" />}</p>
+            <p className="break-words text-[11px] text-muted-foreground">
               {translateCategory(x.category || categorizeTx(x as Tx, categories.rules), lang)}
               {receiptItems.length > 0 ? ` · ${receiptItems.length} ${t("productos", "items")}` : ""}
               {parseShared(x.description) ? ` · ${parseShared(x.description)!.split} · ${t("con", "with")} ${parseShared(x.description)!.name}` : ""}
@@ -2051,11 +2051,11 @@ export function ExpenseLog() {
           )}
 
           {/* En escritorio, Últimos gastos va al lado de Gastos por categoría. */}
-          <div className="grid gap-4 sm:gap-6 lg:grid-cols-[3fr_2fr] lg:items-start">
+          <div className="grid min-w-0 gap-4 sm:gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start">
           {rows.length > 0 && (
             <div
               ref={categoryCardRef}
-              className="scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6"
+              className="min-w-0 scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
@@ -2304,7 +2304,7 @@ export function ExpenseLog() {
           })()}
 
 
-        <div ref={latestExpensesRef} id="latest-expenses" className="scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6">
+        <div ref={latestExpensesRef} id="latest-expenses" className="min-w-0 scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
               <h3 className="text-lg font-semibold">{t("Últimos gastos", "Latest expenses")}</h3>
