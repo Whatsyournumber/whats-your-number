@@ -103,6 +103,9 @@ function Pricing() {
       ),
       features: [
         t("Trackea el día a día de tus gastos", "Track your expenses day by day"),
+        t("Carga de gastos por voz, en cualquier idioma", "Voice expense entry, in any language"),
+        t("Foto del recibo para tus gastos de mercado", "Receipt photo for your grocery expenses"),
+        t("Captura de pantalla para registrar gastos", "Screenshot to log expenses"),
         t("Análisis de gastos del mes", "Monthly expense analysis"),
         t("5 importaciones de estados de cuenta al mes", "5 statement imports per month"),
         t("Tu número de libertad financiera", "Your financial freedom number"),
