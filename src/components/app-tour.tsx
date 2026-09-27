@@ -193,7 +193,6 @@ const ADD_OPTIONS: { icon: typeof Plus; es: string; en: string }[] = [
   { icon: Mic, es: "Por voz", en: "By voice" },
   { icon: Camera, es: "Tomar foto", en: "Take photo" },
   { icon: Upload, es: "Sube foto o captura", en: "Upload photo or screenshot" },
-  { icon: FileSpreadsheet, es: "Subir tus estados de cuenta", en: "Upload your bank statements" },
 ];
 
 export function AppTour() {
