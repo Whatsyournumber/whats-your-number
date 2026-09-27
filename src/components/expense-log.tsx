@@ -2620,7 +2620,7 @@ export function ExpenseLog() {
                       </Button>
                     </div>
                   )}
-                  {editInviting && editInvitePending && <InviteShareActions email={editInvitePending} />}
+                  {editInviting && editInvitePending && <InviteShareActions email={editInvitePending} onClose={() => setEditInvitePending(null)} />}
                 </div>
               )}
             </div>

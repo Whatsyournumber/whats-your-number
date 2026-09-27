@@ -65,7 +65,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   const [total, setTotal] = useState(0);
   const [category, setCategory] = useState("");
   const [merchant, setMerchant] = useState("");
-  const [partner, setPartner] = useState<Partner | null>(null);
+  const [partners, setPartners] = useState<Partner[]>([]);
   const [inviting, setInviting] = useState(false);
   const [email, setEmail] = useState("");
   const [looking, setLooking] = useState(false);
@@ -93,16 +93,27 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
     },
   });
   const cat = category || categories[0] || "Otros";
-  const mine = mode === "equal" ? total / 2 : mode === "percent" ? (total * myPct) / 100 : Math.min(myAmount, total);
-  const theirs = Math.max(0, total - mine);
+  const n = partners.length;
+  // Con varias personas el reparto es a partes iguales entre todos.
+  const effectiveMode: Mode = n > 1 ? "equal" : mode;
+  const mine = effectiveMode === "equal" ? total / (n + 1) : effectiveMode === "percent" ? (total * myPct) / 100 : Math.min(myAmount, total);
+  const theirsTotal = Math.max(0, total - mine);
+  const theirs = n > 0 ? theirsTotal / n : 0;
   const pct = total > 0 ? (mine / total) * 100 : 50;
   const fmt = (v: number) =>
     new Intl.NumberFormat(lang === "es" ? "es-ES" : "en-US", { style: "currency", currency, maximumFractionDigits: 2 }).format(v);
 
   const reset = () => {
-    setTotal(0); setMerchant(""); setPartner(null); setMode("equal"); setMyPct(50); setMyAmount(0); setPayer("me");
+    setTotal(0); setMerchant(""); setPartners([]); setMode("equal"); setMyPct(50); setMyAmount(0); setPayer("me");
     setInvitePending(null);
   };
+
+  const togglePartner = (p: Partner) =>
+    setPartners((prev) => {
+      const next = prev.some((x) => x.id === p.id) ? prev.filter((x) => x.id !== p.id) : [...prev, p];
+      if (next.length !== 1) setPayer("me");
+      return next;
+    });
 
   async function findPartner() {
     const validEmail = normalizeValidEmail(email);
@@ -120,7 +131,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
       return;
     }
     setInvitePending(null);
-    setPartner({ id: row.id, name: (row.full_name as string) || validEmail });
+    setPartners((prev) => (prev.some((x) => x.id === row.id) ? prev : [...prev, { id: row.id, name: (row.full_name as string) || validEmail }]));
     setInviting(false);
     setEmail("");
   }
@@ -128,38 +139,42 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   async function onSave() {
     if (!user?.id) return;
     if (!total || total <= 0) { toast.error(t("Escribe un monto mayor que cero", "Enter an amount greater than zero")); return; }
-    if (!partner) { toast.error(t("Elige con quién lo compartes", "Choose who you share it with")); return; }
+    if (!partners.length) { toast.error(t("Elige con quién lo compartes", "Choose who you share it with")); return; }
     setSaving(true);
     try {
       const date = format(new Date(), "yyyy-MM-dd");
-      const split = modeLabel(mode === "equal" ? "equal" : "percent", pct);
-      const { data: expenseId, error } = await supabase.rpc("create_shared_expense", {
-        _partner_id: partner.id,
-        _payer_id: payer === "me" ? user.id : partner.id,
-        _total: total,
-        _currency: currency,
-        _category: cat,
-        _merchant: merchant.trim(),
-        _tx_date: date,
-        _split_mode: split,
-        _creator_name: myName,
-        _partner_name: partner.name,
-        _creator_share: mine,
-        _partner_share: theirs,
-      });
-      if (error) throw error;
-      if (!expenseId) throw new Error(t("No se pudo crear el gasto compartido", "The shared expense could not be created"));
+      const split = modeLabel(effectiveMode === "equal" ? "equal" : "percent", pct);
+      const names = partners.map((p) => p.name).join(", ");
+      // Un gasto compartido por persona; tu parte solo se guarda una vez.
+      for (const p of partners) {
+        const { data: expenseId, error } = await supabase.rpc("create_shared_expense", {
+          _partner_id: p.id,
+          _payer_id: payer === "me" ? user.id : p.id,
+          _total: total,
+          _currency: currency,
+          _category: cat,
+          _merchant: merchant.trim(),
+          _tx_date: date,
+          _split_mode: split,
+          _creator_name: myName,
+          _partner_name: p.name,
+          _creator_share: mine,
+          _partner_share: theirs,
+        });
+        if (error) throw error;
+        if (!expenseId) throw new Error(t("No se pudo crear el gasto compartido", "The shared expense could not be created"));
+        await notify({ data: { expenseId } });
+      }
       // En tu presupuesto solo cuenta tu parte.
       await saveExpense({
         userId: user.id, date, category: cat, currency, amount: mine,
         merchant: merchant.trim() || translateCategory(cat, lang),
-        description: `${SHARED_PREFIX}${split}|${partner.name}`,
+        description: `${SHARED_PREFIX}${split}|${names}`,
       });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
       void queryClient.invalidateQueries({ queryKey: ["shared-partners"] });
-      await notify({ data: { expenseId } });
       toast.success(t("Gasto compartido guardado", "Shared expense saved"), {
-        description: t(`Tu parte: ${fmt(mine)} · ${partner.name} ya lo ve en su app`, `Your share: ${fmt(mine)} · ${partner.name} already sees it in the app`),
+        description: t(`Tu parte: ${fmt(mine)} · ${names} ya lo ven en su app`, `Your share: ${fmt(mine)} · ${names} already see it in the app`),
       });
       reset();
       onOpenChange(false);
@@ -201,10 +216,10 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
           <div className="grid gap-2">
             <p className="text-sm font-semibold">{t("¿Con quién?", "With whom?")}</p>
             <div className="flex flex-wrap items-start gap-4">
-              {[...(partner && !knownPartners.some((k) => k.id === partner.id) ? [partner] : []), ...knownPartners].map((p) => {
-                const active = partner?.id === p.id;
+              {[...partners.filter((p) => !knownPartners.some((k) => k.id === p.id)), ...knownPartners].map((p) => {
+                const active = partners.some((x) => x.id === p.id);
                 return (
-                  <button key={p.id} type="button" onClick={() => setPartner(active ? null : p)} className="flex flex-col items-center gap-1">
+                  <button key={p.id} type="button" onClick={() => togglePartner(p)} className="flex flex-col items-center gap-1">
                     <span className={cn("relative grid h-14 w-14 place-items-center rounded-full text-lg font-semibold", active ? "bg-positive/20 ring-2 ring-positive" : "bg-muted")}>
                       {initials(p.name)}
                       {active && <Check className="absolute -left-1 -top-1 h-5 w-5 rounded-full bg-positive p-0.5 text-background" />}
@@ -232,23 +247,23 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
                 </Button>
               </div>
             )}
-            {inviting && invitePending && <InviteShareActions email={invitePending} />}
+            {inviting && invitePending && <InviteShareActions email={invitePending} onClose={() => setInvitePending(null)} />}
           </div>
 
           <div className="grid gap-2">
             <p className="text-sm font-semibold">{t("¿Cómo dividirlo?", "How to split it?")}</p>
             <div className="flex gap-2">
-              <button type="button" className={seg(mode === "equal")} onClick={() => setMode("equal")}>50 / 50</button>
-              <button type="button" className={seg(mode === "percent")} onClick={() => setMode("percent")}>{t("Porcentaje", "Percent")}</button>
-              <button type="button" className={seg(mode === "amount")} onClick={() => setMode("amount")}>{t("Cantidad", "Amount")}</button>
+              <button type="button" className={seg(effectiveMode === "equal")} onClick={() => setMode("equal")}>{n > 1 ? t("Partes iguales", "Equal parts") : "50 / 50"}</button>
+              <button type="button" className={seg(effectiveMode === "percent")} onClick={() => setMode("percent")} disabled={n > 1}>{t("Porcentaje", "Percent")}</button>
+              <button type="button" className={seg(effectiveMode === "amount")} onClick={() => setMode("amount")} disabled={n > 1}>{t("Cantidad", "Amount")}</button>
             </div>
-            {mode === "percent" && (
+            {effectiveMode === "percent" && (
               <label className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
                 {t("Tu porcentaje", "Your percent")}
                 <div className="w-28"><NumberInput value={myPct} onChange={(v) => setMyPct(Math.min(100, Math.max(0, v || 0)))} min={0} /></div>
               </label>
             )}
-            {mode === "amount" && (
+            {effectiveMode === "amount" && (
               <label className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
                 {t("Tu parte", "Your share")}
                 <div className="w-32"><NumberInput value={myAmount} onChange={(v) => setMyAmount(v || 0)} min={0} format /></div>
@@ -260,14 +275,18 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
             <p className="text-sm text-muted-foreground">{t("Pagó", "Paid by")}</p>
             <div className="flex gap-2">
               <button type="button" className={seg(payer === "me")} onClick={() => setPayer("me")}>{t("Yo", "Me")}</button>
-              <button type="button" className={seg(payer === "partner")} onClick={() => setPayer("partner")} disabled={!partner}>
-                {partner?.name ?? t("La otra persona", "The other person")}
+              <button type="button" className={seg(payer === "partner")} onClick={() => setPayer("partner")} disabled={partners.length !== 1}>
+                {partners.length === 1 ? (partners[0]?.name ?? "") : t("La otra persona", "The other person")}
               </button>
             </div>
           </div>
 
           <div className="divide-y divide-border rounded-2xl border border-border">
-            {[{ n: t("Tú pagas", "You pay"), v: mine, i: initials(myName) }, { n: `${partner?.name ?? t("Otra persona", "Other")} ${t("paga", "pays")}`, v: theirs, i: initials(partner?.name ?? "?") }].map((r) => (
+            {[{ n: t("Tú pagas", "You pay"), v: mine, i: initials(myName) },
+              ...(partners.length
+                ? partners.map((p) => ({ n: `${p.name} ${t("paga", "pays")}`, v: theirs, i: initials(p.name) }))
+                : [{ n: `${t("Otra persona", "Other")} ${t("paga", "pays")}`, v: 0, i: "?" }]),
+            ].map((r) => (
               <div key={r.n} className="flex items-center gap-3 px-3 py-2.5">
                 <span className="grid h-9 w-9 place-items-center rounded-full bg-muted text-sm font-semibold">{r.i}</span>
                 <span className="flex-1 text-sm">{r.n}</span>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link2, Share2, UserRoundPlus } from "lucide-react";
+import { Link2, Share2, UserRoundPlus, X } from "lucide-react";
 import { toast } from "sonner";
 import { useT } from "@/hooks/use-language";
 
@@ -18,7 +18,7 @@ export const nameFromEmail = (email: string) => {
   return first.charAt(0).toUpperCase() + first.slice(1);
 };
 
-export function InviteShareActions({ email }: { email: string }) {
+export function InviteShareActions({ email, onClose }: { email: string; onClose?: () => void }) {
   const t = useT();
   const [isMobile, setIsMobile] = useState(false);
   const name = nameFromEmail(email);
@@ -66,6 +66,16 @@ export function InviteShareActions({ email }: { email: string }) {
           </p>
         </div>
         <Share2 className="h-5 w-5 shrink-0 text-positive" />
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t("Cerrar", "Close")}
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       <div className="mt-5 flex items-start justify-center gap-10">
