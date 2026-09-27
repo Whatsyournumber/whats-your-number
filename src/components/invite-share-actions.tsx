@@ -44,6 +44,8 @@ export function InviteShareActions({ email }: { email: string }) {
   };
 
 
+  const waHref = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(link);
