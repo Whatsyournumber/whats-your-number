@@ -136,6 +136,8 @@ export function ExpenseLog() {
   const [editCategory, setEditCategory] = useState("");
   const [editSharedWith, setEditSharedWith] = useState<string | null>(null);
   const [editSharePartner, setEditSharePartner] = useState<{ id: string; name: string } | null>(null);
+  const [editInviteEmail, setEditInviteEmail] = useState("");
+  const [editLooking, setEditLooking] = useState(false);
   const notifyShared = useServerFn(notifySharedExpense);
   const { data: editKnownPartners = [] } = useQuery({
     queryKey: ["shared-partners", user?.id],
