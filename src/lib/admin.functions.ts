@@ -60,7 +60,7 @@ export const adminCreatePromoCode = createServerFn({ method: "POST" })
     return {
       code: data.code.trim().toUpperCase(),
       product_id: data.product_id?.trim() || "pro_plan",
-      duration_days: Math.max(1, Math.min(36500, Number(data.duration_days) || 30)),
+      duration_days: Math.max(0, Math.min(36500, Number(data.duration_days) || 0)),
       max_uses: Math.max(1, Math.min(100000, Number(data.max_uses) || 25)),
       note: data.note?.trim() || null,
     };
@@ -122,7 +122,7 @@ export const adminUpdatePromoCode = createServerFn({ method: "POST" })
       id: data.id,
       code: data.code.trim().toUpperCase(),
       product_id: data.product_id?.trim() || "pro_plan",
-      duration_days: Math.max(1, Math.min(36500, Number(data.duration_days) || 30)),
+      duration_days: Math.max(0, Math.min(36500, Number(data.duration_days) || 0)),
       max_uses: Math.max(1, Math.min(100000, Number(data.max_uses) || 25)),
       note: data.note?.trim() || null,
       active: data.active ?? true,
