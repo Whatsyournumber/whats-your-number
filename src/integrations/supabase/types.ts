@@ -1373,6 +1373,83 @@ export type Database = {
           },
         ]
       }
+      shared_expense_participants: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          expense_id: string
+          id: string
+          share_amount: number
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          expense_id: string
+          id?: string
+          share_amount: number
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          expense_id?: string
+          id?: string
+          share_amount?: number
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shared_expense_participants_expense_id_fkey"
+            columns: ["expense_id"]
+            isOneToOne: false
+            referencedRelation: "shared_expenses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shared_expenses: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string
+          currency: string
+          id: string
+          merchant: string
+          payer_id: string
+          split_mode: string
+          total: number
+          tx_date: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by: string
+          currency?: string
+          id?: string
+          merchant?: string
+          payer_id: string
+          split_mode?: string
+          total: number
+          tx_date?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string
+          currency?: string
+          id?: string
+          merchant?: string
+          payer_id?: string
+          split_mode?: string
+          total?: number
+          tx_date?: string
+        }
+        Relationships: []
+      }
       spend_ai_feedback: {
         Row: {
           action: string
@@ -1609,6 +1686,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      find_user_by_email: {
+        Args: { _email: string }
+        Returns: {
+          full_name: string
+          id: string
+        }[]
+      }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
         Returns: boolean
@@ -1618,6 +1702,14 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_shared_expense_member: {
+        Args: { _expense_id: string }
+        Returns: boolean
+      }
+      is_shared_expense_owner: {
+        Args: { _expense_id: string }
         Returns: boolean
       }
       redeem_promo_code: {
