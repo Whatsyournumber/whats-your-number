@@ -67,7 +67,7 @@ export function InviteShareActions({ email }: { email: string }) {
             <WhatsAppIcon className="h-7 w-7" />
           </span>
           <span className="text-xs font-medium">{t("WhatsApp", "WhatsApp")}</span>
-        </button>
+        </a>
 
         <span className="h-16 w-px bg-border" aria-hidden="true" />
 
