@@ -20,10 +20,10 @@ export const nameFromEmail = (email: string) => {
 export function InviteShareActions({ email }: { email: string }) {
   const t = useT();
   const name = nameFromEmail(email);
-  const link = `${window.location.origin}/auth?mode=signup`;
+  const link = "https://www.whatsyour-number.com/auth?mode=signup";
   const msg = t(
-    `Hola! Te invité a compartir un gasto en WYN. Crea tu cuenta aquí: ${link}`,
-    `Hi! I invited you to share an expense on WYN. Create your account here: ${link}`
+    `Hola! Te invité a compartir un gasto en WhatsYournumber 💸\n\nRegístrate gratis y vemos el gasto a medias:\n${link}`,
+    `Hi! I invited you to share an expense on WhatsYournumber 💸\n\nSign up free and we'll split the expense:\n${link}`
   );
 
   const sendWhatsApp = () => {
