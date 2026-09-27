@@ -30,6 +30,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -733,9 +734,19 @@ function AdminPage() {
                           id="promo-days"
                           type="number"
                           min={1}
+                          disabled={promoForm.duration_days === "0"}
                           value={promoForm.duration_days}
                           onChange={(e) => setPromoForm((f) => ({ ...f, duration_days: e.target.value }))}
                         />
+                        <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Checkbox
+                            checked={promoForm.duration_days === "0"}
+                            onCheckedChange={(v) =>
+                              setPromoForm((f) => ({ ...f, duration_days: v === true ? "0" : "30" }))
+                            }
+                          />
+                          {t("Ilimitada (sin vencimiento)", "Unlimited (no expiry)")}
+                        </label>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="promo-uses">{t("Usos máx.", "Max uses")}</Label>
@@ -799,7 +810,7 @@ function AdminPage() {
                     <TableRow key={c.id}>
                       <TableCell className="font-medium tracking-wide">{c.code}</TableCell>
                       <TableCell className="text-muted-foreground">{c.product_id}</TableCell>
-                      <TableCell className="numeric">{c.duration_days}</TableCell>
+                      <TableCell className="numeric">{c.duration_days === 0 ? t("Ilimitado", "Unlimited") : c.duration_days}</TableCell>
                       <TableCell className="numeric">{c.used_count} / {c.max_uses}</TableCell>
                       <TableCell>
                         <Badge variant={c.active ? "default" : "secondary"}>{c.active ? t("activo", "active") : t("inactivo", "inactive")}</Badge>
@@ -860,7 +871,7 @@ function AdminPage() {
                         <TableCell className="text-muted-foreground">{r.code}</TableCell>
                         <TableCell className="text-muted-foreground">{u?.email ?? "—"}</TableCell>
                         <TableCell className="text-muted-foreground">{o?.country ?? "—"}</TableCell>
-                        <TableCell className="numeric text-muted-foreground">{fmtDate(r.granted_until)}</TableCell>
+                        <TableCell className="numeric text-muted-foreground">{r.granted_until ? fmtDate(r.granted_until) : t("Ilimitado", "Unlimited")}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(r.created_at)}</TableCell>
                         <TableCell className="text-right">
                           <DeleteAction
