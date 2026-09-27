@@ -32,15 +32,11 @@ export function InviteShareActions({ email }: { email: string }) {
     (window.matchMedia?.("(pointer: coarse)").matches || "ontouchstart" in window);
 
   const handleWaClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Touch devices keep the native wa.me href (opens the app).
+    // Desktop navigates to WhatsApp Web via the same anchor (no window.open).
     if (!isTouchDevice()) {
-      e.preventDefault();
-      window.open(
-        `https://web.whatsapp.com/send?text=${encodeURIComponent(msg)}`,
-        "_blank",
-        "noopener,noreferrer"
-      );
+      e.currentTarget.href = `https://web.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
     }
-    // On touch devices the native wa.me href proceeds as-is.
   };
 
 
