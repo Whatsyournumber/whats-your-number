@@ -127,7 +127,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
       return;
     }
     setInvitePending(null);
-    setPartner({ id: row.id, name: (row.full_name as string) || validEmail });
+    setPartners((prev) => (prev.some((x) => x.id === row.id) ? prev : [...prev, { id: row.id, name: (row.full_name as string) || validEmail }]));
     setInviting(false);
     setEmail("");
   }
