@@ -269,9 +269,11 @@ export function ExpenseLog() {
     setEditLooking(false);
     const row = Array.isArray(data) ? data[0] : null;
     if (error || !row) {
-      toast.error(t("No encontramos a nadie con ese correo en la app", "No app user found with that email"));
+      // Aún no está en la app: mostramos opciones de invitación (WhatsApp / link).
+      setEditInvitePending(editInviteEmail.trim());
       return;
     }
+    setEditInvitePending(null);
     setEditSharePartner({ id: row.id, name: (row.full_name as string) || editInviteEmail });
     setEditInviteEmail("");
   };
