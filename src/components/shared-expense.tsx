@@ -88,8 +88,8 @@ export function SharedExpenseDialog({ open, onOpenChange }: { open: boolean; onO
 
   async function onSave() {
     if (!user?.id) return;
-    if (!total || total <= 0) return toast.error(t("Escribe un monto mayor que cero", "Enter an amount greater than zero"));
-    if (!partner) return toast.error(t("Elige con quién lo compartes", "Choose who you share it with"));
+    if (!total || total <= 0) { toast.error(t("Escribe un monto mayor que cero", "Enter an amount greater than zero")); return; }
+    if (!partner) { toast.error(t("Elige con quién lo compartes", "Choose who you share it with")); return; }
     setSaving(true);
     try {
       const date = format(new Date(), "yyyy-MM-dd");
