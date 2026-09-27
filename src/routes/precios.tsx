@@ -103,9 +103,10 @@ function Pricing() {
       ),
       features: [
         t("Trackea el día a día de tus gastos", "Track your expenses day by day"),
-        t("Carga de gastos por voz, en cualquier idioma", "Voice expense entry, in any language"),
-        t("Foto del recibo para tus gastos de mercado", "Receipt photo for your grocery expenses"),
-        t("Captura de pantalla para registrar gastos", "Screenshot to log expenses"),
+        t(
+          "Carga gastos por voz, foto del recibo o captura de pantalla, en cualquier idioma",
+          "Log expenses by voice, receipt photo or screenshot, in any language",
+        ),
         t("Análisis de gastos del mes", "Monthly expense analysis"),
         t("5 importaciones de estados de cuenta al mes", "5 statement imports per month"),
         t("Tu número de libertad financiera", "Your financial freedom number"),
@@ -130,7 +131,6 @@ function Pricing() {
       features: [
         t("Todo lo de Free", "Everything in Free"),
         t("Consejo de IA: pregúntale cualquier cosa y te responde según tu presupuesto", "AI advice: ask anything and it answers against your budget"),
-        t("Asistente IA: pregúntale lo que sea", "AI Assistant: ask anything"),
         t("Análisis mensual de tus gastos con IA", "Monthly AI expense analysis"),
         t("Entiende todo tu patrimonio: activos y pasivos para saber cuánto vales", "Understand all your wealth: assets and liabilities to know what you're worth"),
         t("Cuentas y bancos ilimitados", "Unlimited accounts and banks"),
