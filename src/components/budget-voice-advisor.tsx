@@ -101,6 +101,7 @@ export function BudgetVoiceAdvisor({ open, onOpenChange }: { open: boolean; onOp
     return `MODO: Consejos de presupuesto. El usuario pregunta si puede tomar una decisión de gasto.
 Responde en máximo ~90 palabras: 1) veredicto claro al inicio en negrita (Sí puedes / Con cuidado / Mejor no), 2) cuánto le queda del presupuesto del mes tras esa decisión, 3) si va bien o no al ritmo actual y en qué fecha se pasaría del presupuesto (recalcula con el nuevo gasto), 4) una alternativa concreta. Usa solo estas cifras.
 REGLA DE CATEGORÍA: identifica a qué categoría del plan de gasto pertenece lo que el usuario menciona (por lo que dice, no por costumbre) y analiza el gasto DENTRO de esa categoría, con su presupuesto y su alternativa. No repitas siempre la misma categoría: cada pregunta usa la categoría que corresponda.
+LÍNEA DE VOZ (obligatoria): termina SIEMPRE con una última línea que empiece exactamente por "VOZ:" seguida de UNA sola frase corta y natural para leer en voz alta, sin markdown ni negritas, que diga: el veredicto, el nombre de la categoría detectada y cuánto le queda de esa categoría tras el gasto (o en cuánto se pasaría). Ejemplo: "VOZ: Sí puedes. En Restaurantes te quedarían 120 este mes."`
 Fecha de hoy: ${now.toISOString().slice(0, 10)} (día ${day} de ${daysInMonth})
 Moneda: ${d.currency}
 Ingresos mensuales: ${d.income.toFixed(0)}
