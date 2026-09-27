@@ -52,6 +52,7 @@ import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { cn } from "@/lib/utils";
 import { SharedExpenseDialog, SharedExpenseInbox, parseShared, SHARED_PREFIX } from "@/components/shared-expense";
 import { notifySharedExpense } from "@/lib/shared-expense.functions";
+import { InviteShareActions } from "@/components/invite-share-actions";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Users } from "lucide-react";
 
@@ -145,6 +146,7 @@ export function ExpenseLog() {
   const [editInviteEmail, setEditInviteEmail] = useState("");
   const [editLooking, setEditLooking] = useState(false);
   const [editInviting, setEditInviting] = useState(false);
+  const [editInvitePending, setEditInvitePending] = useState<string | null>(null);
   const notifyShared = useServerFn(notifySharedExpense);
   const { data: editKnownPartners = [] } = useQuery({
     queryKey: ["shared-partners", user?.id],
@@ -257,6 +259,7 @@ export function ExpenseLog() {
     setEditSharePartner(null);
     setEditInviteEmail("");
     setEditInviting(false);
+    setEditInvitePending(null);
   };
 
   const findEditPartner = async () => {
@@ -266,9 +269,11 @@ export function ExpenseLog() {
     setEditLooking(false);
     const row = Array.isArray(data) ? data[0] : null;
     if (error || !row) {
-      toast.error(t("No encontramos a nadie con ese correo en la app", "No app user found with that email"));
+      // Aún no está en la app: mostramos opciones de invitación (WhatsApp / link).
+      setEditInvitePending(editInviteEmail.trim());
       return;
     }
+    setEditInvitePending(null);
     setEditSharePartner({ id: row.id, name: (row.full_name as string) || editInviteEmail });
     setEditInviteEmail("");
   };
@@ -2610,6 +2615,7 @@ export function ExpenseLog() {
                       </Button>
                     </div>
                   )}
+                  {editInviting && editInvitePending && <InviteShareActions email={editInvitePending} />}
                 </div>
               )}
             </div>

@@ -17,6 +17,7 @@ import { saveExpense } from "@/lib/manual-expense";
 import { BASE_CATEGORIES } from "@/lib/categorize";
 import { useCategories } from "@/hooks/use-categories";
 import { notifySharedExpense } from "@/lib/shared-expense.functions";
+import { InviteShareActions } from "@/components/invite-share-actions";
 import { useServerFn } from "@tanstack/react-start";
 import { cn } from "@/lib/utils";
 
@@ -67,6 +68,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   const [inviting, setInviting] = useState(false);
   const [email, setEmail] = useState("");
   const [looking, setLooking] = useState(false);
+  const [invitePending, setInvitePending] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("equal");
   const [myPct, setMyPct] = useState(50);
   const [myAmount, setMyAmount] = useState(0);
@@ -98,6 +100,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
 
   const reset = () => {
     setTotal(0); setMerchant(""); setPartner(null); setMode("equal"); setMyPct(50); setMyAmount(0); setPayer("me");
+    setInvitePending(null);
   };
 
   async function findPartner() {
@@ -107,9 +110,11 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
     setLooking(false);
     const row = Array.isArray(data) ? data[0] : null;
     if (error || !row) {
-      toast.error(t("No encontramos a nadie con ese correo en la app", "No app user found with that email"));
+      // Aún no está en la app: mostramos opciones de invitación (WhatsApp / link).
+      setInvitePending(email.trim());
       return;
     }
+    setInvitePending(null);
     setPartner({ id: row.id, name: (row.full_name as string) || email });
     setInviting(false);
     setEmail("");
@@ -222,6 +227,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
                 </Button>
               </div>
             )}
+            {inviting && invitePending && <InviteShareActions email={invitePending} />}
           </div>
 
           <div className="grid gap-2">
