@@ -93,8 +93,12 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
     },
   });
   const cat = category || categories[0] || "Otros";
-  const mine = mode === "equal" ? total / 2 : mode === "percent" ? (total * myPct) / 100 : Math.min(myAmount, total);
-  const theirs = Math.max(0, total - mine);
+  const n = partners.length;
+  // Con varias personas el reparto es a partes iguales entre todos.
+  const effectiveMode: Mode = n > 1 ? "equal" : mode;
+  const mine = effectiveMode === "equal" ? total / (n + 1) : effectiveMode === "percent" ? (total * myPct) / 100 : Math.min(myAmount, total);
+  const theirsTotal = Math.max(0, total - mine);
+  const theirs = n > 0 ? theirsTotal / n : 0;
   const pct = total > 0 ? (mine / total) * 100 : 50;
   const fmt = (v: number) =>
     new Intl.NumberFormat(lang === "es" ? "es-ES" : "en-US", { style: "currency", currency, maximumFractionDigits: 2 }).format(v);
