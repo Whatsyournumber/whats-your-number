@@ -64,7 +64,7 @@ export function InviteShareActions({ email }: { email: string }) {
           className="flex flex-col items-center gap-2"
           aria-label={t("Enviar por WhatsApp", "Share via WhatsApp")}
         >
-          <span className="grid h-16 w-16 place-items-center rounded-full border border-positive/50 bg-positive/10 text-positive transition active:scale-95">
+          <span className="grid h-14 w-14 place-items-center rounded-full border border-positive/50 bg-positive/10 text-positive transition active:scale-95">
             <WhatsAppIcon className="h-7 w-7" />
           </span>
           <span className="text-xs font-medium">{t("WhatsApp", "WhatsApp")}</span>
