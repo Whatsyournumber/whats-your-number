@@ -28,7 +28,7 @@ const Email = ({ fromName, toName, concept, total, share, split, appUrl }: Props
           <Text style={row}><strong>División:</strong> {split || '50/50'}</Text>
           <Text style={big}>Tu parte: {share || '-'}</Text>
         </Section>
-        <Text style={text}>Entra a la app para aceptarlo y sumarlo a tu plan de gastos.</Text>
+        <Text style={text}>Tu parte ya se sumó automáticamente a tus gastos en la app.</Text>
         <Button href={appUrl || 'https://whatsyour-number.com/registro-gastos'} style={button}>
           Ver gasto compartido
         </Button>
