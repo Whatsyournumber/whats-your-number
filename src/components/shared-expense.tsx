@@ -100,6 +100,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
 
   const reset = () => {
     setTotal(0); setMerchant(""); setPartner(null); setMode("equal"); setMyPct(50); setMyAmount(0); setPayer("me");
+    setInvitePending(null);
   };
 
   async function findPartner() {
