@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { Check, Gift, Loader2 } from "lucide-react";
@@ -44,6 +44,14 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [activatedPlan, setActivatedPlan] = useState<string | null>(null);
+
+  // Vista previa del pop-up sin canjear: /suscripcion?popup=pro | family
+  useEffect(() => {
+    const demo = new URLSearchParams(window.location.search).get("popup");
+    if (demo === "pro" || demo === "family") {
+      setActivatedPlan(demo === "family" ? "Familiar" : "Pro");
+    }
+  }, []);
 
   const closeConfirmation = () => {
     setActivatedPlan(null);
