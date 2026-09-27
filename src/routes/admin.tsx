@@ -30,6 +30,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -733,9 +734,19 @@ function AdminPage() {
                           id="promo-days"
                           type="number"
                           min={1}
+                          disabled={promoForm.duration_days === "0"}
                           value={promoForm.duration_days}
                           onChange={(e) => setPromoForm((f) => ({ ...f, duration_days: e.target.value }))}
                         />
+                        <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Checkbox
+                            checked={promoForm.duration_days === "0"}
+                            onCheckedChange={(v) =>
+                              setPromoForm((f) => ({ ...f, duration_days: v === true ? "0" : "30" }))
+                            }
+                          />
+                          {t("Ilimitada (sin vencimiento)", "Unlimited (no expiry)")}
+                        </label>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="promo-uses">{t("Usos máx.", "Max uses")}</Label>
