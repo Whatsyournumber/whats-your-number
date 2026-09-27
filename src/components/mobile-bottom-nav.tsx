@@ -92,15 +92,18 @@ export function MobileBottomNav() {
             data-tour-add-menu
             className={cn(
               "absolute inset-x-3 rounded-2xl border border-border bg-card p-2 shadow-2xl",
-              tourHold ? "bottom-[calc(100%+200px)]" : "bottom-full mb-3",
+              tourHold ? "bottom-[calc(100%+200px)]" : "bottom-full mb-6",
             )}
           >
+            <p className="px-4 pb-1 pt-2 text-center text-[15px] font-semibold tracking-tight text-muted-foreground">
+              {t("Agrega tus gastos diarios", "Add your daily spending")}
+            </p>
             {addOptions.map((opt) => (
               <button
                 key={opt.label}
                 type="button"
                 onClick={() => (opt.onClick ? opt.onClick() : goAdd(opt.search ?? {}))}
-                className="flex min-h-14 w-full items-center gap-4 rounded-xl px-4 py-3 text-left text-[21px] font-medium text-foreground transition-colors hover:bg-muted/50 active:bg-muted"
+                className="flex min-h-13 w-full items-center gap-4 rounded-xl px-4 py-2.5 text-left text-[19px] font-medium text-foreground transition-colors hover:bg-muted/50 active:bg-muted"
               >
                 <opt.icon className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
                 {opt.label}
