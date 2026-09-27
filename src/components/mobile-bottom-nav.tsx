@@ -103,7 +103,7 @@ export function MobileBottomNav() {
                 key={opt.label}
                 type="button"
                 onClick={() => (opt.onClick ? opt.onClick() : goAdd(opt.search ?? {}))}
-                className="flex min-h-14 w-full items-center gap-4 rounded-xl px-4 py-2.5 text-left text-[22px] font-medium text-foreground transition-colors hover:bg-muted/50 active:bg-muted"
+                className="flex min-h-13 w-full items-center gap-4 rounded-xl px-4 py-2.5 text-left text-[19px] font-medium text-foreground transition-colors hover:bg-muted/50 active:bg-muted"
               >
                 <opt.icon className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
                 {opt.label}
