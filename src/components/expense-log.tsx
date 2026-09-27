@@ -134,6 +134,24 @@ export function ExpenseLog() {
   const [editAmount, setEditAmount] = useState(0);
   const [editDate, setEditDate] = useState("");
   const [editCategory, setEditCategory] = useState("");
+  const [editSharedWith, setEditSharedWith] = useState<string | null>(null);
+  const [editSharePartner, setEditSharePartner] = useState<{ id: string; name: string } | null>(null);
+  const notifyShared = useServerFn(notifySharedExpense);
+  const { data: editKnownPartners = [] } = useQuery({
+    queryKey: ["shared-partners", user?.id],
+    enabled: Boolean(user?.id) && Boolean(editTx),
+    queryFn: async () => {
+      const { data: rows } = await supabase
+        .from("shared_expense_participants")
+        .select("user_id, display_name, created_at")
+        .neq("user_id", user!.id)
+        .order("created_at", { ascending: false })
+        .limit(100);
+      const seen = new Map<string, { id: string; name: string }>();
+      for (const r of rows ?? []) if (!seen.has(r.user_id)) seen.set(r.user_id, { id: r.user_id, name: r.display_name || "?" });
+      return [...seen.values()];
+    },
+  });
   const { target: savedTarget, setTarget, hasTarget } = useSpendTarget();
 
   const openNewRecurring = () => {
