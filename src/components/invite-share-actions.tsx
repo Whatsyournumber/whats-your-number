@@ -79,7 +79,7 @@ export function InviteShareActions({ email }: { email: string }) {
           className="flex flex-col items-center gap-2"
           aria-label={t("Copiar enlace", "Copy link")}
         >
-          <span className="grid h-16 w-16 place-items-center rounded-full border border-border bg-background text-foreground transition active:scale-95">
+          <span className="grid h-14 w-14 place-items-center rounded-full border border-border bg-background text-foreground transition active:scale-95">
             <Link2 className="h-7 w-7" />
           </span>
           <span className="text-xs font-medium">{t("Copiar link", "Copy link")}</span>
