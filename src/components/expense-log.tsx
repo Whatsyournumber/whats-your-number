@@ -971,10 +971,11 @@ export function ExpenseLog() {
             </button>
           )}
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium">{x.merchant}</p>
+            <p className="flex items-center gap-1.5 text-sm font-medium">{x.merchant}{parseShared(x.description) && <Users className="h-3.5 w-3.5 text-positive" />}</p>
             <p className="text-[11px] text-muted-foreground">
               {translateCategory(x.category || categorizeTx(x as Tx, categories.rules), lang)}
               {receiptItems.length > 0 ? ` · ${receiptItems.length} ${t("productos", "items")}` : ""}
+              {parseShared(x.description) ? ` · ${parseShared(x.description)!.split} · ${t("con", "with")} ${parseShared(x.description)!.name}` : ""}
             </p>
           </div>
           <span className="shrink-0 text-[11px] text-muted-foreground">

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, FileSpreadsheet, Sparkles } from "lucide-react";
+import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, FileSpreadsheet, Sparkles, Users } from "lucide-react";
 import { BudgetVoiceAdvisor } from "@/components/budget-voice-advisor";
+import { SharedExpenseDialog } from "@/components/shared-expense";
 import { useT } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
 import { cn } from "@/lib/utils";
@@ -13,6 +14,7 @@ export function MobileBottomNav() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [adviceOpen, setAdviceOpen] = useState(false);
+  const [sharedOpen, setSharedOpen] = useState(false);
   // El tour del paso del botón + abre el menú real mientras dura el paso.
   const [tourHold, setTourHold] = useState(false);
   useEffect(() => {
@@ -44,6 +46,7 @@ export function MobileBottomNav() {
     { icon: Camera, label: t("Tomar foto", "Take photo"), search: { action: "photo" } as const },
     { icon: Upload, label: t("Sube foto o captura", "Upload photo or screenshot"), search: { action: "upload" } as const },
     { icon: FileSpreadsheet, label: t("Subir tus estados de cuenta", "Upload your bank statements"), search: { action: "statement" } as const },
+    { icon: Users, label: t("Gasto compartido", "Shared expense"), onClick: () => { setMenuOpen(false); setSharedOpen(true); } },
     ...(isPro
       ? [{ icon: Sparkles, label: t("Asesor de gastos con IA", "AI Expense Advisor"), onClick: () => { setMenuOpen(false); setAdviceOpen(true); } }]
       : []),
@@ -78,6 +81,7 @@ export function MobileBottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
+      <SharedExpenseDialog open={sharedOpen} onOpenChange={setSharedOpen} />
       {isPro && <BudgetVoiceAdvisor open={adviceOpen} onOpenChange={setAdviceOpen} />}
       {menuOpen && (
         <>
