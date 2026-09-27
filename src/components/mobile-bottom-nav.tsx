@@ -95,7 +95,7 @@ export function MobileBottomNav() {
               tourHold ? "bottom-[calc(100%+200px)]" : "bottom-full mb-6",
             )}
           >
-            <p className="px-4 pb-1 pt-2 text-center text-[15px] font-semibold tracking-tight text-muted-foreground">
+            <p className="px-4 pb-1.5 pt-2.5 text-center text-[17px] font-semibold tracking-tight text-foreground/90">
               {t("Agrega tus gastos diarios", "Add your daily spending")}
             </p>
             {addOptions.map((opt) => (
