@@ -45,7 +45,7 @@ export function MobileBottomNav() {
     { icon: Upload, label: t("Sube foto o captura", "Upload photo or screenshot"), search: { action: "upload" } as const },
     { icon: FileSpreadsheet, label: t("Subir tus estados de cuenta", "Upload your bank statements"), search: { action: "statement" } as const },
     ...(isPro
-      ? [{ icon: Sparkles, label: t("Consejos con IA", "AI advice"), onClick: () => { setMenuOpen(false); setAdviceOpen(true); } }]
+      ? [{ icon: Sparkles, label: t("Asesor de gastos con IA", "AI Expense Advisor"), onClick: () => { setMenuOpen(false); setAdviceOpen(true); } }]
       : []),
   ];
 
@@ -100,7 +100,7 @@ export function MobileBottomNav() {
                 key={opt.label}
                 type="button"
                 onClick={() => (opt.onClick ? opt.onClick() : goAdd(opt.search ?? {}))}
-                className="flex min-h-14 w-full items-center gap-4 rounded-xl px-4 py-3 text-left text-[17px] font-medium text-foreground transition-colors hover:bg-muted/50 active:bg-muted"
+                className="flex min-h-14 w-full items-center gap-4 rounded-xl px-4 py-3 text-left text-[19px] font-medium text-foreground transition-colors hover:bg-muted/50 active:bg-muted"
               >
                 <opt.icon className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
                 {opt.label}
