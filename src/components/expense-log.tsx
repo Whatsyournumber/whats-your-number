@@ -136,6 +136,8 @@ export function ExpenseLog() {
   const [editCategory, setEditCategory] = useState("");
   const [editSharedWith, setEditSharedWith] = useState<string | null>(null);
   const [editSharePartner, setEditSharePartner] = useState<{ id: string; name: string } | null>(null);
+  const [editInviteEmail, setEditInviteEmail] = useState("");
+  const [editLooking, setEditLooking] = useState(false);
   const notifyShared = useServerFn(notifySharedExpense);
   const { data: editKnownPartners = [] } = useQuery({
     queryKey: ["shared-partners", user?.id],
@@ -246,6 +248,21 @@ export function ExpenseLog() {
     setEditCategory(x.category || categorizeTx(x, categories.rules));
     setEditSharedWith(parseShared(x.description)?.name ?? null);
     setEditSharePartner(null);
+    setEditInviteEmail("");
+  };
+
+  const findEditPartner = async () => {
+    if (!editInviteEmail.trim()) return;
+    setEditLooking(true);
+    const { data, error } = await supabase.rpc("find_user_by_email", { _email: editInviteEmail });
+    setEditLooking(false);
+    const row = Array.isArray(data) ? data[0] : null;
+    if (error || !row) {
+      toast.error(t("No encontramos a nadie con ese correo en la app", "No app user found with that email"));
+      return;
+    }
+    setEditSharePartner({ id: row.id, name: (row.full_name as string) || editInviteEmail });
+    setEditInviteEmail("");
   };
 
   const onSaveEditTx = async () => {
@@ -2538,21 +2555,41 @@ export function ExpenseLog() {
                   </Button>
                 </div>
               ) : (
-                <Select
-                  value={editSharePartner?.id ?? ""}
-                  onValueChange={(v) => setEditSharePartner(editKnownPartners.find((p) => p.id === v) ?? null)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("Solo mío (o elige con quién compartirlo)", "Just mine (or choose someone to share with)")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {editKnownPartners.map((p) => (
-                      <SelectItem key={p.id} value={p.id}>
-                        {t("Compartir 50/50 con", "Share 50/50 with")} {p.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <>
+                  <Select
+                    value={editSharePartner?.id ?? ""}
+                    onValueChange={(v) => setEditSharePartner(editKnownPartners.find((p) => p.id === v) ?? null)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={t("Solo mío (o elige con quién compartirlo)", "Just mine (or choose someone to share with)")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {editKnownPartners.map((p) => (
+                        <SelectItem key={p.id} value={p.id}>
+                          {t("Compartir 50/50 con", "Share 50/50 with")} {p.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {editSharePartner && !editKnownPartners.some((p) => p.id === editSharePartner.id) && (
+                    <p className="flex items-center gap-1.5 text-sm text-positive">
+                      <Users className="h-4 w-4" />
+                      {t("Compartir 50/50 con", "Share 50/50 with")} {editSharePartner.name}
+                    </p>
+                  )}
+                  <div className="flex gap-2">
+                    <Input
+                      type="email"
+                      value={editInviteEmail}
+                      onChange={(e) => setEditInviteEmail(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && void findEditPartner()}
+                      placeholder={t("Correo de alguien nuevo", "Someone new's email")}
+                    />
+                    <Button type="button" variant="outline" onClick={findEditPartner} disabled={editLooking}>
+                      {editLooking ? <Loader2 className="h-4 w-4 animate-spin" /> : t("Añadir", "Add")}
+                    </Button>
+                  </div>
+                </>
               )}
             </div>
           </div>
