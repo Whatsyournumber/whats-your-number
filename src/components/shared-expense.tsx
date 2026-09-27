@@ -135,38 +135,42 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   async function onSave() {
     if (!user?.id) return;
     if (!total || total <= 0) { toast.error(t("Escribe un monto mayor que cero", "Enter an amount greater than zero")); return; }
-    if (!partner) { toast.error(t("Elige con quién lo compartes", "Choose who you share it with")); return; }
+    if (!partners.length) { toast.error(t("Elige con quién lo compartes", "Choose who you share it with")); return; }
     setSaving(true);
     try {
       const date = format(new Date(), "yyyy-MM-dd");
-      const split = modeLabel(mode === "equal" ? "equal" : "percent", pct);
-      const { data: expenseId, error } = await supabase.rpc("create_shared_expense", {
-        _partner_id: partner.id,
-        _payer_id: payer === "me" ? user.id : partner.id,
-        _total: total,
-        _currency: currency,
-        _category: cat,
-        _merchant: merchant.trim(),
-        _tx_date: date,
-        _split_mode: split,
-        _creator_name: myName,
-        _partner_name: partner.name,
-        _creator_share: mine,
-        _partner_share: theirs,
-      });
-      if (error) throw error;
-      if (!expenseId) throw new Error(t("No se pudo crear el gasto compartido", "The shared expense could not be created"));
+      const split = modeLabel(effectiveMode === "equal" ? "equal" : "percent", pct);
+      const names = partners.map((p) => p.name).join(", ");
+      // Un gasto compartido por persona; tu parte solo se guarda una vez.
+      for (const p of partners) {
+        const { data: expenseId, error } = await supabase.rpc("create_shared_expense", {
+          _partner_id: p.id,
+          _payer_id: payer === "me" ? user.id : p.id,
+          _total: total,
+          _currency: currency,
+          _category: cat,
+          _merchant: merchant.trim(),
+          _tx_date: date,
+          _split_mode: split,
+          _creator_name: myName,
+          _partner_name: p.name,
+          _creator_share: mine,
+          _partner_share: theirs,
+        });
+        if (error) throw error;
+        if (!expenseId) throw new Error(t("No se pudo crear el gasto compartido", "The shared expense could not be created"));
+        await notify({ data: { expenseId } });
+      }
       // En tu presupuesto solo cuenta tu parte.
       await saveExpense({
         userId: user.id, date, category: cat, currency, amount: mine,
         merchant: merchant.trim() || translateCategory(cat, lang),
-        description: `${SHARED_PREFIX}${split}|${partner.name}`,
+        description: `${SHARED_PREFIX}${split}|${names}`,
       });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
       void queryClient.invalidateQueries({ queryKey: ["shared-partners"] });
-      await notify({ data: { expenseId } });
       toast.success(t("Gasto compartido guardado", "Shared expense saved"), {
-        description: t(`Tu parte: ${fmt(mine)} · ${partner.name} ya lo ve en su app`, `Your share: ${fmt(mine)} · ${partner.name} already sees it in the app`),
+        description: t(`Tu parte: ${fmt(mine)} · ${names} ya lo ven en su app`, `Your share: ${fmt(mine)} · ${names} already see it in the app`),
       });
       reset();
       onOpenChange(false);
