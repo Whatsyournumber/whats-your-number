@@ -20,6 +20,7 @@ import { notifySharedExpense } from "@/lib/shared-expense.functions";
 import { InviteShareActions } from "@/components/invite-share-actions";
 import { useServerFn } from "@tanstack/react-start";
 import { cn } from "@/lib/utils";
+import { normalizeValidEmail } from "@/lib/email-validation";
 
 type Mode = "equal" | "percent" | "amount";
 type Partner = { id: string; name: string };
@@ -104,18 +105,22 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   };
 
   async function findPartner() {
-    if (!email.trim()) return;
+    const validEmail = normalizeValidEmail(email);
+    if (!validEmail) {
+      toast.error(t("Escribe un correo válido", "Enter a valid email"));
+      return;
+    }
     setLooking(true);
-    const { data, error } = await supabase.rpc("find_user_by_email", { _email: email });
+    const { data, error } = await supabase.rpc("find_user_by_email", { _email: validEmail });
     setLooking(false);
     const row = Array.isArray(data) ? data[0] : null;
     if (error || !row) {
       // Aún no está en la app: mostramos opciones de invitación (WhatsApp / link).
-      setInvitePending(email.trim());
+      setInvitePending(validEmail);
       return;
     }
     setInvitePending(null);
-    setPartner({ id: row.id, name: (row.full_name as string) || email });
+    setPartner({ id: row.id, name: (row.full_name as string) || validEmail });
     setInviting(false);
     setEmail("");
   }
@@ -218,11 +223,11 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
             {inviting && (
               <div className="flex gap-2">
                 <Input
-                  autoFocus type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                  autoFocus type="email" value={email} onChange={(e) => { setEmail(e.target.value); setInvitePending(null); }}
                   onKeyDown={(e) => e.key === "Enter" && void findPartner()}
                   placeholder={t("Correo de su cuenta en la app", "Their app account email")}
                 />
-                <Button type="button" onClick={findPartner} disabled={looking}>
+                <Button type="button" onClick={findPartner} disabled={looking || !normalizeValidEmail(email)}>
                   {looking ? <Loader2 className="h-4 w-4 animate-spin" /> : t("Añadir", "Add")}
                 </Button>
               </div>
