@@ -178,7 +178,7 @@ export function SharedExpenseDialog({ open, onOpenChange }: { open: boolean; onO
                     {initials(partner.name)}
                     <Check className="absolute -left-1 -top-1 h-5 w-5 rounded-full bg-positive p-0.5 text-background" />
                   </span>
-                  <span className="max-w-20 truncate text-xs">{partner.name}</span>
+                  <span className="max-w-28 break-words text-center text-xs leading-tight">{partner.name}</span>
                 </button>
               )}
               <button type="button" onClick={() => setInviting(true)} className="flex flex-col items-center gap-1">
