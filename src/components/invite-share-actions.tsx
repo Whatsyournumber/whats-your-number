@@ -31,23 +31,14 @@ export function InviteShareActions({ email }: { email: string }) {
     typeof window !== "undefined" &&
     (window.matchMedia?.("(pointer: coarse)").matches || "ontouchstart" in window);
 
+  // Plain new-tab link (no JS navigation): never loads WhatsApp inside a frame.
   const handleWaClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const url = isTouchDevice()
-      ? `https://wa.me/?text=${encodeURIComponent(msg)}`
-      : `https://web.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
-
-    // The preview is embedded. Navigating its top window prevents WhatsApp from
-    // being loaded inside that frame, which WhatsApp explicitly blocks.
-    try {
-      window.top?.location.assign(url);
-    } catch {
-      window.location.assign(url);
+    if (!isTouchDevice()) {
+      e.currentTarget.href = `https://web.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
     }
   };
 
-
-  const waHref = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+  const waHref = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
 
   const copyLink = async () => {
     try {
