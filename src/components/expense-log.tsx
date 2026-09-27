@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
@@ -51,6 +51,8 @@ import { SPEND_PLAN_FIELDS, compact, getWynMoneyLocale, money } from "@/lib/onbo
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { cn } from "@/lib/utils";
 import { SharedExpenseDialog, SharedExpenseInbox, parseShared, SHARED_PREFIX } from "@/components/shared-expense";
+import { notifySharedExpense } from "@/lib/shared-expense.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { Users } from "lucide-react";
 
 type DraftItem = { name: string; amount: number; category: string };
@@ -132,6 +134,24 @@ export function ExpenseLog() {
   const [editAmount, setEditAmount] = useState(0);
   const [editDate, setEditDate] = useState("");
   const [editCategory, setEditCategory] = useState("");
+  const [editSharedWith, setEditSharedWith] = useState<string | null>(null);
+  const [editSharePartner, setEditSharePartner] = useState<{ id: string; name: string } | null>(null);
+  const notifyShared = useServerFn(notifySharedExpense);
+  const { data: editKnownPartners = [] } = useQuery({
+    queryKey: ["shared-partners", user?.id],
+    enabled: Boolean(user?.id) && Boolean(editTx),
+    queryFn: async () => {
+      const { data: rows } = await supabase
+        .from("shared_expense_participants")
+        .select("user_id, display_name, created_at")
+        .neq("user_id", user!.id)
+        .order("created_at", { ascending: false })
+        .limit(100);
+      const seen = new Map<string, { id: string; name: string }>();
+      for (const r of rows ?? []) if (!seen.has(r.user_id)) seen.set(r.user_id, { id: r.user_id, name: r.display_name || "?" });
+      return [...seen.values()];
+    },
+  });
   const { target: savedTarget, setTarget, hasTarget } = useSpendTarget();
 
   const openNewRecurring = () => {
@@ -224,6 +244,8 @@ export function ExpenseLog() {
     setEditAmount(Math.abs(x.amount));
     setEditDate(x.tx_date ?? format(new Date(), "yyyy-MM-dd"));
     setEditCategory(x.category || categorizeTx(x, categories.rules));
+    setEditSharedWith(parseShared(x.description)?.name ?? null);
+    setEditSharePartner(null);
   };
 
   const onSaveEditTx = async () => {
@@ -234,13 +256,43 @@ export function ExpenseLog() {
     }
     setSaving(true);
     try {
+      const wasShared = Boolean(parseShared(editTx.description));
+      let amount = -Math.abs(editAmount);
+      let description: string | null | undefined = undefined;
+      if (wasShared && !editSharedWith) {
+        // Quitar a la otra persona: el gasto pasa a ser solo tuyo.
+        description = null;
+      } else if (!wasShared && editSharePartner && user?.id) {
+        // Convertir en compartido 50/50: se sincroniza con la otra persona.
+        const total = Math.abs(editAmount);
+        const half = total / 2;
+        const { data: expenseId, error: shareError } = await supabase.rpc("create_shared_expense", {
+          _partner_id: editSharePartner.id,
+          _payer_id: user.id,
+          _total: total,
+          _currency: currency,
+          _category: editCategory,
+          _merchant: editMerchant.trim(),
+          _tx_date: editDate,
+          _split_mode: "50/50",
+          _creator_name: (profile?.full_name as string | undefined)?.split(" ")[0] || t("Yo", "Me"),
+          _partner_name: editSharePartner.name,
+          _creator_share: half,
+          _partner_share: half,
+        });
+        if (shareError) throw new Error(shareError.message);
+        amount = -half;
+        description = `${SHARED_PREFIX}50/50|${editSharePartner.name}`;
+        if (expenseId) void notifyShared({ data: { expenseId } });
+      }
       const { error } = await supabase
         .from("imported_transactions")
         .update({
           merchant: editMerchant.trim() || translateCategory(editCategory, lang),
-          amount: -Math.abs(editAmount),
+          amount,
           tx_date: editDate,
           category: editCategory,
+          ...(description !== undefined ? { description } : {}),
         })
         .eq("id", editTx.id);
       if (error) throw new Error(error.message);
@@ -2472,6 +2524,36 @@ export function ExpenseLog() {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+            <div className="grid gap-1.5">
+              <Label>{t("Compartido", "Shared")}</Label>
+              {editSharedWith ? (
+                <div className="flex items-center justify-between rounded-md border border-border px-3 py-2 text-sm">
+                  <span className="flex items-center gap-1.5">
+                    <Users className="h-4 w-4 text-positive" />
+                    {t("Con", "With")} {editSharedWith}
+                  </span>
+                  <Button type="button" variant="ghost" size="sm" onClick={() => setEditSharedWith(null)}>
+                    {t("Ponerlo solo mío", "Make it just mine")}
+                  </Button>
+                </div>
+              ) : (
+                <Select
+                  value={editSharePartner?.id ?? ""}
+                  onValueChange={(v) => setEditSharePartner(editKnownPartners.find((p) => p.id === v) ?? null)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("Solo mío (o elige con quién compartirlo)", "Just mine (or choose someone to share with)")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {editKnownPartners.map((p) => (
+                      <SelectItem key={p.id} value={p.id}>
+                        {t("Compartir 50/50 con", "Share 50/50 with")} {p.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
           </div>
           <DialogFooter className="gap-2 sm:justify-between">
