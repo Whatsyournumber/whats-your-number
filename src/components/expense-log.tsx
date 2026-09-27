@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
@@ -51,6 +51,8 @@ import { SPEND_PLAN_FIELDS, compact, getWynMoneyLocale, money } from "@/lib/onbo
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { cn } from "@/lib/utils";
 import { SharedExpenseDialog, SharedExpenseInbox, parseShared, SHARED_PREFIX } from "@/components/shared-expense";
+import { notifySharedExpense } from "@/lib/shared-expense.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { Users } from "lucide-react";
 
 type DraftItem = { name: string; amount: number; category: string };
