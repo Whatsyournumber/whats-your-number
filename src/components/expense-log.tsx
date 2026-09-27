@@ -1012,6 +1012,7 @@ export function ExpenseLog() {
 
   return (
     <section className="space-y-4">
+      <SharedExpenseInbox />
       <div className="sticky top-14 z-30 -mx-4 flex items-center justify-between gap-3 border-b border-border bg-background/95 px-4 py-4 shadow-sm backdrop-blur-xl sm:static sm:mx-0 sm:items-start sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none sm:backdrop-blur-none">
         <div className="min-w-0">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
