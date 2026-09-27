@@ -52,6 +52,7 @@ import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { cn } from "@/lib/utils";
 import { SharedExpenseDialog, SharedExpenseInbox, parseShared, SHARED_PREFIX } from "@/components/shared-expense";
 import { notifySharedExpense } from "@/lib/shared-expense.functions";
+import { InviteShareActions } from "@/components/invite-share-actions";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Users } from "lucide-react";
 
