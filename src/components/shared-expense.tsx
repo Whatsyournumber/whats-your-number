@@ -36,7 +36,7 @@ const modeLabel = (mode: Mode, myPct: number) =>
 
 const initials = (name: string) => name.trim().slice(0, 1).toUpperCase() || "?";
 
-export function SharedExpenseDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
+export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boolean; onOpenChange: (v: boolean) => void; onSaved?: () => void }) {
   const t = useT();
   const { lang } = useLanguage();
   const { user } = useAuth();
@@ -136,6 +136,7 @@ export function SharedExpenseDialog({ open, onOpenChange }: { open: boolean; onO
       });
       reset();
       onOpenChange(false);
+      onSaved?.();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : ((e as { message?: string })?.message ?? String(e)));
     } finally {

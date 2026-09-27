@@ -81,7 +81,14 @@ export function MobileBottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
-      <SharedExpenseDialog open={sharedOpen} onOpenChange={setSharedOpen} />
+      <SharedExpenseDialog
+        open={sharedOpen}
+        onOpenChange={setSharedOpen}
+        onSaved={() => {
+          void navigate({ to: "/registro-gastos" });
+          window.setTimeout(() => document.getElementById("latest-expenses")?.scrollIntoView({ behavior: "smooth", block: "start" }), 400);
+        }}
+      />
       {isPro && <BudgetVoiceAdvisor open={adviceOpen} onOpenChange={setAdviceOpen} />}
       {menuOpen && (
         <>
