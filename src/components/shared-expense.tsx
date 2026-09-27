@@ -227,6 +227,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
                 </Button>
               </div>
             )}
+            {inviting && invitePending && <InviteShareActions email={invitePending} />}
           </div>
 
           <div className="grid gap-2">
