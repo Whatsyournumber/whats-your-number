@@ -271,14 +271,18 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
             <p className="text-sm text-muted-foreground">{t("Pagó", "Paid by")}</p>
             <div className="flex gap-2">
               <button type="button" className={seg(payer === "me")} onClick={() => setPayer("me")}>{t("Yo", "Me")}</button>
-              <button type="button" className={seg(payer === "partner")} onClick={() => setPayer("partner")} disabled={!partner}>
-                {partner?.name ?? t("La otra persona", "The other person")}
+              <button type="button" className={seg(payer === "partner")} onClick={() => setPayer("partner")} disabled={partners.length !== 1}>
+                {partners.length === 1 ? partners[0].name : t("La otra persona", "The other person")}
               </button>
             </div>
           </div>
 
           <div className="divide-y divide-border rounded-2xl border border-border">
-            {[{ n: t("Tú pagas", "You pay"), v: mine, i: initials(myName) }, { n: `${partner?.name ?? t("Otra persona", "Other")} ${t("paga", "pays")}`, v: theirs, i: initials(partner?.name ?? "?") }].map((r) => (
+            {[{ n: t("Tú pagas", "You pay"), v: mine, i: initials(myName) },
+              ...(partners.length
+                ? partners.map((p) => ({ n: `${p.name} ${t("paga", "pays")}`, v: theirs, i: initials(p.name) }))
+                : [{ n: `${t("Otra persona", "Other")} ${t("paga", "pays")}`, v: 0, i: "?" }]),
+            ].map((r) => (
               <div key={r.n} className="flex items-center gap-3 px-3 py-2.5">
                 <span className="grid h-9 w-9 place-items-center rounded-full bg-muted text-sm font-semibold">{r.i}</span>
                 <span className="flex-1 text-sm">{r.n}</span>
