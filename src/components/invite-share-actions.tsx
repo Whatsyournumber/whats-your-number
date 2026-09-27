@@ -40,12 +40,12 @@ export function InviteShareActions({ email }: { email: string }) {
   };
 
   return (
-    <div className="grid gap-2 rounded-2xl border border-border bg-muted/20 p-3">
-      <div className="flex items-center gap-2">
+    <div className="rounded-2xl border border-border bg-muted/20 p-4">
+      <div className="flex items-center gap-3">
         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-positive/15 text-positive">
           <UserRoundPlus className="h-5 w-5" />
         </span>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">
             {t(`${name} aún no está en WYN`, `${name} isn't on WYN yet`)}
           </p>
@@ -53,23 +53,34 @@ export function InviteShareActions({ email }: { email: string }) {
             {t("Invítala para compartir este gasto.", "Invite them to share this expense.")}
           </p>
         </div>
+        <Share2 className="h-5 w-5 shrink-0 text-positive" />
       </div>
-      <div className="flex divide-x divide-border overflow-hidden rounded-xl border border-border bg-background">
+
+      <div className="mt-5 flex items-start justify-center gap-10">
         <button
           type="button"
           onClick={sendWhatsApp}
-          className="flex flex-1 items-center justify-center gap-2 px-3 py-2.5 text-sm font-medium text-positive transition hover:bg-positive/10"
+          className="flex flex-col items-center gap-2"
+          aria-label={t("Enviar por WhatsApp", "Share via WhatsApp")}
         >
-          <WhatsAppIcon className="h-4 w-4" />
-          <span className="whitespace-nowrap">{t("WhatsApp", "WhatsApp")}</span>
+          <span className="grid h-16 w-16 place-items-center rounded-full border-2 border-positive/60 bg-positive/10 text-positive shadow-[0_0_18px_-4px] shadow-positive/50 transition active:scale-95">
+            <WhatsAppIcon className="h-7 w-7" />
+          </span>
+          <span className="text-xs font-medium">{t("WhatsApp", "WhatsApp")}</span>
         </button>
+
+        <span className="mt-6 h-px w-px self-center" aria-hidden="true" />
+
         <button
           type="button"
           onClick={copyLink}
-          className="flex flex-1 items-center justify-center gap-2 px-3 py-2.5 text-sm font-medium transition hover:bg-muted/50"
+          className="flex flex-col items-center gap-2"
+          aria-label={t("Copiar enlace", "Copy link")}
         >
-          <Link2 className="h-4 w-4" />
-          <span className="whitespace-nowrap">{t("Copiar link", "Copy link")}</span>
+          <span className="grid h-16 w-16 place-items-center rounded-full border border-border bg-background text-foreground transition active:scale-95">
+            <Link2 className="h-7 w-7" />
+          </span>
+          <span className="text-xs font-medium">{t("Copiar link", "Copy link")}</span>
         </button>
       </div>
     </div>
