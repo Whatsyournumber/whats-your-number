@@ -68,6 +68,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   const [inviting, setInviting] = useState(false);
   const [email, setEmail] = useState("");
   const [looking, setLooking] = useState(false);
+  const [invitePending, setInvitePending] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("equal");
   const [myPct, setMyPct] = useState(50);
   const [myAmount, setMyAmount] = useState(0);
