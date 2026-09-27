@@ -62,8 +62,8 @@ export function InviteShareActions({ email }: { email: string }) {
           onClick={sendWhatsApp}
           className="flex flex-1 items-center justify-center gap-2 px-3 py-2.5 text-sm font-medium text-positive transition hover:bg-positive/10"
         >
-          <MessageCircle className="h-4 w-4" />
-          {t("Enviar por WhatsApp", "Send via WhatsApp")}
+          <WhatsAppIcon className="h-4 w-4" />
+          <span className="whitespace-nowrap">{t("WhatsApp", "WhatsApp")}</span>
         </button>
         <button
           type="button"
@@ -71,7 +71,7 @@ export function InviteShareActions({ email }: { email: string }) {
           className="flex flex-1 items-center justify-center gap-2 px-3 py-2.5 text-sm font-medium transition hover:bg-muted/50"
         >
           <Link2 className="h-4 w-4" />
-          {t("Copiar link", "Copy link")}
+          <span className="whitespace-nowrap">{t("Copiar link", "Copy link")}</span>
         </button>
       </div>
     </div>
