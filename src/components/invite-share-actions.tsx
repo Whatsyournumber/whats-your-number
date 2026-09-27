@@ -26,7 +26,23 @@ export function InviteShareActions({ email }: { email: string }) {
     `Hi! I invited you to share an expense on WhatsYournumber 💸\n\nSign up free and we'll split the expense:\n${link}`
   );
 
-  const waHref = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+  // Mobile: wa.me opens the WhatsApp app. Desktop: web.whatsapp.com opens WhatsApp Web.
+  const isTouchDevice = () =>
+    typeof window !== "undefined" &&
+    (window.matchMedia?.("(pointer: coarse)").matches || "ontouchstart" in window);
+
+  const handleWaClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isTouchDevice()) {
+      e.preventDefault();
+      window.open(
+        `https://web.whatsapp.com/send?text=${encodeURIComponent(msg)}`,
+        "_blank",
+        "noopener,noreferrer"
+      );
+    }
+    // On touch devices the native wa.me href proceeds as-is.
+  };
+
 
   const copyLink = async () => {
     try {
