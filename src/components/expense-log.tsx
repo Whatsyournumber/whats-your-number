@@ -259,6 +259,7 @@ export function ExpenseLog() {
     setEditSharePartner(null);
     setEditInviteEmail("");
     setEditInviting(false);
+    setEditInvitePending(null);
   };
 
   const findEditPartner = async () => {
