@@ -129,6 +129,7 @@ function Pricing() {
       ),
       features: [
         t("Todo lo de Free", "Everything in Free"),
+        t("Consejo de IA: pregúntale cualquier cosa y te responde según tu presupuesto", "AI advice: ask anything and it answers against your budget"),
         t("Asistente IA: pregúntale lo que sea", "AI Assistant: ask anything"),
         t("Análisis mensual de tus gastos con IA", "Monthly AI expense analysis"),
         t("Entiende todo tu patrimonio: activos y pasivos para saber cuánto vales", "Understand all your wealth: assets and liabilities to know what you're worth"),
