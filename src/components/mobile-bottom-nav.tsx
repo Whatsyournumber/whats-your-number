@@ -79,7 +79,7 @@ export function MobileBottomNav() {
   };
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
+    <nav className="fixed bottom-0 left-0 z-40 w-screen max-w-full lg:hidden">
       <SharedExpenseDialog
         open={sharedOpen}
         onOpenChange={setSharedOpen}
