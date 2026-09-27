@@ -14,6 +14,10 @@ import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { supabase } from "@/integrations/supabase/client";
 import { translateCategory } from "@/lib/i18n-data";
 import { saveExpense } from "@/lib/manual-expense";
+import { BASE_CATEGORIES } from "@/lib/categorize";
+import { useCategories } from "@/hooks/use-categories";
+import { notifySharedExpense } from "@/lib/shared-expense.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { cn } from "@/lib/utils";
 
 type Mode = "equal" | "percent" | "amount";
@@ -42,10 +46,19 @@ export function SharedExpenseDialog({ open, onOpenChange }: { open: boolean; onO
   const currency = (profile?.currency as string) || "USD";
   const myName = (profile?.full_name as string | undefined)?.split(" ")[0] || t("Yo", "Me");
 
-  const categories = useMemo(() => {
-    const labels = budgets.lines.map((l) => l.label).filter(Boolean) as string[];
-    return labels.length ? labels : ["Restaurantes", "Mercado", "Vivienda", "Ocio", "Otros"];
-  }, [budgets.lines]);
+  const custom = useCategories();
+  const notify = useServerFn(notifySharedExpense);
+  // Todas las categorías: base, las creadas por el usuario y las del plan.
+  const categories = useMemo(
+    () => [
+      ...new Set([
+        ...BASE_CATEGORIES,
+        ...custom.rules.map((r) => r.name),
+        ...(budgets.lines.map((l) => l.label?.trim()).filter(Boolean) as string[]),
+      ]),
+    ],
+    [budgets.lines, custom.rules],
+  );
 
   const [total, setTotal] = useState(0);
   const [category, setCategory] = useState("");
@@ -116,8 +129,9 @@ export function SharedExpenseDialog({ open, onOpenChange }: { open: boolean; onO
         description: `${SHARED_PREFIX}${split}|${partner.name}`,
       });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      void notify({ data: { expenseId: exp.id } }).catch(() => undefined);
       toast.success(t("Gasto compartido guardado", "Shared expense saved"), {
-        description: t(`Tu parte: ${fmt(mine)} · ${partner.name} lo verá en su app`, `Your share: ${fmt(mine)} · ${partner.name} will see it in the app`),
+        description: t(`Tu parte: ${fmt(mine)} · ${partner.name} recibirá un correo`, `Your share: ${fmt(mine)} · ${partner.name} will get an email`),
       });
       reset();
       onOpenChange(false);
