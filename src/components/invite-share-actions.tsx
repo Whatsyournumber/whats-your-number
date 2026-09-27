@@ -31,24 +31,19 @@ export function InviteShareActions({ email }: { email: string }) {
     typeof window !== "undefined" &&
     (window.matchMedia?.("(pointer: coarse)").matches || "ontouchstart" in window);
 
-  const handleWaClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
-    // Touch devices keep the native wa.me href (opens the app).
-    if (isTouchDevice()) return;
-    // Desktop: force a real top-level window so WhatsApp Web never loads inside a frame.
+  const handleWaClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const url = `https://web.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
-    const w = window.open(url, "_blank");
-    if (w) {
-      try { w.opener = null; } catch { /* ignore */ }
-      return;
+    const url = isTouchDevice()
+      ? `https://wa.me/?text=${encodeURIComponent(msg)}`
+      : `https://web.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+
+    // The preview is embedded. Navigating its top window prevents WhatsApp from
+    // being loaded inside that frame, which WhatsApp explicitly blocks.
+    try {
+      window.top?.location.assign(url);
+    } catch {
+      window.location.assign(url);
     }
-    try { await navigator.clipboard.writeText(msg); } catch { /* ignore */ }
-    toast.message(
-      t(
-        "Tu navegador bloqueó la ventana. Copiamos el mensaje: pégalo en WhatsApp Web.",
-        "Your browser blocked the window. Message copied: paste it in WhatsApp Web."
-      )
-    );
   };
 
 
@@ -84,8 +79,7 @@ export function InviteShareActions({ email }: { email: string }) {
       <div className="mt-5 flex items-start justify-center gap-10">
         <a
           href={waHref}
-          target="_blank"
-          rel="noopener noreferrer"
+          target="_top"
           onClick={handleWaClick}
           className="flex flex-col items-center gap-2"
           aria-label={t("Enviar por WhatsApp", "Share via WhatsApp")}
