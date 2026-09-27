@@ -810,7 +810,7 @@ function AdminPage() {
                     <TableRow key={c.id}>
                       <TableCell className="font-medium tracking-wide">{c.code}</TableCell>
                       <TableCell className="text-muted-foreground">{c.product_id}</TableCell>
-                      <TableCell className="numeric">{c.duration_days}</TableCell>
+                      <TableCell className="numeric">{c.duration_days === 0 ? t("Ilimitado", "Unlimited") : c.duration_days}</TableCell>
                       <TableCell className="numeric">{c.used_count} / {c.max_uses}</TableCell>
                       <TableCell>
                         <Badge variant={c.active ? "default" : "secondary"}>{c.active ? t("activo", "active") : t("inactivo", "inactive")}</Badge>
@@ -871,7 +871,7 @@ function AdminPage() {
                         <TableCell className="text-muted-foreground">{r.code}</TableCell>
                         <TableCell className="text-muted-foreground">{u?.email ?? "—"}</TableCell>
                         <TableCell className="text-muted-foreground">{o?.country ?? "—"}</TableCell>
-                        <TableCell className="numeric text-muted-foreground">{fmtDate(r.granted_until)}</TableCell>
+                        <TableCell className="numeric text-muted-foreground">{r.granted_until ? fmtDate(r.granted_until) : t("Ilimitado", "Unlimited")}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(r.created_at)}</TableCell>
                         <TableCell className="text-right">
                           <DeleteAction
