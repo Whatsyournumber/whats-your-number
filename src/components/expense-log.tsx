@@ -2555,21 +2555,41 @@ export function ExpenseLog() {
                   </Button>
                 </div>
               ) : (
-                <Select
-                  value={editSharePartner?.id ?? ""}
-                  onValueChange={(v) => setEditSharePartner(editKnownPartners.find((p) => p.id === v) ?? null)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("Solo mío (o elige con quién compartirlo)", "Just mine (or choose someone to share with)")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {editKnownPartners.map((p) => (
-                      <SelectItem key={p.id} value={p.id}>
-                        {t("Compartir 50/50 con", "Share 50/50 with")} {p.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <>
+                  <Select
+                    value={editSharePartner?.id ?? ""}
+                    onValueChange={(v) => setEditSharePartner(editKnownPartners.find((p) => p.id === v) ?? null)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={t("Solo mío (o elige con quién compartirlo)", "Just mine (or choose someone to share with)")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {editKnownPartners.map((p) => (
+                        <SelectItem key={p.id} value={p.id}>
+                          {t("Compartir 50/50 con", "Share 50/50 with")} {p.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {editSharePartner && !editKnownPartners.some((p) => p.id === editSharePartner.id) && (
+                    <p className="flex items-center gap-1.5 text-sm text-positive">
+                      <Users className="h-4 w-4" />
+                      {t("Compartir 50/50 con", "Share 50/50 with")} {editSharePartner.name}
+                    </p>
+                  )}
+                  <div className="flex gap-2">
+                    <Input
+                      type="email"
+                      value={editInviteEmail}
+                      onChange={(e) => setEditInviteEmail(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && void findEditPartner()}
+                      placeholder={t("Correo de alguien nuevo", "Someone new's email")}
+                    />
+                    <Button type="button" variant="outline" onClick={findEditPartner} disabled={editLooking}>
+                      {editLooking ? <Loader2 className="h-4 w-4 animate-spin" /> : t("Añadir", "Add")}
+                    </Button>
+                  </div>
+                </>
               )}
             </div>
           </div>
