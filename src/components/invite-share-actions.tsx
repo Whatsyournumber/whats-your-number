@@ -31,12 +31,24 @@ export function InviteShareActions({ email }: { email: string }) {
     typeof window !== "undefined" &&
     (window.matchMedia?.("(pointer: coarse)").matches || "ontouchstart" in window);
 
-  const handleWaClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleWaClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     // Touch devices keep the native wa.me href (opens the app).
-    // Desktop navigates to WhatsApp Web via the same anchor (no window.open).
-    if (!isTouchDevice()) {
-      e.currentTarget.href = `https://web.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+    if (isTouchDevice()) return;
+    // Desktop: force a real top-level window so WhatsApp Web never loads inside a frame.
+    e.preventDefault();
+    const url = `https://web.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+    const w = window.open(url, "_blank");
+    if (w) {
+      try { w.opener = null; } catch { /* ignore */ }
+      return;
     }
+    try { await navigator.clipboard.writeText(msg); } catch { /* ignore */ }
+    toast.message(
+      t(
+        "Tu navegador bloqueó la ventana. Copiamos el mensaje: pégalo en WhatsApp Web.",
+        "Your browser blocked the window. Message copied: paste it in WhatsApp Web."
+      )
+    );
   };
 
 
