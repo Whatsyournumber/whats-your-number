@@ -248,6 +248,21 @@ export function ExpenseLog() {
     setEditCategory(x.category || categorizeTx(x, categories.rules));
     setEditSharedWith(parseShared(x.description)?.name ?? null);
     setEditSharePartner(null);
+    setEditInviteEmail("");
+  };
+
+  const findEditPartner = async () => {
+    if (!editInviteEmail.trim()) return;
+    setEditLooking(true);
+    const { data, error } = await supabase.rpc("find_user_by_email", { _email: editInviteEmail });
+    setEditLooking(false);
+    const row = Array.isArray(data) ? data[0] : null;
+    if (error || !row) {
+      toast.error(t("No encontramos a nadie con ese correo en la app", "No app user found with that email"));
+      return;
+    }
+    setEditSharePartner({ id: row.id, name: (row.full_name as string) || editInviteEmail });
+    setEditInviteEmail("");
   };
 
   const onSaveEditTx = async () => {
