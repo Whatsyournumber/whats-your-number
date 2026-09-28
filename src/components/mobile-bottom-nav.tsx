@@ -107,7 +107,7 @@ export function MobileBottomNav() {
           >
             <div className="px-4 pb-2 pt-3 text-center">
               <p className="text-[22px] font-bold tracking-tight text-foreground">
-                {t("Registra tus gastos", "Log your spending")}
+                {t("Trackea tus gastos diarios", "Track your spending")}
               </p>
               <p className="mt-0.5 text-[15px] font-medium text-muted-foreground">
                 {t("Elige cómo quieres agregarlos", "Choose how you want to add them")}
