@@ -1139,7 +1139,7 @@ export function ExpenseLog() {
           </TooltipProvider>
           {addMenuOpen && (
             <div
-              className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm sm:hidden"
+              className="fixed inset-x-0 top-14 bottom-[calc(82px+env(safe-area-inset-bottom,0px))] z-40 bg-background/60 backdrop-blur-sm sm:hidden"
               aria-hidden="true"
             />
           )}
