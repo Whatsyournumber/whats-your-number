@@ -1,4 +1,6 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
@@ -1137,12 +1139,17 @@ export function ExpenseLog() {
             </TooltipContent>
           </Tooltip>
           </TooltipProvider>
-          {addMenuOpen && (
-            <div
-              className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm sm:hidden"
-              aria-hidden="true"
-            />
-          )}
+          {addMenuOpen &&
+            createPortal(
+              <div
+                className="fixed inset-x-0 z-40 bg-background/60 backdrop-blur-sm sm:hidden"
+                style={{ top: 56, bottom: "calc(82px + env(safe-area-inset-bottom, 0px))" }}
+                aria-hidden="true"
+              />,
+              document.body,
+            )}
+
+
           <DropdownMenuContent align="end" className="z-50 w-[21rem] p-2">
 
             <div className="px-4 pb-2 pt-3 text-center">
