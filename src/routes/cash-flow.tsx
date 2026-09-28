@@ -711,7 +711,7 @@ function CashFlow() {
               </p>
             </>
           ) : (
-            <p className="text-xs text-muted-foreground">{t("Sin ahorro mensual todavía: edita tus categorías para verlo.", "No monthly savings yet: edit your categories to see it.")}</p>
+            <p className="text-xs text-muted-foreground">{t("Sin ahorro de inversión todavía: pulsa «Editar ahorro» para destinar dinero a inversiones.", "No investment savings yet: tap «Edit savings» to put money toward investments.")}</p>
           )}
         </Panel>
       </div>
