@@ -403,7 +403,7 @@ function CashFlow() {
   );
   const savingsAtRetire = savingsProjection[savingsProjection.length - 1]?.value ?? 0;
   // «Tu ahorro en el tiempo»: curva de crecimiento con hitos y aporte vs interés compuesto
-  const savingsContributed = saveAmount * 12 * savingsYears;
+  const savingsContributed = destInvest * 12 * savingsYears;
   const savingsGrowth = Math.max(0, savingsAtRetire - savingsContributed);
   const chartMilestones = useMemo(() => {
     const years = [...new Set([0, 1, 5, 10, savingsYears])].filter((y) => y <= savingsYears).sort((a, b) => a - b);
@@ -649,8 +649,8 @@ function CashFlow() {
             </div>
           )}
         </div>
-        <Panel className="flex flex-col overflow-hidden" title={t("Tu ahorro en el tiempo", "Your savings over time")} description={t(`Mira lo que pueden convertirse tus ${fmt(saveAmount)}/mes.`, `See what your ${fmt(saveAmount)}/mo can become.`)} icon={<TrendingUp />}>
-          {saveAmount > 0 ? (
+        <Panel className="flex flex-col overflow-hidden" title={t("Tu ahorro en el tiempo", "Your savings over time")} description={t(`Mira lo que pueden convertirse tus ahorros de inversiones (${fmt(destInvest)}/mes).`, `See what your investment savings (${fmt(destInvest)}/mo) can become.`)} icon={<TrendingUp />}>
+          {destInvest > 0 ? (
             <>
               <div className="flex items-end justify-between gap-3">
                 <div>
