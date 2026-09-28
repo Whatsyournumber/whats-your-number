@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { SavingsGoals } from "@/components/savings-goals";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { SavingsGoals, type SavingsGoal } from "@/components/savings-goals";
 import { motion } from "motion/react";
-import { ArrowLeftRight, Pencil, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
+import { ArrowLeftRight, ArrowRight, Coins, Lightbulb, Pencil, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { useLanguage, useT } from "@/hooks/use-language";
@@ -402,7 +402,28 @@ function CashFlow() {
     [saveAmount, savingsYears, d.retirement.currentAge],
   );
   const savingsAtRetire = savingsProjection[savingsProjection.length - 1]?.value ?? 0;
-  const savingsYear1 = savingsProjection[1]?.value ?? 0;
+  // «Tu ahorro en el tiempo»: curva de crecimiento con hitos y aporte vs interés compuesto
+  const savingsContributed = saveAmount * 12 * savingsYears;
+  const savingsGrowth = Math.max(0, savingsAtRetire - savingsContributed);
+  const chartMilestones = useMemo(() => {
+    const years = [...new Set([0, 1, 5, 10, savingsYears])].filter((y) => y <= savingsYears).sort((a, b) => a - b);
+    return years.map((y) => ({ year: y, value: savingsProjection[y]?.value ?? 0 }));
+  }, [savingsProjection, savingsYears]);
+  const chartMax = Math.max(1, ...chartMilestones.map((m) => m.value));
+  const chartPoints = chartMilestones.map((m, i) => ({
+    ...m,
+    x: chartMilestones.length > 1 ? (i / (chartMilestones.length - 1)) * 300 : 0,
+    y: 104 - (m.value / chartMax) * 92,
+  }));
+  const chartLine = chartPoints.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
+  // Consejo «¿Quieres llegar antes?»: usa el ahorro sin destino y la primera meta activa
+  const { value: goalsSetting } = useSyncedSetting<{ items: SavingsGoal[] }>("whatsyournumber:savings-goals", { items: [] });
+  const goalsList = Array.isArray(goalsSetting?.items) ? goalsSetting.items : [];
+  const tipFree = Math.max(0, saveAmount - destGoals - destInvest);
+  const tipGoal = goalsList.find((g) => g.target > 0 && g.saved < g.target && g.monthly > 0);
+  const tipMonthsSaved = tipGoal && tipFree > 0
+    ? Math.max(0, Math.ceil((tipGoal.target - tipGoal.saved) / tipGoal.monthly) - Math.ceil((tipGoal.target - tipGoal.saved) / (tipGoal.monthly + tipFree)))
+    : 0;
 
   return (
     <TooltipProvider delayDuration={150}>
@@ -612,40 +633,85 @@ function CashFlow() {
         })()}
       </Panel>
 
-      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
-        <SavingsGoals fmt={fmt} />
-        <Panel className="flex flex-col" title={t("Uso del ahorro", "Use of savings")} description={t("Si ahorras así, lo que tendrías al retirarte", "If you save like this, what you'd have at retirement")} icon={<PiggyBank />}>
-          <p className="numeric text-4xl font-semibold text-primary">{fmt(savingsAtRetire)}</p>
-          <p className="mt-1.5 text-xs text-muted-foreground">
-            {saveAmount > 0
-              ? <>{t("Ahorras", "You save")} {fmt(saveAmount)}{t("/mes", "/mo")} · {t("S&P 500 al", "S&P 500 at")} {SP500_RATE}% · {savingsYears} {t("años", "years")}</>
-              : t("Sin ahorro mensual todavía: edita tus categorías para verlo.", "No monthly savings yet: edit your categories to see it.")}
-          </p>
-          {saveAmount > 0 && (
-            <div className="mt-auto pt-4">
-              {savingsYears > 1 && (
-                <div className="grid grid-cols-3 divide-x divide-border rounded-2xl border border-border bg-elevated/60 py-3 text-center">
-                  <div className="px-2">
-                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("Hoy", "Today")}</p>
-                    <p className="numeric mt-1 text-sm font-medium">{fmt(0)}</p>
-                  </div>
-                  <div className="px-2">
-                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">1 {t("año", "year")}</p>
-                    <p className="numeric mt-1 text-sm font-medium">{fmt(savingsYear1)}</p>
-                  </div>
-                  <div className="px-2">
-                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{savingsYears} {t("años", "years")}</p>
-                    <p className="numeric mt-1 text-sm font-semibold text-positive">{fmt(savingsAtRetire)}</p>
-                  </div>
+      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
+        <div className="min-w-0 space-y-4">
+          <SavingsGoals fmt={fmt} />
+          {tipGoal && tipFree > 0 && (
+            <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card/40 p-4 sm:p-5">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-amber-400/15 text-amber-400"><Lightbulb className="h-5 w-5" /></span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold">{t("¿Quieres llegar antes?", "Want to get there sooner?")}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  {t("Tienes", "You have")} <span className="numeric font-semibold text-positive">{fmt(tipFree)}{t("/mes", "/mo")}</span> {t("de ahorro sin destino. Si los destinas a", "of unassigned savings. If you put them toward")} <span className="font-medium text-foreground">{tipGoal.name}</span>
+                  {tipMonthsSaved > 0 && <>{t(", podrías alcanzar tu meta ~", ", you could reach your goal ~")}{tipMonthsSaved} {t(tipMonthsSaved === 1 ? "mes antes" : "meses antes", tipMonthsSaved === 1 ? "month sooner" : "months sooner")}</>}.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+        <Panel className="flex flex-col overflow-hidden" title={t("Tu ahorro en el tiempo", "Your savings over time")} description={t(`Mira lo que pueden convertirse tus ${fmt(saveAmount)}/mes.`, `See what your ${fmt(saveAmount)}/mo can become.`)} icon={<TrendingUp />}>
+          {saveAmount > 0 ? (
+            <>
+              <div className="flex items-end justify-between gap-3">
+                <div>
+                  <p className="numeric text-3xl font-bold text-primary">{fmt(savingsAtRetire)}</p>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">{t("en", "in")} {savingsYears} {t("años", "years")}</p>
                 </div>
-              )}
-              <p className={savingsYears > 1 ? "mt-2 text-xs text-muted-foreground" : "text-xs text-muted-foreground"}>
+                <div className="rounded-lg border border-border bg-elevated/60 px-2.5 py-1.5 text-right">
+                  <p className="numeric text-xs font-semibold text-positive">{fmt(savingsAtRetire)}</p>
+                  <p className="text-[10px] text-muted-foreground">{savingsYears} {t("años", "years")}</p>
+                </div>
+              </div>
+              <div className="mt-3">
+                <svg viewBox="0 0 300 120" className="h-28 w-full" role="img" aria-label={t("Proyección de tu ahorro", "Your savings projection")}>
+                  <defs>
+                    <linearGradient id="savingsChartFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="var(--color-positive)" stopOpacity="0.35" />
+                      <stop offset="100%" stopColor="var(--color-positive)" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  {[0.25, 0.5, 0.75].map((f) => (
+                    <line key={f} x1="0" x2="300" y1={104 - f * 92} y2={104 - f * 92} stroke="var(--color-border)" strokeDasharray="3 4" strokeWidth="1" />
+                  ))}
+                  <path d={`${chartLine} L 300 112 L 0 112 Z`} fill="url(#savingsChartFill)" stroke="none" />
+                  <path d={chartLine} fill="none" stroke="var(--color-positive)" strokeWidth="2" strokeLinecap="round" />
+                  {chartPoints.map((p) => (
+                    <circle key={p.year} cx={p.x} cy={p.y} r="3" fill="var(--color-positive)" stroke="var(--color-background)" strokeWidth="1.5" />
+                  ))}
+                </svg>
+                <div className="mt-0.5 flex justify-between text-center">
+                  {chartPoints.map((p) => (
+                    <div key={p.year} className="min-w-0">
+                      <p className="text-[9px] text-muted-foreground">{p.year === 0 ? t("Hoy", "Today") : `${p.year} ${t(p.year === 1 ? "año" : "años", p.year === 1 ? "year" : "years")}`}</p>
+                      <p className="numeric text-[10px] font-medium">{fmt(p.value)}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2.5">
+                <div className="rounded-xl border border-border bg-elevated/60 p-3">
+                  <div className="flex items-center gap-1.5 text-muted-foreground"><Coins className="h-3.5 w-3.5 text-positive" /><p className="text-[10px]">{t("Aportarías", "You'd contribute")}</p></div>
+                  <p className="numeric mt-0.5 text-base font-semibold">{fmt(savingsContributed)}</p>
+                  <p className="text-[10px] text-muted-foreground">{t("de tu bolsillo", "out of your pocket")}</p>
+                </div>
+                <div className="rounded-xl border border-border bg-elevated/60 p-3">
+                  <div className="flex items-center gap-1.5 text-muted-foreground"><TrendingUp className="h-3.5 w-3.5 text-positive" /><p className="text-[10px]">{t("Crecimiento estimado", "Estimated growth")}</p></div>
+                  <p className="numeric mt-0.5 text-base font-semibold text-positive">+{fmt(savingsGrowth)}</p>
+                  <p className="text-[10px] text-muted-foreground">{t("gracias al interés compuesto", "thanks to compound interest")}</p>
+                </div>
+              </div>
+              <Button asChild size="sm" className="mt-3 w-full">
+                <Link to="/retiro">{t("Ver proyección completa", "See full projection")}<ArrowRight /></Link>
+              </Button>
+              <p className="mt-2.5 text-center text-[10px] text-muted-foreground">
                 {t(
-                  `Manteniendo este ritmo al ${SP500_RATE}% anual (S&P 500).`,
-                  `Keeping this pace at ${SP500_RATE}% a year (S&P 500).`,
+                  `Simulación ilustrativa al ${SP500_RATE}% anual (S&P 500). Los rendimientos reales pueden variar.`,
+                  `Illustrative simulation at ${SP500_RATE}% a year (S&P 500). Actual returns may vary.`,
                 )}
               </p>
-            </div>
+            </>
+          ) : (
+            <p className="text-xs text-muted-foreground">{t("Sin ahorro mensual todavía: edita tus categorías para verlo.", "No monthly savings yet: edit your categories to see it.")}</p>
           )}
         </Panel>
       </div>

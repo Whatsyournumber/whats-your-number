@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, MoreVertical, Pencil, Plus, Target, Trash2 } from "lucide-react";
+import { Calendar, Car, Check, Clock, Home, MoreVertical, Pencil, Plane, Plus, Target, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -12,10 +12,18 @@ import { useSyncedSetting } from "@/hooks/use-synced-setting";
 import { useT } from "@/hooks/use-language";
 import { cn } from "@/lib/utils";
 
-type SavingsGoal = { id: string; name: string; target: number; saved: number; monthly: number; targetYear: number };
+export type SavingsGoal = { id: string; name: string; target: number; saved: number; monthly: number; targetYear: number };
 type Draft = Omit<SavingsGoal, "id"> & { id?: string };
 const EMPTY: { items: SavingsGoal[] } = { items: [] };
 const newDraft = (): Draft => ({ name: "", target: 0, saved: 0, monthly: 0, targetYear: new Date().getFullYear() + 1 });
+
+function goalIcon(name: string) {
+  const n = name.toLowerCase();
+  if (/(casa|apart|depto|piso|home|house|apartm|vivienda|hipoteca)/.test(n)) return Home;
+  if (/(carro|coche|auto|car|moto|veh[ií]culo)/.test(n)) return Car;
+  if (/(viaje|viajar|trip|travel|vacac|vuelo|munich|paris|playa)/.test(n)) return Plane;
+  return Target;
+}
 
 export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
   const t = useT();
@@ -69,34 +77,63 @@ export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
       </div>
 
       {loaded && visible.length === 0 ? (
-        <div className="border-t border-border py-8 text-center text-sm text-muted-foreground">
+        <div className="rounded-2xl border border-border bg-card/40 py-8 text-center text-sm text-muted-foreground">
           {goals.length === 0 ? t("Todavía no tienes metas de ahorro.", "No savings goals yet.") : t("No hay metas en esta vista.", "No goals in this view.")}
         </div>
       ) : (
-        <div className="divide-y divide-border/70 border-t border-border">
+        <div className="space-y-3">
           {visible.map((goal) => {
+            const done = completed(goal);
             const pct = Math.min(100, Math.round((goal.saved / goal.target) * 100));
             const remaining = Math.max(0, goal.target - goal.saved);
             const months = goal.monthly > 0 ? Math.ceil(remaining / goal.monthly) : 0;
+            const Icon = goalIcon(goal.name);
             return (
-              <div key={goal.id} className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 py-4 sm:grid-cols-[minmax(0,1fr)_minmax(100px,140px)_auto]">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2"><span className={cn("grid h-8 w-8 shrink-0 place-items-center rounded-md", completed(goal) ? "bg-positive/15 text-positive" : "bg-primary/15 text-primary")}>{completed(goal) ? <Check className="h-4 w-4" /> : <Target className="h-4 w-4" />}</span><p className="min-w-0 break-words text-sm font-semibold">{goal.name}</p></div>
-                  <div className="ml-10 mt-1.5 flex items-center gap-3">
-                    <div className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label={goal.name} aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}><div className="h-full rounded-full bg-positive transition-[width]" style={{ width: `${pct}%` }} /></div>
-                    <span className="numeric w-10 shrink-0 text-right text-xs font-semibold text-positive">{pct}%</span>
+              <div
+                key={goal.id}
+                className={cn(
+                  "rounded-xl border p-3 transition-colors sm:p-3.5",
+                  done ? "border-positive/25 bg-positive/5" : "border-border bg-card/40 hover:border-positive/30",
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-lg", done ? "bg-positive/20 text-positive" : "bg-primary/10 text-primary")}>
+                    {done ? <Check className="h-5 w-5" /> : <Icon className="h-5 w-5" />}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="min-w-0 break-words text-sm font-semibold">{goal.name}</p>
+                      <div className="flex shrink-0 items-center gap-0.5">
+                        <span className="numeric text-sm font-bold text-positive">{pct}%</span>
+                        <div className="relative">
+                          <Button variant="ghost" size="icon" className="h-7 w-7" aria-label={t(`Opciones de ${goal.name}`, `Options for ${goal.name}`)} aria-expanded={menuId === goal.id} onClick={() => setMenuId(menuId === goal.id ? null : goal.id)}><MoreVertical className="h-4 w-4" /></Button>
+                          {menuId === goal.id && <div className="absolute right-0 top-full z-10 min-w-36 rounded-md border border-border bg-popover p-1 shadow-lg">
+                            <Button variant="ghost" className="w-full justify-start" onClick={() => { setDraft(goal); setMenuId(null); }}><Pencil />{t("Editar", "Edit")}</Button>
+                            <Button variant="ghost" className="w-full justify-start text-destructive" onClick={() => { save({ items: goals.filter((item) => item.id !== goal.id) }); setMenuId(null); }}><Trash2 />{t("Eliminar", "Delete")}</Button>
+                          </div>}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="relative mt-1.5 h-5 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label={goal.name} aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
+                      <div className="h-full rounded-full bg-positive transition-[width]" style={{ width: `${Math.max(pct, 3)}%` }} />
+                      <span className="numeric absolute inset-0 flex items-center px-2.5 text-[10px] font-medium text-foreground/90">
+                        {fmt(goal.saved)} {t("de", "of")} {fmt(goal.target)}
+                      </span>
+                    </div>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-3.5 gap-y-1 text-[11px] text-muted-foreground">
+                      {done ? (
+                        <span className="inline-flex items-center gap-1.5 text-positive"><Check className="h-3 w-3" />{t("Completada · ¡Buen trabajo!", "Completed · Nice work!")}</span>
+                      ) : (
+                        <>
+                          <span className="numeric inline-flex items-center gap-1.5"><Calendar className="h-3 w-3 text-positive" />{fmt(goal.monthly)}{t("/mes", "/mo")}</span>
+                          {months > 0 && (
+                            <span className="inline-flex items-center gap-1.5"><Clock className="h-3 w-3 text-positive" />{t("Llegas en", "You get there in")} {months} {t(months === 1 ? "mes" : "meses", months === 1 ? "month" : "months")}</span>
+                          )}
+                        </>
+                      )}
+                    </div>
                   </div>
-                  <p className="numeric ml-10 mt-1 text-xs text-muted-foreground">{fmt(goal.saved)} {t("de", "of")} {fmt(goal.target)}</p>
                 </div>
-                <p className="numeric hidden text-xs text-muted-foreground sm:block">{completed(goal) ? t("Completada", "Completed") : <>{fmt(goal.monthly)}{t("/mes", "/mo")}<br />{months > 0 ? `${months} ${t(months === 1 ? "mes restante" : "meses restantes", months === 1 ? "month left" : "months left")}` : `${t("Objetivo", "Target")} ${goal.targetYear}`}</>}</p>
-                <div className="relative self-start">
-                  <Button variant="ghost" size="icon" aria-label={t(`Opciones de ${goal.name}`, `Options for ${goal.name}`)} aria-expanded={menuId === goal.id} onClick={() => setMenuId(menuId === goal.id ? null : goal.id)}><MoreVertical /></Button>
-                  {menuId === goal.id && <div className="absolute right-0 top-full z-10 min-w-36 rounded-md border border-border bg-popover p-1 shadow-lg">
-                    <Button variant="ghost" className="w-full justify-start" onClick={() => { setDraft(goal); setMenuId(null); }}><Pencil />{t("Editar", "Edit")}</Button>
-                    <Button variant="ghost" className="w-full justify-start text-destructive" onClick={() => { save({ items: goals.filter((item) => item.id !== goal.id) }); setMenuId(null); }}><Trash2 />{t("Eliminar", "Delete")}</Button>
-                  </div>}
-                </div>
-                {!completed(goal) && <p className="numeric col-start-1 ml-10 text-xs text-muted-foreground sm:hidden">{fmt(goal.monthly)}{t("/mes", "/mo")} · {months > 0 ? `${months} ${t("meses restantes", "months left")}` : `${t("Objetivo", "Target")} ${goal.targetYear}`}</p>}
               </div>
             );
           })}
