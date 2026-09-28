@@ -114,11 +114,8 @@ export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
                         </div>
                       </div>
                     </div>
-                    <div className="relative mt-1.5 h-5 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label={goal.name} aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
+                    <div className="mt-1.5 h-3 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label={goal.name} aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
                       <div className="h-full rounded-full bg-positive transition-[width]" style={{ width: `${Math.max(pct, 3)}%` }} />
-                      <span className="numeric absolute inset-0 flex items-center px-2.5 text-[10px] font-medium text-foreground/90">
-                        {fmt(goal.saved)} {t("de", "of")} {fmt(goal.target)}
-                      </span>
                     </div>
                     <div className="mt-1.5 flex flex-wrap items-center gap-x-3.5 gap-y-1 text-[11px] text-muted-foreground">
                       {done ? (
