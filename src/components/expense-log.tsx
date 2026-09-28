@@ -1159,7 +1159,7 @@ export function ExpenseLog() {
             createPortal(
               <div
                 className="fixed inset-x-0 z-[35] bg-background/60 backdrop-blur-sm sm:hidden"
-                style={{ top: 56, bottom: "calc(82px + env(safe-area-inset-bottom, 0px))" }}
+                style={{ top: 56, bottom: "calc(82px + env(safe-area-inset-bottom, 0px))", clipPath: addBlurClip }}
                 aria-hidden="true"
               />,
               document.body,
