@@ -2346,7 +2346,7 @@ export function ExpenseLog() {
                   onSelect={() => (isMobile ? setPhotoPickerOpen(true) : fileRef.current?.click())}
                 >
                   <Upload className="mr-2.5 h-6 w-6 text-positive" />
-                  {t("Sube foto o captura", "Upload photo or screenshot")}
+                  {t("Fotos o estados de cuentas", "Photos or bank statements")}
                 </DropdownMenuItem>
                 <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={openNewRecurring}>
                   <Repeat className="mr-2.5 h-6 w-6 text-positive" />
