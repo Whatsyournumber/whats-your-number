@@ -175,7 +175,7 @@ export function MobileBottomNav() {
           <span className={cn("relative -top-1 grid h-16 w-16 shrink-0 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/40 ring-4 ring-background transition-transform group-hover:scale-105 group-active:scale-95", menuOpen && "z-50")}>
             <Plus className="h-8 w-8" strokeWidth={2.2} />
           </span>
-          <span className="min-h-7 whitespace-nowrap text-center text-[9px] font-medium leading-tight tracking-tight text-foreground">
+          <span className={cn("min-h-7 whitespace-nowrap text-center text-[9px] font-medium leading-tight tracking-tight text-foreground", menuOpen && "opacity-0")}>
             {t("Agregar gasto", "Add expense")}
           </span>
         </button>
