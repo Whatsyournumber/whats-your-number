@@ -125,6 +125,7 @@ export function ExpenseLog() {
   const [recOpen, setRecOpen] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
   const [sharedOpen, setSharedOpen] = useState(false);
+  const [addMenuOpen, setAddMenuOpen] = useState(false);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
   const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
   const router = useRouter();
@@ -1115,7 +1116,8 @@ export function ExpenseLog() {
             {t("Controla tus gastos del día a día y mantente dentro de tu plan.", "Track your daily expenses and stay within your plan.")}
           </p>
         </div>
-        <DropdownMenu>
+        <DropdownMenu open={addMenuOpen} onOpenChange={setAddMenuOpen}>
+
           <TooltipProvider delayDuration={150}>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -1135,7 +1137,14 @@ export function ExpenseLog() {
             </TooltipContent>
           </Tooltip>
           </TooltipProvider>
-          <DropdownMenuContent align="end" className="w-[21rem] p-2">
+          {addMenuOpen && (
+            <div
+              className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm sm:hidden"
+              aria-hidden="true"
+            />
+          )}
+          <DropdownMenuContent align="end" className="z-50 w-[21rem] p-2">
+
             <div className="px-4 pb-2 pt-3 text-center">
               <p className="text-[22px] font-bold tracking-tight text-foreground">
                 {t("Trackea tus gastos diarios", "Track your spending")}
