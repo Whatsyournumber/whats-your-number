@@ -13,3 +13,4 @@
 - [x] Renombrar Distribución del dinero a Metas de ahorro, abrirla en Gratis y permitir metas editables
 
 - [ ] Unificar Flujo de dinero + Destino del ahorro en un solo sankey (Ingresos → Gastos/Ahorro/Lifestyle → Metas/Inversiones/Disponible)
+- [ ] Líneas del flujo más finas + editor arriba para destinar dinero a inversiones y metas
