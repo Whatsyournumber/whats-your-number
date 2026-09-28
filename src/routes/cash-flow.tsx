@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { PlanGate } from "@/components/plan-gate";
 import { motion } from "motion/react";
 import { AlertCircle, ArrowLeftRight, ArrowRight, CheckCircle2, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/cash-flow")({
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  component: CashFlow,
+  component: () => <PlanGate required="pro" blur={false}><CashFlow /></PlanGate>,
 });
 
 const MONTH_LABELS_ES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];

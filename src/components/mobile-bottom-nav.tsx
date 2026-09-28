@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 export function MobileBottomNav() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const t = useT();
-  const { isPro } = useSubscription();
+  const { isPro, isInvestor } = useSubscription();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [adviceOpen, setAdviceOpen] = useState(false);
@@ -29,8 +29,8 @@ export function MobileBottomNav() {
   const tabs = [
     { title: t("Inicio", "Home"), url: "/dashboard", icon: Home },
     { title: t("Tus gastos", "Spending"), url: "/registro-gastos", icon: Wallet },
-    { title: t("Tu número", "Your number"), url: "/retiro", icon: Target },
-    ...(isPro
+    ...(isPro ? [{ title: t("Tu número", "Your number"), url: "/retiro", icon: Target }] : []),
+    ...(isInvestor
       ? [{ title: t("Portfolio", "Portfolio"), url: "/portafolio", icon: LineChart }]
       : [{ title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserRound }]),
   ];

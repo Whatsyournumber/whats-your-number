@@ -35,7 +35,7 @@ export function CheckoutWelcome() {
     return () => window.clearInterval(timer);
   }, [qc]);
 
-  const planName = tier === "patrimonio" ? "Patrimonio" : "Pro";
+  const planName = tier === "patrimonio" ? "Familiar" : tier === "investor" ? "Inversor" : "Pro";
 
   return (
     <AnimatePresence>
@@ -52,14 +52,16 @@ export function CheckoutWelcome() {
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             className="relative w-full max-w-md rounded-2xl border border-border bg-card/90 p-8 text-center shadow-2xl backdrop-blur"
           >
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon"
               onClick={() => setOpen(false)}
               className="absolute right-4 top-4 text-muted-foreground transition-colors hover:text-foreground"
               aria-label={t("Cerrar", "Close")}
             >
               <X className="h-4 w-4" />
-            </button>
+            </Button>
 
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-primary/30 bg-primary/10">
               <Sparkles className="h-5 w-5 text-primary" />

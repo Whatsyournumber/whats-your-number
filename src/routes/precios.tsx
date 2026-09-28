@@ -18,13 +18,13 @@ import { clearPendingDiscount, getPendingDiscount, type PendingDiscount } from "
 
 
 type PricingSearch = {
-  plan?: "familiar" | "pro" | "free";
+  plan?: "familiar" | "inversor" | "pro" | "free";
 };
 
 export const Route = createFileRoute("/precios")({
   validateSearch: (search: Record<string, unknown>): PricingSearch => {
     const plan = search["plan"];
-    if (plan === "familiar" || plan === "pro" || plan === "free") {
+    if (plan === "familiar" || plan === "inversor" || plan === "pro" || plan === "free") {
       return { plan };
     }
     return {};
@@ -59,9 +59,9 @@ function Pricing() {
   const { openCheckout, loading } = usePaddleCheckout();
   const resumedCheckout = useRef(false);
   const [discount, setDiscount] = useState<PendingDiscount | null>(null);
-  const highlightedName = planParam === "familiar" ? "Familiar" : "Pro";
+  const highlightedName = planParam === "familiar" ? "Familiar" : planParam === "inversor" ? "Inversor" : "Pro";
   const [selectedPlan, setSelectedPlan] = useState<string | null>(
-    planParam === "familiar" ? "Familiar" : planParam === "free" ? "Free" : "Pro",
+    planParam === "familiar" ? "Familiar" : planParam === "inversor" ? "Inversor" : planParam === "free" ? "Free" : "Pro",
   );
   const { prices, currency } = useRegionalPricing();
 
@@ -71,6 +71,7 @@ function Pricing() {
 
   useEffect(() => {
     if (planParam === "familiar") setSelectedPlan("Familiar");
+    else if (planParam === "inversor") setSelectedPlan("Inversor");
     else if (planParam === "pro") setSelectedPlan("Pro");
     else if (planParam === "free") setSelectedPlan("Free");
   }, [planParam]);
@@ -109,10 +110,9 @@ function Pricing() {
         ),
         t("Análisis de gastos del mes", "Monthly expense analysis"),
         t("5 importaciones de estados de cuenta al mes", "5 statement imports per month"),
-        t("Tu número de libertad financiera", "Your financial freedom number"),
+        t("Tu número simple en Inicio", "Your simple number on Home"),
         t("Plan de gasto mensual 40/40/20", "Monthly 40/40/20 spending plan"),
-        t("Simulador de retiro", "Retirement simulator"),
-        t("Dashboard con tu progreso y cash flow", "Dashboard with your progress and cash flow"),
+        t("Inicio con tu progreso", "Home with your progress"),
         t("Mis datos financieros", "My financial data"),
       ],
       cta: t("Empezar gratis", "Start for free"),
@@ -125,29 +125,38 @@ function Pricing() {
       yearlyPrice: prices.pro.yearly,
       priceId: isYearly ? "pro_yearly" : "pro_monthly",
       desc: t(
-        "Todo el sistema financiero con IA ilimitada para acelerar tu libertad.",
-        "The full financial OS with unlimited AI to speed up your freedom.",
+        "Planifica tus gastos y decisiones con IA.",
+        "Plan spending and life decisions with AI.",
       ),
       features: [
         t("Todo lo de Free", "Everything in Free"),
         t("Consejo de IA: pregúntale cualquier cosa y te responde según tu presupuesto", "AI advice: ask anything and it answers against your budget"),
         t("Análisis mensual de tus gastos con IA", "Monthly AI expense analysis"),
-        t("Entiende todo tu patrimonio: activos y pasivos para saber cuánto vales", "Understand all your wealth: assets and liabilities to know what you're worth"),
-        t("Cuentas y bancos ilimitados", "Unlimited accounts and banks"),
-        t("Importación PDF y CSV ilimitada en 30s", "Unlimited PDF and CSV imports in 30s"),
-        t("Trackea todo tu portfolio en tiempo real", "Track your whole portfolio in real time"),
-        t("Simulador futuro de tu portafolio en tiempo real", "Real-time future portfolio simulator"),
-        t("Multi-moneda avanzada EUR/USD/GBP", "Advanced multi-currency EUR/USD/GBP"),
-        t("Activos alternativos: cripto, real estate, etc.", "Alternative assets: crypto, real estate, etc."),
-        t("Análisis de hipoteca: paga y gasta menos", "Mortgage analysis: pay and spend less"),
+        t("Distribución del ahorro", "Savings distribution"),
+        t("Importación ilimitada de estados de cuenta PDF y CSV", "Unlimited PDF and CSV statement imports"),
         t("Recomendaciones de ahorro inteligentes", "Smart savings recommendations"),
         t("Simulador de retiro temprano", "Early retirement simulator"),
         t("Planificador de tus objetivos financieros", "Financial goals planner"),
-        t("Simulador de estilo de vida", "Lifestyle simulator"),
+        t("City Planner: compara ciudades", "City Planner: compare cities"),
         t("WhatsYournumber acorde con tu objetivo", "WhatsYournumber tailored to your goal"),
       ],
       cta: t("Empezar con Pro", "Get started with Pro"),
       highlight: highlightedName === "Pro",
+    },
+    {
+      name: "Inversor",
+      monthlyPrice: prices.investor.monthly,
+      yearlyPrice: prices.investor.yearly,
+      priceId: isYearly ? "investor_yearly" : "investor_monthly",
+      desc: t("Controla tu patrimonio y tus inversiones.", "Manage your net worth and investments."),
+      features: [
+        t("Todo lo de Pro", "Everything in Pro"),
+        t("Patrimonio: activos y pasivos", "Net worth: assets and liabilities"),
+        t("Portafolio e inversiones en tiempo real", "Portfolio and investments in real time"),
+        t("Análisis de hipoteca", "Mortgage analysis"),
+      ],
+      cta: t("Empezar con Inversor", "Get started with Investor"),
+      highlight: highlightedName === "Inversor",
     },
     {
       name: "Familiar",
@@ -159,7 +168,7 @@ function Pricing() {
         "Organize your family's wealth and build your children's financial future.",
       ),
       features: [
-        t("Todo lo de Pro", "Everything in Pro"),
+        t("Todo lo de Inversor", "Everything in Investor"),
         t("Hasta 3 perfiles familiares", "Up to 3 family profiles"),
         t("Plan de ahorro e inversión para cada hijo", "Savings and investment plan for each child"),
         t("Simulador de universidad y educación", "College and education simulator"),
@@ -171,31 +180,6 @@ function Pricing() {
       ],
       cta: t("Empezar con Familiar", "Get started with Familiar"),
       highlight: highlightedName === "Familiar",
-    },
-    {
-      name: "Corporativo",
-      monthlyPrice: null,
-      yearlyPrice: null,
-      priceId: null,
-      contact: true,
-      desc: t(
-        "Planning patrimonial B2B.\nReportes bajo tu marca.\nEscalabilidad para tu equipo.",
-        "B2B wealth planning.\nBranded reports.\nScalable for your team.",
-      ),
-      features: [
-        t("Todo lo de Familiar para cada miembro", "Everything in Familiar for each member"),
-        t("Licencias por volumen para tu equipo", "Volume licensing for your team"),
-        t("Ideal para brokers, financial planners y family offices", "Built for brokers, financial planners and family offices"),
-        t("Onboarding y workshops para empleados", "Onboarding and employee workshops"),
-        t("Dashboard agregado y anonimizado de RRHH", "Aggregated, anonymized HR dashboard"),
-        t("Marca blanca para asesores y bancos", "White label for advisors and banks"),
-        t("Reportes personalizados bajo tu branding", "Branded reports under your identity"),
-        t("API y webhooks para integrar con tu CRM", "API and webhooks to integrate with your CRM"),
-        t("Integración SSO y soporte dedicado", "SSO integration and dedicated support"),
-        t("Account manager y SLA garantizado", "Account manager and guaranteed SLA"),
-      ],
-      cta: t("Solicitar plan a la medida", "Request a custom plan"),
-      highlight: false,
     },
   ];
 
@@ -230,13 +214,13 @@ function Pricing() {
 
   const handleCta = (plan: (typeof plans)[number]) => {
     if (!plan.priceId) return;
-    const selectedPlan = plan.name === "Familiar" ? "familiar" : "pro";
+    const selectedPlan = plan.name === "Familiar" ? "familiar" : plan.name === "Inversor" ? "inversor" : "pro";
     setPendingCheckoutPlan(selectedPlan);
     if (!user) {
       if (plan.name === "Familiar") {
         navigate({ to: "/auth", search: { mode: "signup", flow: "kids", plan: "familiar" } });
       } else {
-        navigate({ to: "/auth", search: { mode: "signup", plan: "pro" } });
+        navigate({ to: "/auth", search: { mode: "signup", plan: selectedPlan } });
       }
       return;
     }
@@ -264,7 +248,7 @@ function Pricing() {
     const pendingPlan = getPendingCheckoutPlan();
     if (!pendingPlan) return;
     const selected = plans.find((plan) =>
-      pendingPlan === "familiar" ? plan.name === "Familiar" : plan.name === "Pro",
+      pendingPlan === "familiar" ? plan.name === "Familiar" : pendingPlan === "inversor" ? plan.name === "Inversor" : plan.name === "Pro",
     );
     if (!selected) return;
     resumedCheckout.current = true;
@@ -319,31 +303,28 @@ function Pricing() {
 
           {/* Toggle mensual / anual */}
           <div className="mt-8 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-border bg-card/60 p-1 backdrop-blur">
-            <button
+            <Button
               type="button"
+              variant="ghost"
               onClick={() => setBilling("monthly")}
               className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
                 billing === "monthly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t("Mensual", "Monthly")}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="ghost"
               onClick={() => setBilling("yearly")}
               className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
                 billing === "yearly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t("Anual · 2 meses gratis", "Yearly · 2 months free")}
-            </button>
+            </Button>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            {t(
-              "El plan anual se factura en un solo pago: pagas 10 meses y usas 12.",
-              "The yearly plan is billed in one payment: pay for 10 months, use 12.",
-            )}
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground">{t("El plan anual se factura en un solo pago.", "The yearly plan is billed in one payment.")}</p>
         </section>
 
         <section className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -450,12 +431,12 @@ function Pricing() {
                         search={
                           plan.name === "Familiar"
                             ? { mode: "signup", flow: "kids", plan: "familiar" }
-                            : { mode: "signup", plan: "pro" }
+                            : { mode: "signup", plan: plan.name === "Inversor" ? "inversor" : "pro" }
                         }
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedPlan(plan.name);
-                          setPendingCheckoutPlan(plan.name === "Familiar" ? "familiar" : "pro");
+                          setPendingCheckoutPlan(plan.name === "Familiar" ? "familiar" : plan.name === "Inversor" ? "inversor" : "pro");
                         }}
                       >
                         {plan.cta}
