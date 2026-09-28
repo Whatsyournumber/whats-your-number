@@ -16,7 +16,7 @@ type SuccessSearch = { plan: PendingCheckoutPlan };
 
 export const Route = createFileRoute("/checkout/success")({
   validateSearch: (search: Record<string, unknown>): SuccessSearch => ({
-    plan: search["plan"] === "familiar" ? "familiar" : "pro",
+    plan: search["plan"] === "familiar" ? "familiar" : search["plan"] === "inversor" ? "inversor" : "pro",
   }),
   head: () => ({
     meta: [
@@ -39,7 +39,7 @@ function CheckoutSuccess() {
   const t = useT();
   const [checks, setChecks] = useState(0);
 
-  const activated = plan === "familiar" ? tier === "patrimonio" : tier === "pro" || tier === "patrimonio";
+  const activated = plan === "familiar" ? tier === "patrimonio" : plan === "inversor" ? tier === "investor" || tier === "patrimonio" : tier !== "free";
 
   useEffect(() => {
     if (!activated) return;

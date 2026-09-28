@@ -1,9 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export type PlanTier = "free" | "pro" | "patrimonio";
+export type PlanTier = "free" | "pro" | "investor" | "patrimonio";
 export type PaddleEnv = "sandbox" | "live";
 
-const RANK: Record<PlanTier, number> = { free: 0, pro: 1, patrimonio: 2 };
+const RANK: Record<PlanTier, number> = { free: 0, pro: 1, investor: 2, patrimonio: 3 };
 
 export class EntitlementError extends Error {
   code = "upgrade_required" as const;
@@ -14,6 +14,7 @@ export class EntitlementError extends Error {
 
 function tierFromProduct(productId: string | null): PlanTier {
   if (productId === "patrimonio_plan") return "patrimonio";
+  if (productId === "investor_plan") return "investor";
   if (productId === "pro_plan") return "pro";
   return "free";
 }

@@ -2671,7 +2671,7 @@ function PortafolioContent() {
 
 function Portafolio() {
   return (
-    <PlanGate required="pro">
+    <PlanGate required="investor">
       <PortafolioContent />
     </PlanGate>
   );

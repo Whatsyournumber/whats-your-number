@@ -1098,7 +1098,7 @@ function PatrimonioContent() {
 
 function Patrimonio() {
   return (
-    <PlanGate required="pro">
+    <PlanGate required="investor">
       <PatrimonioContent />
     </PlanGate>
   );
