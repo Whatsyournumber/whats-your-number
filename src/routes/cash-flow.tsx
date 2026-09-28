@@ -402,7 +402,6 @@ function CashFlow() {
     [saveAmount, savingsYears, d.retirement.currentAge],
   );
   const savingsAtRetire = savingsProjection[savingsProjection.length - 1]?.value ?? 0;
-  const savingsYear1 = savingsProjection[1]?.value ?? 0;
   // «Tu ahorro en el tiempo»: curva de crecimiento con hitos y aporte vs interés compuesto
   const savingsContributed = saveAmount * 12 * savingsYears;
   const savingsGrowth = Math.max(0, savingsAtRetire - savingsContributed);
