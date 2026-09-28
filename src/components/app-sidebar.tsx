@@ -82,9 +82,11 @@ export function AppSidebar() {
     { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home, required: "investor" },
     { title: t("Familia", "Family"), url: "/ninos", icon: Users, required: "patrimonio" },
   ];
-  const [discoverOpen, setDiscoverOpen] = useState(() => discover.some((item) => item.url === pathname));
+  const discoverUnlocked = discover.filter((item) => !item.required || planMeetsTier(item.required, tier));
+  const discoverLocked = discover.filter((item) => item.required && !planMeetsTier(item.required, tier));
+  const [discoverOpen, setDiscoverOpen] = useState(() => discoverLocked.some((item) => item.url === pathname));
   useEffect(() => {
-    if (discover.some((item) => item.url === pathname) || searchStr.includes("tour=1")) setDiscoverOpen(true);
+    if (discoverLocked.some((item) => item.url === pathname) || searchStr.includes("tour=1")) setDiscoverOpen(true);
   }, [pathname, searchStr]);
 
   const affiliateItems: { title: string; url: string; icon: typeof Users }[] =
@@ -184,7 +186,7 @@ export function AppSidebar() {
             {t("Mi dinero", "My money")}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-0.5">{spending.map(renderItem)}</SidebarMenu>
+            <SidebarMenu className="gap-0.5">{spending.map(renderItem)}{discoverUnlocked.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
         <div className="mx-3 h-px bg-border" />
@@ -198,7 +200,7 @@ export function AppSidebar() {
         </SidebarGroup>
         <div className="mx-3 h-px bg-border" />
         <SidebarGroup className="p-1.5">
-          {!collapsed && (
+          {!collapsed && discoverLocked.length > 0 && (
             <Button
               type="button"
               variant="ghost"
@@ -211,9 +213,11 @@ export function AppSidebar() {
               <ChevronDown className={`h-4 w-4 transition-transform ${discoverOpen ? "rotate-180" : ""}`} />
             </Button>
           )}
-          <SidebarGroupContent id="sidebar-discover-items" hidden={!discoverOpen && !collapsed} className={!discoverOpen && !collapsed ? "hidden" : undefined}>
-            <SidebarMenu className="gap-0.5">{discover.map(renderItem)}</SidebarMenu>
-          </SidebarGroupContent>
+          {discoverLocked.length > 0 && (
+            <SidebarGroupContent id="sidebar-discover-items" hidden={!discoverOpen && !collapsed} className={!discoverOpen && !collapsed ? "hidden" : undefined}>
+              <SidebarMenu className="gap-0.5">{discoverLocked.map(renderItem)}</SidebarMenu>
+            </SidebarGroupContent>
+          )}
         </SidebarGroup>
 
         {adminItems.length > 0 && (
