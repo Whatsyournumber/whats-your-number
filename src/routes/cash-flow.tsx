@@ -393,13 +393,13 @@ function CashFlow() {
   }, [fixed.items, monthTx, matchesFixed, customWants, rules, travelDays, lang, retirementFundAmount]);
 
 
-  // Uso del ahorro: proyecta el ahorro mensual actual invertido en el S&P 500
-  // (10% anual histórico) hasta la edad de retiro del plan.
+  // «Tu ahorro en el tiempo»: proyecta el ahorro destinado a inversiones
+  // (10% anual histórico del S&P 500) hasta la edad de retiro del plan.
   const SP500_RATE = 10;
   const savingsYears = Math.max(1, (d.retirement.retireAge ?? 65) - d.retirement.currentAge);
   const savingsProjection = useMemo(
-    () => projectRetirementFrom(saveAmount, SP500_RATE, savingsYears, 0, d.retirement.currentAge),
-    [saveAmount, savingsYears, d.retirement.currentAge],
+    () => projectRetirementFrom(destInvest, SP500_RATE, savingsYears, 0, d.retirement.currentAge),
+    [destInvest, savingsYears, d.retirement.currentAge],
   );
   const savingsAtRetire = savingsProjection[savingsProjection.length - 1]?.value ?? 0;
   // «Tu ahorro en el tiempo»: curva de crecimiento con hitos y aporte vs interés compuesto
