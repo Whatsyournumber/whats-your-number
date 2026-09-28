@@ -130,6 +130,7 @@ export function ExpenseLog() {
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   const addMobileRef = useRef<HTMLButtonElement | null>(null);
   const [addBlurHoles, setAddBlurHoles] = useState<{ x1: number; y1: number; x2: number; y2: number }[]>([]);
+  const [addBlurBottom, setAddBlurBottom] = useState<number | null>(null);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
   const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
   const router = useRouter();
