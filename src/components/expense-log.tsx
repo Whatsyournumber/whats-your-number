@@ -1137,7 +1137,14 @@ export function ExpenseLog() {
             </TooltipContent>
           </Tooltip>
           </TooltipProvider>
-          <DropdownMenuContent align="end" className="w-[21rem] p-2">
+          {addMenuOpen && (
+            <div
+              className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm sm:hidden"
+              aria-hidden="true"
+            />
+          )}
+          <DropdownMenuContent align="end" className="z-50 w-[21rem] p-2">
+
             <div className="px-4 pb-2 pt-3 text-center">
               <p className="text-[22px] font-bold tracking-tight text-foreground">
                 {t("Trackea tus gastos diarios", "Track your spending")}
