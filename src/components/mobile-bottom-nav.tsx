@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Sparkles, Users, PieChart } from "lucide-react";
+import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Sparkles, Users } from "lucide-react";
 import { BudgetVoiceAdvisor } from "@/components/budget-voice-advisor";
 import { SharedExpenseDialog } from "@/components/shared-expense";
 import { useT } from "@/hooks/use-language";
@@ -29,8 +29,8 @@ export function MobileBottomNav() {
   const isFree = !isPro && !isInvestor;
   const tabs = [
     { title: t("Inicio", "Home"), url: "/dashboard", icon: Home },
-    { title: isFree ? t("Trackeo de mis gastos diarios", "Daily spending tracking") : t("Tus gastos", "Spending"), url: "/registro-gastos", icon: Wallet },
-    ...(isFree ? [{ title: t("Análisis de mis gastos", "My spending analysis"), url: "/gastos", icon: PieChart }] : []),
+    { title: isFree ? t("Mis gastos", "My spending") : t("Tus gastos", "Spending"), url: "/registro-gastos", icon: Wallet },
+    ...(isFree ? [{ title: t("Ahorro", "Savings"), url: "/cash-flow", icon: Target }] : []),
     ...(isPro ? [{ title: t("Tu número", "Your number"), url: "/retiro", icon: Target }] : []),
     ...(isInvestor
       ? [{ title: t("Portfolio", "Portfolio"), url: "/portafolio", icon: LineChart }]
