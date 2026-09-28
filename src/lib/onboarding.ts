@@ -444,6 +444,7 @@ export function shortenMoneyString(text: string): string {
 
 export type LifeData = {
   goal: string;
+  goal_secondary: string;
   goal_note: string;
   city: string;
   marital_status: string;
@@ -458,6 +459,7 @@ export type LifeData = {
 
 export const emptyLife: LifeData = {
   goal: "",
+  goal_secondary: "",
   goal_note: "",
   city: "",
   marital_status: "",

@@ -14,3 +14,5 @@ Free-plan navigation keeps WhatsYournumber accessible, gates mortgage and AI at 
 Create each shared expense and both participant records through the atomic `create_shared_expense` database function so RLS identity checks and split validation cannot leave partial data.
 
 Validate and normalize invitation email addresses with the shared Zod helper before account lookup or external sharing so both expense flows behave consistently.
+
+Onboarding stores one primary and one optional secondary financial goal; only an exclusive spending-tracking goal skips lifestyle, assets, and liabilities so existing goal-based calculations remain compatible.

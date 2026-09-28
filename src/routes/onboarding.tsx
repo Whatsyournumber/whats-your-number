@@ -255,6 +255,29 @@ function OnboardingPage() {
     });
   const setL = <K extends keyof LifeData>(key: K, value: LifeData[K]) => setLife((l) => ({ ...l, [key]: value }));
 
+  const selectedGoals = [life.goal, life.goal_secondary].filter(Boolean);
+  const expensesOnly = life.goal === "gastos" && !life.goal_secondary;
+  const toggleGoal = (value: string) => {
+    setLife((current) => {
+      const selected = [current.goal, current.goal_secondary].filter(Boolean);
+      if (selected.includes(value)) {
+        const remaining = selected.filter((goal) => goal !== value);
+        return {
+          ...current,
+          goal: remaining[0] ?? "",
+          goal_secondary: remaining[1] ?? "",
+        };
+      }
+      if (selected.length >= 2) return current;
+      return {
+        ...current,
+        goal: current.goal || value,
+        goal_secondary: current.goal ? value : "",
+      };
+    });
+    setData((current) => ({ ...current, priority: life.goal || value }));
+  };
+
   // Categorías personalizadas que la persona agrega a su plan en el onboarding.
   const [customCats, setCustomCats] = useState<{ id: string; name: string; amount: number }[]>([]);
   const addCustomCat = () =>
@@ -286,7 +309,15 @@ function OnboardingPage() {
   const planMissing = showRequiredErrors && spendPlanMissing;
 
   const go = (dir: 1 | -1) => {
-    const next = Math.min(SUMMARY_STEP, Math.max(1, step + dir));
+    const next = expensesOnly
+      ? dir === 1
+        ? step === 1
+          ? 9
+          : Math.min(SUMMARY_STEP, step + 1)
+        : step === 9
+          ? 1
+          : Math.max(1, step - 1)
+      : Math.min(SUMMARY_STEP, Math.max(1, step + dir));
     setStep(next);
     void persist({ current_step: Math.min(QUESTIONS, next) });
   };
@@ -337,9 +368,10 @@ function OnboardingPage() {
 
   const canContinue = () => {
     if (step === 1) {
-      if (life.goal === "otro") return life.goal_note.trim().length > 2;
-      if (life.goal === "negocio") return data.business_target > 0;
-      return !!life.goal;
+      if (!life.goal) return false;
+      if (selectedGoals.includes("otro") && life.goal_note.trim().length <= 2) return false;
+      if (selectedGoals.includes("negocio") && data.business_target <= 0) return false;
+      return true;
     }
     if (step === 2) return !!data.age;
     if (step === 4)
@@ -357,7 +389,11 @@ function OnboardingPage() {
     return true;
   };
 
-  const progress = (Math.min(step, QUESTIONS) / QUESTIONS) * 100;
+  const progress = expensesOnly
+    ? step === 1
+      ? 50
+      : 100
+    : (Math.min(step, QUESTIONS) / QUESTIONS) * 100;
   const isBuilding = step === BUILD_STEP;
   const isSummary = step === SUMMARY_STEP;
 
@@ -384,7 +420,13 @@ function OnboardingPage() {
               />
             </div>
             <span className="numeric w-16 shrink-0 whitespace-nowrap text-right text-[11px] text-muted-foreground">
-              {saving ? t("Guardando…", "Saving…") : isSummary ? "" : `${step} / ${QUESTIONS}`}
+              {saving
+                ? t("Guardando…", "Saving…")
+                : isSummary
+                  ? ""
+                  : expensesOnly
+                    ? `${step === 1 ? 1 : 2} / 2`
+                    : `${step} / ${QUESTIONS}`}
             </span>
             <LanguageToggle />
             <button
@@ -423,7 +465,7 @@ function OnboardingPage() {
             {step === 1 && (
               <Screen
                 title={t("¿Cuál es tu principal objetivo financiero?", "What's your main financial goal?")}
-                hint={t("Queremos construir un plan financiero adaptado a ti.", "We want to build a financial plan tailored to you.")}
+                hint={t("Puedes escoger hasta 2 objetivos.", "You can choose up to 2 goals.")}
               >
                 <div className="space-y-2.5">
                   {goals.map((g) => (
@@ -431,14 +473,12 @@ function OnboardingPage() {
                       <OptionRow
                         emoji={g.emoji}
                         title={t(g.label, GOALS_EN[g.value] ?? g.label)}
-                        selected={life.goal === g.value}
-                        onClick={() => {
-                          setL("goal", g.value);
-                          setData((d) => ({ ...d, priority: g.value }));
-                        }}
+                        selected={selectedGoals.includes(g.value)}
+                        disabled={selectedGoals.length >= 2 && !selectedGoals.includes(g.value)}
+                        onClick={() => toggleGoal(g.value)}
                       />
                       <AnimatePresence>
-                        {life.goal === g.value && g.value === "vivienda" && (
+                        {selectedGoals.includes(g.value) && g.value === "vivienda" && (
                           <Reveal>
                             <SubQuestion title={t("¿Cuánto cuesta la vivienda que quieres?", "How much does the home you want cost?")} />
                             <div className="grid gap-2.5 sm:grid-cols-2">
@@ -465,7 +505,7 @@ function OnboardingPage() {
                             </div>
                           </Reveal>
                         )}
-                        {life.goal === g.value && g.value === "negocio" && (
+                        {selectedGoals.includes(g.value) && g.value === "negocio" && (
                           <Reveal>
                             <SubQuestion title={t("¿Cuánto capital necesitas para montarlo?", "How much capital do you need to start it?")} />
                             <MoneyField
@@ -478,7 +518,7 @@ function OnboardingPage() {
                             />
                           </Reveal>
                         )}
-                        {life.goal === g.value && g.value === "otro" && (
+                        {selectedGoals.includes(g.value) && g.value === "otro" && (
                           <Reveal>
                             <SubQuestion title={t("Cuéntanos tu objetivo y cuánto cuesta", "Tell us your goal and how much it costs")} />
                             <div className="grid gap-2.5 sm:grid-cols-2">
@@ -844,18 +884,19 @@ function OnboardingPage() {
 
             {step === 9 && (
               <Screen
-                title={t(
-                  "Hablemos de tu patrimonio",
-                  "Let's talk about your net worth",
-                )}
+                title={expensesOnly
+                  ? t("Configura tus ingresos y gastos", "Set up your income and spending")
+                  : t("Hablemos de tu patrimonio", "Let's talk about your net worth")}
               >
-                <p className="mx-auto max-w-xl text-center text-sm text-muted-foreground">
-                  🤖 {t(
-                    "No te preocupes si no conoces estos números. Nuestra IA puede calcularlos automáticamente analizando tus extractos financieros.",
-                    "Don't worry if you don't know these numbers. Our AI can calculate them automatically by analyzing your financial statements.",
-                  )}{" "}
-                  <span className="text-foreground">{t("Puedes completarlo luego", "You can complete it later")}</span>.
-                </p>
+                {!expensesOnly && (
+                  <p className="mx-auto max-w-xl text-center text-sm text-muted-foreground">
+                    🤖 {t(
+                      "No te preocupes si no conoces estos números. Nuestra IA puede calcularlos automáticamente analizando tus extractos financieros.",
+                      "Don't worry if you don't know these numbers. Our AI can calculate them automatically by analyzing your financial statements.",
+                    )}{" "}
+                    <span className="text-foreground">{t("Puedes completarlo luego", "You can complete it later")}</span>.
+                  </p>
+                )}
 
                 <div className="mt-8 space-y-1">
                   <div className="flex items-center justify-between gap-3 py-2">
@@ -876,7 +917,7 @@ function OnboardingPage() {
                     </select>
                   </div>
 
-                  {hasPartner && (
+                  {hasPartner && !expensesOnly && (
                     <div className="flex items-center justify-between gap-4 border-t border-border/20 py-2">
                       <div className="min-w-0">
                         <p className="text-sm font-medium">{t("Análisis de", "Analysis for")}</p>
@@ -954,7 +995,7 @@ function OnboardingPage() {
                   </div>
                 </div>
 
-                {household && (
+                {household && !expensesOnly && (
                   <div className="mt-8">
                     <SubQuestion title={t("Ingresos y gastos de tu pareja", "Your partner's income and expenses")} />
                     <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
@@ -992,7 +1033,7 @@ function OnboardingPage() {
                   </div>
                 )}
 
-                <div className="mt-8">
+                {!expensesOnly && <div className="mt-8">
                   <SubQuestion
                     title={
                       household
@@ -1059,9 +1100,9 @@ function OnboardingPage() {
                     />
 
                   </div>
-                </div>
+                </div>}
 
-                <div className="mt-8">
+                {!expensesOnly && <div className="mt-8">
                   <SubQuestion
                     title={
                       household
@@ -1103,7 +1144,7 @@ function OnboardingPage() {
                       onChange={(v) => set("mortgage_term", v)}
                     />
                   </div>
-                </div>
+                </div>}
 
 
                 <div ref={spendPlanRef} className="mt-8 scroll-mt-24">
@@ -1208,10 +1249,10 @@ function OnboardingPage() {
                   </div>
                 </div>
 
-                <div className="mt-6 flex items-center justify-between rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
+                {!expensesOnly && <div className="mt-6 flex items-center justify-between rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
                   <span className="text-sm text-muted-foreground">{t("Patrimonio neto estimado", "Estimated net worth")}</span>
                   <span className="numeric text-xl font-semibold text-primary">{money(netWorth(data), cur)}</span>
-                </div>
+                </div>}
 
                 <div className="mt-10">
                   <h3 className="font-display flex items-center gap-2.5 text-xl font-semibold">
@@ -1387,20 +1428,24 @@ function OptionRow({
   desc,
   emoji,
   selected,
+  disabled = false,
   onClick,
 }: {
   title: string;
   desc?: string;
   emoji?: string;
   selected: boolean;
+  disabled?: boolean;
   onClick: () => void;
 }) {
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       className={cn(
         "flex w-full items-center gap-3.5 rounded-2xl border px-5 py-4 text-left transition-all",
         selected ? "border-primary bg-primary/10" : "border-border bg-elevated/50 hover:border-muted-foreground/40",
+        disabled && "cursor-not-allowed opacity-45 hover:border-border",
       )}
     >
       {emoji && <span className="text-lg">{emoji}</span>}
