@@ -318,6 +318,15 @@ function CashFlow() {
   const wantsAmount = lifestyleAmount;
   const saveAmount = investAmount + freeAmount;
 
+  // Destino del ahorro: a dónde va el ahorro del mes (metas, inversiones, disponible).
+  const { value: savingsGoalsValue } = useSyncedSetting<{ items: { id: string; monthly: number }[] }>("whatsyournumber:savings-goals", { items: [] });
+  const goalsMonthly = (Array.isArray(savingsGoalsValue?.items) ? savingsGoalsValue.items : []).reduce((s, g) => s + (Number(g.monthly) || 0), 0);
+  const savingsDestinations = [
+    { name: t("Metas de ahorro", "Savings goals"), amount: goalsMonthly, icon: <Target className="h-5 w-5" />, color: "var(--color-positive)" },
+    { name: t("Inversiones", "Investments"), amount: investAmount, icon: <TrendingUp className="h-5 w-5" />, color: "var(--color-chart-1)" },
+    { name: t("Disponible", "Available"), amount: Math.max(0, saveAmount - goalsMonthly - investAmount), icon: <Wallet className="h-5 w-5" />, color: "var(--color-chart-4)" },
+  ];
+
 
   const needsBreakdown = hasReal
     ? [
