@@ -16,8 +16,7 @@ export function MobileBottomNav() {
   const [adviceOpen, setAdviceOpen] = useState(false);
   const [sharedOpen, setSharedOpen] = useState(false);
   const addButtonRef = useRef<HTMLButtonElement | null>(null);
-  const footerRef = useRef<HTMLDivElement | null>(null);
-  const [blurBounds, setBlurBounds] = useState<{ footerTop: number; button: { x1: number; y1: number; x2: number; y2: number } } | null>(null);
+  const [blurBounds, setBlurBounds] = useState<{ x1: number; y1: number; x2: number; y2: number } | null>(null);
   // El tour del paso del botón + abre el menú real mientras dura el paso.
   const [tourHold, setTourHold] = useState(false);
   useEffect(() => {
@@ -35,13 +34,9 @@ export function MobileBottomNav() {
     }
     const measure = () => {
       const button = addButtonRef.current?.getBoundingClientRect();
-      const footer = footerRef.current?.getBoundingClientRect();
-      if (!button || !footer) return;
-      const p = 6;
-      setBlurBounds({
-        footerTop: footer.top,
-        button: { x1: button.left - p, y1: button.top - p, x2: button.right + p, y2: button.bottom + p },
-      });
+      if (!button) return;
+      const p = 2;
+      setBlurBounds({ x1: button.left - p, y1: button.top - p, x2: button.right + p, y2: button.bottom + p });
     };
     measure();
     window.addEventListener("resize", measure);
@@ -117,32 +112,30 @@ export function MobileBottomNav() {
         <>
           {!tourHold && (
             blurBounds && (
-              <div className="fixed inset-0" onClick={() => setMenuOpen(false)} aria-hidden>
+              <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} aria-hidden>
                 <div
                   className="fixed inset-x-0 bg-background/60 backdrop-blur-sm"
-                  style={{ top: 56, height: Math.max(0, blurBounds.button.y1 - 56) }}
+                  style={{ top: 0, height: Math.max(0, blurBounds.y1) }}
                 />
                 <div
                   className="fixed left-0 bg-background/60 backdrop-blur-sm"
-                  style={{ top: blurBounds.button.y1, width: Math.max(0, blurBounds.button.x1), height: Math.max(0, blurBounds.footerTop - blurBounds.button.y1) }}
+                  style={{ top: blurBounds.y1, width: Math.max(0, blurBounds.x1), height: Math.max(0, blurBounds.y2 - blurBounds.y1) }}
                 />
                 <div
                   className="fixed right-0 bg-background/60 backdrop-blur-sm"
-                  style={{ top: blurBounds.button.y1, left: blurBounds.button.x2, height: Math.max(0, blurBounds.footerTop - blurBounds.button.y1) }}
+                  style={{ top: blurBounds.y1, left: blurBounds.x2, height: Math.max(0, blurBounds.y2 - blurBounds.y1) }}
                 />
-                {blurBounds.button.y2 < blurBounds.footerTop && (
-                  <div
-                    className="fixed bg-background/60 backdrop-blur-sm"
-                    style={{ left: blurBounds.button.x1, width: blurBounds.button.x2 - blurBounds.button.x1, top: blurBounds.button.y2, height: blurBounds.footerTop - blurBounds.button.y2 }}
-                  />
-                )}
+                <div
+                  className="fixed inset-x-0 bottom-0 bg-background/60 backdrop-blur-sm"
+                  style={{ top: blurBounds.y2 }}
+                />
               </div>
             )
           )}
           <div
             data-tour-add-menu
             className={cn(
-              "absolute inset-x-3 rounded-2xl border border-border bg-card p-2 shadow-2xl",
+              "absolute inset-x-3 z-50 rounded-2xl border border-border bg-card p-2 shadow-2xl",
               tourHold ? "bottom-[calc(100%+200px)]" : "bottom-full mb-6",
             )}
           >
@@ -168,7 +161,7 @@ export function MobileBottomNav() {
           </div>
         </>
       )}
-      <div ref={footerRef} className="relative grid w-full grid-cols-5 items-end justify-items-center bg-background px-1 pb-[max(env(safe-area-inset-bottom,0px),10px)] pt-2 shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.35)]">
+      <div className="relative grid w-full grid-cols-5 items-end justify-items-center bg-background px-1 pb-[max(env(safe-area-inset-bottom,0px),10px)] pt-2 shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.35)]">
         {tabs.slice(0, 2).map((tab, i) => renderTab(tab, i === 1 && !isFree ? "-translate-x-2" : ""))}
         <button
           ref={addButtonRef}
