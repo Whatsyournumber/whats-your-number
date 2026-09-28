@@ -530,7 +530,7 @@ function CashFlow() {
             </motion.div>
           );
           return (
-            <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,0.9fr)_90px_minmax(0,1fr)_90px_minmax(0,1.2fr)]">
+            <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,0.8fr)_70px_minmax(0,1.1fr)_70px_minmax(0,1.2fr)]">
               <motion.div
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
