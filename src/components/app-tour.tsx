@@ -205,7 +205,7 @@ export function AppTour() {
   const { profile } = useProfile();
   const [step, setStep] = useState<number | null>(null); // 0 = bienvenida
   // El tutorial muestra SOLO las paradas incluidas en el plan real del usuario
-  // (gratis, pro o familiar): ninguna clave externa puede ampliarlo.
+  // (gratis, pro, inversor o familiar): ninguna clave externa puede ampliarlo.
   const availableSteps = useMemo(() => {
     // En móvil el tour es corto: una parada por cada botón de la barra inferior.
     const MOBILE_URLS = tier === "free"

@@ -34,7 +34,7 @@ export const Route = createFileRoute("/precios")({
       { title: "Precios — WhatsYournumber" },
       {
         name: "description",
-        content: "Planes de WhatsYournumber: empieza gratis, paga mensual o anual con descuento, y escala al plan Familiar para familias y activos complejos.",
+        content: "Planes de WhatsYournumber: Gratis, Pro, Inversor y Familiar para cada etapa de tus finanzas.",
       },
       { property: "og:title", content: "Precios — WhatsYournumber" },
       { property: "og:description", content: "Planes simples para ordenar tu patrimonio con IA." },
@@ -133,7 +133,7 @@ function Pricing() {
         t("Consejo de IA: pregúntale cualquier cosa y te responde según tu presupuesto", "AI advice: ask anything and it answers against your budget"),
         t("Análisis mensual de tus gastos con IA", "Monthly AI expense analysis"),
         t("Distribución del ahorro", "Savings distribution"),
-        t("Importación ilimitada de estados de cuenta PDF y CSV", "Unlimited PDF and CSV statement imports"),
+        t("Importación ilimitada de estados de cuenta PDF y CSV con clasificación automática", "Unlimited PDF and CSV statement imports with automatic categorization"),
         t("Recomendaciones de ahorro inteligentes", "Smart savings recommendations"),
         t("Simulador de retiro temprano", "Early retirement simulator"),
         t("Planificador de tus objetivos financieros", "Financial goals planner"),

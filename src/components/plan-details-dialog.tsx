@@ -172,40 +172,32 @@ export function PlanChangeDialog({
   const current = copy[from];
   const isUpgrade = planMeetsTier(from, to) && from !== to;
 
-  const gains = [
-    t("3 perfiles: p. ej. 2 adultos + 1 hijo o 1 adulto + 2 hijos", "3 profiles: e.g. 2 adults + 1 kid or 1 adult + 2 kids"),
-    t("Plan de ahorro e inversión para cada hijo", "Savings and investment plan for each child"),
-    t("Simulador de universidad y educación", "College and education simulator"),
-    t("Meta de patrimonio a los 18 años de tu hijo", "Net worth goal by your child's 18th birthday"),
-    t("My First Number: aprenden jugando", "My First Number: they learn by playing"),
-    t("Soporte prioritario en 24h", "Priority support within 24h"),
-  ];
+  const fromRank = { free: 0, pro: 1, investor: 2, patrimonio: 3 }[from];
+  const toRank = { free: 0, pro: 1, investor: 2, patrimonio: 3 }[to];
+  const difference = isUpgrade
+    ? (to === "patrimonio" ? copy.patrimonio.features.slice(1) : copy.investor.features.slice(1))
+    : (from === "patrimonio" && to === "investor" ? copy.patrimonio.features.slice(1) : fromRank > toRank ? [...(from === "patrimonio" ? copy.patrimonio.features.slice(1) : []), ...copy.investor.features.slice(1)] : []);
+  const changeTitle = isUpgrade
+    ? t(`Mejorar a ${target.name}`, `Upgrade to ${target.name}`)
+    : t(`Bajar a ${target.name}`, `Downgrade to ${target.name}`);
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button size="sm" variant={isUpgrade ? "default" : "outline"} disabled={disabled}>
           {loading ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : null}
-          {isUpgrade ? t("Mejorar a Familiar", "Upgrade to Familiar") : t("Bajar a Pro", "Downgrade to Pro")}
+          {changeTitle}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {isUpgrade
-              ? t("Mejorar a Familiar", "Upgrade to Familiar")
-              : t("Bajar a Pro", "Downgrade to Pro")}
+            {changeTitle}
           </DialogTitle>
           <DialogDescription>
             {isUpgrade
-              ? t(
-                  "Pasas de Pro a Familiar. El cambio es inmediato y se prorratea lo que ya pagaste.",
-                  "You move from Pro to Familiar. The change is immediate and what you already paid is pro-rated.",
-                )
-              : t(
-                  "Pasas de Familiar a Pro. Mantienes Familiar hasta el final del periodo que ya pagaste.",
-                  "You move from Familiar to Pro. You keep Familiar until the end of the period you already paid.",
-                )}
+              ? t(`Pasas de ${current.name} a ${target.name}. El cambio es inmediato y se prorratea lo que ya pagaste.`, `You move from ${current.name} to ${target.name}. The change is immediate and what you already paid is pro-rated.`)
+              : t(`Pasas de ${current.name} a ${target.name}. Mantienes ${current.name} hasta el final del periodo pagado.`, `You move from ${current.name} to ${target.name}. You keep ${current.name} until the end of your paid period.`)}
           </DialogDescription>
         </DialogHeader>
 
@@ -224,7 +216,7 @@ export function PlanChangeDialog({
             {isUpgrade ? t("Lo que ganas", "What you gain") : t("Lo que dejas de tener", "What you lose")}
           </p>
           <ul className="mt-2 space-y-2">
-            {gains.map((f) => (
+            {difference.map((f) => (
               <li key={f} className="flex items-start gap-2 text-sm">
                 {isUpgrade ? (
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
@@ -237,10 +229,7 @@ export function PlanChangeDialog({
           </ul>
           {!isUpgrade && (
             <p className="mt-3 text-xs text-muted-foreground">
-              {t(
-                "Sigues con todo lo de Pro: IA ilimitada, hipoteca, portafolio y multi-moneda.",
-                "You keep everything in Pro: unlimited AI, mortgage, portfolio and multi-currency.",
-              )}
+              {t(`Mantienes las funciones del plan ${target.name}.`, `You keep the features of the ${target.name} plan.`)}
             </p>
           )}
         </div>
