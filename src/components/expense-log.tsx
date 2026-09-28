@@ -129,7 +129,7 @@ export function ExpenseLog() {
   const [sharedOpen, setSharedOpen] = useState(false);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   const addMobileRef = useRef<HTMLButtonElement | null>(null);
-  const [addBlurHole, setAddBlurHole] = useState<{ x1: number; y1: number; x2: number; y2: number } | undefined>(undefined);
+  const [addBlurHoles, setAddBlurHoles] = useState<{ x1: number; y1: number; x2: number; y2: number }[]>([]);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
   const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
   const router = useRouter();
@@ -1125,11 +1125,17 @@ export function ExpenseLog() {
           onOpenChange={(open) => {
             setAddMenuOpen(open);
             if (open && addMobileRef.current) {
-              const r = addMobileRef.current.getBoundingClientRect();
               const p = 6;
-              setAddBlurHole({ x1: r.left - p, y1: r.top - p, x2: r.right + p, y2: r.bottom + p });
+              const holes = [addMobileRef.current, document.querySelector<HTMLElement>("[data-tour-nav-add]")]
+                .filter((el): el is HTMLElement => !!el)
+                .map((el) => {
+                  const r = el.getBoundingClientRect();
+                  return { x1: r.left - p, y1: r.top - p, x2: r.right + p, y2: r.bottom + p };
+                })
+                .sort((a, b) => a.y1 - b.y1);
+              setAddBlurHoles(holes);
             } else if (!open) {
-              setAddBlurHole(undefined);
+              setAddBlurHoles([]);
             }
           }}
         >
