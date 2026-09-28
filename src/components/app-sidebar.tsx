@@ -194,7 +194,7 @@ export function AppSidebar() {
             {!collapsed && (
               <div className="min-w-0">
                 <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
-                <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
+                {!compact && <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>}
               </div>
             )}
           </div>
