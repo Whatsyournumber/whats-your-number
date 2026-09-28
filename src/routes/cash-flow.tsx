@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SavingsGoals } from "@/components/savings-goals";
 import { motion } from "motion/react";
-import { AlertCircle, ArrowLeftRight, ArrowRight, CheckCircle2, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank, Target, TrendingUp, Wallet } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { AlertCircle, ArrowLeftRight, ArrowRight, CheckCircle2, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory } from "@/lib/i18n-data";
 
@@ -502,7 +502,7 @@ function CashFlow() {
             { name: t("Ahorro total", "Total savings"), amount: saveAmount, icon: <PiggyBank className="h-5 w-5" />, color: "var(--color-positive)", highlight: true },
             { name: t("Lifestyle / deseos", "Lifestyle / wants"), amount: wantsAmount, icon: <Wallet className="h-5 w-5" />, color: "var(--color-chart-4)" },
           ];
-          const flowCard = (d: { name: string; amount: number; icon: React.ReactNode; color: string; highlight?: boolean }, total: number, idx: number, dir: "l" | "r") => (
+          const flowCard = (d: { name: string; amount: number; icon: ReactNode; color: string; highlight?: boolean }, total: number, idx: number, dir: "l" | "r") => (
             <motion.div
               key={d.name}
               initial={{ opacity: 0, x: dir === "l" ? -12 : 12 }}
