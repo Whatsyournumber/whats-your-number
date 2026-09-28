@@ -2,11 +2,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { getPaddleClient, gatewayFetch, type PaddleEnv } from "@/lib/paddle.server";
 
-const TIER_RANK: Record<string, number> = { pro_plan: 1, patrimonio_plan: 2 };
+const TIER_RANK: Record<string, number> = { pro_plan: 1, investor_plan: 2, patrimonio_plan: 3 };
 
 const PRICE_TO_PRODUCT: Record<string, string> = {
   pro_monthly: "pro_plan",
   pro_yearly: "pro_plan",
+  investor_monthly: "investor_plan",
+  investor_yearly: "investor_plan",
   patrimonio_monthly: "patrimonio_plan",
   patrimonio_yearly: "patrimonio_plan",
 };

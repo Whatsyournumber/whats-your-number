@@ -24,7 +24,7 @@ export const Route = createFileRoute("/hipoteca")({
 
 function Hipoteca() {
   return (
-    <PlanGate required="pro" blur={false}>
+    <PlanGate required="investor" blur={false}>
       <PageShell>
         <MortgageModule />
       </PageShell>

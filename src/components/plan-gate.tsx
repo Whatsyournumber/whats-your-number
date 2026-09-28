@@ -31,13 +31,13 @@ export function PlanGate({
   const isPro = required === "pro";
   const title = isPro
     ? t("Desbloquea funciones Pro", "Unlock Pro features")
-    : t("Desbloquea Familiar", "Unlock Familiar");
+    : required === "investor" ? t("Desbloquea Inversor", "Unlock Investor") : t("Desbloquea Familiar", "Unlock Family");
   const description = isPro
     ? t(
         "Esta función está incluida en Pro. Prueba 14 días gratis y cancela cuando quieras.",
         "This feature is included in Pro. Try 14 days free and cancel anytime.",
       )
-    : t(
+    : required === "investor" ? t("Esta función está incluida en Inversor y Familiar.", "This feature is included in Investor and Family.") : t(
         "Esta función está incluida en el plan Familiar. Para familias y patrimonios complejos.",
         "This feature is included in the Familiar plan. For families and complex net worths.",
       );

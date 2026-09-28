@@ -11,7 +11,7 @@
 
 <!-- LOVABLE:END -->
 
-Free-plan navigation keeps WhatsYournumber accessible, gates mortgage and AI at Pro, and uses the mobile My data tab in place of Portfolio; the mobile tour follows only tabs actually present for each tier so every highlighted destination is reachable.
+The four entitlements rank free < pro < investor < patrimonio (Family): Free has the number summary on Dashboard, Pro unlocks the full number, AI, cash flow and planners, Investor adds net worth, portfolio and mortgage, and Family adds children's profiles; keep sidebar and mobile tour destinations aligned with these gates.
 
 Create each shared expense and both participant records through the atomic `create_shared_expense` database function so RLS identity checks and split validation cannot leave partial data.
 

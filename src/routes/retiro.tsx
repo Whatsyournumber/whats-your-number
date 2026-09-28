@@ -4,6 +4,7 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 import { motion } from "motion/react";
 import { Pencil, X } from "lucide-react";
 import { ScrollXButtons, useScrollX } from "@/components/scroll-x";
+import { PlanGate } from "@/components/plan-gate";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
@@ -1005,6 +1006,6 @@ function RetiroContent() {
 }
 
 function Retiro() {
-  return <RetiroContent />;
+  return <PlanGate required="pro" blur={false}><RetiroContent /></PlanGate>;
 }
 

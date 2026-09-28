@@ -39,7 +39,7 @@ import { setPendingPromoCode } from "@/lib/pending-promo";
 import { clearPendingCheckoutPlan, getPendingCheckoutPlan, setPendingCheckoutPlan } from "@/lib/pending-checkout";
 import { startAffiliateWizard } from "@/lib/affiliate-wizard-state";
 
-type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" | "kids"; plan?: "familiar" | "pro" | "free" };
+type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" | "kids"; plan?: "familiar" | "inversor" | "pro" | "free" };
 
 /**
  * Navega al destino guardado. Las rutas con query o punto (p. ej. el
@@ -75,8 +75,8 @@ export const Route = createFileRoute("/auth")({
       mode: search["mode"] === "signup" || (affiliate && search["mode"] !== "login") ? "signup" : "login",
       ...(next ? { next } : affiliate ? { next: "/afiliados" } : {}),
       ...(affiliate ? { flow: "affiliate" as const } : kids ? { flow: "kids" as const } : {}),
-      ...(search["plan"] === "familiar" || search["plan"] === "pro" || search["plan"] === "free"
-        ? { plan: search["plan"] as "familiar" | "pro" | "free" }
+      ...(search["plan"] === "familiar" || search["plan"] === "inversor" || search["plan"] === "pro" || search["plan"] === "free"
+        ? { plan: search["plan"] as "familiar" | "inversor" | "pro" | "free" }
         : {}),
     };
   },
@@ -353,7 +353,7 @@ function AuthPage() {
   const [point, setPoint] = useState(0);
 
   const loading = authLoading || subscriptionLoading;
-  const requestedCheckoutPlan = plan === "familiar" || plan === "pro" ? plan : null;
+  const requestedCheckoutPlan = plan === "familiar" || plan === "inversor" || plan === "pro" ? plan : null;
 
   // El plan también viaja en la URL para sobrevivir al cambio de pantalla,
   // mientras sessionStorage conserva el checkout si hay confirmación de email.

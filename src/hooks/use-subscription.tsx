@@ -6,7 +6,7 @@ import { useRoles } from "@/hooks/use-role";
 
 import { getPaddleEnvironment } from "@/lib/paddle";
 
-export type PlanTier = "free" | "pro" | "patrimonio";
+export type PlanTier = "free" | "pro" | "investor" | "patrimonio";
 
 export interface Subscription {
   id: string;
@@ -24,6 +24,7 @@ export interface Subscription {
 
 function tierFromProduct(productId: string): PlanTier {
   if (productId === "patrimonio_plan") return "patrimonio";
+  if (productId === "investor_plan") return "investor";
   if (productId === "pro_plan") return "pro";
   return "free";
 }
@@ -57,7 +58,7 @@ export function useSubscription() {
         .limit(20);
       if (error) throw error;
       const rows = (data ?? []) as Subscription[];
-      const rank: Record<PlanTier, number> = { free: 0, pro: 1, patrimonio: 2 };
+       const rank: Record<PlanTier, number> = { free: 0, pro: 1, investor: 2, patrimonio: 3 };
       const effectiveTier = (s: Subscription): PlanTier => {
         if (!isActive(s.status, s.current_period_end)) return "free";
         const held =
@@ -120,7 +121,8 @@ export function useSubscription() {
     tier,
     active: active || isSuperAdmin,
     isFree: tier === "free",
-    isPro: tier === "pro" || tier === "patrimonio",
+    isPro: tier !== "free",
+    isInvestor: tier === "investor" || tier === "patrimonio",
     isPatrimonio: tier === "patrimonio",
     isPromo,
     isTrial: subscription?.status === "trialing" && !isPromo,
@@ -131,6 +133,6 @@ export function useSubscription() {
 
 
 export function planMeetsTier(required: PlanTier, current: PlanTier): boolean {
-  const rank: Record<PlanTier, number> = { free: 0, pro: 1, patrimonio: 2 };
+  const rank: Record<PlanTier, number> = { free: 0, pro: 1, investor: 2, patrimonio: 3 };
   return rank[current] >= rank[required];
 }

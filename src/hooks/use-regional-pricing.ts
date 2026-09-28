@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getVisitorPricingTier } from "@/lib/geo-pricing.functions";
 import {
   TIER_PRICES,
+  SPAIN_PRICES,
   currencyForCountry,
   tierForCountry,
   type DisplayCurrency,
@@ -63,7 +64,7 @@ export function useRegionalPricing() {
     tier,
     country: serverCountry,
     currency,
-    prices: TIER_PRICES[tier],
+    prices: serverCountry === "ES" ? SPAIN_PRICES : TIER_PRICES[tier],
     loading: query.isLoading,
   };
 

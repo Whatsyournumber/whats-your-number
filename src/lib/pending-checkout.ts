@@ -1,4 +1,4 @@
-export type PendingCheckoutPlan = "pro" | "familiar";
+export type PendingCheckoutPlan = "pro" | "inversor" | "familiar";
 
 const STORAGE_KEY = "wyn_pending_checkout_plan";
 
@@ -10,7 +10,7 @@ export function setPendingCheckoutPlan(plan: PendingCheckoutPlan) {
 export function getPendingCheckoutPlan(): PendingCheckoutPlan | null {
   if (typeof window === "undefined") return null;
   const plan = window.sessionStorage.getItem(STORAGE_KEY);
-  return plan === "pro" || plan === "familiar" ? plan : null;
+  return plan === "pro" || plan === "inversor" || plan === "familiar" ? plan : null;
 }
 
 export function clearPendingCheckoutPlan() {
