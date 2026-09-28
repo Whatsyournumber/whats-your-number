@@ -125,6 +125,7 @@ export function ExpenseLog() {
   const [recOpen, setRecOpen] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
   const [sharedOpen, setSharedOpen] = useState(false);
+  const [addMenuOpen, setAddMenuOpen] = useState(false);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
   const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
   const router = useRouter();
