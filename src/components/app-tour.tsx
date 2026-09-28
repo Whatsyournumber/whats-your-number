@@ -97,7 +97,7 @@ const STEPS: Step[] = [
       "It starts from your plan, then uses your real spending."],
   },
   {
-    url: "/retiro", icon: Target, minPlan: "free",
+    url: "/retiro", icon: Target, minPlan: "pro",
     es: ["Tu número de libertad financiera", "Calcula cuánto dinero necesitas para vivir de tus inversiones.",
       "Mira tu número de retiro; puedes editarlo según cuánto quieras vivir al mes.",
       "Mira el progreso de tu número vs el año de retiro.",
@@ -108,7 +108,7 @@ const STEPS: Step[] = [
       "Simulate retirement with higher contributions, returns and age to plan better."],
   },
   {
-    url: "/hipoteca", icon: Home, minPlan: "pro",
+    url: "/hipoteca", icon: Home, minPlan: "investor",
     es: ["Análisis de hipoteca", "Compra vs alquiler, con tus datos reales.",
       "Edita tu información para ver tu renta mensual y cuántos intereses pagarás.",
       "La IA te ayuda a entender si es mejor abonar, bajar la tasa o pagar mensual.",
@@ -119,7 +119,7 @@ const STEPS: Step[] = [
       "We analyze whether paying it all off or investing in the S&P 500 is better."],
   },
   {
-    url: "/patrimonio", icon: Wallet, minPlan: "pro",
+    url: "/patrimonio", icon: Wallet, minPlan: "investor",
     es: ["Patrimonio", "Todo lo que tienes y lo que debes, en una vista.",
       "Entiende todo tu patrimonio, tus activos - tus pasivos y su rentabilidad, y entiende realmente cuánto vales.",
       "Compara tu patrimonio vs el S&P 500, Nasdaq o MSCI en tiempo real.",
@@ -130,7 +130,7 @@ const STEPS: Step[] = [
       "See all your assets and how much risk you're taking, each one separately."],
   },
   {
-    url: "/portafolio", icon: TrendingUp, minPlan: "pro",
+    url: "/portafolio", icon: TrendingUp, minPlan: "investor",
     es: ["Portafolio", "Todo tu portafolio y su evolución, en un solo lugar.",
       "Entiende todo tu portafolio: cripto, acciones, bonos, notas y más, en tiempo real.",
       "Mira la rentabilidad real ponderada frente al S&P 500 y trackea cualquier acción.",
@@ -870,12 +870,13 @@ export function AppTour() {
   const planLabel =
     tier === "patrimonio"
       ? t("Plan Familiar", "Family plan")
+      : tier === "investor" ? t("Plan Inversor", "Investor plan")
       : tier === "pro"
         ? isPromo
           ? t("Plan Pro · código", "Pro plan · code")
           : t("Plan Pro", "Pro plan")
         : t("Plan Free", "Free plan");
-  const PlanIcon = tier === "patrimonio" ? Users : tier === "pro" ? Crown : Sprout;
+  const PlanIcon = tier === "patrimonio" ? Users : tier === "investor" || tier === "pro" ? Crown : Sprout;
 
   const planBadge = (
     <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary ring-1 ring-primary/25">

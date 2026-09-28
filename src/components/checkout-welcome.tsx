@@ -35,7 +35,7 @@ export function CheckoutWelcome() {
     return () => window.clearInterval(timer);
   }, [qc]);
 
-  const planName = tier === "patrimonio" ? "Patrimonio" : "Pro";
+  const planName = tier === "patrimonio" ? "Familiar" : tier === "investor" ? "Inversor" : "Pro";
 
   return (
     <AnimatePresence>

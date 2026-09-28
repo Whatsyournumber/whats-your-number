@@ -48,18 +48,20 @@ export function SubscriptionManager() {
   const displayEmail = billing.data?.email ?? billing.data?.accountEmail ?? user?.email ?? null;
   const card = billing.data?.card ?? null;
 
-  const planLabel = tier === "patrimonio" ? "Familiar" : tier === "pro" ? "Pro" : "Free";
+  const planLabel = tier === "patrimonio" ? "Familiar" : tier === "investor" ? "Inversor" : tier === "pro" ? "Pro" : "Free";
   const benefits = tier === "free"
     ? [
         t("Trackea el día a día de tus gastos", "Track your expenses day by day"),
         t("5 importaciones de estados de cuenta al mes", "5 statement imports per month"),
-        t("Tu número de libertad financiera", "Your financial freedom number"),
+        t("Tu número simple en Inicio", "Your simple number on Home"),
         t("Plan de gasto mensual", "Monthly spending plan"),
-        t("Simulador de retiro", "Retirement simulator"),
+        t("Análisis de gastos", "Spending analysis"),
       ]
     : tier === "pro"
-      ? [t("Análisis de gastos con IA", "AI spending analysis"), t("Simulador de hipoteca", "Mortgage simulator"), t("Portafolio e inversiones", "Portfolio & investments"), "Life Planner"]
-      : [t("Todo lo incluido en Pro", "Everything in Pro"), t("Perfiles familiares", "Family profiles"), t("Planificación en pareja", "Couples planning"), t("Soporte prioritario", "Priority support")];
+      ? [t("Asesor IA de gastos", "AI spending advisor"), t("Distribución del ahorro", "Savings distribution"), t("Importación ilimitada de estados", "Unlimited statement imports"), "Life Planner", "City Planner", "WhatsYournumber"]
+      : tier === "investor"
+        ? [t("Todo lo de Pro", "Everything in Pro"), t("Patrimonio", "Net worth"), t("Portafolio", "Portfolio"), t("Hipoteca", "Mortgage")]
+        : [t("Todo lo incluido en Inversor", "Everything in Investor"), t("Perfiles familiares", "Family profiles"), t("Planificación en pareja", "Couples planning"), t("Soporte prioritario", "Priority support")];
 
   const portal = async (target: PortalTarget) => {
     setBusy(`portal:${target}`);
