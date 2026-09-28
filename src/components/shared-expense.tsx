@@ -146,11 +146,12 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
       const split = modeLabel(effectiveMode === "equal" ? "equal" : "percent", pct);
       const names = partners.map((p) => p.name).join(", ");
       // Un gasto compartido por persona; tu parte solo se guarda una vez.
+      // Cada registro es por pareja: tu parte + la de esa persona (la BD valida que sumen el total del registro).
       for (const p of partners) {
         const { data: expenseId, error } = await supabase.rpc("create_shared_expense", {
           _partner_id: p.id,
           _payer_id: payer === "me" ? user.id : p.id,
-          _total: total,
+          _total: mine + theirs,
           _currency: currency,
           _category: cat,
           _merchant: merchant.trim(),
