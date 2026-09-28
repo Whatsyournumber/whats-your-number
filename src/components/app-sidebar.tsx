@@ -120,20 +120,21 @@ export function AppSidebar() {
     : ([] as const);
 
 
+  const compact = isFamilyPlan && !isMobile;
   const renderItem = (item: { title: string; url: string; icon: typeof Wallet; required?: PlanTier }) => {
     const active = pathname === item.url;
     const locked = item.required && !planMeetsTier(item.required, tier);
     const badge = item.required === "patrimonio" ? "FAMILY" : item.required === "investor" ? "INVESTOR" : "PRO";
     return (
       <SidebarMenuItem key={item.url}>
-        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className="h-10 gap-2 px-2 data-[active=true]:bg-primary/15 data-[active=true]:text-primary">
+        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className={`${compact ? "h-7 gap-1.5" : "h-10 gap-2"} px-2 data-[active=true]:bg-primary/15 data-[active=true]:text-primary`}>
           <Link
             to={item.url}
             className="flex items-center gap-2"
             onClick={() => setOpenMobile(false)}
           >
-            <item.icon className="h-[18px] w-[18px] shrink-0" />
-            <span className="min-w-0 flex-1 whitespace-nowrap text-[15px] leading-tight">{item.title}</span>
+            <item.icon className={`${compact ? "h-4 w-4" : "h-[18px] w-[18px]"} shrink-0`} />
+            <span className={`min-w-0 flex-1 whitespace-nowrap ${compact ? "text-[13px]" : "text-[15px]"} leading-tight`}>{item.title}</span>
             {locked && !collapsed && <span className={item.required === "patrimonio" ? "shrink-0 rounded-full bg-plan-family px-2 py-1 text-[10px] font-semibold leading-none text-plan-family-foreground" : item.required === "investor" ? "shrink-0 rounded-full bg-plan-investor px-2 py-1 text-[10px] font-semibold leading-none text-plan-investor-foreground" : "shrink-0 rounded-full bg-primary/15 px-2 py-1 text-[10px] font-semibold leading-none text-primary"}>{badge}</span>}
           </Link>
         </SidebarMenuButton>
