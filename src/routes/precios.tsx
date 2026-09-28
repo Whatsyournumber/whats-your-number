@@ -336,10 +336,7 @@ function Pricing() {
               !isContact && isYearly && (plan.monthlyPrice ?? 0) > 0 && plan.yearlyPrice != null
                 ? monthlyEquivalent(plan.yearlyPrice, currency)
                 : null;
-            const isFamily = plan.name === "Familiar";
-            const yearlyBadge = isFamily
-              ? t("3 meses gratis · 25% OFF", "3 months free · 25% OFF")
-              : t("2 meses gratis · 17% OFF", "2 months free · 17% OFF");
+            const yearlyBadge = t("2 meses gratis · 17% OFF", "2 months free · 17% OFF");
 
             const isSelected = selectedPlan === plan.name;
 

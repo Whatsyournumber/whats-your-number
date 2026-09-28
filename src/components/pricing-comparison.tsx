@@ -200,8 +200,8 @@ export function PricingFaq() {
     {
       q: t("¿Necesito conectar mi banco?", "Do I need to connect my bank?"),
       a: t(
-        "No. Puedes subir tus estados de cuenta en PDF o CSV y nuestra IA los categoriza sola, o introducir tus cifras manualmente en menos de tres minutos.",
-        "No. You can upload PDF or CSV statements and our AI categorizes them automatically, or enter your figures manually in under three minutes.",
+          "No. Puedes subir tus estados de cuenta en PDF o CSV para clasificar tus gastos, o introducir tus cifras manualmente.",
+          "No. You can upload PDF or CSV statements to categorize spending, or enter your figures manually.",
       ),
     },
     {

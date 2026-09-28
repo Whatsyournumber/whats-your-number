@@ -79,11 +79,11 @@ const STEPS: Step[] = [
     es: ["Análisis de Gastos", "Descubre dónde se va tu dinero cada mes.",
       "Importa tus gastos mensuales o estados de todos tus bancos.",
       "Compara cada categoría con tu presupuesto mensual.",
-      "Deja que la IA te diga dónde gastaste de más y dónde ahorrar."],
+      "Revisa tus categorías para ajustar tu plan de gastos."],
     en: ["Spending Analysis", "Find out where your money goes each month.",
       "Import your monthly expenses or statements from any bank.",
       "Compare each category with your monthly budget.",
-      "Let AI tell you where you overspent and where to save."],
+      "Review your categories to adjust your spending plan."],
   },
   {
     url: "/cash-flow", icon: Scale, minPlan: "pro",
