@@ -95,7 +95,8 @@ export function MobileBottomNav() {
         <>
           {!tourHold && (
             <div
-              className="fixed inset-0 bg-background/60 backdrop-blur-sm"
+              className="fixed inset-x-0 bg-background/60 backdrop-blur-sm"
+              style={{ top: 56, bottom: "calc(128px + env(safe-area-inset-bottom, 0px))" }}
               onClick={() => setMenuOpen(false)}
               aria-hidden
             />
