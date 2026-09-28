@@ -65,6 +65,7 @@ export function AppSidebar() {
     { title: t("Inicio", "Home"), url: "/dashboard", icon: LayoutDashboard },
     { title: t("Trackeo de mis gastos diarios", "Daily spending tracking"), url: "/registro-gastos", icon: ReceiptText },
     { title: t("Análisis de mis gastos", "My spending analysis"), url: "/gastos", icon: PieChart },
+    { title: t("Metas de ahorro", "Savings goals"), url: "/cash-flow", icon: Target },
   ];
   const account = [
     { title: t("Importar datos", "Import data"), url: "/configuracion", icon: Upload },
@@ -73,7 +74,6 @@ export function AppSidebar() {
   ];
   const discover: { title: string; url: string; icon: typeof Wallet; required: PlanTier }[] = [
     { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Sparkles, required: "pro" },
-    { title: t("Metas de ahorro", "Savings goals"), url: "/cash-flow", icon: Target, required: "free" },
     { title: t("Mi Número", "My Number"), url: "/retiro", icon: PiggyBank, required: "pro" },
     { title: "Life Planner", url: "/life-planner", icon: Target, required: "pro" },
     { title: "City Planner", url: "/ciudades", icon: Globe, required: "pro" },
