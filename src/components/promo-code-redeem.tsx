@@ -22,17 +22,21 @@ type RedeemResult = {
 };
 
 const PRO_PERKS = [
-  { es: "Tu patrimonio completo: portfolio, cuentas e inversiones", en: "Your full net worth: portfolio, accounts and investments" },
+  { es: "Tu número completo y distribución del ahorro", en: "Your full number and savings distribution" },
   { es: "Consejos con IA sobre tu presupuesto, por voz o texto", en: "AI advice on your budget, by voice or text" },
-  { es: "Hipoteca y planificador de retiro (Tu número)", en: "Mortgage and retirement planner (Your number)" },
-  { es: "Objetivos de ahorro y simulador de estilo de vida", en: "Savings goals and lifestyle simulator" },
+  { es: "Life Planner y City Planner", en: "Life Planner and City Planner" },
   { es: "Importación de estados de cuenta sin límite", en: "Unlimited bank statement imports" },
 ];
 
 const FAMILY_PERKS = [
-  { es: "Todo lo del plan Pro", en: "Everything in Pro" },
+  { es: "Todo lo del plan Inversor", en: "Everything in Investor" },
   { es: "Hasta 3 perfiles: tú, tu pareja e hijos", en: "Up to 3 profiles: you, your partner and kids" },
   { es: "Análisis individual o de pareja", en: "Individual or couple analysis" },
+];
+const INVESTOR_PERKS = [
+  { es: "Todo lo del plan Pro", en: "Everything in Pro" },
+  { es: "Patrimonio y portafolio", en: "Net worth and portfolio" },
+  { es: "Análisis de hipoteca", en: "Mortgage analysis" },
 ];
 
 export function PromoCodeRedeem({ className }: { className?: string }) {
@@ -114,7 +118,7 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
       }
 
       setCode("");
-      setActivatedPlan(result.product_id === "patrimonio_plan" ? "Familiar" : "Pro");
+      setActivatedPlan(result.product_id === "patrimonio_plan" ? "Familiar" : result.product_id === "investor_plan" ? "Inversor" : "Pro");
       void qc.invalidateQueries({ queryKey: ["subscription"] });
     } catch {
       toast.error(t("No pudimos canjear el código.", "We couldn't redeem the code."));
@@ -172,7 +176,7 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
             {t("Lo nuevo que desbloqueaste", "What you just unlocked")}
           </p>
           <ul className="space-y-2 text-sm">
-            {(activatedPlan === "Familiar" ? FAMILY_PERKS : PRO_PERKS).map((perk) => (
+            {(activatedPlan === "Familiar" ? FAMILY_PERKS : activatedPlan === "Inversor" ? INVESTOR_PERKS : PRO_PERKS).map((perk) => (
               <li key={perk.es} className="flex items-start gap-2">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 <span>{t(perk.es, perk.en)}</span>

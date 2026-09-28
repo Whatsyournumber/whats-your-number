@@ -221,8 +221,8 @@ export function PricingFaq() {
     {
       q: t("¿Qué incluye el plan Familiar?", "What does the Familiar plan include?"),
       a: t(
-        "Todo lo de Pro más perfiles para cada hijo, plan de ahorro e inversión por hijo, simulador de universidad y acceso a My First Number para que aprendan finanzas jugando.",
-        "Everything in Pro plus profiles for each child, per-child savings and investment plans, a college simulator and access to My First Number so they learn finance by playing.",
+        "Todo lo de Inversor más perfiles para cada hijo, plan de ahorro e inversión por hijo, simulador de universidad y acceso a My First Number para que aprendan finanzas jugando.",
+        "Everything in Investor plus profiles for each child, per-child savings and investment plans, a college simulator and access to My First Number so they learn finance by playing.",
       ),
     },
     {

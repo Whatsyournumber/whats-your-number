@@ -144,7 +144,7 @@ export function MobileBottomNav() {
             {t("Agregar gasto", "Add expense")}
           </span>
         </button>
-        {tabs.slice(2).map((tab, i) => renderTab(tab, i === 0 ? "translate-x-2" : ""))}
+        {tabs.slice(2).map((tab, i) => renderTab(tab, tabs.length === 3 ? "col-start-5 translate-x-2" : i === 0 ? "translate-x-2" : ""))}
       </div>
     </nav>
   );

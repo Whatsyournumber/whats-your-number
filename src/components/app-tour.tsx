@@ -86,7 +86,7 @@ const STEPS: Step[] = [
       "Let AI tell you where you overspent and where to save."],
   },
   {
-    url: "/cash-flow", icon: Scale, minPlan: "free",
+    url: "/cash-flow", icon: Scale, minPlan: "pro",
     es: ["Distribución del dinero", "La regla del dinero 50/30/20 aplicada a tus números reales.",
       "Podrás editar tus ítems de necesidades, deseos y ahorro según tu plan.",
       "Pasa el cursor sobre cada bloque para ver el detalle.",
@@ -205,14 +205,14 @@ export function AppTour() {
   const { profile } = useProfile();
   const [step, setStep] = useState<number | null>(null); // 0 = bienvenida
   // El tutorial muestra SOLO las paradas incluidas en el plan real del usuario
-  // (gratis, pro o familiar): ninguna clave externa puede ampliarlo.
+  // (gratis, pro, inversor o familiar): ninguna clave externa puede ampliarlo.
   const availableSteps = useMemo(() => {
     // En móvil el tour es corto: una parada por cada botón de la barra inferior.
     const MOBILE_URLS = tier === "free"
       ? ["/dashboard", "/registro-gastos", "/mi-perfil"]
       : tier === "pro"
-        ? ["/dashboard", "/registro-gastos", "/retiro", "/advisor"]
-        : ["/dashboard", "/registro-gastos", "/retiro", "/portafolio", "/advisor"];
+        ? ["/dashboard", "/registro-gastos", "/retiro", "/mi-perfil"]
+        : ["/dashboard", "/registro-gastos", "/retiro", "/portafolio"];
     return STEPS.filter(
       (tourStep) =>
         planMeetsTier(tourStep.minPlan, tier) &&
