@@ -1127,7 +1127,7 @@ export function ExpenseLog() {
             setAddMenuOpen(open);
             if (open && addMobileRef.current) {
               const p = 6;
-              const holes = [addMobileRef.current, document.querySelector<HTMLElement>("[data-tour-nav-add]")]
+              const holes = [addMobileRef.current, document.querySelector<HTMLElement>("[data-tour-nav-add] > span")]
                 .filter((el): el is HTMLElement => !!el)
                 .map((el) => {
                   const r = el.getBoundingClientRect();
@@ -1181,8 +1181,16 @@ export function ExpenseLog() {
                   cursor = Math.max(cursor, h.y2);
                 }
                 if (cursor < bottomPx) bands.push({ y1: cursor, y2: bottomPx });
+                const footerHole = addBlurHoles.length > 1 ? addBlurHoles[addBlurHoles.length - 1] : null;
                 return (
                   <>
+                    {footerHole && footerHole.y2 > bottomPx && (
+                      <div
+                        aria-hidden="true"
+                        className={cls}
+                        style={{ left: footerHole.x1, width: footerHole.x2 - footerHole.x1, top: footerHole.y2, bottom: 0 }}
+                      />
+                    )}
                     {bands.map((b, i) => (
                       <div key={i} aria-hidden="true">
                         {b.hole ? (
