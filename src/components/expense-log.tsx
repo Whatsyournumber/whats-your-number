@@ -1170,13 +1170,15 @@ export function ExpenseLog() {
                 const cls = "fixed z-[45] bg-background/60 backdrop-blur-sm sm:hidden";
                 const top = 56;
                 const bottomPx = addBlurBottom ?? window.innerHeight - 82;
-                const holes = addBlurHoles;
+                const holes = addBlurHoles
+                  .map((h) => ({ ...h, y1: Math.max(top, Math.min(h.y1, bottomPx)), y2: Math.max(top, Math.min(h.y2, bottomPx)) }))
+                  .filter((h) => h.y2 > h.y1);
                 const bands: { y1: number; y2: number; hole?: (typeof holes)[number] }[] = [];
                 let cursor = top;
                 for (const h of holes) {
                   if (h.y1 > cursor) bands.push({ y1: cursor, y2: h.y1 });
                   bands.push({ y1: h.y1, y2: h.y2, hole: h });
-                  cursor = h.y2;
+                  cursor = Math.max(cursor, h.y2);
                 }
                 if (cursor < bottomPx) bands.push({ y1: cursor, y2: bottomPx });
                 return (
