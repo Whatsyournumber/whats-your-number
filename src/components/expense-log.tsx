@@ -2339,7 +2339,7 @@ export function ExpenseLog() {
                 </DropdownMenuItem>
                 <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => camRef.current?.click()}>
                   <Camera className="mr-2.5 h-6 w-6 text-positive" />
-                  {t("Tomar foto", "Take photo")}
+                  {t("Tomar foto (super, compras, etc)", "Take photo (groceries, shopping, etc)")}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="min-h-16 rounded-lg px-3.5 text-[17px]"
