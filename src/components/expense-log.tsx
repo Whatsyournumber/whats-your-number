@@ -1127,7 +1127,8 @@ export function ExpenseLog() {
             if (open && addMobileRef.current) {
               const r = addMobileRef.current.getBoundingClientRect();
               const p = 6;
-              const x1 = r.left - p, y1 = r.top - p, x2 = r.right + p, y2 = r.bottom + p;
+              const x1 = r.left - p, x2 = r.right + p;
+              const y1 = r.top - 56 - p, y2 = r.bottom - 56 + p;
               setAddBlurClip(`polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, ${x1}px ${y1}px, ${x1}px ${y2}px, ${x2}px ${y2}px, ${x2}px ${y1}px)`);
             } else if (!open) {
               setAddBlurClip(undefined);
