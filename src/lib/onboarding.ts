@@ -165,9 +165,21 @@ export const priorities = [
 ];
 
 export const riskProfiles = [
-  { value: "conservador", label: "Conservador", desc: "Priorizo proteger lo que tengo. Menos volatilidad, crecimiento estable." },
-  { value: "moderado", label: "Moderado", desc: "Balance entre crecimiento y estabilidad. El punto medio clásico." },
-  { value: "agresivo", label: "Agresivo", desc: "Acepto volatilidad alta a cambio de mayor crecimiento a largo plazo." },
+  {
+    value: "conservador",
+    label: "Conservador",
+    desc: "Priorizo proteger lo que tengo. Menos volatilidad, crecimiento estable.",
+  },
+  {
+    value: "moderado",
+    label: "Moderado",
+    desc: "Balance entre crecimiento y estabilidad. El punto medio clásico.",
+  },
+  {
+    value: "agresivo",
+    label: "Agresivo",
+    desc: "Acepto volatilidad alta a cambio de mayor crecimiento a largo plazo.",
+  },
 ];
 
 export function totalIncome(d: OnboardingData) {
@@ -189,7 +201,13 @@ export function totalExpenses(d: OnboardingData) {
 
 export function totalAssets(d: OnboardingData) {
   return (
-    d.assets_cash + d.assets_bank + d.assets_retirement + d.assets_etf + d.assets_stocks + d.assets_crypto + d.assets_property
+    d.assets_cash +
+    d.assets_bank +
+    d.assets_retirement +
+    d.assets_etf +
+    d.assets_stocks +
+    d.assets_crypto +
+    d.assets_property
   );
 }
 
@@ -254,7 +272,6 @@ export function buildPlan(d: OnboardingData & Partial<LifeData>): NorthPlan {
       : 0;
   const desiredIncome = d.desired_retirement_income || lifestyleIncome || expenses || 0;
 
-
   // Objetivo "primera vivienda": Your Number es la entrada (down payment) que necesitas.
   const homeMode = d.priority === "vivienda" && (d.home_price || 0) > 0;
   const homePrice = Math.max(0, d.home_price || 0);
@@ -263,14 +280,14 @@ export function buildPlan(d: OnboardingData & Partial<LifeData>): NorthPlan {
   const downPayment = homeMode ? homePrice * (downPct / 100) * 1.1 : 0;
   // Objetivo "montar mi negocio": Your Number es el capital que necesitas levantar.
   const businessTarget = Math.max(0, d.business_target || 0);
-  const businessMode = !homeMode && (d.priority === "negocio" || d.priority === "otro") && businessTarget > 0;
+  const businessMode =
+    !homeMode && (d.priority === "negocio" || d.priority === "otro") && businessTarget > 0;
   const liquid = Math.max(0, d.assets_cash + d.assets_bank);
   const goalAmount = homeMode ? downPayment : businessMode ? businessTarget : 0;
   const missingGoal = Math.max(0, goalAmount - liquid);
   const monthsToGoal = goalAmount > 0 && savings > 0 ? Math.ceil(missingGoal / savings) : 0;
 
   const targetCapital = goalAmount > 0 ? goalAmount : (desiredIncome * 12) / swr;
-
 
   const r = d.expected_return / 100;
   const monthlyR = r / 12;
@@ -285,8 +302,9 @@ export function buildPlan(d: OnboardingData & Partial<LifeData>): NorthPlan {
 
   const ratio = targetCapital > 0 ? projected / targetCapital : 1;
   // Smooth S-curve estimate, capped between 5% and 95% — it is an estimate, not a guarantee.
-  const probability = Math.round(Math.min(95, Math.max(5, 100 / (1 + Math.exp(-8 * (ratio - 0.95))))));
-
+  const probability = Math.round(
+    Math.min(95, Math.max(5, 100 / (1 + Math.exp(-8 * (ratio - 0.95))))),
+  );
 
   return {
     netWorth: netWorth(d),
@@ -303,7 +321,13 @@ export function buildPlan(d: OnboardingData & Partial<LifeData>): NorthPlan {
     freedomAge: freedomAgeEstimate(d, targetCapital) ?? d.retire_age,
     progress:
       targetCapital > 0
-        ? Math.min(100, Math.max(0, ((goalAmount > 0 ? liquid : Math.max(0, netWorth(d))) / targetCapital) * 100))
+        ? Math.min(
+            100,
+            Math.max(
+              0,
+              ((goalAmount > 0 ? liquid : Math.max(0, netWorth(d))) / targetCapital) * 100,
+            ),
+          )
         : 0,
     mode: homeMode ? "home" : businessMode ? "business" : "freedom",
     homePrice,
@@ -379,7 +403,6 @@ export function money(v: number, currency = "USD") {
   }).format(Number.isFinite(v) ? v : 0);
 }
 
-
 export function currencySymbol(currency = "USD") {
   const parts = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -395,7 +418,9 @@ export function compact(v: number, currency = "USD") {
   const abs = Math.abs(n);
   const sign = n < 0 ? "-" : "";
   const round = (x: number) =>
-    x >= 100 ? String(Math.round(x)) : x.toFixed(1).replace(/\.0$/, "").replace(".", moneyDecimalSep());
+    x >= 100
+      ? String(Math.round(x))
+      : x.toFixed(1).replace(/\.0$/, "").replace(".", moneyDecimalSep());
   if (abs >= 1_000_000_000) return `${sign}${s}${round(abs / 1_000_000_000)}B`;
   if (abs >= 1_000_000) return `${sign}${s}${round(abs / 1_000_000)}M`;
   if (abs >= 1_000) return `${sign}${s}${round(abs / 1_000)}K`;
@@ -438,12 +463,11 @@ export function shortenMoneyString(text: string): string {
   });
 }
 
-
-
 /* ─────────── Onboarding premium: objetivos, ciudades y estilo de vida ─────────── */
 
 export type LifeData = {
   goal: string;
+  goal_secondary: string;
   goal_note: string;
   city: string;
   marital_status: string;
@@ -458,6 +482,7 @@ export type LifeData = {
 
 export const emptyLife: LifeData = {
   goal: "",
+  goal_secondary: "",
   goal_note: "",
   city: "",
   marital_status: "",
@@ -489,10 +514,34 @@ export const childrenOptions = ["0", "1", "2", "3+"];
 export const plansChildrenOptions = ["Sí", "No", "No estoy seguro"];
 
 export const lifestyles = [
-  { value: "minimalista", emoji: "🌱", label: "Minimalista", desc: "Lo esencial, sin excesos.", factor: 0.75 },
-  { value: "comodo", emoji: "🙂", label: "Cómodo", desc: "Vida tranquila y sin apuros.", factor: 1 },
-  { value: "premium", emoji: "✨", label: "Premium", desc: "Buenos restaurantes, buenos viajes.", factor: 1.45 },
-  { value: "lujo", emoji: "👑", label: "Lujo", desc: "Sin límites relevantes de gasto.", factor: 2.1 },
+  {
+    value: "minimalista",
+    emoji: "🌱",
+    label: "Minimalista",
+    desc: "Lo esencial, sin excesos.",
+    factor: 0.75,
+  },
+  {
+    value: "comodo",
+    emoji: "🙂",
+    label: "Cómodo",
+    desc: "Vida tranquila y sin apuros.",
+    factor: 1,
+  },
+  {
+    value: "premium",
+    emoji: "✨",
+    label: "Premium",
+    desc: "Buenos restaurantes, buenos viajes.",
+    factor: 1.45,
+  },
+  {
+    value: "lujo",
+    emoji: "👑",
+    label: "Lujo",
+    desc: "Sin límites relevantes de gasto.",
+    factor: 2.1,
+  },
 ];
 
 export const travelOptions = [
@@ -557,10 +606,18 @@ export function estimateDesiredIncome(
   const base = city?.cost ?? (life.city ? comfortableCostEur({ name: life.city }) : 2600);
   const factor = lifestyles.find((l) => l.value === life.lifestyle)?.factor ?? 1;
   const travel = travelOptions.find((t) => t.value === life.travel_frequency)?.extra ?? 0;
-  const kids = (extra.children ?? life.children) === "1" ? 1 : (extra.children ?? life.children) === "2" ? 2 : (extra.children ?? life.children) === "3+" ? 3 : 0;
+  const kids =
+    (extra.children ?? life.children) === "1"
+      ? 1
+      : (extra.children ?? life.children) === "2"
+        ? 2
+        : (extra.children ?? life.children) === "3+"
+          ? 3
+          : 0;
   // Un hijo planeado cuenta a media ponderación (aún no está en el hogar).
   const plannedKids = life.plans_children === "Sí" ? 0.5 : 0;
-  const partner = life.marital_status === "Casado" || life.marital_status === "En pareja" ? 1.35 : 1;
+  const partner =
+    life.marital_status === "Casado" || life.marital_status === "En pareja" ? 1.35 : 1;
   const housing = life.housing === "pagada" ? 0.78 : 1;
   const eur = base * factor * partner * housing + travel + (kids + plannedKids) * 450;
   const target = (extra.currency || "EUR").toUpperCase();
@@ -679,7 +736,8 @@ export function buildInsights(
     // el mismo porcentaje de la barra; sin ella, la proyección del plan.
     const goalAmount = live?.target && live.target > 0 ? live.target : plan.projected;
     const goalAge = live?.freedomAge ?? plan.freedomAge;
-    const goalPct = live?.progressPct !== undefined ? Math.round(live.progressPct) : Math.round(plan.progress);
+    const goalPct =
+      live?.progressPct !== undefined ? Math.round(live.progressPct) : Math.round(plan.progress);
     out.push(
       en
         ? `At this pace you'd reach your goal of ${money(goalAmount, currency)} at age ${goalAge} (you're ${goalPct}% of the way there).`
@@ -688,7 +746,9 @@ export function buildInsights(
   }
 
   if (life.city) {
-    const style = lifestyles.find((l) => l.value === life.lifestyle)?.label.toLowerCase() ?? (en ? "comfortable" : "cómodo");
+    const style =
+      lifestyles.find((l) => l.value === life.lifestyle)?.label.toLowerCase() ??
+      (en ? "comfortable" : "cómodo");
     out.push(
       en
         ? `Living in ${life.city} with a ${style} lifestyle implies a target of ${money(plan.desiredIncome, currency)} per month.`
@@ -698,7 +758,6 @@ export function buildInsights(
 
   return out.slice(0, 3);
 }
-
 
 /** Edad estimada en la que el capital alcanza el objetivo, con el ritmo actual. */
 export function freedomAgeEstimate(d: OnboardingData, target: number) {
@@ -718,19 +777,75 @@ export type CurrencyOption = { code: string; label: string; symbol: string };
 
 /** Símbolos comunes; el resto usa el propio código ISO. */
 const CURRENCY_SYMBOLS: Record<string, string> = {
-  USD: "$", EUR: "\u20AC", GBP: "\u00A3", JPY: "\u00A5", CNY: "\u00A5", KRW: "\u20A9",
-  INR: "\u20B9", RUB: "\u20BD", TRY: "\u20BA", BRL: "R$", MXN: "$", ARS: "$", CLP: "$",
-  COP: "$", UYU: "$", DOP: "$", PEN: "S/", PYG: "\u20B2", BOB: "Bs", HNL: "L", NIO: "C$",
-  CRC: "\u20A1", GTQ: "Q", VES: "Bs", CAD: "$", AUD: "$", NZD: "$", HKD: "$", SGD: "$",
-  TWD: "NT$", PHP: "\u20B1", THB: "\u0E3F", VND: "\u20AB", ILS: "\u20AA", NGN: "\u20A6",
-  ZAR: "R", PLN: "z\u0142", CZK: "K\u010D", HUF: "Ft", SEK: "kr", NOK: "kr", DKK: "kr",
-  UAH: "\u20B4", KZT: "\u20B8", CHF: "CHF",
+  USD: "$",
+  EUR: "\u20AC",
+  GBP: "\u00A3",
+  JPY: "\u00A5",
+  CNY: "\u00A5",
+  KRW: "\u20A9",
+  INR: "\u20B9",
+  RUB: "\u20BD",
+  TRY: "\u20BA",
+  BRL: "R$",
+  MXN: "$",
+  ARS: "$",
+  CLP: "$",
+  COP: "$",
+  UYU: "$",
+  DOP: "$",
+  PEN: "S/",
+  PYG: "\u20B2",
+  BOB: "Bs",
+  HNL: "L",
+  NIO: "C$",
+  CRC: "\u20A1",
+  GTQ: "Q",
+  VES: "Bs",
+  CAD: "$",
+  AUD: "$",
+  NZD: "$",
+  HKD: "$",
+  SGD: "$",
+  TWD: "NT$",
+  PHP: "\u20B1",
+  THB: "\u0E3F",
+  VND: "\u20AB",
+  ILS: "\u20AA",
+  NGN: "\u20A6",
+  ZAR: "R",
+  PLN: "z\u0142",
+  CZK: "K\u010D",
+  HUF: "Ft",
+  SEK: "kr",
+  NOK: "kr",
+  DKK: "kr",
+  UAH: "\u20B4",
+  KZT: "\u20B8",
+  CHF: "CHF",
 };
 
 /** Monedas mostradas primero por ser las más usadas por los usuarios. */
 const PRIORITY_CURRENCIES = [
-  "EUR", "USD", "GBP", "CHF", "MXN", "COP", "CLP", "ARS", "UYU", "PEN", "BRL", "CAD",
-  "DOP", "GTQ", "CRC", "PYG", "BOB", "HNL", "NIO", "VES",
+  "EUR",
+  "USD",
+  "GBP",
+  "CHF",
+  "MXN",
+  "COP",
+  "CLP",
+  "ARS",
+  "UYU",
+  "PEN",
+  "BRL",
+  "CAD",
+  "DOP",
+  "GTQ",
+  "CRC",
+  "PYG",
+  "BOB",
+  "HNL",
+  "NIO",
+  "VES",
 ];
 
 function currencyLabel(code: string): string {
@@ -747,7 +862,10 @@ function currencyLabel(code: string): string {
 /** Todas las monedas soportadas por el motor de conversión, con las comunes arriba. */
 export const currencies: CurrencyOption[] = (() => {
   const rest = SUPPORTED_CURRENCY_CODES.filter((c) => !PRIORITY_CURRENCIES.includes(c));
-  const ordered = [...PRIORITY_CURRENCIES.filter((c) => SUPPORTED_CURRENCY_CODES.includes(c)), ...rest];
+  const ordered = [
+    ...PRIORITY_CURRENCIES.filter((c) => SUPPORTED_CURRENCY_CODES.includes(c)),
+    ...rest,
+  ];
   return ordered.map((code) => ({
     code,
     label: currencyLabel(code),
@@ -777,27 +895,164 @@ export const SPEND_PLAN_GROUPS: ReadonlyArray<{ id: SpendPlanGroup; es: string; 
  * de la pestaña de Gastos.
  */
 export const SPEND_PLAN_FIELDS = [
-  { key: "fixed_housing", group: "essentials", fixed: true, budgetId: "housing", emoji: "\u{1F3E0}", es: "Hipoteca / Alquiler", en: "Mortgage / Rent" },
-  { key: "fixed_utilities", group: "essentials", fixed: true, budgetId: "utilities", emoji: "\u{1F4A1}", es: "Servicios", en: "Utilities" },
-  { key: "fixed_groceries", group: "lifestyle", fixed: false, budgetId: "groceries", emoji: "\u{1F6D2}", es: "Supermercado", en: "Groceries" },
-  { key: "fixed_transport", group: "lifestyle", fixed: false, budgetId: "transport", emoji: "\u{1F697}", es: "Transporte", en: "Transport" },
-  { key: "fixed_insurance", group: "essentials", fixed: true, budgetId: "insurance", emoji: "\u{1F6E1}\uFE0F", es: "Seguros", en: "Insurance" },
-  { key: "fixed_education", group: "essentials", fixed: true, budgetId: "education", emoji: "\u{1F393}", es: "Educaci\u00f3n", en: "Education" },
-  { key: "fixed_family", group: "lifestyle", fixed: false, kids: true, budgetId: "family", emoji: "\u{1F468}\u200D\u{1F469}\u200D\u{1F467}", es: "Familia", en: "Family" },
+  {
+    key: "fixed_housing",
+    group: "essentials",
+    fixed: true,
+    budgetId: "housing",
+    emoji: "\u{1F3E0}",
+    es: "Hipoteca / Alquiler",
+    en: "Mortgage / Rent",
+  },
+  {
+    key: "fixed_utilities",
+    group: "essentials",
+    fixed: true,
+    budgetId: "utilities",
+    emoji: "\u{1F4A1}",
+    es: "Servicios",
+    en: "Utilities",
+  },
+  {
+    key: "fixed_groceries",
+    group: "lifestyle",
+    fixed: false,
+    budgetId: "groceries",
+    emoji: "\u{1F6D2}",
+    es: "Supermercado",
+    en: "Groceries",
+  },
+  {
+    key: "fixed_transport",
+    group: "lifestyle",
+    fixed: false,
+    budgetId: "transport",
+    emoji: "\u{1F697}",
+    es: "Transporte",
+    en: "Transport",
+  },
+  {
+    key: "fixed_insurance",
+    group: "essentials",
+    fixed: true,
+    budgetId: "insurance",
+    emoji: "\u{1F6E1}\uFE0F",
+    es: "Seguros",
+    en: "Insurance",
+  },
+  {
+    key: "fixed_education",
+    group: "essentials",
+    fixed: true,
+    budgetId: "education",
+    emoji: "\u{1F393}",
+    es: "Educaci\u00f3n",
+    en: "Education",
+  },
+  {
+    key: "fixed_family",
+    group: "lifestyle",
+    fixed: false,
+    kids: true,
+    budgetId: "family",
+    emoji: "\u{1F468}\u200D\u{1F469}\u200D\u{1F467}",
+    es: "Familia",
+    en: "Family",
+  },
 
-  { key: "fixed_restaurants", group: "lifestyle", fixed: false, budgetId: "restaurants", emoji: "\u{1F37D}\uFE0F", es: "Restaurantes", en: "Restaurants" },
-  { key: "fixed_delivery", group: "lifestyle", fixed: false, budgetId: "delivery", emoji: "\u{1F6F5}", es: "Delivery", en: "Delivery" },
-  { key: "fixed_travel", group: "lifestyle", fixed: false, budgetId: "travel", emoji: "✈️", es: "Viajes", en: "Travel" },
-  { key: "fixed_nightlife", group: "lifestyle", fixed: false, budgetId: "nightlife", emoji: "\u{1F389}", es: "Ocio", en: "Nightlife" },
-  { key: "fixed_shopping", group: "lifestyle", fixed: false, budgetId: "shopping", emoji: "\u{1F6CD}\uFE0F", es: "Compras", en: "Shopping" },
-  { key: "fixed_gym", group: "essentials", fixed: true, budgetId: "gym", emoji: "\u{1F3CB}\uFE0F", es: "Gimnasio", en: "Gym" },
-  { key: "fixed_subscriptions", group: "essentials", fixed: true, budgetId: "apps", emoji: "\u{1F4F1}", es: "Suscripciones / apps", en: "Subscriptions / apps" },
-  { key: "fixed_health", group: "lifestyle", fixed: false, budgetId: "health", emoji: "\u{1F48A}", es: "Salud", en: "Health" },
+  {
+    key: "fixed_restaurants",
+    group: "lifestyle",
+    fixed: false,
+    budgetId: "restaurants",
+    emoji: "\u{1F37D}\uFE0F",
+    es: "Restaurantes",
+    en: "Restaurants",
+  },
+  {
+    key: "fixed_delivery",
+    group: "lifestyle",
+    fixed: false,
+    budgetId: "delivery",
+    emoji: "\u{1F6F5}",
+    es: "Delivery",
+    en: "Delivery",
+  },
+  {
+    key: "fixed_travel",
+    group: "lifestyle",
+    fixed: false,
+    budgetId: "travel",
+    emoji: "✈️",
+    es: "Viajes",
+    en: "Travel",
+  },
+  {
+    key: "fixed_nightlife",
+    group: "lifestyle",
+    fixed: false,
+    budgetId: "nightlife",
+    emoji: "\u{1F389}",
+    es: "Ocio",
+    en: "Nightlife",
+  },
+  {
+    key: "fixed_shopping",
+    group: "lifestyle",
+    fixed: false,
+    budgetId: "shopping",
+    emoji: "\u{1F6CD}\uFE0F",
+    es: "Compras",
+    en: "Shopping",
+  },
+  {
+    key: "fixed_gym",
+    group: "essentials",
+    fixed: true,
+    budgetId: "gym",
+    emoji: "\u{1F3CB}\uFE0F",
+    es: "Gimnasio",
+    en: "Gym",
+  },
+  {
+    key: "fixed_subscriptions",
+    group: "essentials",
+    fixed: true,
+    budgetId: "apps",
+    emoji: "\u{1F4F1}",
+    es: "Suscripciones / apps",
+    en: "Subscriptions / apps",
+  },
+  {
+    key: "fixed_health",
+    group: "lifestyle",
+    fixed: false,
+    budgetId: "health",
+    emoji: "\u{1F48A}",
+    es: "Salud",
+    en: "Health",
+  },
   // La columna fixed_professional se usa como Transporte variable (del día a día)
   // en el plan del onboarding; comparte budgetId con el transporte fijo y se suman.
-  { key: "fixed_professional", group: "lifestyle", fixed: false, budgetId: "transport", emoji: "\u{1F695}", es: "Transporte", en: "Transport" },
+  {
+    key: "fixed_professional",
+    group: "lifestyle",
+    fixed: false,
+    budgetId: "transport",
+    emoji: "\u{1F695}",
+    es: "Transporte",
+    en: "Transport",
+  },
 
-  { key: "fixed_other", group: "other", fixed: false, budgetId: "other", emoji: "\u{1F9FE}", es: "Otros", en: "Other" },
+  {
+    key: "fixed_other",
+    group: "other",
+    fixed: false,
+    budgetId: "other",
+    emoji: "\u{1F9FE}",
+    es: "Otros",
+    en: "Other",
+  },
 ] as const satisfies readonly {
   key: keyof OnboardingData;
   group: SpendPlanGroup;

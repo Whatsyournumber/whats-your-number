@@ -1082,6 +1082,7 @@ export type Database = {
           full_name: string | null
           goal: string | null
           goal_note: string | null
+          goal_secondary: string | null
           home_price: number | null
           housing: string | null
           id: string
@@ -1157,6 +1158,7 @@ export type Database = {
           full_name?: string | null
           goal?: string | null
           goal_note?: string | null
+          goal_secondary?: string | null
           home_price?: number | null
           housing?: string | null
           id?: string
@@ -1232,6 +1234,7 @@ export type Database = {
           full_name?: string | null
           goal?: string | null
           goal_note?: string | null
+          goal_secondary?: string | null
           home_price?: number | null
           housing?: string | null
           id?: string
