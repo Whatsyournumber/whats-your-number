@@ -473,8 +473,8 @@ function CashFlow() {
           className="shrink-0 gap-2"
           onClick={() => {
             setAllocDraft({
-              invest: String(savingsAlloc?.invest ?? Math.round(destInvest)),
-              goals: String(savingsAlloc?.goals ?? Math.round(destGoals)),
+              invest: Math.round(savingsAlloc?.invest ?? destInvest),
+              goals: Math.round(savingsAlloc?.goals ?? destGoals),
             });
             setAllocOpen(true);
           }}
@@ -841,16 +841,14 @@ function CashFlow() {
             </div>
             <p className="text-xs text-muted-foreground">
               {t(
-                `Disponible: ${fmt(Math.max(0, saveAmount - (Number(allocDraft.invest.replace(/\./g, "")) || 0) - (Number(allocDraft.goals.replace(/\./g, "")) || 0)))}`,
-                `Available: ${fmt(Math.max(0, saveAmount - (Number(allocDraft.invest.replace(/\./g, "")) || 0) - (Number(allocDraft.goals.replace(/\./g, "")) || 0)))}`,
+                `Disponible: ${fmt(Math.max(0, saveAmount - allocDraft.invest - allocDraft.goals))}`,
+                `Available: ${fmt(Math.max(0, saveAmount - allocDraft.invest - allocDraft.goals))}`,
               )}
             </p>
             <Button
               className="w-full"
               onClick={() => {
-                const invest = Math.max(0, Number(allocDraft.invest.replace(/\./g, "")) || 0);
-                const goals = Math.max(0, Number(allocDraft.goals.replace(/\./g, "")) || 0);
-                setSavingsAlloc({ invest, goals });
+                setSavingsAlloc({ invest: Math.max(0, allocDraft.invest), goals: Math.max(0, allocDraft.goals) });
                 setAllocOpen(false);
                 toast.success(t("Destino del ahorro guardado", "Savings destination saved"));
               }}
