@@ -49,18 +49,20 @@ export function useRegionalPricing() {
   // usamos la heurística local por zona horaria una vez hidratados.
   const serverCountry = query.data?.country ?? null;
   const tier: PricingTier = serverCountry
-    ? query.data!.tier
+    ? query.data?.tier ?? tierForCountry(serverCountry)
     : hydrated
       ? fallbackTier()
       : "standard";
 
   const currency: DisplayCurrency = currencyForCountry(serverCountry);
 
+  const isSpain = serverCountry === "ES" || (!serverCountry && hydrated && Intl.DateTimeFormat().resolvedOptions().timeZone === "Europe/Madrid");
+
   return {
     tier,
     country: serverCountry,
     currency,
-    prices: serverCountry === "ES" ? SPAIN_PRICES : TIER_PRICES[tier],
+    prices: isSpain ? SPAIN_PRICES : TIER_PRICES[tier],
     loading: query.isLoading,
   };
 
