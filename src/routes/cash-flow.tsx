@@ -322,7 +322,7 @@ function CashFlow() {
 
   // Destino del ahorro: a dónde va el ahorro del mes (metas, inversiones, disponible).
   const { value: savingsGoalsValue } = useSyncedSetting<{ items: { id: string; monthly: number }[] }>("whatsyournumber:savings-goals", { items: [] });
-  const { value: savingsAlloc, setValue: setSavingsAlloc } = useSyncedSetting<{ invest: number; goals: number } | null>("whatsyournumber:savings-allocation", null);
+  const { value: savingsAlloc, save: setSavingsAlloc } = useSyncedSetting<{ invest: number; goals: number } | null>("whatsyournumber:savings-allocation", null);
   const [allocOpen, setAllocOpen] = useState(false);
   const [allocDraft, setAllocDraft] = useState<{ invest: number; goals: number }>({ invest: 0, goals: 0 });
   const goalsMonthly = (Array.isArray(savingsGoalsValue?.items) ? savingsGoalsValue.items : []).reduce((s, g) => s + (Number(g.monthly) || 0), 0);
