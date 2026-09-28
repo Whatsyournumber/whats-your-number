@@ -1127,7 +1127,7 @@ export function ExpenseLog() {
             setAddMenuOpen(open);
             if (open && addMobileRef.current) {
               const p = 6;
-              const holes = [addMobileRef.current, document.querySelector<HTMLElement>("[data-tour-nav-add]")]
+              const holes = [addMobileRef.current, document.querySelector<HTMLElement>("[data-tour-nav-add] > span")]
                 .filter((el): el is HTMLElement => !!el)
                 .map((el) => {
                   const r = el.getBoundingClientRect();
