@@ -258,24 +258,17 @@ function OnboardingPage() {
   const selectedGoals = [life.goal, life.goal_secondary].filter(Boolean);
   const expensesOnly = life.goal === "gastos" && !life.goal_secondary;
   const toggleGoal = (value: string) => {
-    setLife((current) => {
-      const selected = [current.goal, current.goal_secondary].filter(Boolean);
-      if (selected.includes(value)) {
-        const remaining = selected.filter((goal) => goal !== value);
-        return {
-          ...current,
-          goal: remaining[0] ?? "",
-          goal_secondary: remaining[1] ?? "",
-        };
-      }
-      if (selected.length >= 2) return current;
-      return {
-        ...current,
-        goal: current.goal || value,
-        goal_secondary: current.goal ? value : "",
-      };
-    });
-    setData((current) => ({ ...current, priority: life.goal || value }));
+    const nextGoals = selectedGoals.includes(value)
+      ? selectedGoals.filter((goal) => goal !== value)
+      : selectedGoals.length < 2
+        ? [...selectedGoals, value]
+        : selectedGoals;
+    setLife((current) => ({
+      ...current,
+      goal: nextGoals[0] ?? "",
+      goal_secondary: nextGoals[1] ?? "",
+    }));
+    setData((current) => ({ ...current, priority: nextGoals[0] ?? "" }));
   };
 
   // Categorías personalizadas que la persona agrega a su plan en el onboarding.
