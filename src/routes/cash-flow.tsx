@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SavingsGoals } from "@/components/savings-goals";
 import { motion } from "motion/react";
-import { AlertCircle, ArrowLeftRight, ArrowRight, CheckCircle2, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
+import { ArrowLeftRight, Pencil, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { useLanguage, useT } from "@/hooks/use-language";
@@ -403,35 +403,6 @@ function CashFlow() {
   );
   const savingsAtRetire = savingsProjection[savingsProjection.length - 1]?.value ?? 0;
   const savingsYear1 = savingsProjection[1]?.value ?? 0;
-  // Conclusión de la regla 40/40/20: el desvío más grande frente al objetivo.
-  const needsPct = totalIncome > 0 ? (needsAmount / totalIncome) * 100 : 0;
-  const savePct = totalIncome > 0 ? (saveAmount / totalIncome) * 100 : 0;
-  const wantsPct = totalIncome > 0 ? (wantsAmount / totalIncome) * 100 : 0;
-  const ruleDeviations = hasReal
-    ? [
-        { label: t("Necesidades", "Needs"), over: needsPct - 40, under: false, link: "/gastos" },
-        { label: t("Ahorro", "Savings"), over: 40 - savePct, under: true, link: "/registro-gastos" },
-        { label: t("Deseos", "Wants"), over: wantsPct - 20, under: false, link: "/gastos" },
-      ]
-        .filter((d) => d.over > 1)
-        .sort((a, b) => b.over - a.over)
-    : [];
-  const topDeviation = ruleDeviations[0] ?? null;
-  // No se presupone que todos los deseos se puedan eliminar: el recorte está
-  // limitado al exceso sobre el objetivo y al gasto de la categoría principal.
-  // El detalle de Análisis de gastos se basa en movimientos variables; los
-  // gastos fijos no tienen el mismo desglose de comercios y movimientos.
-  const topWant = [...spend.wantsBy.entries()]
-    .map(([category, amount]) => ({ category, label: translateCategory(category, lang), amount }))
-    .sort((a, b) => b.amount - a.amount)[0] ?? null;
-  const wantsTarget = Math.max(0, totalIncome * 0.2);
-  const monthlyOpportunity = hasReal && topWant
-    ? Math.max(0, Math.min(topWant.amount, wantsAmount - wantsTarget))
-    : 0;
-  const opportunityProjection = monthlyOpportunity > 0
-    ? projectRetirementFrom(monthlyOpportunity, 10, savingsYears, 0, d.retirement.currentAge)
-    : [];
-  const opportunityAtRetire = opportunityProjection[opportunityProjection.length - 1]?.value ?? 0;
 
   return (
     <TooltipProvider delayDuration={150}>
