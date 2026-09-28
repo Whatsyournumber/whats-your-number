@@ -426,6 +426,8 @@ function CashFlow() {
           }
         />
 
+      <SavingsGoals fmt={fmt} />
+
       <div className="flex items-center gap-3">
         {months.length > 0 && (
           <div className="no-scrollbar -mx-1 flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto px-1 py-0.5">
@@ -569,7 +571,6 @@ function CashFlow() {
         </div>
       </Panel>
 
-      <SavingsGoals fmt={fmt} />
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel className="flex flex-col" title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")} icon={<PieChart />}>
           <div className="space-y-3 pb-4 text-sm">
