@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { NumberInput } from "@/components/ui/number-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
 import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
@@ -740,88 +740,6 @@ function CashFlow() {
   );
 }
 
-function Row({
-  label,
-  value,
-  total,
-  target,
-  fmt,
-  goodWhenHigher = false,
-  legend,
-}: {
-  label: string;
-  value: number;
-  total: number;
-  target: number;
-  fmt: (n: number) => string;
-  goodWhenHigher?: boolean;
-  legend?: string;
-}) {
-  const t = useT();
-  const p = total > 0 ? (value / total) * 100 : 0;
-  const off = p - target;
-  const colorClass = goodWhenHigher
-    ? p >= target
-      ? "bg-positive"
-      : "bg-negative"
-    : off > 5
-      ? "bg-negative"
-      : "bg-primary";
-
-  const legendItems = useMemo(() => {
-    if (!legend) return [];
-    return legend
-      .split(/[.,]/)
-      .map((s) => s.trim())
-      .filter(Boolean);
-  }, [legend]);
-
-  return (
-    <div>
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className="inline-flex cursor-help items-center gap-1.5 text-muted-foreground">
-              {label}
-              {legend && <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/60" />}
-            </span>
-          </TooltipTrigger>
-          {legend && (
-            <TooltipContent side="top" className="max-w-[260px] p-0">
-              <div className="space-y-2 p-3">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-xs font-semibold text-foreground">{label}</p>
-                  <span className="numeric text-xs font-medium text-primary">{p.toFixed(0)}% / {target}%</span>
-                </div>
-                <p className="text-[11px] text-muted-foreground">
-                  {fmt(value)} {t("actual", "actual")}
-                </p>
-                <ul className="space-y-1 border-t border-border/50 pt-2">
-                  {legendItems.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
-                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />
-                      <span className="leading-relaxed">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </TooltipContent>
-          )}
-        </Tooltip>
-        <span className="numeric flex shrink-0 items-baseline gap-2 whitespace-nowrap">
-          <span className="font-medium">{fmt(value)}</span>
-          <span>
-            {p.toFixed(0)}% <span className="text-xs text-muted-foreground">/ {target}%</span>
-          </span>
-        </span>
-      </div>
-
-      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
-        <div className={`h-full rounded-full ${colorClass}`} style={{ width: `${Math.min(p, 100)}%` }} />
-      </div>
-    </div>
-  );
-}
 
 function BreakdownTooltip({
   items,
