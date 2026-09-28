@@ -129,7 +129,7 @@ export function ExpenseLog() {
   const [sharedOpen, setSharedOpen] = useState(false);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   const addMobileRef = useRef<HTMLButtonElement | null>(null);
-  const [addBlurClip, setAddBlurClip] = useState<string | undefined>(undefined);
+  const [addBlurHole, setAddBlurHole] = useState<{ x1: number; y1: number; x2: number; y2: number } | undefined>(undefined);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
   const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
   const router = useRouter();
@@ -1127,11 +1127,9 @@ export function ExpenseLog() {
             if (open && addMobileRef.current) {
               const r = addMobileRef.current.getBoundingClientRect();
               const p = 6;
-              const x1 = r.left - p, x2 = r.right + p;
-              const y1 = r.top - p, y2 = r.bottom + p;
-              setAddBlurClip(`polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, ${x1}px ${y1}px, ${x1}px ${y2}px, ${x2}px ${y2}px, ${x2}px ${y1}px)`);
+              setAddBlurHole({ x1: r.left - p, y1: r.top - p, x2: r.right + p, y2: r.bottom + p });
             } else if (!open) {
-              setAddBlurClip(undefined);
+              setAddBlurHole(undefined);
             }
           }}
         >
