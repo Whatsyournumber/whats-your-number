@@ -76,11 +76,11 @@ const STEPS: Step[] = [
   },
   {
     url: "/gastos", icon: ChartPie, minPlan: "free",
-    es: ["Análisis de Gastos", "Descubre dónde se va tu dinero cada mes.",
+    es: ["Análisis de mis gastos", "Descubre dónde se va tu dinero cada mes.",
       "Importa tus gastos mensuales o estados de todos tus bancos.",
       "Compara cada categoría con tu presupuesto mensual.",
       "Revisa tus categorías para ajustar tu plan de gastos."],
-    en: ["Spending Analysis", "Find out where your money goes each month.",
+    en: ["My spending analysis", "Find out where your money goes each month.",
       "Import your monthly expenses or statements from any bank.",
       "Compare each category with your monthly budget.",
       "Review your categories to adjust your spending plan."],
