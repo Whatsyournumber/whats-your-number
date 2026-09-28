@@ -1190,7 +1190,6 @@ export function ExpenseLog() {
                         )}
                       </div>
                     ))}
-                    <div className={cls} style={{ left: 0, right: 0, top: bottomPx, bottom: bottomCss }} aria-hidden="true" />
                   </>
                 );
               })(),
