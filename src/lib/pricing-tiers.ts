@@ -2,7 +2,7 @@
  * Regional pricing (USD only).
  *
  * Los nombres de los tiers (accessible / standard / premium) son INTERNOS.
- * Nunca deben mostrarse al usuario: el visitante solo ve Free / Pro / Family
+ * Nunca deben mostrarse al usuario: el visitante solo ve Free / Pro / Investor / Family
  * con el precio que corresponde a su región.
  *
  * `standard` es el tier por defecto para cualquier país no listado.
@@ -56,26 +56,20 @@ export const TIER_PRICES: Record<PricingTier, { pro: PlanPrice; investor: PlanPr
   accessible: {
     pro: { monthly: 2.99, yearly: 29 },
     investor: { monthly: 4.49, yearly: 44 },
-    family: { monthly: 5.99, yearly: 53 },
+    family: { monthly: 5.99, yearly: 59 },
   },
   standard: {
     pro: { monthly: 5.99, yearly: 59 },
     investor: { monthly: 7.99, yearly: 79 },
-    family: { monthly: 9.99, yearly: 89 },
+    family: { monthly: 9.99, yearly: 99 },
   },
   premium: {
     pro: { monthly: 8.99, yearly: 89 },
     investor: { monthly: 10.99, yearly: 109 },
-    family: { monthly: 12.99, yearly: 116 },
+    family: { monthly: 12.99, yearly: 129 },
   },
 };
 
-/** Spain has dedicated EUR prices; other countries retain their regional bands. */
-export const SPAIN_PRICES = {
-  pro: { monthly: 3, yearly: 30 },
-  investor: { monthly: 5, yearly: 50 },
-  family: { monthly: 7, yearly: 70 },
-};
 
 /**
  * Perfil extra del plan Familiar (a partir del 4º perfil, contando adultos e hijos).

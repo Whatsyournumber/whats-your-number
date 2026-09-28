@@ -123,7 +123,11 @@ export function SubscriptionManager() {
           {tier === "free" && (
             <Button asChild size="sm"><Link to="/precios">{t("Ver planes", "See plans")} <ArrowUpRight className="ml-1 h-3.5 w-3.5" /></Link></Button>
           )}
+          {tier === "pro" && <PlanChangeDialog from="pro" to="investor" loading={spin("investor_monthly")} disabled={busy !== null} onConfirm={() => void switchPlan("investor_monthly")} />}
           {tier === "pro" && <PlanChangeDialog from="pro" to="patrimonio" loading={spin("patrimonio_monthly")} disabled={busy !== null} onConfirm={() => void switchPlan("patrimonio_monthly")} />}
+          {tier === "investor" && <PlanChangeDialog from="investor" to="pro" loading={spin("pro_monthly")} disabled={busy !== null} onConfirm={() => void switchPlan("pro_monthly")} />}
+          {tier === "investor" && <PlanChangeDialog from="investor" to="patrimonio" loading={spin("patrimonio_monthly")} disabled={busy !== null} onConfirm={() => void switchPlan("patrimonio_monthly")} />}
+          {tier === "patrimonio" && <PlanChangeDialog from="patrimonio" to="investor" loading={spin("investor_monthly")} disabled={busy !== null} onConfirm={() => void switchPlan("investor_monthly")} />}
           {tier === "patrimonio" && <PlanChangeDialog from="patrimonio" to="pro" loading={spin("pro_monthly")} disabled={busy !== null} onConfirm={() => void switchPlan("pro_monthly")} />}
         </div>
       </div>

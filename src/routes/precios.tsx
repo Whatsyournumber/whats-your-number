@@ -322,12 +322,7 @@ function Pricing() {
               {t("Anual · 2 meses gratis", "Yearly · 2 months free")}
             </button>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            {t(
-              "El plan anual se factura en un solo pago: pagas 10 meses y usas 12.",
-              "The yearly plan is billed in one payment: pay for 10 months, use 12.",
-            )}
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground">{t("El plan anual se factura en un solo pago.", "The yearly plan is billed in one payment.")}</p>
         </section>
 
         <section className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">

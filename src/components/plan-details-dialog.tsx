@@ -13,7 +13,7 @@ import {
 import { useT } from "@/hooks/use-language";
 import { useRegionalPricing } from "@/hooks/use-regional-pricing";
 import { formatMoney } from "@/lib/pricing-tiers";
-import type { PlanTier } from "@/hooks/use-subscription";
+import { planMeetsTier, type PlanTier } from "@/hooks/use-subscription";
 
 /** Detalle de cada plan para explicar al usuario qué incluye lo que compró. */
 function usePlanCopy() {
@@ -170,7 +170,7 @@ export function PlanChangeDialog({
   const copy = usePlanCopy();
   const target = copy[to];
   const current = copy[from];
-  const isUpgrade = to === "patrimonio";
+  const isUpgrade = planMeetsTier(from, to) && from !== to;
 
   const gains = [
     t("3 perfiles: p. ej. 2 adultos + 1 hijo o 1 adulto + 2 hijos", "3 profiles: e.g. 2 adults + 1 kid or 1 adult + 2 kids"),
