@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { SPEND_PLAN_FIELDS, totalSpendPlan, type SpendPlanKey } from "@/lib/onboarding";
@@ -42,7 +41,10 @@ const ONBOARDING_VARIABLE_KEYS: SpendPlanKey[] = [
   "fixed_family",
   "fixed_other",
 ];
-const ONBOARDING_SPEND_KEYS: SpendPlanKey[] = [...ONBOARDING_FIXED_KEYS, ...ONBOARDING_VARIABLE_KEYS];
+const ONBOARDING_SPEND_KEYS: SpendPlanKey[] = [
+  ...ONBOARDING_FIXED_KEYS,
+  ...ONBOARDING_VARIABLE_KEYS,
+];
 /** Mínimo de categorías con monto para poder construir tu número. */
 const MIN_SPEND_CATEGORIES = 5;
 import { seedSpendPlanFromOnboarding } from "@/lib/spend-plan-seed";
@@ -83,7 +85,6 @@ import { defaultCurrency } from "@/lib/geo";
 import { useT, LanguageToggle } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
 
-
 const GOALS_EN: Record<string, string> = {
   libertad: "Achieve financial freedom",
   patrimonio: "Grow my net worth",
@@ -94,15 +95,15 @@ const GOALS_EN: Record<string, string> = {
 };
 
 const MARITAL_EN: Record<string, string> = {
-  "Soltero": "Single",
+  Soltero: "Single",
   "En pareja": "In a relationship",
-  "Casado": "Married",
-  "Divorciado": "Divorced",
+  Casado: "Married",
+  Divorciado: "Divorced",
 };
 
 const PLANS_CHILDREN_EN: Record<string, string> = {
-  "Sí": "Yes",
-  "No": "No",
+  Sí: "Yes",
+  No: "No",
   "No estoy seguro": "Not sure",
 };
 
@@ -114,7 +115,7 @@ const LIFESTYLE_EN: Record<string, { label: string; desc: string }> = {
 };
 
 const TRAVEL_EN: Record<string, string> = {
-  "nunca": "Never",
+  nunca: "Never",
   "1-2": "1-2",
   "3-5": "3-5",
   "5+": "More than 5",
@@ -127,7 +128,6 @@ const HOUSING_EN: Record<string, string> = {
   ns: "Prefer not to answer",
 };
 
-
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
@@ -138,7 +138,10 @@ export const Route = createFileRoute("/onboarding")({
           "Responde unas preguntas y nuestra IA construye tu plan: patrimonio, gastos, Your Number y tu edad de libertad financiera.",
       },
       { property: "og:title", content: "Construye tu Número — WhatsYournumber" },
-      { property: "og:description", content: "Un plan financiero personalizado en 3 minutos con WhatsYournumber." },
+      {
+        property: "og:description",
+        content: "Un plan financiero personalizado en 3 minutos con WhatsYournumber.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex, nofollow" },
@@ -159,7 +162,11 @@ function OnboardingPage() {
   const { isPatrimonio } = useSubscription();
   const [step, setStep] = useState(1);
 
-  const [data, setData] = useState<OnboardingData>({ ...emptyOnboarding, currency: defaultCurrency(), monthly_expenses: 0 });
+  const [data, setData] = useState<OnboardingData>({
+    ...emptyOnboarding,
+    currency: defaultCurrency(),
+    monthly_expenses: 0,
+  });
   const [life, setLife] = useState<LifeData>(emptyLife);
   const [ready, setReady] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -183,9 +190,9 @@ function OnboardingPage() {
         .eq("user_id", user.id)
         .maybeSingle();
       if (!alive) return;
-       // Keep the just-finished result visible after a reload in this tab.
-       const resumeSummary = sessionStorage.getItem(SUMMARY_SESSION_KEY) === user.id;
-       if (row && (row as Record<string, unknown>)["completed"] && !resumeSummary) {
+      // Keep the just-finished result visible after a reload in this tab.
+      const resumeSummary = sessionStorage.getItem(SUMMARY_SESSION_KEY) === user.id;
+      if (row && (row as Record<string, unknown>)["completed"] && !resumeSummary) {
         navigate({ to: "/dashboard", replace: true });
         return;
       }
@@ -209,11 +216,19 @@ function OnboardingPage() {
         }
         setData(next);
         setLife(nextLife);
-         setStep(resumeSummary && r["completed"] ? SUMMARY_STEP : Math.min(QUESTIONS, Math.max(1, Number(r["current_step"] ?? 1))));
+        setStep(
+          resumeSummary && r["completed"]
+            ? SUMMARY_STEP
+            : Math.min(QUESTIONS, Math.max(1, Number(r["current_step"] ?? 1))),
+        );
       } else {
         const meta = user.user_metadata as Record<string, unknown> | undefined;
         const name = typeof meta?.["full_name"] === "string" ? meta["full_name"] : "";
-        setData((d) => ({ ...d, full_name: name, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone ?? "" }));
+        setData((d) => ({
+          ...d,
+          full_name: name,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone ?? "",
+        }));
       }
       setReady(true);
     })();
@@ -227,10 +242,22 @@ function OnboardingPage() {
     setSaving(true);
     await supabase
       .from("onboarding_profiles")
-      .upsert({ user_id: user.id, ...data, ...life, current_step: step, ...patch }, { onConflict: "user_id" });
+      .upsert(
+        { user_id: user.id, ...data, ...life, current_step: step, ...patch },
+        { onConflict: "user_id" },
+      );
     // La vivienda del onboarding también vive en Mis datos: valor como activo
     // (Propiedades) y saldo de la hipoteca como pasivo ligado.
-    await syncHomeHolding(supabase, user.id, { housing: life.housing, assets_property: data.assets_property, mortgage_balance: data.mortgage_balance }, t("Mi vivienda", "My home"));
+    await syncHomeHolding(
+      supabase,
+      user.id,
+      {
+        housing: life.housing,
+        assets_property: data.assets_property,
+        mortgage_balance: data.mortgage_balance,
+      },
+      t("Mi vivienda", "My home"),
+    );
     setSaving(false);
   };
 
@@ -253,7 +280,8 @@ function OnboardingPage() {
       if (next.monthly_expenses < planTotal) next.monthly_expenses = planTotal;
       return next;
     });
-  const setL = <K extends keyof LifeData>(key: K, value: LifeData[K]) => setLife((l) => ({ ...l, [key]: value }));
+  const setL = <K extends keyof LifeData>(key: K, value: LifeData[K]) =>
+    setLife((l) => ({ ...l, [key]: value }));
 
   const selectedGoals = [life.goal, life.goal_secondary].filter(Boolean);
   const expensesOnly = life.goal === "gastos" && !life.goal_secondary;
@@ -274,7 +302,10 @@ function OnboardingPage() {
   // Categorías personalizadas que la persona agrega a su plan en el onboarding.
   const [customCats, setCustomCats] = useState<{ id: string; name: string; amount: number }[]>([]);
   const addCustomCat = () =>
-    setCustomCats((cats) => [...cats, { id: `cc-${Date.now()}-${cats.length}`, name: "", amount: 0 }]);
+    setCustomCats((cats) => [
+      ...cats,
+      { id: `cc-${Date.now()}-${cats.length}`, name: "", amount: 0 },
+    ]);
   const setCustomCat = (id: string, patch: Partial<{ name: string; amount: number }>) =>
     setCustomCats((cats) => cats.map((c) => (c.id === id ? { ...c, ...patch } : c)));
   const customCatsTotal = customCats.reduce((s, c) => s + (c.amount || 0), 0);
@@ -315,7 +346,6 @@ function OnboardingPage() {
     void persist({ current_step: Math.min(QUESTIONS, next) });
   };
 
-
   const build = () => {
     const salaryMissing = data.income_salary <= 0;
     if (salaryMissing || spendPlanMissing) {
@@ -333,7 +363,11 @@ function OnboardingPage() {
     queueAppTour();
     if (user) sessionStorage.setItem(SUMMARY_SESSION_KEY, user.id);
     setStep(SUMMARY_STEP);
-    void persist({ completed: true, completed_at: new Date().toISOString(), desired_retirement_income: desiredIncome });
+    void persist({
+      completed: true,
+      completed_at: new Date().toISOString(),
+      desired_retirement_income: desiredIncome,
+    });
     // El plan del onboarding queda listo como plan de gastos personalizado.
     seedSpendPlanFromOnboarding(
       user?.id ?? null,
@@ -349,7 +383,6 @@ function OnboardingPage() {
   useEffect(() => {
     if (step === SUMMARY_STEP) window.scrollTo({ top: 0, behavior: "instant" });
   }, [step]);
-
 
   if (loading || !ready) {
     return (
@@ -397,11 +430,7 @@ function OnboardingPage() {
       {!isBuilding && (
         <div className="sticky top-0 z-30 bg-background/70 backdrop-blur-xl">
           <div className="mx-auto flex max-w-2xl items-center gap-3 px-5 py-4">
-            <Link
-              to="/"
-              className="flex items-center gap-3 transition-opacity hover:opacity-80"
-            >
-
+            <Link to="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
               <Compass className="h-4 w-4 text-primary" />
               <span className="font-display text-sm font-semibold">WhatsYournumber</span>
             </Link>
@@ -451,13 +480,12 @@ function OnboardingPage() {
             exit={{ opacity: 0, y: -14, filter: "blur(6px)" }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
-
-
-
-
             {step === 1 && (
               <Screen
-                title={t("¿Cuál es tu principal objetivo financiero?", "What's your main financial goal?")}
+                title={t(
+                  "¿Cuál es tu principal objetivo financiero?",
+                  "What's your main financial goal?",
+                )}
                 hint={t("Puedes escoger hasta 2 objetivos.", "You can choose up to 2 goals.")}
               >
                 <div className="space-y-2.5">
@@ -473,7 +501,12 @@ function OnboardingPage() {
                       <AnimatePresence>
                         {selectedGoals.includes(g.value) && g.value === "vivienda" && (
                           <Reveal>
-                            <SubQuestion title={t("¿Cuánto cuesta la vivienda que quieres?", "How much does the home you want cost?")} />
+                            <SubQuestion
+                              title={t(
+                                "¿Cuánto cuesta la vivienda que quieres?",
+                                "How much does the home you want cost?",
+                              )}
+                            />
                             <div className="grid gap-2.5 sm:grid-cols-2">
                               <MoneyField
                                 emoji="🏡"
@@ -484,8 +517,12 @@ function OnboardingPage() {
                                 onChange={(v) => set("home_price", v)}
                               />
                               <div className="rounded-2xl border border-border bg-elevated/50 px-5 py-4">
-                                <p className="text-xs text-muted-foreground">{t("Entrada (down payment)", "Down payment")}</p>
-                                <p className="numeric mt-1 text-lg font-semibold">{data.down_payment_pct}%</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {t("Entrada (down payment)", "Down payment")}
+                                </p>
+                                <p className="numeric mt-1 text-lg font-semibold">
+                                  {data.down_payment_pct}%
+                                </p>
                                 <Slider
                                   className="mt-3"
                                   min={5}
@@ -500,7 +537,12 @@ function OnboardingPage() {
                         )}
                         {selectedGoals.includes(g.value) && g.value === "negocio" && (
                           <Reveal>
-                            <SubQuestion title={t("¿Cuánto capital necesitas para montarlo?", "How much capital do you need to start it?")} />
+                            <SubQuestion
+                              title={t(
+                                "¿Cuánto capital necesitas para montarlo?",
+                                "How much capital do you need to start it?",
+                              )}
+                            />
                             <MoneyField
                               emoji="🚀"
                               label={t("Capital para mi negocio", "Capital for my business")}
@@ -513,10 +555,17 @@ function OnboardingPage() {
                         )}
                         {selectedGoals.includes(g.value) && g.value === "otro" && (
                           <Reveal>
-                            <SubQuestion title={t("Cuéntanos tu objetivo y cuánto cuesta", "Tell us your goal and how much it costs")} />
+                            <SubQuestion
+                              title={t(
+                                "Cuéntanos tu objetivo y cuánto cuesta",
+                                "Tell us your goal and how much it costs",
+                              )}
+                            />
                             <div className="grid gap-2.5 sm:grid-cols-2">
                               <div className="rounded-2xl border border-border bg-elevated/50 px-5 py-4">
-                                <p className="text-xs text-muted-foreground">{t("¿Cuál es tu objetivo?", "What's your goal?")}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {t("¿Cuál es tu objetivo?", "What's your goal?")}
+                                </p>
                                 <input
                                   value={life.goal_note}
                                   onChange={(e) => setL("goal_note", e.target.value.slice(0, 120))}
@@ -540,7 +589,6 @@ function OnboardingPage() {
                     </div>
                   ))}
                 </div>
-
               </Screen>
             )}
 
@@ -583,7 +631,9 @@ function OnboardingPage() {
                 {data.age ? (
                   <p className="mt-8 text-center text-sm text-muted-foreground">
                     {t("Te quedan", "You have")}{" "}
-                    <span className="numeric text-foreground">{Math.max(0, data.retire_age - data.age)}</span>{" "}
+                    <span className="numeric text-foreground">
+                      {Math.max(0, data.retire_age - data.age)}
+                    </span>{" "}
                     {t("años para construirlo.", "years left to build it.")}
                   </p>
                 ) : null}
@@ -593,16 +643,24 @@ function OnboardingPage() {
             {step === 4 && (
               <Screen title={t("¿Cuál es tu situación familiar?", "What's your family situation?")}>
                 <ChipGroup
-                  options={maritalOptions.map((m) => ({ value: m, label: t(m, MARITAL_EN[m] ?? m) }))}
+                  options={maritalOptions.map((m) => ({
+                    value: m,
+                    label: t(m, MARITAL_EN[m] ?? m),
+                  }))}
                   value={life.marital_status}
                   onSelect={(v) => setL("marital_status", v)}
                 />
                 <AnimatePresence>
                   {hasPartner && (
                     <Reveal>
-                      <SubQuestion title={t("¿Sobre quién hacemos el análisis?", "Who should we analyze?")} />
+                      <SubQuestion
+                        title={t("¿Sobre quién hacemos el análisis?", "Who should we analyze?")}
+                      />
                       <ChipGroup
-                        options={analysisScopeOptions.map((o) => ({ value: o.value, label: t(o.label, o.en) }))}
+                        options={analysisScopeOptions.map((o) => ({
+                          value: o.value,
+                          label: t(o.label, o.en),
+                        }))}
                         value={life.analysis_scope}
                         onSelect={(v) => setL("analysis_scope", v)}
                       />
@@ -611,7 +669,11 @@ function OnboardingPage() {
                   {life.marital_status && (!hasPartner || life.analysis_scope) && (
                     <Reveal>
                       <SubQuestion title={t("¿Tienes hijos?", "Do you have children?")} />
-                      <ChipGroup options={childrenOptions.map((c) => ({ value: c, label: c }))} value={life.children} onSelect={(v) => setL("children", v)} />
+                      <ChipGroup
+                        options={childrenOptions.map((c) => ({ value: c, label: c }))}
+                        value={life.children}
+                        onSelect={(v) => setL("children", v)}
+                      />
                     </Reveal>
                   )}
                   {life.children && (
@@ -620,11 +682,17 @@ function OnboardingPage() {
                         title={
                           life.children === "0"
                             ? t("¿Planeas tener hijos?", "Are you planning to have children?")
-                            : t("¿Planeas tener más hijos?", "Are you planning to have more children?")
+                            : t(
+                                "¿Planeas tener más hijos?",
+                                "Are you planning to have more children?",
+                              )
                         }
                       />
                       <ChipGroup
-                        options={plansChildrenOptions.map((c) => ({ value: c, label: t(c, PLANS_CHILDREN_EN[c] ?? c) }))}
+                        options={plansChildrenOptions.map((c) => ({
+                          value: c,
+                          label: t(c, PLANS_CHILDREN_EN[c] ?? c),
+                        }))}
                         value={life.plans_children}
                         onSelect={(v) => setL("plans_children", v)}
                       />
@@ -655,49 +723,79 @@ function OnboardingPage() {
                       )}
                     >
                       <span className="text-2xl">{l.emoji}</span>
-                      <p className="mt-3 text-sm font-medium">{t(l.label, LIFESTYLE_EN[l.value]?.label ?? l.label)}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">{t(l.desc, LIFESTYLE_EN[l.value]?.desc ?? l.desc)}</p>
+                      <p className="mt-3 text-sm font-medium">
+                        {t(l.label, LIFESTYLE_EN[l.value]?.label ?? l.label)}
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {t(l.desc, LIFESTYLE_EN[l.value]?.desc ?? l.desc)}
+                      </p>
                     </button>
                   ))}
                 </div>
                 <AnimatePresence>
                   {life.lifestyle && (
                     <Reveal>
-                      <SubQuestion title={t("¿Cuántas veces te gustaría viajar al año?", "How many times a year would you like to travel?")} />
+                      <SubQuestion
+                        title={t(
+                          "¿Cuántas veces te gustaría viajar al año?",
+                          "How many times a year would you like to travel?",
+                        )}
+                      />
                       <ChipGroup
-                        options={travelOptions.map((o) => ({ value: o.value, label: t(o.label, TRAVEL_EN[o.value] ?? o.label) }))}
+                        options={travelOptions.map((o) => ({
+                          value: o.value,
+                          label: t(o.label, TRAVEL_EN[o.value] ?? o.label),
+                        }))}
                         value={life.travel_frequency}
                         onSelect={(v) => setL("travel_frequency", v)}
                       />
                     </Reveal>
                   )}
                 </AnimatePresence>
-                {life.lifestyle && life.travel_frequency && (() => {
-                  const kidsCount = life.children === "1" ? 1 : life.children === "2" ? 2 : life.children === "3+" ? 3 : 0;
-                  const family = hasPartner || kidsCount > 0 || life.plans_children === "Sí";
-                  const parts: string[] = [];
-                  if (hasPartner) parts.push(t("pareja", "partner"));
-                  if (kidsCount > 0) parts.push(`${kidsCount} ${kidsCount === 1 ? t("hijo", "child") : t("hijos", "children")}`);
-                  if (life.plans_children === "Sí") parts.push(t("hijos planeados", "planned children"));
-                  return (
-                    <div className="mt-8 space-y-1 text-center text-sm text-muted-foreground">
-                      <p>
-                        {family
-                          ? t("Objetivo estimado de vida familiar:", "Estimated family lifestyle target:")
-                          : t("Objetivo estimado de vida:", "Estimated lifestyle target:")}{" "}
-                        <span className="numeric text-foreground">{money(desiredIncome, cur)}</span> {t("al mes.", "per month.")}
-                      </p>
-                      {parts.length > 0 && (
-                        <p className="text-xs">
-                          {t("Incluye", "Includes")} {parts.join(t(" y ", " and "))}.
+                {life.lifestyle &&
+                  life.travel_frequency &&
+                  (() => {
+                    const kidsCount =
+                      life.children === "1"
+                        ? 1
+                        : life.children === "2"
+                          ? 2
+                          : life.children === "3+"
+                            ? 3
+                            : 0;
+                    const family = hasPartner || kidsCount > 0 || life.plans_children === "Sí";
+                    const parts: string[] = [];
+                    if (hasPartner) parts.push(t("pareja", "partner"));
+                    if (kidsCount > 0)
+                      parts.push(
+                        `${kidsCount} ${kidsCount === 1 ? t("hijo", "child") : t("hijos", "children")}`,
+                      );
+                    if (life.plans_children === "Sí")
+                      parts.push(t("hijos planeados", "planned children"));
+                    return (
+                      <div className="mt-8 space-y-1 text-center text-sm text-muted-foreground">
+                        <p>
+                          {family
+                            ? t(
+                                "Objetivo estimado de vida familiar:",
+                                "Estimated family lifestyle target:",
+                              )
+                            : t("Objetivo estimado de vida:", "Estimated lifestyle target:")}{" "}
+                          <span className="numeric text-foreground">
+                            {money(desiredIncome, cur)}
+                          </span>{" "}
+                          {t("al mes.", "per month.")}
                         </p>
-                      )}
-                    </div>
-                  );
-                })()}
+                        {parts.length > 0 && (
+                          <p className="text-xs">
+                            {t("Incluye", "Includes")} {parts.join(t(" y ", " and "))}.
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })()}
               </Screen>
             )}
-
 
             {step === 6 && (
               <Screen
@@ -717,27 +815,42 @@ function OnboardingPage() {
                     setData((d) => ({ ...d, country: c.country, currency: c.currency }));
                   }}
                 />
-                {life.city && (() => {
-                  const kidsCount = life.children === "1" ? 1 : life.children === "2" ? 2 : life.children === "3+" ? 3 : 0;
-                  const parts: string[] = [t("ti", "you")];
-                  if (hasPartner) parts.push(t("tu pareja", "your partner"));
-                  if (kidsCount > 0) parts.push(`${kidsCount} ${kidsCount === 1 ? t("hijo", "child") : t("hijos", "children")}`);
-                  if (life.plans_children === "Sí") parts.push(t("hijos planeados", "planned children"));
-                  return (
-                    <div className="mt-8 space-y-1 text-center text-sm text-muted-foreground">
-                      <p>
-                        {t("Ingreso necesario estimado en", "Estimated income needed in")} {life.city}:{" "}
-                        <span className="numeric text-foreground">{money(desiredIncome, cur)}</span> {t("al mes.", "per month.")}
-                      </p>
-                      <p className="text-xs">
-                        {t("Calculado para", "Calculated for")} {parts.join(t(" y ", " and "))}.
-                      </p>
-                    </div>
-                  );
-                })()}
+                {life.city &&
+                  (() => {
+                    const kidsCount =
+                      life.children === "1"
+                        ? 1
+                        : life.children === "2"
+                          ? 2
+                          : life.children === "3+"
+                            ? 3
+                            : 0;
+                    const parts: string[] = [t("ti", "you")];
+                    if (hasPartner) parts.push(t("tu pareja", "your partner"));
+                    if (kidsCount > 0)
+                      parts.push(
+                        `${kidsCount} ${kidsCount === 1 ? t("hijo", "child") : t("hijos", "children")}`,
+                      );
+                    if (life.plans_children === "Sí")
+                      parts.push(t("hijos planeados", "planned children"));
+                    return (
+                      <div className="mt-8 space-y-1 text-center text-sm text-muted-foreground">
+                        <p>
+                          {t("Ingreso necesario estimado en", "Estimated income needed in")}{" "}
+                          {life.city}:{" "}
+                          <span className="numeric text-foreground">
+                            {money(desiredIncome, cur)}
+                          </span>{" "}
+                          {t("al mes.", "per month.")}
+                        </p>
+                        <p className="text-xs">
+                          {t("Calculado para", "Calculated for")} {parts.join(t(" y ", " and "))}.
+                        </p>
+                      </div>
+                    );
+                  })()}
               </Screen>
             )}
-
 
             {step === 7 && (
               <Screen title={t("¿Tienes vivienda propia?", "Do you own your home?")}>
@@ -844,7 +957,11 @@ function OnboardingPage() {
                       )}
                     >
                       <p className="numeric text-xl font-semibold">{r}%</p>
-                      {r === 7 && <p className="mt-1 text-[10px] uppercase tracking-widest text-primary">⭐ {t("Recom.", "Recom.")}</p>}
+                      {r === 7 && (
+                        <p className="mt-1 text-[10px] uppercase tracking-widest text-primary">
+                          ⭐ {t("Recom.", "Recom.")}
+                        </p>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -852,7 +969,9 @@ function OnboardingPage() {
                   onClick={() => setCustomReturn(true)}
                   className={cn(
                     "mt-2.5 w-full rounded-2xl border px-5 py-4 text-sm transition-all",
-                    customReturn ? "border-primary bg-primary/10" : "border-border bg-elevated/50 hover:border-muted-foreground/40",
+                    customReturn
+                      ? "border-primary bg-primary/10"
+                      : "border-border bg-elevated/50 hover:border-muted-foreground/40",
                   )}
                 >
                   {t("Personalizado", "Custom")}
@@ -860,7 +979,7 @@ function OnboardingPage() {
                 <AnimatePresence>
                   {customReturn && (
                     <Reveal>
-                            <BigNumber value={data.expected_return} suffix={t("% anual", "% annual")} />
+                      <BigNumber value={data.expected_return} suffix={t("% anual", "% annual")} />
                       <Slider
                         className="mt-8"
                         min={1}
@@ -877,17 +996,23 @@ function OnboardingPage() {
 
             {step === 9 && (
               <Screen
-                title={expensesOnly
-                  ? t("Configura tus ingresos y gastos", "Set up your income and spending")
-                  : t("Hablemos de tu patrimonio", "Let's talk about your net worth")}
+                title={
+                  expensesOnly
+                    ? t("Configura tus ingresos y gastos", "Set up your income and spending")
+                    : t("Hablemos de tu patrimonio", "Let's talk about your net worth")
+                }
               >
                 {!expensesOnly && (
                   <p className="mx-auto max-w-xl text-center text-sm text-muted-foreground">
-                    🤖 {t(
+                    🤖{" "}
+                    {t(
                       "No te preocupes si no conoces estos números. Nuestra IA puede calcularlos automáticamente analizando tus extractos financieros.",
                       "Don't worry if you don't know these numbers. Our AI can calculate them automatically by analyzing your financial statements.",
                     )}{" "}
-                    <span className="text-foreground">{t("Puedes completarlo luego", "You can complete it later")}</span>.
+                    <span className="text-foreground">
+                      {t("Puedes completarlo luego", "You can complete it later")}
+                    </span>
+                    .
                   </p>
                 )}
 
@@ -895,7 +1020,9 @@ function OnboardingPage() {
                   <div className="flex items-center justify-between gap-3 py-2">
                     <div className="min-w-0">
                       <p className="text-sm font-medium">{t("Moneda", "Currency")}</p>
-                      <p className="truncate text-[11px] leading-tight text-muted-foreground/80">{t("Donde verás tus importes", "Where your amounts appear")}</p>
+                      <p className="truncate text-[11px] leading-tight text-muted-foreground/80">
+                        {t("Donde verás tus importes", "Where your amounts appear")}
+                      </p>
                     </div>
                     <select
                       className="h-8 shrink-0 rounded-full border-0 bg-transparent px-0 text-sm font-medium focus:outline-none focus:ring-0"
@@ -939,14 +1066,15 @@ function OnboardingPage() {
                   )}
                 </div>
 
-
-
                 <div className="mt-6">
                   <SubQuestion
                     title={
                       household
                         ? t("Tus ingresos mensuales (mandatorio)", "Your monthly income (required)")
-                        : t("Ingresos y flujo mensual (mandatorio)", "Income and monthly flow (required)")
+                        : t(
+                            "Ingresos y flujo mensual (mandatorio)",
+                            "Income and monthly flow (required)",
+                          )
                     }
                   />
                   <div className="mt-4 space-y-2.5">
@@ -990,7 +1118,12 @@ function OnboardingPage() {
 
                 {household && !expensesOnly && (
                   <div className="mt-8">
-                    <SubQuestion title={t("Ingresos y gastos de tu pareja", "Your partner's income and expenses")} />
+                    <SubQuestion
+                      title={t(
+                        "Ingresos y gastos de tu pareja",
+                        "Your partner's income and expenses",
+                      )}
+                    />
                     <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                       {t(
                         "Los sumamos a los tuyos para el número del hogar.",
@@ -1026,119 +1159,121 @@ function OnboardingPage() {
                   </div>
                 )}
 
-                {!expensesOnly && <div className="mt-8">
-                  <SubQuestion
-                    title={
-                      household
-                        ? t("Activos (en pareja)", "Assets (as a couple)")
-                        : t("Activos", "Assets")
-                    }
-                  />
-                  <div className="mt-4 space-y-2.5">
-                    <MoneyField
-                      emoji="💵"
-                      label={t("Efectivo", "Cash")}
-                      desc={t("Efectivo disponible", "Available cash")}
-                      currency={cur}
-                      value={data.assets_cash}
-                      onChange={(v) => set("assets_cash", v)}
+                {!expensesOnly && (
+                  <div className="mt-8">
+                    <SubQuestion
+                      title={
+                        household
+                          ? t("Activos (en pareja)", "Assets (as a couple)")
+                          : t("Activos", "Assets")
+                      }
                     />
-                    <MoneyField
-                      emoji="💰"
-                      label={t("Cuentas bancarias", "Bank accounts")}
-                      desc={t("Ahorros en el banco", "Savings in the bank")}
-                      currency={cur}
-                      value={data.assets_bank}
-                      onChange={(v) => set("assets_bank", v)}
-                    />
-                    <MoneyField
-                      emoji="🏦"
-                      label={t("Fondo de retiro", "Retirement fund")}
-                      desc={t("Pensión, AFP, 401k", "Pension, 401k")}
-                      currency={cur}
-                      value={data.assets_retirement}
-                      onChange={(v) => set("assets_retirement", v)}
-                    />
-                    <MoneyField
-                      emoji="📈"
-                      label={t("ETFs / fondos", "ETFs / funds")}
-                      desc={t("Fondos indexados", "Index funds, ETFs")}
-                      currency={cur}
-                      value={data.assets_etf}
-                      onChange={(v) => set("assets_etf", v)}
-                    />
-                    <MoneyField
-                      emoji="📊"
-                      label={t("Acciones", "Stocks")}
-                      desc={t("Listadas en bolsa", "Individual stocks")}
-                      currency={cur}
-                      value={data.assets_stocks}
-                      onChange={(v) => set("assets_stocks", v)}
-                    />
-                    <MoneyField
-                      emoji="₿"
-                      label={t("Criptomonedas", "Cryptocurrencies")}
-                      desc={t("Valor aproximado", "Approximate value")}
-                      currency={cur}
-                      value={data.assets_crypto}
-                      onChange={(v) => set("assets_crypto", v)}
-                    />
-                    <MoneyField
-                      emoji="🏠"
-                      label={t("Bienes inmuebles", "Real estate")}
-                      desc={t("Tus propiedades", "Your properties")}
-                      currency={cur}
-                      value={data.assets_property}
-                      onChange={(v) => set("assets_property", v)}
-                    />
-
+                    <div className="mt-4 space-y-2.5">
+                      <MoneyField
+                        emoji="💵"
+                        label={t("Efectivo", "Cash")}
+                        desc={t("Efectivo disponible", "Available cash")}
+                        currency={cur}
+                        value={data.assets_cash}
+                        onChange={(v) => set("assets_cash", v)}
+                      />
+                      <MoneyField
+                        emoji="💰"
+                        label={t("Cuentas bancarias", "Bank accounts")}
+                        desc={t("Ahorros en el banco", "Savings in the bank")}
+                        currency={cur}
+                        value={data.assets_bank}
+                        onChange={(v) => set("assets_bank", v)}
+                      />
+                      <MoneyField
+                        emoji="🏦"
+                        label={t("Fondo de retiro", "Retirement fund")}
+                        desc={t("Pensión, AFP, 401k", "Pension, 401k")}
+                        currency={cur}
+                        value={data.assets_retirement}
+                        onChange={(v) => set("assets_retirement", v)}
+                      />
+                      <MoneyField
+                        emoji="📈"
+                        label={t("ETFs / fondos", "ETFs / funds")}
+                        desc={t("Fondos indexados", "Index funds, ETFs")}
+                        currency={cur}
+                        value={data.assets_etf}
+                        onChange={(v) => set("assets_etf", v)}
+                      />
+                      <MoneyField
+                        emoji="📊"
+                        label={t("Acciones", "Stocks")}
+                        desc={t("Listadas en bolsa", "Individual stocks")}
+                        currency={cur}
+                        value={data.assets_stocks}
+                        onChange={(v) => set("assets_stocks", v)}
+                      />
+                      <MoneyField
+                        emoji="₿"
+                        label={t("Criptomonedas", "Cryptocurrencies")}
+                        desc={t("Valor aproximado", "Approximate value")}
+                        currency={cur}
+                        value={data.assets_crypto}
+                        onChange={(v) => set("assets_crypto", v)}
+                      />
+                      <MoneyField
+                        emoji="🏠"
+                        label={t("Bienes inmuebles", "Real estate")}
+                        desc={t("Tus propiedades", "Your properties")}
+                        currency={cur}
+                        value={data.assets_property}
+                        onChange={(v) => set("assets_property", v)}
+                      />
+                    </div>
                   </div>
-                </div>}
+                )}
 
-                {!expensesOnly && <div className="mt-8">
-                  <SubQuestion
-                    title={
-                      household
-                        ? t("Pasivos (en pareja)", "Liabilities (as a couple)")
-                        : t("Pasivos", "Liabilities")
-                    }
-                  />
-                  <div className="mt-4 space-y-2.5">
-                    <MoneyField
-                      emoji="💳"
-                      label={t("Deudas", "Debts")}
-                      desc={t("Préstamos y tarjetas", "Loans and cards")}
-                      currency={cur}
-                      value={data.liabilities}
-                      onChange={(v) => set("liabilities", v)}
+                {!expensesOnly && (
+                  <div className="mt-8">
+                    <SubQuestion
+                      title={
+                        household
+                          ? t("Pasivos (en pareja)", "Liabilities (as a couple)")
+                          : t("Pasivos", "Liabilities")
+                      }
                     />
-                    <MoneyField
-                      emoji="🏦"
-                      label={t("Hipoteca: saldo pendiente", "Mortgage: outstanding balance")}
-                      desc={t("Deuda con el banco", "Bank debt")}
-                      currency={cur}
-                      value={data.mortgage_balance}
-                      onChange={(v) => set("mortgage_balance", v)}
-                    />
-                    <MoneyField
-                      emoji="📊"
-                      label={t("Hipoteca: tasa de interés", "Mortgage: interest rate")}
-                      desc={t("Tasa anual actual", "Current annual rate")}
-                      currency="%"
-                      value={data.mortgage_rate}
-                      onChange={(v) => set("mortgage_rate", v)}
-                    />
-                    <MoneyField
-                      emoji="📅"
-                      label={t("Hipoteca: plazo restante", "Mortgage: remaining term")}
-                      desc={t("Años por pagar", "Years left to pay")}
-                      currency={t("años", "years")}
-                      value={data.mortgage_term}
-                      onChange={(v) => set("mortgage_term", v)}
-                    />
+                    <div className="mt-4 space-y-2.5">
+                      <MoneyField
+                        emoji="💳"
+                        label={t("Deudas", "Debts")}
+                        desc={t("Préstamos y tarjetas", "Loans and cards")}
+                        currency={cur}
+                        value={data.liabilities}
+                        onChange={(v) => set("liabilities", v)}
+                      />
+                      <MoneyField
+                        emoji="🏦"
+                        label={t("Hipoteca: saldo pendiente", "Mortgage: outstanding balance")}
+                        desc={t("Deuda con el banco", "Bank debt")}
+                        currency={cur}
+                        value={data.mortgage_balance}
+                        onChange={(v) => set("mortgage_balance", v)}
+                      />
+                      <MoneyField
+                        emoji="📊"
+                        label={t("Hipoteca: tasa de interés", "Mortgage: interest rate")}
+                        desc={t("Tasa anual actual", "Current annual rate")}
+                        currency="%"
+                        value={data.mortgage_rate}
+                        onChange={(v) => set("mortgage_rate", v)}
+                      />
+                      <MoneyField
+                        emoji="📅"
+                        label={t("Hipoteca: plazo restante", "Mortgage: remaining term")}
+                        desc={t("Años por pagar", "Years left to pay")}
+                        currency={t("años", "years")}
+                        value={data.mortgage_term}
+                        onChange={(v) => set("mortgage_term", v)}
+                      />
+                    </div>
                   </div>
-                </div>}
-
+                )}
 
                 <div ref={spendPlanRef} className="mt-8 scroll-mt-24">
                   <div
@@ -1149,12 +1284,21 @@ function OnboardingPage() {
                   >
                     <p className="font-display text-lg font-medium">
                       {household
-                        ? t("Tu plan de gastos mensuales (en pareja, mandatorio)", "Your monthly spending plan (as a couple, required)")
-                        : t("Tu plan de gastos mensuales (mandatorio)", "Your monthly spending plan (required)")}
+                        ? t(
+                            "Tu plan de gastos mensuales (en pareja, mandatorio)",
+                            "Your monthly spending plan (as a couple, required)",
+                          )
+                        : t(
+                            "Tu plan de gastos mensuales (mandatorio)",
+                            "Your monthly spending plan (required)",
+                          )}
                     </p>
                   </div>
                   {planMissing && (
-                    <p role="alert" className="-mt-2 mb-3 text-center text-sm font-medium text-destructive">
+                    <p
+                      role="alert"
+                      className="-mt-2 mb-3 text-center text-sm font-medium text-destructive"
+                    >
                       {t(
                         `Debes llenar ${MIN_SPEND_CATEGORIES} categorías mínimo`,
                         `You must fill in at least ${MIN_SPEND_CATEGORIES} categories`,
@@ -1171,31 +1315,35 @@ function OnboardingPage() {
                     {t("Gastos fijos", "Fixed expenses")}
                   </p>
                   <div className="space-y-2.5">
-                    {SPEND_PLAN_FIELDS.filter((f) => ONBOARDING_FIXED_KEYS.includes(f.key)).map((f) => (
-                      <MoneyField
-                        key={f.key}
-                        emoji={f.emoji}
-                        label={t(f.es, f.en)}
-                        currency={cur}
-                        value={data[f.key]}
-                        onChange={(v) => setFixed(f.key, v)}
-                      />
-                    ))}
+                    {SPEND_PLAN_FIELDS.filter((f) => ONBOARDING_FIXED_KEYS.includes(f.key)).map(
+                      (f) => (
+                        <MoneyField
+                          key={f.key}
+                          emoji={f.emoji}
+                          label={t(f.es, f.en)}
+                          currency={cur}
+                          value={data[f.key]}
+                          onChange={(v) => setFixed(f.key, v)}
+                        />
+                      ),
+                    )}
                   </div>
                   <p className="mt-5 mb-2 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
                     {t("Gastos variables", "Variable expenses")}
                   </p>
                   <div className="space-y-2.5">
-                    {SPEND_PLAN_FIELDS.filter((f) => ONBOARDING_VARIABLE_KEYS.includes(f.key)).map((f) => (
-                      <MoneyField
-                        key={f.key}
-                        emoji={f.emoji}
-                        label={t(f.es, f.en)}
-                        currency={cur}
-                        value={data[f.key]}
-                        onChange={(v) => setFixed(f.key, v)}
-                      />
-                    ))}
+                    {SPEND_PLAN_FIELDS.filter((f) => ONBOARDING_VARIABLE_KEYS.includes(f.key)).map(
+                      (f) => (
+                        <MoneyField
+                          key={f.key}
+                          emoji={f.emoji}
+                          label={t(f.es, f.en)}
+                          currency={cur}
+                          value={data[f.key]}
+                          onChange={(v) => setFixed(f.key, v)}
+                        />
+                      ),
+                    )}
                     {customCats.map((c) => (
                       <div
                         key={c.id}
@@ -1220,7 +1368,9 @@ function OnboardingPage() {
                             onWheel={(e) => e.currentTarget.blur()}
                             onChange={(e) => {
                               const n = Number(e.target.value || 0);
-                              setCustomCat(c.id, { amount: Number.isFinite(n) ? Math.max(0, n) : 0 });
+                              setCustomCat(c.id, {
+                                amount: Number.isFinite(n) ? Math.max(0, n) : 0,
+                              });
                             }}
                             className="numeric w-28 max-sm:w-24 border-b border-dashed border-border bg-transparent text-right text-base font-semibold outline-none transition-colors focus:border-primary/60 placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/50"
                           />
@@ -1237,15 +1387,26 @@ function OnboardingPage() {
                     </button>
                   </div>
                   <div className="mt-4 flex items-center justify-between rounded-2xl border border-border/60 bg-elevated/40 px-5 py-3">
-                    <span className="text-sm text-muted-foreground">{t("Gastos totales aprox", "Approximate total expenses")}</span>
-                    <span className="numeric text-lg font-semibold">{money(totalSpendPlan(data) + customCatsTotal, cur)}{t("/mes", "/mo")}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {t("Gastos totales aprox", "Approximate total expenses")}
+                    </span>
+                    <span className="numeric text-lg font-semibold">
+                      {money(totalSpendPlan(data) + customCatsTotal, cur)}
+                      {t("/mes", "/mo")}
+                    </span>
                   </div>
                 </div>
 
-                {!expensesOnly && <div className="mt-6 flex items-center justify-between rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
-                  <span className="text-sm text-muted-foreground">{t("Patrimonio neto estimado", "Estimated net worth")}</span>
-                  <span className="numeric text-xl font-semibold text-primary">{money(netWorth(data), cur)}</span>
-                </div>}
+                {!expensesOnly && (
+                  <div className="mt-6 flex items-center justify-between rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
+                    <span className="text-sm text-muted-foreground">
+                      {t("Patrimonio neto estimado", "Estimated net worth")}
+                    </span>
+                    <span className="numeric text-xl font-semibold text-primary">
+                      {money(netWorth(data), cur)}
+                    </span>
+                  </div>
+                )}
 
                 <div className="mt-10">
                   <h3 className="font-display flex items-center gap-2.5 text-xl font-semibold">
@@ -1265,8 +1426,13 @@ function OnboardingPage() {
                   </div>
                 </div>
 
-                <Button size="lg" className="mt-8 h-14 w-full rounded-full text-base" onClick={build}>
-                  <Sparkles className="mr-2 h-4 w-4" /> {t("Construir mi Número", "Build my Number")}
+                <Button
+                  size="lg"
+                  className="mt-8 h-14 w-full rounded-full text-base"
+                  onClick={build}
+                >
+                  <Sparkles className="mr-2 h-4 w-4" />{" "}
+                  {t("Construir mi Número", "Build my Number")}
                 </Button>
               </Screen>
             )}
@@ -1280,10 +1446,10 @@ function OnboardingPage() {
                 plan={plan}
                 currency={cur}
                 onEdit={() => setStep(1)}
-                 onEnter={() => {
-                   sessionStorage.removeItem(SUMMARY_SESSION_KEY);
-                   navigate({ to: "/dashboard" });
-                 }}
+                onEnter={() => {
+                  sessionStorage.removeItem(SUMMARY_SESSION_KEY);
+                  navigate({ to: "/dashboard" });
+                }}
               />
             )}
           </motion.div>
@@ -1304,13 +1470,17 @@ function OnboardingPage() {
               </Button>
             )}
 
-            <Button size="lg" className="ml-auto min-w-[160px] rounded-full" disabled={!canContinue()} onClick={() => go(1)}>
+            <Button
+              size="lg"
+              className="ml-auto min-w-[160px] rounded-full"
+              disabled={!canContinue()}
+              onClick={() => go(1)}
+            >
               {t("Continuar", "Continue")}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
         )}
-
 
         {step === 9 && (
           <div className="mt-3">
@@ -1326,15 +1496,27 @@ function OnboardingPage() {
 
 /* ───────────────────────── UI primitives ───────────────────────── */
 
-
-function Screen({ title, hint, children }: { title?: string; hint?: string; children: React.ReactNode }) {
-
+function Screen({
+  title,
+  hint,
+  children,
+}: {
+  title?: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div>
       {title && (
-        <h2 className="text-center font-display text-3xl font-semibold leading-[1.15] sm:text-[2.35rem]">{title}</h2>
+        <h2 className="text-center font-display text-3xl font-semibold leading-[1.15] sm:text-[2.35rem]">
+          {title}
+        </h2>
       )}
-      {hint && <p className="mx-auto mt-5 max-w-lg text-center text-sm leading-relaxed text-muted-foreground">{hint}</p>}
+      {hint && (
+        <p className="mx-auto mt-5 max-w-lg text-center text-sm leading-relaxed text-muted-foreground">
+          {hint}
+        </p>
+      )}
       <div className="mt-12">{children}</div>
     </div>
   );
@@ -1356,7 +1538,12 @@ function Reveal({ children }: { children: React.ReactNode }) {
 
 function SubQuestion({ title, error = false }: { title: string; error?: boolean }) {
   return (
-    <p className={cn("mt-9 mb-4 text-center font-display text-lg font-medium", error && "text-destructive")}>
+    <p
+      className={cn(
+        "mt-9 mb-4 text-center font-display text-lg font-medium",
+        error && "text-destructive",
+      )}
+    >
       {title}
     </p>
   );
@@ -1437,7 +1624,9 @@ function OptionRow({
       disabled={disabled}
       className={cn(
         "flex w-full items-center gap-3.5 rounded-2xl border px-5 py-4 text-left transition-all",
-        selected ? "border-primary bg-primary/10" : "border-border bg-elevated/50 hover:border-muted-foreground/40",
+        selected
+          ? "border-primary bg-primary/10"
+          : "border-border bg-elevated/50 hover:border-muted-foreground/40",
         disabled && "cursor-not-allowed opacity-45 hover:border-border",
       )}
     >
@@ -1524,7 +1713,11 @@ function MoneyField({
 }
 
 const norm = (s: string) =>
-  s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+  s
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
 
 function editDistance(a: string, b: string) {
   const m = a.length;
@@ -1675,14 +1868,15 @@ function CityPicker({
     return [...local, ...extras].slice(0, 6);
   }, [catalog, term, remote]);
 
-
   const exact = list.some((c) => norm(c.name) === term);
   const [pickedKey, setPickedKey] = useState<string | null>(null);
   const keyOf = (c: { name: string; country: string }) => `${norm(c.name)}|${norm(c.country)}`;
   const selected =
     catalog.find((c) => c.name === value) ??
     remote.find((c) => c.name === value) ??
-    (value ? { name: value, country: "", currency: "USD", cost: comfortableCostEur({ name: value }) } : undefined);
+    (value
+      ? { name: value, country: "", currency: "USD", cost: comfortableCostEur({ name: value }) }
+      : undefined);
   const customName = q.trim().replace(/\s+/g, " ");
 
   return (
@@ -1761,7 +1955,6 @@ function CityPicker({
   );
 }
 
-
 /* ───────────────────────── Pantalla 10: IA trabajando ───────────────────────── */
 
 function BuildingScreen({ onDone }: { onDone: () => void }) {
@@ -1808,15 +2001,23 @@ function BuildingScreen({ onDone }: { onDone: () => void }) {
           transition={{ duration: 2.4, repeat: Infinity, delay: 0.3 }}
         />
         <div className="wealth-gradient absolute inset-5 flex items-center justify-center rounded-full">
-          <motion.div animate={{ rotate: 360 }} transition={{ duration: 8, repeat: Infinity, ease: "linear" }}>
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+          >
             <Compass className="h-7 w-7 text-background" />
           </motion.div>
         </div>
       </div>
 
-      <h2 className="mt-10 text-center font-display text-3xl font-semibold sm:text-4xl">{t("Estamos construyendo tu Número…", "We're building your Number…")}</h2>
+      <h2 className="mt-10 text-center font-display text-3xl font-semibold sm:text-4xl">
+        {t("Estamos construyendo tu Número…", "We're building your Number…")}
+      </h2>
       <p className="mx-auto mt-4 max-w-md text-center text-sm leading-relaxed text-muted-foreground">
-        {t("Nuestra IA está analizando toda tu información financiera.", "Our AI is analyzing all your financial information.")}
+        {t(
+          "Nuestra IA está analizando toda tu información financiera.",
+          "Our AI is analyzing all your financial information.",
+        )}
       </p>
 
       <div className="mx-auto mt-12 max-w-md space-y-2.5">
@@ -1844,7 +2045,9 @@ function BuildingScreen({ onDone }: { onDone: () => void }) {
               ) : (
                 <span className="h-4 w-4 rounded-full border border-border" />
               )}
-              <span className={state === "done" ? "text-foreground" : "text-muted-foreground"}>{task}</span>
+              <span className={state === "done" ? "text-foreground" : "text-muted-foreground"}>
+                {task}
+              </span>
             </motion.div>
           );
         })}
@@ -1903,7 +2106,12 @@ function PartyPopper() {
             scale: [0.25, 1.35, 1, 0.7],
             rotate: [0, p.r * 0.55, p.r, p.r * 1.3],
           }}
-          transition={{ duration: 1.45, delay: 0.12 + (i % 5) * 0.035, ease: "easeOut", times: [0, 0.18, 0.68, 1] }}
+          transition={{
+            duration: 1.45,
+            delay: 0.12 + (i % 5) * 0.035,
+            ease: "easeOut",
+            times: [0, 0.18, 0.68, 1],
+          }}
           className="absolute h-2 w-2 rounded-[2px]"
           style={{ background: p.c }}
         />
@@ -1918,14 +2126,13 @@ function PartyPopper() {
           y: [12, -5, 2, -2, 0, 0],
         }}
         transition={{ duration: 1.15, ease: "easeOut", times: [0, 0.22, 0.42, 0.62, 0.8, 1] }}
-         className="relative text-primary"
+        className="relative text-primary"
       >
-         <PartyPopperIcon className="h-14 w-14" strokeWidth={1.5} />
+        <PartyPopperIcon className="h-14 w-14" strokeWidth={1.5} />
       </motion.span>
     </motion.div>
   );
 }
-
 
 export function SummaryScreen({
   data,
@@ -1971,7 +2178,6 @@ export function SummaryScreen({
     },
   ];
 
-
   const city = (life.city || "").trim();
   const investableAssets = Math.max(
     0,
@@ -1982,14 +2188,21 @@ export function SummaryScreen({
       data.assets_stocks +
       data.assets_crypto,
   );
-  const numberProgress = plan.targetCapital > 0
-    ? Math.min(100, Math.max(0, (investableAssets / plan.targetCapital) * 100))
-    : 0;
+  const numberProgress =
+    plan.targetCapital > 0
+      ? Math.min(100, Math.max(0, (investableAssets / plan.targetCapital) * 100))
+      : 0;
   const numberNote =
     plan.mode === "home"
-      ? t("La entrada que necesitas para tu primera vivienda.", "The down payment you need for your first home.")
+      ? t(
+          "La entrada que necesitas para tu primera vivienda.",
+          "The down payment you need for your first home.",
+        )
       : plan.mode === "business"
-        ? t("El capital que necesitas para montar tu negocio.", "The capital you need to start your business.")
+        ? t(
+            "El capital que necesitas para montar tu negocio.",
+            "The capital you need to start your business.",
+          )
         : city
           ? t(
               `El capital que te permite vivir con ${money(plan.desiredIncome, currency)} al mes en ${city}.`,
@@ -2008,7 +2221,10 @@ export function SummaryScreen({
   const savings = Math.max(0, plan.savings);
   const invest20 = Math.round(plan.income * 0.2);
   const gap = Math.max(0, invest20 - savings);
-  const cutPct = plan.expenses > 0 && gap > 0 ? Math.min(40, Math.max(3, Math.ceil((gap / plan.expenses) * 100))) : 0;
+  const cutPct =
+    plan.expenses > 0 && gap > 0
+      ? Math.min(40, Math.max(3, Math.ceil((gap / plan.expenses) * 100)))
+      : 0;
   const needed = minMonthlyForRetirement({
     target: plan.targetCapital,
     invested: Math.max(0, plan.netWorth),
@@ -2086,16 +2302,26 @@ export function SummaryScreen({
         </h2>
         <p className="text-xs text-muted-foreground sm:text-sm">
           {firstName
-            ? t(`${firstName}, esto entendió la IA de tus finanzas.`, `${firstName}, this is what the AI understood.`)
-            : t("Esto entendió la IA de tus finanzas.", "This is what the AI understood about your finances.")}
+            ? t(
+                `${firstName}, esto entendió la IA de tus finanzas.`,
+                `${firstName}, this is what the AI understood.`,
+              )
+            : t(
+                "Esto entendió la IA de tus finanzas.",
+                "This is what the AI understood about your finances.",
+              )}
         </p>
       </div>
 
       <div className="surface px-5 py-5 sm:px-6 sm:py-5">
         <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:justify-between sm:gap-2 sm:text-left">
           <div className="min-w-0">
-            <p className="numeric text-2xl font-semibold sm:text-3xl">{money(plan.targetCapital, currency)}</p>
-            <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-primary">🎯 Your Number</p>
+            <p className="numeric text-2xl font-semibold sm:text-3xl">
+              {money(plan.targetCapital, currency)}
+            </p>
+            <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-primary">
+              🎯 Your Number
+            </p>
             <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{numberNote}</p>
           </div>
           <div className="w-full shrink-0 border-t border-border/60 pt-4 sm:w-auto sm:border-0 sm:pt-0 sm:text-right">
@@ -2107,7 +2333,8 @@ export function SummaryScreen({
                   : t("Listo", "Ready")}
             </p>
             <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
-              📅 {plan.mode === "freedom"
+              📅{" "}
+              {plan.mode === "freedom"
                 ? t("Años restantes para retirarte", "Years until retirement")
                 : t("Tiempo estimado", "Estimated time")}
             </p>
@@ -2140,7 +2367,9 @@ export function SummaryScreen({
             className="surface flex min-h-24 flex-col justify-center px-4 py-4 sm:min-h-28 sm:px-5"
           >
             <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-              <span aria-hidden="true" className="mr-1">{m.emoji}</span>
+              <span aria-hidden="true" className="mr-1">
+                {m.emoji}
+              </span>
               <span className="sm:hidden">{m.short}</span>
               <span className="hidden sm:inline">{m.label}</span>
             </p>
@@ -2182,10 +2411,19 @@ export function SummaryScreen({
       </p>
 
       <div className="flex flex-col items-center gap-1.5 sm:flex-row sm:justify-center">
-        <Button size="lg" className="h-11 w-full rounded-full text-sm sm:w-auto sm:min-w-[260px]" onClick={onEnter}>
+        <Button
+          size="lg"
+          className="h-11 w-full rounded-full text-sm sm:w-auto sm:min-w-[260px]"
+          onClick={onEnter}
+        >
           {t("Entrar a mi dashboard", "Enter my dashboard")} <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="lg" className="h-11 w-full rounded-full text-sm sm:w-auto" onClick={onEdit}>
+        <Button
+          variant="ghost"
+          size="lg"
+          className="h-11 w-full rounded-full text-sm sm:w-auto"
+          onClick={onEdit}
+        >
           <Pencil className="mr-2 h-3.5 w-3.5" /> {t("Editar mis respuestas", "Edit my answers")}
         </Button>
       </div>
