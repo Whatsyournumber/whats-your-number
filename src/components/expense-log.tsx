@@ -130,6 +130,7 @@ export function ExpenseLog() {
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   const addMobileRef = useRef<HTMLButtonElement | null>(null);
   const [addBlurHoles, setAddBlurHoles] = useState<{ x1: number; y1: number; x2: number; y2: number }[]>([]);
+  const [addBlurBottom, setAddBlurBottom] = useState<number | null>(null);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
   const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
   const router = useRouter();
@@ -1134,8 +1135,11 @@ export function ExpenseLog() {
                 })
                 .sort((a, b) => a.y1 - b.y1);
               setAddBlurHoles(holes);
+              const footer = document.querySelector<HTMLElement>("nav.fixed.bottom-0");
+              setAddBlurBottom(footer ? footer.getBoundingClientRect().top : null);
             } else if (!open) {
               setAddBlurHoles([]);
+              setAddBlurBottom(null);
             }
           }}
         >
@@ -1165,14 +1169,16 @@ export function ExpenseLog() {
               (() => {
                 const cls = "fixed z-[45] bg-background/60 backdrop-blur-sm sm:hidden";
                 const top = 56;
-                const bottomPx = window.innerHeight - 82;
-                const holes = addBlurHoles;
+                const bottomPx = addBlurBottom ?? window.innerHeight - 82;
+                const holes = addBlurHoles
+                  .map((h) => ({ ...h, y1: Math.max(top, Math.min(h.y1, bottomPx)), y2: Math.max(top, Math.min(h.y2, bottomPx)) }))
+                  .filter((h) => h.y2 > h.y1);
                 const bands: { y1: number; y2: number; hole?: (typeof holes)[number] }[] = [];
                 let cursor = top;
                 for (const h of holes) {
                   if (h.y1 > cursor) bands.push({ y1: cursor, y2: h.y1 });
                   bands.push({ y1: h.y1, y2: h.y2, hole: h });
-                  cursor = h.y2;
+                  cursor = Math.max(cursor, h.y2);
                 }
                 if (cursor < bottomPx) bands.push({ y1: cursor, y2: bottomPx });
                 return (
