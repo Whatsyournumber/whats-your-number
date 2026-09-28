@@ -199,7 +199,7 @@ export function AppSidebar() {
             )}
           </div>
         )}
-        {!collapsed && <span className="mt-2 inline-flex w-fit rounded-full bg-primary/15 px-3 py-1 text-[10px] font-semibold uppercase text-primary">{t("Plan", "Plan")} {tier === "patrimonio" ? "Familiar" : tier === "investor" ? "Inversor" : tier === "pro" ? "Pro" : t("Gratis", "Free")}</span>}
+        {!collapsed && <span className={`${compact ? "mt-1" : "mt-2"} inline-flex w-fit rounded-full bg-primary/15 px-3 py-1 text-[10px] font-semibold uppercase text-primary`}>{t("Plan", "Plan")} {tier === "patrimonio" ? "Familiar" : tier === "investor" ? "Inversor" : tier === "pro" ? "Pro" : t("Gratis", "Free")}</span>}
       </SidebarHeader>
 
       <SidebarContent className="flex-1 gap-0.5 overflow-y-auto">
