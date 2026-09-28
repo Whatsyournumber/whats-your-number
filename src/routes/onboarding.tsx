@@ -483,8 +483,8 @@ function OnboardingPage() {
             {step === 1 && (
               <Screen
                 title={t(
-                  "¿Cuál es tu principal objetivo financiero?",
-                  "What's your main financial goal?",
+                  "¿Cuál es tu objetivo financiero?",
+                  "What's your financial goal?",
                 )}
                 hint={t("Puedes escoger hasta 2 objetivos.", "You can choose up to 2 goals.")}
               >
