@@ -1163,15 +1163,34 @@ export function ExpenseLog() {
           {addMenuOpen &&
             createPortal(
               (() => {
-                const bottom = "calc(82px + env(safe-area-inset-bottom, 0px))";
                 const cls = "fixed z-[45] bg-background/60 backdrop-blur-sm sm:hidden";
-                const hole = addBlurHole ?? { x1: 0, y1: 0, x2: 0, y2: 0 };
+                const top = 56;
+                const bottomCss = "calc(82px + env(safe-area-inset-bottom, 0px))";
+                const bottomPx = window.innerHeight - 82;
+                const holes = addBlurHoles;
+                const bands: { y1: number; y2: number; hole?: (typeof holes)[number] }[] = [];
+                let cursor = top;
+                for (const h of holes) {
+                  if (h.y1 > cursor) bands.push({ y1: cursor, y2: h.y1 });
+                  bands.push({ y1: h.y1, y2: h.y2, hole: h });
+                  cursor = h.y2;
+                }
+                if (cursor < bottomPx) bands.push({ y1: cursor, y2: bottomPx });
                 return (
                   <>
-                    <div className={cls} style={{ left: 0, right: 0, top: 0, height: hole.y1 }} aria-hidden="true" />
-                    <div className={cls} style={{ left: 0, right: 0, top: hole.y2, bottom }} aria-hidden="true" />
-                    <div className={cls} style={{ left: 0, width: hole.x1, top: hole.y1, height: hole.y2 - hole.y1 }} aria-hidden="true" />
-                    <div className={cls} style={{ left: hole.x2, right: 0, top: hole.y1, height: hole.y2 - hole.y1 }} aria-hidden="true" />
+                    {bands.map((b, i) => (
+                      <div key={i} aria-hidden="true">
+                        {b.hole ? (
+                          <>
+                            <div className={cls} style={{ left: 0, width: b.hole.x1, top: b.y1, height: b.y2 - b.y1 }} />
+                            <div className={cls} style={{ left: b.hole.x2, right: 0, top: b.y1, height: b.y2 - b.y1 }} />
+                          </>
+                        ) : (
+                          <div className={cls} style={{ left: 0, right: 0, top: b.y1, height: b.y2 - b.y1 }} />
+                        )}
+                      </div>
+                    ))}
+                    <div className={cls} style={{ left: 0, right: 0, top: bottomPx, bottom: bottomCss }} aria-hidden="true" />
                   </>
                 );
               })(),
