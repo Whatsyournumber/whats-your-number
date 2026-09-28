@@ -14,12 +14,13 @@ import { cn } from "@/lib/utils";
 
 type SavingsGoal = { id: string; name: string; target: number; saved: number; monthly: number; targetYear: number };
 type Draft = Omit<SavingsGoal, "id"> & { id?: string };
-const EMPTY: SavingsGoal[] = [];
+const EMPTY: { items: SavingsGoal[] } = { items: [] };
 const newDraft = (): Draft => ({ name: "", target: 0, saved: 0, monthly: 0, targetYear: new Date().getFullYear() + 1 });
 
 export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
   const t = useT();
-  const { value: goals, save, loaded } = useSyncedSetting<SavingsGoal[]>("whatsyournumber:savings-goals", EMPTY);
+  const { value, save, loaded } = useSyncedSetting<{ items: SavingsGoal[] }>("whatsyournumber:savings-goals", EMPTY);
+  const goals = Array.isArray(value?.items) ? value.items : EMPTY.items;
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
   const [draft, setDraft] = useState<Draft | null>(null);
   const [menuId, setMenuId] = useState<string | null>(null);
@@ -34,7 +35,7 @@ export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
       id: draft.id ?? crypto.randomUUID(), name: draft.name.trim(), target: draft.target,
       saved: Math.max(0, draft.saved), monthly: Math.max(0, draft.monthly), targetYear: Math.max(new Date().getFullYear(), Math.floor(draft.targetYear)),
     };
-    save(draft.id ? goals.map((item) => item.id === draft.id ? goal : item) : [...goals, goal]);
+    save({ items: draft.id ? goals.map((item) => item.id === draft.id ? goal : item) : [...goals, goal] });
     setDraft(null);
     toast.success(t("Meta guardada", "Goal saved"));
   };
@@ -86,7 +87,7 @@ export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
                   <Button variant="ghost" size="icon" aria-label={t(`Opciones de ${goal.name}`, `Options for ${goal.name}`)} aria-expanded={menuId === goal.id} onClick={() => setMenuId(menuId === goal.id ? null : goal.id)}><MoreVertical /></Button>
                   {menuId === goal.id && <div className="absolute right-0 top-full z-10 min-w-36 rounded-md border border-border bg-popover p-1 shadow-lg">
                     <Button variant="ghost" className="w-full justify-start" onClick={() => { setDraft(goal); setMenuId(null); }}><Pencil />{t("Editar", "Edit")}</Button>
-                    <Button variant="ghost" className="w-full justify-start text-destructive" onClick={() => { save(goals.filter((item) => item.id !== goal.id)); setMenuId(null); }}><Trash2 />{t("Eliminar", "Delete")}</Button>
+                    <Button variant="ghost" className="w-full justify-start text-destructive" onClick={() => { save({ items: goals.filter((item) => item.id !== goal.id) }); setMenuId(null); }}><Trash2 />{t("Eliminar", "Delete")}</Button>
                   </div>}
                 </div>
                 {!completed(goal) && <p className="numeric col-start-1 ml-10 text-xs text-muted-foreground sm:hidden">{fmt(goal.monthly)}{t("/mes", "/mo")} · {months > 0 ? `${months} ${t("meses restantes", "months left")}` : `${t("Objetivo", "Target")} ${goal.targetYear}`}</p>}
