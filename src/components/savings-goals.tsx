@@ -92,21 +92,21 @@ export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
               <div
                 key={goal.id}
                 className={cn(
-                  "rounded-2xl border p-4 transition-colors sm:p-5",
+                  "rounded-xl border p-3 transition-colors sm:p-3.5",
                   done ? "border-positive/25 bg-positive/5" : "border-border bg-card/40 hover:border-positive/30",
                 )}
               >
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <span className={cn("grid h-12 w-12 shrink-0 place-items-center rounded-xl sm:h-14 sm:w-14", done ? "bg-positive/20 text-positive" : "bg-primary/10 text-primary")}>
-                    {done ? <Check className="h-6 w-6" /> : <Icon className="h-6 w-6" />}
+                <div className="flex items-center gap-3">
+                  <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-lg", done ? "bg-positive/20 text-positive" : "bg-primary/10 text-primary")}>
+                    {done ? <Check className="h-5 w-5" /> : <Icon className="h-5 w-5" />}
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
-                      <p className="min-w-0 break-words text-sm font-semibold sm:text-base">{goal.name}</p>
-                      <div className="flex shrink-0 items-center gap-1">
-                        <span className="numeric text-base font-bold text-positive sm:text-lg">{pct}%</span>
+                      <p className="min-w-0 break-words text-sm font-semibold">{goal.name}</p>
+                      <div className="flex shrink-0 items-center gap-0.5">
+                        <span className="numeric text-sm font-bold text-positive">{pct}%</span>
                         <div className="relative">
-                          <Button variant="ghost" size="icon" aria-label={t(`Opciones de ${goal.name}`, `Options for ${goal.name}`)} aria-expanded={menuId === goal.id} onClick={() => setMenuId(menuId === goal.id ? null : goal.id)}><MoreVertical /></Button>
+                          <Button variant="ghost" size="icon" className="h-7 w-7" aria-label={t(`Opciones de ${goal.name}`, `Options for ${goal.name}`)} aria-expanded={menuId === goal.id} onClick={() => setMenuId(menuId === goal.id ? null : goal.id)}><MoreVertical className="h-4 w-4" /></Button>
                           {menuId === goal.id && <div className="absolute right-0 top-full z-10 min-w-36 rounded-md border border-border bg-popover p-1 shadow-lg">
                             <Button variant="ghost" className="w-full justify-start" onClick={() => { setDraft(goal); setMenuId(null); }}><Pencil />{t("Editar", "Edit")}</Button>
                             <Button variant="ghost" className="w-full justify-start text-destructive" onClick={() => { save({ items: goals.filter((item) => item.id !== goal.id) }); setMenuId(null); }}><Trash2 />{t("Eliminar", "Delete")}</Button>
@@ -114,18 +114,18 @@ export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
                         </div>
                       </div>
                     </div>
-                    <div className="relative mt-2 h-6 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label={goal.name} aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
-                      <div className="h-full rounded-full bg-positive shadow-[0_0_10px_color-mix(in_oklab,var(--color-positive)_50%,transparent)] transition-[width]" style={{ width: `${Math.max(pct, 3)}%` }} />
-                      <span className="numeric absolute inset-0 flex items-center px-3 text-[11px] font-medium text-foreground/90">
+                    <div className="relative mt-1.5 h-5 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label={goal.name} aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
+                      <div className="h-full rounded-full bg-positive transition-[width]" style={{ width: `${Math.max(pct, 3)}%` }} />
+                      <span className="numeric absolute inset-0 flex items-center px-2.5 text-[10px] font-medium text-foreground/90">
                         {fmt(goal.saved)} {t("de", "of")} {fmt(goal.target)}
                       </span>
                     </div>
-                    <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-3.5 gap-y-1 text-[11px] text-muted-foreground">
                       {done ? (
-                        <span className="inline-flex items-center gap-1.5 text-positive"><Check className="h-3.5 w-3.5" />{t("Completada · ¡Buen trabajo!", "Completed · Nice work!")}</span>
+                        <span className="inline-flex items-center gap-1.5 text-positive"><Check className="h-3 w-3" />{t("Completada · ¡Buen trabajo!", "Completed · Nice work!")}</span>
                       ) : (
                         <>
-                          <span className="numeric inline-flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5 text-positive" />{fmt(goal.monthly)}{t("/mes", "/mo")}</span>
+                          <span className="numeric inline-flex items-center gap-1.5"><Calendar className="h-3 w-3 text-positive" />{fmt(goal.monthly)}{t("/mes", "/mo")}</span>
                           {months > 0 && (
                             <span className="inline-flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-positive" />{t("Llegas en", "You get there in")} {months} {t(months === 1 ? "mes" : "meses", months === 1 ? "month" : "months")}</span>
                           )}
