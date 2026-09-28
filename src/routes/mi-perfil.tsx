@@ -607,6 +607,34 @@ function MiPerfil() {
           </div>
         </Panel>
 
+        {!isPro && (
+          <Panel
+            icon={<Wallet />}
+            title={t("Dinero en el banco", "Money in the bank")}
+            description={t("Lo que tienes ahorrado hoy: tu colchón y fondo de emergencia.", "What you have saved today: your cushion and emergency fund.")}
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label={t("Cuentas bancarias", "Bank accounts")}>
+                <Input
+                  type="number"
+                  value={form.assets_bank || ""}
+                  onChange={(e) => set("assets_bank", Number(e.target.value || 0))}
+                  placeholder="0"
+                />
+              </Field>
+              <Field label={t("Efectivo", "Cash")}>
+                <Input
+                  type="number"
+                  value={form.assets_cash || ""}
+                  onChange={(e) => set("assets_cash", Number(e.target.value || 0))}
+                  placeholder="0"
+                />
+              </Field>
+            </div>
+          </Panel>
+        )}
+
+
 
 
 
