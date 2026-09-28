@@ -636,13 +636,13 @@ function CashFlow() {
       <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
         <div className="min-w-0 space-y-4">
           <SavingsGoals fmt={fmt} />
-          {tipGoal && freeAmount > 0 && (
+          {tipGoal && tipFree > 0 && (
             <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card/40 p-4 sm:p-5">
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-amber-400/15 text-amber-400"><Lightbulb className="h-5 w-5" /></span>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold">{t("¿Quieres llegar antes?", "Want to get there sooner?")}</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  {t("Tienes", "You have")} <span className="numeric font-semibold text-positive">{fmt(freeAmount)}{t("/mes", "/mo")}</span> {t("de ahorro sin destino. Si los destinas a", "of unassigned savings. If you put them toward")} <span className="font-medium text-foreground">{tipGoal.name}</span>
+                  {t("Tienes", "You have")} <span className="numeric font-semibold text-positive">{fmt(tipFree)}{t("/mes", "/mo")}</span> {t("de ahorro sin destino. Si los destinas a", "of unassigned savings. If you put them toward")} <span className="font-medium text-foreground">{tipGoal.name}</span>
                   {tipMonthsSaved > 0 && <>{t(", podrías alcanzar tu meta ~", ", you could reach your goal ~")}{tipMonthsSaved} {t(tipMonthsSaved === 1 ? "mes antes" : "meses antes", tipMonthsSaved === 1 ? "month sooner" : "months sooner")}</>}.
                 </p>
               </div>
