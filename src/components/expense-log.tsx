@@ -1165,7 +1165,6 @@ export function ExpenseLog() {
               (() => {
                 const cls = "fixed z-[45] bg-background/60 backdrop-blur-sm sm:hidden";
                 const top = 56;
-                const bottomCss = "calc(82px + env(safe-area-inset-bottom, 0px))";
                 const bottomPx = window.innerHeight - 82;
                 const holes = addBlurHoles;
                 const bands: { y1: number; y2: number; hole?: (typeof holes)[number] }[] = [];
