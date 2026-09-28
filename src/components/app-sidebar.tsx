@@ -72,6 +72,27 @@ export function AppSidebar() {
     { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserRound },
     { title: t("Configuración", "Settings"), url: "/suscripcion", icon: Settings },
   ];
+  // Plan Familiar keeps the original grouped layout (Patrimonio / Inteligencia)
+  const familyWealth = [
+    { title: t("Inicio", "Home"), url: "/dashboard", icon: LayoutDashboard },
+    { title: t("Mis gastos diarios", "My daily spending"), url: "/registro-gastos", icon: ReceiptText },
+    { title: t("Análisis de mis gastos", "My spending analysis"), url: "/gastos", icon: PieChart },
+    { title: t("Metas de ahorro", "Savings goals"), url: "/cash-flow", icon: Target },
+    { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home },
+    { title: t("Mi Número", "My Number"), url: "/retiro", icon: PiggyBank },
+    { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark },
+    { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart },
+    { title: "City Planner", url: "/ciudades", icon: Globe },
+    { title: "Life Planner", url: "/life-planner", icon: Target },
+  ];
+  const familyIntelligence = [
+    { title: t("Familia", "Family"), url: "/ninos", icon: Users },
+    { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Sparkles },
+    { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserRound },
+    { title: t("Configuración", "Settings"), url: "/suscripcion", icon: Settings },
+    { title: t("Importar datos", "Import data"), url: "/configuracion", icon: Upload },
+  ];
+  const isFamilyPlan = tier === "patrimonio";
   const discover: { title: string; url: string; icon: typeof Wallet; required: PlanTier }[] = [
     { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Sparkles, required: "pro" },
     { title: t("Mi Número", "My Number"), url: "/retiro", icon: PiggyBank, required: "pro" },
