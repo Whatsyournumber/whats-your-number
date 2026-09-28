@@ -191,8 +191,8 @@ const BULLET_ICONS = [MousePointerClick, Lightbulb, Check];
 const ADD_OPTIONS: { icon: typeof Plus; es: string; en: string }[] = [
   { icon: PencilLine, es: "Manual", en: "Manual" },
   { icon: Mic, es: "Por voz", en: "By voice" },
-  { icon: Camera, es: "Tomar foto", en: "Take photo" },
-  { icon: Upload, es: "Sube foto o captura", en: "Upload photo or screenshot" },
+  { icon: Camera, es: "Tomar foto (super, compras, etc)", en: "Take photo (groceries, shopping, etc)" },
+  { icon: Upload, es: "Fotos o estados de cuentas", en: "Photos or bank statements" },
 ];
 
 export function AppTour() {
