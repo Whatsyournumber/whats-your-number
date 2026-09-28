@@ -63,8 +63,8 @@ export function AppSidebar() {
   const { avatarUrl: googleAvatar } = useProfileAvatar();
   const spending = [
     { title: t("Inicio", "Home"), url: "/dashboard", icon: LayoutDashboard },
-    { title: t("Mis gastos", "My spending"), url: "/registro-gastos", icon: ReceiptText },
-    { title: t("Análisis", "Analysis"), url: "/gastos", icon: PieChart },
+    { title: t("Trackeo de mis gastos diarios", "Daily spending tracking"), url: "/registro-gastos", icon: ReceiptText },
+    { title: t("Análisis de mis gastos", "My spending analysis"), url: "/gastos", icon: PieChart },
   ];
   const account = [
     { title: t("Importar datos", "Import data"), url: "/configuracion", icon: Upload },
