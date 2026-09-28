@@ -320,13 +320,17 @@ function CashFlow() {
 
   // Destino del ahorro: a dónde va el ahorro del mes (metas, inversiones, disponible).
   const { value: savingsGoalsValue } = useSyncedSetting<{ items: { id: string; monthly: number }[] }>("whatsyournumber:savings-goals", { items: [] });
+  const { value: savingsAlloc, setValue: setSavingsAlloc } = useSyncedSetting<{ invest: number; goals: number } | null>("whatsyournumber:savings-allocation", null);
+  const [allocOpen, setAllocOpen] = useState(false);
+  const [allocDraft, setAllocDraft] = useState<{ invest: string; goals: string }>({ invest: "", goals: "" });
   const goalsMonthly = (Array.isArray(savingsGoalsValue?.items) ? savingsGoalsValue.items : []).reduce((s, g) => s + (Number(g.monthly) || 0), 0);
-  // Las metas nunca pueden superar el ahorro del mes: se limitan a lo que queda tras inversiones.
-  const goalsCapped = Math.min(goalsMonthly, Math.max(0, saveAmount - investAmount));
+  // Destino del ahorro: el editor manda; si no hay nada guardado, se usan las metas y las inversiones detectadas.
+  const destInvest = Math.min(savingsAlloc?.invest ?? investAmount, saveAmount);
+  const destGoals = Math.min(savingsAlloc?.goals ?? goalsMonthly, Math.max(0, saveAmount - destInvest));
   const savingsDestinations = [
-    { name: t("Metas de ahorro", "Savings goals"), amount: goalsCapped, icon: <Target className="h-5 w-5" />, color: "var(--color-positive)" },
-    { name: t("Inversiones", "Investments"), amount: investAmount, icon: <TrendingUp className="h-5 w-5" />, color: "var(--color-chart-1)" },
-    { name: t("Disponible", "Available"), amount: Math.max(0, saveAmount - goalsCapped - investAmount), icon: <Wallet className="h-5 w-5" />, color: "var(--color-chart-4)" },
+    { name: t("Metas de ahorro", "Savings goals"), amount: destGoals, icon: <Target className="h-5 w-5" />, color: "var(--color-positive)" },
+    { name: t("Inversiones", "Investments"), amount: destInvest, icon: <TrendingUp className="h-5 w-5" />, color: "var(--color-chart-1)" },
+    { name: t("Disponible", "Available"), amount: Math.max(0, saveAmount - destGoals - destInvest), icon: <Wallet className="h-5 w-5" />, color: "var(--color-chart-4)" },
   ];
 
 
@@ -550,7 +554,7 @@ function CashFlow() {
                 <svg viewBox="0 0 120 220" className="h-full w-full" preserveAspectRatio="none">
                   {midBuckets.map((b, i) => {
                     const y = 30 + i * 80;
-                    const w = Math.max(6, totalIncome > 0 ? (b.amount / totalIncome) * 60 : 6);
+                    const w = Math.max(2.5, totalIncome > 0 ? (b.amount / totalIncome) * 22 : 2.5);
                     return (
                       <motion.path
                         key={b.name}
@@ -577,7 +581,7 @@ function CashFlow() {
                 <svg viewBox="0 0 120 220" className="h-full w-full" preserveAspectRatio="none">
                   {savingsDestinations.map((d, i) => {
                     const y = 30 + i * 80;
-                    const w = Math.max(6, saveAmount > 0 ? (d.amount / saveAmount) * 60 : 6);
+                    const w = Math.max(2.5, saveAmount > 0 ? (d.amount / saveAmount) * 22 : 2.5);
                     return (
                       <motion.path
                         key={d.name}
