@@ -3,6 +3,7 @@ import { SavingsGoals } from "@/components/savings-goals";
 import { motion } from "motion/react";
 import { AlertCircle, ArrowLeftRight, ArrowRight, CheckCircle2, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { toast } from "sonner";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory } from "@/lib/i18n-data";
 
@@ -323,7 +324,7 @@ function CashFlow() {
   const { value: savingsGoalsValue } = useSyncedSetting<{ items: { id: string; monthly: number }[] }>("whatsyournumber:savings-goals", { items: [] });
   const { value: savingsAlloc, setValue: setSavingsAlloc } = useSyncedSetting<{ invest: number; goals: number } | null>("whatsyournumber:savings-allocation", null);
   const [allocOpen, setAllocOpen] = useState(false);
-  const [allocDraft, setAllocDraft] = useState<{ invest: string; goals: string }>({ invest: "", goals: "" });
+  const [allocDraft, setAllocDraft] = useState<{ invest: number; goals: number }>({ invest: 0, goals: 0 });
   const goalsMonthly = (Array.isArray(savingsGoalsValue?.items) ? savingsGoalsValue.items : []).reduce((s, g) => s + (Number(g.monthly) || 0), 0);
   // Destino del ahorro: el editor manda; si no hay nada guardado, se usan las metas y las inversiones detectadas.
   const destInvest = Math.min(savingsAlloc?.invest ?? investAmount, saveAmount);
