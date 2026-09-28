@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Sparkles, Users, PieChart } from "lucide-react";
+import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Sparkles, Users } from "lucide-react";
 import { BudgetVoiceAdvisor } from "@/components/budget-voice-advisor";
 import { SharedExpenseDialog } from "@/components/shared-expense";
 import { useT } from "@/hooks/use-language";
