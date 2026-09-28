@@ -1135,7 +1135,7 @@ export function ExpenseLog() {
             </TooltipContent>
           </Tooltip>
           </TooltipProvider>
-          <DropdownMenuContent align="end" className="w-80 p-2">
+          <DropdownMenuContent align="end" className="w-[21rem] p-2">
             <div className="px-4 pb-2 pt-3 text-center">
               <p className="text-[22px] font-bold tracking-tight text-foreground">
                 {t("Trackea tus gastos diarios", "Track your spending")}
@@ -1202,7 +1202,7 @@ export function ExpenseLog() {
               {t("Añadir gasto", "Add expense")}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-80 p-2">
+          <DropdownMenuContent align="end" className="w-[21rem] p-2">
             <div className="px-4 pb-2 pt-3 text-center">
               <p className="text-[22px] font-bold tracking-tight text-foreground">
                 {t("Trackea tus gastos diarios", "Track your spending")}
@@ -2344,7 +2344,7 @@ export function ExpenseLog() {
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-              <DropdownMenuContent align="end" className="w-80 p-2">
+              <DropdownMenuContent align="end" className="w-[21rem] p-2">
                 <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setManualOpen(true)}>
                   <PencilLine className="mr-2.5 h-6 w-6 text-positive" />
                   {t("Manual", "Manual")}
