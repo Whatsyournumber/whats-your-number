@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
@@ -19,6 +20,7 @@ import {
   UserRound,
   ReceiptText,
   Settings,
+  ChevronDown,
 } from "lucide-react";
 
 
@@ -51,6 +53,7 @@ export function AppSidebar() {
   const { state, setOpenMobile, isMobile } = useSidebar();
   const collapsed = state === "collapsed" && !isMobile;
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const searchStr = useRouterState({ select: (r) => r.location.searchStr });
   const { profile } = useProfile();
   const data = buildDataset(profile);
   const t = useT();
@@ -80,6 +83,10 @@ export function AppSidebar() {
     { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home, required: "investor" },
     { title: t("Familia", "Family"), url: "/ninos", icon: Users, required: "patrimonio" },
   ];
+  const [discoverOpen, setDiscoverOpen] = useState(() => discover.some((item) => item.url === pathname));
+  useEffect(() => {
+    if (discover.some((item) => item.url === pathname) || searchStr.includes("tour=1")) setDiscoverOpen(true);
+  }, [pathname, searchStr]);
 
   const affiliateItems: { title: string; url: string; icon: typeof Users }[] =
     affiliate && affiliate.status !== "disabled"
@@ -104,8 +111,8 @@ export function AppSidebar() {
             onClick={() => setOpenMobile(false)}
           >
             <item.icon className="h-4 w-4 shrink-0" />
-            <span className="min-w-0 flex-1 truncate text-sm leading-none">{item.title}</span>
-            {locked && !collapsed && <span className={item.required === "patrimonio" ? "rounded-full bg-accent/20 px-2 py-0.5 text-[9px] font-semibold text-accent-foreground" : item.required === "investor" ? "rounded-full bg-info/20 px-2 py-0.5 text-[9px] font-semibold text-info" : "rounded-full bg-primary/15 px-2 py-0.5 text-[9px] font-semibold text-primary"}>{badge}</span>}
+            <span className="min-w-0 flex-1 whitespace-nowrap text-[13px] leading-none">{item.title}</span>
+            {locked && !collapsed && <span className={item.required === "patrimonio" ? "shrink-0 rounded-full bg-accent/20 px-2 py-1 text-[10px] font-semibold leading-none text-accent-foreground" : item.required === "investor" ? "shrink-0 rounded-full bg-info/20 px-2 py-1 text-[10px] font-semibold leading-none text-info" : "shrink-0 rounded-full bg-primary/15 px-2 py-1 text-[10px] font-semibold leading-none text-primary"}>{badge}</span>}
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -192,8 +199,20 @@ export function AppSidebar() {
         </SidebarGroup>
         <div className="mx-3 h-px bg-border" />
         <SidebarGroup className="p-1.5">
-          <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">{t("Descubre más", "Discover more")}</SidebarGroupLabel>
-          <SidebarGroupContent>
+          {!collapsed && (
+            <Button
+              type="button"
+              variant="ghost"
+              aria-expanded={discoverOpen}
+              aria-controls="sidebar-discover-items"
+              onClick={() => setDiscoverOpen((open) => !open)}
+              className="h-8 w-full justify-between px-2 text-[10px] font-medium uppercase tracking-wide text-sidebar-foreground/70 hover:text-sidebar-foreground"
+            >
+              {t("Descubre más", "Discover more")}
+              <ChevronDown className={`h-4 w-4 transition-transform ${discoverOpen ? "rotate-180" : ""}`} />
+            </Button>
+          )}
+          <SidebarGroupContent id="sidebar-discover-items" hidden={!discoverOpen && !collapsed} className={!discoverOpen && !collapsed ? "hidden" : undefined}>
             <SidebarMenu className="gap-0.5">{discover.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
