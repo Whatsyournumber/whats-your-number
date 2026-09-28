@@ -200,7 +200,7 @@ export function AppSidebar() {
         </SidebarGroup>
         <div className="mx-3 h-px bg-border" />
         <SidebarGroup className="p-1.5">
-          {!collapsed && (
+          {!collapsed && discoverLocked.length > 0 && (
             <Button
               type="button"
               variant="ghost"
@@ -213,9 +213,11 @@ export function AppSidebar() {
               <ChevronDown className={`h-4 w-4 transition-transform ${discoverOpen ? "rotate-180" : ""}`} />
             </Button>
           )}
-          <SidebarGroupContent id="sidebar-discover-items" hidden={!discoverOpen && !collapsed} className={!discoverOpen && !collapsed ? "hidden" : undefined}>
-            <SidebarMenu className="gap-0.5">{discover.map(renderItem)}</SidebarMenu>
-          </SidebarGroupContent>
+          {discoverLocked.length > 0 && (
+            <SidebarGroupContent id="sidebar-discover-items" hidden={!discoverOpen && !collapsed} className={!discoverOpen && !collapsed ? "hidden" : undefined}>
+              <SidebarMenu className="gap-0.5">{discoverLocked.map(renderItem)}</SidebarMenu>
+            </SidebarGroupContent>
+          )}
         </SidebarGroup>
 
         {adminItems.length > 0 && (
