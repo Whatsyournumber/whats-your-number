@@ -465,6 +465,22 @@ function CashFlow() {
           <span className="hidden sm:inline">{t("Editar categorías", "Edit categories")}</span>
           <span className="sm:hidden">{t("Editar", "Edit")}</span>
         </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="shrink-0 gap-2"
+          onClick={() => {
+            setAllocDraft({
+              invest: String(savingsAlloc?.invest ?? Math.round(destInvest)),
+              goals: String(savingsAlloc?.goals ?? Math.round(destGoals)),
+            });
+            setAllocOpen(true);
+          }}
+        >
+          <PiggyBank className="h-3.5 w-3.5" />
+          <span className="hidden sm:inline">{t("Editar ahorro", "Edit savings")}</span>
+          <span className="sm:hidden">{t("Ahorro", "Savings")}</span>
+        </Button>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" data-tour-cashflow-target="cards">
