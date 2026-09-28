@@ -186,7 +186,7 @@ export function AppSidebar() {
             {t("Mi dinero", "My money")}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-0.5">{spending.map(renderItem)}</SidebarMenu>
+            <SidebarMenu className="gap-0.5">{spending.map(renderItem)}{discoverUnlocked.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
         <div className="mx-3 h-px bg-border" />
