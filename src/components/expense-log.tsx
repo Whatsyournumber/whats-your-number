@@ -1139,13 +1139,16 @@ export function ExpenseLog() {
             </TooltipContent>
           </Tooltip>
           </TooltipProvider>
-          {addMenuOpen && (
-            <div
-              className="fixed inset-x-0 z-40 bg-background/60 backdrop-blur-sm sm:hidden"
-              style={{ top: 56, bottom: "calc(82px + env(safe-area-inset-bottom, 0px))" }}
-              aria-hidden="true"
-            />
-          )}
+          {addMenuOpen &&
+            createPortal(
+              <div
+                className="fixed inset-x-0 z-40 bg-background/60 backdrop-blur-sm sm:hidden"
+                style={{ top: 56, bottom: "calc(82px + env(safe-area-inset-bottom, 0px))" }}
+                aria-hidden="true"
+              />,
+              document.body,
+            )}
+
 
           <DropdownMenuContent align="end" className="z-50 w-[21rem] p-2">
 
