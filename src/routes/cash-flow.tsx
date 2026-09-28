@@ -654,16 +654,16 @@ function CashFlow() {
             <>
               <div className="flex items-end justify-between gap-3">
                 <div>
-                  <p className="numeric text-4xl font-bold text-primary">{fmt(savingsAtRetire)}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">{t("en", "in")} {savingsYears} {t("años", "years")}</p>
+                  <p className="numeric text-3xl font-bold text-primary">{fmt(savingsAtRetire)}</p>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">{t("en", "in")} {savingsYears} {t("años", "years")}</p>
                 </div>
-                <div className="rounded-xl border border-border bg-elevated/60 px-3 py-2 text-right">
-                  <p className="numeric text-sm font-semibold text-positive">{fmt(savingsAtRetire)}</p>
+                <div className="rounded-lg border border-border bg-elevated/60 px-2.5 py-1.5 text-right">
+                  <p className="numeric text-xs font-semibold text-positive">{fmt(savingsAtRetire)}</p>
                   <p className="text-[10px] text-muted-foreground">{savingsYears} {t("años", "years")}</p>
                 </div>
               </div>
-              <div className="mt-4">
-                <svg viewBox="0 0 300 120" className="h-36 w-full" role="img" aria-label={t("Proyección de tu ahorro", "Your savings projection")}>
+              <div className="mt-3">
+                <svg viewBox="0 0 300 120" className="h-28 w-full" role="img" aria-label={t("Proyección de tu ahorro", "Your savings projection")}>
                   <defs>
                     <linearGradient id="savingsChartFill" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="var(--color-positive)" stopOpacity="0.35" />
@@ -674,36 +674,36 @@ function CashFlow() {
                     <line key={f} x1="0" x2="300" y1={104 - f * 92} y2={104 - f * 92} stroke="var(--color-border)" strokeDasharray="3 4" strokeWidth="1" />
                   ))}
                   <path d={`${chartLine} L 300 112 L 0 112 Z`} fill="url(#savingsChartFill)" stroke="none" />
-                  <path d={chartLine} fill="none" stroke="var(--color-positive)" strokeWidth="2.5" strokeLinecap="round" />
+                  <path d={chartLine} fill="none" stroke="var(--color-positive)" strokeWidth="2" strokeLinecap="round" />
                   {chartPoints.map((p) => (
-                    <circle key={p.year} cx={p.x} cy={p.y} r="3.5" fill="var(--color-positive)" stroke="var(--color-background)" strokeWidth="1.5" />
+                    <circle key={p.year} cx={p.x} cy={p.y} r="3" fill="var(--color-positive)" stroke="var(--color-background)" strokeWidth="1.5" />
                   ))}
                 </svg>
-                <div className="mt-1 flex justify-between text-center">
+                <div className="mt-0.5 flex justify-between text-center">
                   {chartPoints.map((p) => (
                     <div key={p.year} className="min-w-0">
-                      <p className="text-[10px] text-muted-foreground">{p.year === 0 ? t("Hoy", "Today") : `${p.year} ${t(p.year === 1 ? "año" : "años", p.year === 1 ? "year" : "years")}`}</p>
-                      <p className="numeric text-[11px] font-medium">{fmt(p.value)}</p>
+                      <p className="text-[9px] text-muted-foreground">{p.year === 0 ? t("Hoy", "Today") : `${p.year} ${t(p.year === 1 ? "año" : "años", p.year === 1 ? "year" : "years")}`}</p>
+                      <p className="numeric text-[10px] font-medium">{fmt(p.value)}</p>
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                <div className="rounded-2xl border border-border bg-elevated/60 p-3.5">
-                  <div className="flex items-center gap-2 text-muted-foreground"><Coins className="h-4 w-4 text-positive" /><p className="text-[11px]">{t("Aportarías", "You'd contribute")}</p></div>
-                  <p className="numeric mt-1 text-lg font-semibold">{fmt(savingsContributed)}</p>
+              <div className="mt-3 grid grid-cols-2 gap-2.5">
+                <div className="rounded-xl border border-border bg-elevated/60 p-3">
+                  <div className="flex items-center gap-1.5 text-muted-foreground"><Coins className="h-3.5 w-3.5 text-positive" /><p className="text-[10px]">{t("Aportarías", "You'd contribute")}</p></div>
+                  <p className="numeric mt-0.5 text-base font-semibold">{fmt(savingsContributed)}</p>
                   <p className="text-[10px] text-muted-foreground">{t("de tu bolsillo", "out of your pocket")}</p>
                 </div>
-                <div className="rounded-2xl border border-border bg-elevated/60 p-3.5">
-                  <div className="flex items-center gap-2 text-muted-foreground"><TrendingUp className="h-4 w-4 text-positive" /><p className="text-[11px]">{t("Crecimiento estimado", "Estimated growth")}</p></div>
-                  <p className="numeric mt-1 text-lg font-semibold text-positive">+{fmt(savingsGrowth)}</p>
+                <div className="rounded-xl border border-border bg-elevated/60 p-3">
+                  <div className="flex items-center gap-1.5 text-muted-foreground"><TrendingUp className="h-3.5 w-3.5 text-positive" /><p className="text-[10px]">{t("Crecimiento estimado", "Estimated growth")}</p></div>
+                  <p className="numeric mt-0.5 text-base font-semibold text-positive">+{fmt(savingsGrowth)}</p>
                   <p className="text-[10px] text-muted-foreground">{t("gracias al interés compuesto", "thanks to compound interest")}</p>
                 </div>
               </div>
-              <Button asChild className="mt-4 w-full">
+              <Button asChild size="sm" className="mt-3 w-full">
                 <Link to="/retiro">{t("Ver proyección completa", "See full projection")}<ArrowRight /></Link>
               </Button>
-              <p className="mt-3 text-center text-[11px] text-muted-foreground">
+              <p className="mt-2.5 text-center text-[10px] text-muted-foreground">
                 {t(
                   `Simulación ilustrativa al ${SP500_RATE}% anual (S&P 500). Los rendimientos reales pueden variar.`,
                   `Illustrative simulation at ${SP500_RATE}% a year (S&P 500). Actual returns may vary.`,

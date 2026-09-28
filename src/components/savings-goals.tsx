@@ -127,7 +127,7 @@ export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
                         <>
                           <span className="numeric inline-flex items-center gap-1.5"><Calendar className="h-3 w-3 text-positive" />{fmt(goal.monthly)}{t("/mes", "/mo")}</span>
                           {months > 0 && (
-                            <span className="inline-flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-positive" />{t("Llegas en", "You get there in")} {months} {t(months === 1 ? "mes" : "meses", months === 1 ? "month" : "months")}</span>
+                            <span className="inline-flex items-center gap-1.5"><Clock className="h-3 w-3 text-positive" />{t("Llegas en", "You get there in")} {months} {t(months === 1 ? "mes" : "meses", months === 1 ? "month" : "months")}</span>
                           )}
                         </>
                       )}
