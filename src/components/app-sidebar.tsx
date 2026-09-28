@@ -72,6 +72,27 @@ export function AppSidebar() {
     { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserRound },
     { title: t("Configuración", "Settings"), url: "/suscripcion", icon: Settings },
   ];
+  // Plan Familiar keeps the original grouped layout (Patrimonio / Inteligencia)
+  const familyWealth = [
+    { title: t("Inicio", "Home"), url: "/dashboard", icon: LayoutDashboard },
+    { title: t("Mis gastos diarios", "My daily spending"), url: "/registro-gastos", icon: ReceiptText },
+    { title: t("Análisis de mis gastos", "My spending analysis"), url: "/gastos", icon: PieChart },
+    { title: t("Metas de ahorro", "Savings goals"), url: "/cash-flow", icon: Target },
+    { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home },
+    { title: t("Mi Número", "My Number"), url: "/retiro", icon: PiggyBank },
+    { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark },
+    { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart },
+    { title: "City Planner", url: "/ciudades", icon: Globe },
+    { title: "Life Planner", url: "/life-planner", icon: Target },
+  ];
+  const familyIntelligence = [
+    { title: t("Familia", "Family"), url: "/ninos", icon: Users },
+    { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Sparkles },
+    { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserRound },
+    { title: t("Configuración", "Settings"), url: "/suscripcion", icon: Settings },
+    { title: t("Importar datos", "Import data"), url: "/configuracion", icon: Upload },
+  ];
+  const isFamilyPlan = tier === "patrimonio";
   const discover: { title: string; url: string; icon: typeof Wallet; required: PlanTier }[] = [
     { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Sparkles, required: "pro" },
     { title: t("Mi Número", "My Number"), url: "/retiro", icon: PiggyBank, required: "pro" },
@@ -181,44 +202,68 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="flex-1 gap-0.5 overflow-y-auto">
-        <SidebarGroup className="p-1.5">
-          <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
-            {t("Mi dinero", "My money")}
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu className="gap-0.5">{spending.map(renderItem)}{discoverUnlocked.map(renderItem)}</SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <div className="mx-3 h-px bg-border" />
-        <SidebarGroup className="p-1.5">
-          <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
-            {t("Cuenta", "Account")}
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu className="gap-0.5">{account.map(renderItem)}{affiliateItems.map(renderItem)}</SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <div className="mx-3 h-px bg-border" />
-        <SidebarGroup className="p-1.5">
-          {!collapsed && discoverLocked.length > 0 && (
-            <Button
-              type="button"
-              variant="ghost"
-              aria-expanded={discoverOpen}
-              aria-controls="sidebar-discover-items"
-              onClick={() => setDiscoverOpen((open) => !open)}
-              className="h-8 w-full justify-between px-2 text-[10px] font-medium uppercase tracking-wide text-sidebar-foreground/70 hover:text-sidebar-foreground"
-            >
-              {t("Descubre más", "Discover more")}
-              <ChevronDown className={`h-4 w-4 transition-transform ${discoverOpen ? "rotate-180" : ""}`} />
-            </Button>
-          )}
-          {discoverLocked.length > 0 && (
-            <SidebarGroupContent id="sidebar-discover-items" hidden={!discoverOpen && !collapsed} className={!discoverOpen && !collapsed ? "hidden" : undefined}>
-              <SidebarMenu className="gap-0.5">{discoverLocked.map(renderItem)}</SidebarMenu>
-            </SidebarGroupContent>
-          )}
-        </SidebarGroup>
+        {isFamilyPlan ? (
+          <>
+            <SidebarGroup className="p-1.5">
+              <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
+                {t("Patrimonio", "Net worth")}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu className="gap-0.5">{familyWealth.map(renderItem)}</SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+            <div className="mx-3 h-px bg-border" />
+            <SidebarGroup className="p-1.5">
+              <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
+                {t("Inteligencia", "Intelligence")}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu className="gap-0.5">{familyIntelligence.map(renderItem)}{affiliateItems.map(renderItem)}</SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </>
+        ) : (
+          <>
+            <SidebarGroup className="p-1.5">
+              <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
+                {t("Mi dinero", "My money")}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu className="gap-0.5">{spending.map(renderItem)}{discoverUnlocked.map(renderItem)}</SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+            <div className="mx-3 h-px bg-border" />
+            <SidebarGroup className="p-1.5">
+              <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
+                {t("Cuenta", "Account")}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu className="gap-0.5">{account.map(renderItem)}{affiliateItems.map(renderItem)}</SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+            <div className="mx-3 h-px bg-border" />
+            <SidebarGroup className="p-1.5">
+              {!collapsed && discoverLocked.length > 0 && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  aria-expanded={discoverOpen}
+                  aria-controls="sidebar-discover-items"
+                  onClick={() => setDiscoverOpen((open) => !open)}
+                  className="h-8 w-full justify-between px-2 text-[10px] font-medium uppercase tracking-wide text-sidebar-foreground/70 hover:text-sidebar-foreground"
+                >
+                  {t("Descubre más", "Discover more")}
+                  <ChevronDown className={`h-4 w-4 transition-transform ${discoverOpen ? "rotate-180" : ""}`} />
+                </Button>
+              )}
+              {discoverLocked.length > 0 && (
+                <SidebarGroupContent id="sidebar-discover-items" hidden={!discoverOpen && !collapsed} className={!discoverOpen && !collapsed ? "hidden" : undefined}>
+                  <SidebarMenu className="gap-0.5">{discoverLocked.map(renderItem)}</SidebarMenu>
+                </SidebarGroupContent>
+              )}
+            </SidebarGroup>
+          </>
+        )}
 
         {adminItems.length > 0 && (
           <SidebarGroup className="p-1.5">
