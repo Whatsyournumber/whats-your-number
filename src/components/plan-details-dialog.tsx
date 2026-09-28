@@ -32,7 +32,6 @@ function usePlanCopy() {
         t("Trackea el día a día de tus gastos", "Track your expenses day by day"),
         t("Análisis de gastos del mes", "Monthly expense analysis"),
         t("5 importaciones de EEFF al mes", "5 statement imports per month"),
-        t("Tu número simple en Inicio", "Your simple number on Home"),
         t("Resumen de tu número en Inicio", "Number summary on Home"),
         t("Presupuesto 40/40/20", "40/40/20 budget"),
       ],
@@ -175,7 +174,7 @@ export function PlanChangeDialog({
   const fromRank = { free: 0, pro: 1, investor: 2, patrimonio: 3 }[from];
   const toRank = { free: 0, pro: 1, investor: 2, patrimonio: 3 }[to];
   const difference = isUpgrade
-    ? (to === "patrimonio" ? copy.patrimonio.features.slice(1) : copy.investor.features.slice(1))
+    ? [...(fromRank < 2 && toRank >= 2 ? copy.investor.features.slice(1) : []), ...(toRank === 3 ? copy.patrimonio.features.slice(1) : [])]
     : (from === "patrimonio" && to === "investor" ? copy.patrimonio.features.slice(1) : fromRank > toRank ? [...(from === "patrimonio" ? copy.patrimonio.features.slice(1) : []), ...copy.investor.features.slice(1)] : []);
   const changeTitle = isUpgrade
     ? t(`Mejorar a ${target.name}`, `Upgrade to ${target.name}`)

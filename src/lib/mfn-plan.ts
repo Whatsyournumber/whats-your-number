@@ -32,10 +32,11 @@ export function isActive(sub?: Subscription | null): boolean {
   return future;
 }
 
-/** "free" | "pro" | "family" */
+/** "free" | "pro" | "investor" | "family" */
 export function activePlan(sub?: Subscription | null): string {
   if (!isActive(sub)) return "free";
   if (sub!.product_id === "patrimonio_plan") return "family";
+  if (sub!.product_id === "investor_plan") return "investor";
   if (sub!.product_id === "pro_plan") return "pro";
   return "free";
 }
@@ -54,6 +55,7 @@ export function kidLimit(sub?: Subscription | null, parentCount = 1): number {
 
 export function planLabel(plan: string, lang: "es" | "en"): string {
   if (plan === "family") return lang === "en" ? "Family" : "Familiar";
+  if (plan === "investor") return lang === "en" ? "Investor" : "Inversor";
   if (plan === "pro") return "Pro";
   return lang === "en" ? "Explorer" : "Explorador";
 }
