@@ -1162,7 +1162,7 @@ export function ExpenseLog() {
                 if (!h) return null;
                 return (
                   <>
-                    <div aria-hidden="true" className={cls} style={{ inset: 0, bottom: `calc(100vh - ${h.y1}px)` }} />
+                    <div aria-hidden="true" className={cls} style={{ left: 0, right: 0, top: 56, height: Math.max(0, h.y1 - 56) }} />
                     <div aria-hidden="true" className={cls} style={{ left: 0, top: h.y1, width: h.x1, height: h.y2 - h.y1 }} />
                     <div aria-hidden="true" className={cls} style={{ left: h.x2, right: 0, top: h.y1, height: h.y2 - h.y1 }} />
                     <div aria-hidden="true" className={cls} style={{ left: 0, right: 0, top: h.y2, bottom: 0 }} />

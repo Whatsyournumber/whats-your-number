@@ -115,7 +115,7 @@ export function MobileBottomNav() {
               <div className="fixed inset-0 z-[45]" onClick={() => setMenuOpen(false)} aria-hidden>
                 <div
                   className="fixed inset-x-0 bg-background/60 backdrop-blur-sm"
-                  style={{ top: 0, height: Math.max(0, blurBounds.y1) }}
+                  style={{ top: 56, height: Math.max(0, blurBounds.y1 - 56) }}
                 />
                 <div
                   className="fixed left-0 bg-background/60 backdrop-blur-sm"
