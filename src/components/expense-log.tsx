@@ -1148,12 +1148,9 @@ export function ExpenseLog() {
               <Camera className="mr-2.5 h-6 w-6 text-positive" />
               {t("Tomar foto", "Take photo")}
             </DropdownMenuItem>
-            <DropdownMenuItem
-              className="min-h-16 rounded-lg px-3.5 text-[17px]"
-              onSelect={() => (isMobile ? setPhotoPickerOpen(true) : fileRef.current?.click())}
-            >
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setPhotoPickerOpen(true)}>
               <Upload className="mr-2.5 h-6 w-6 text-positive" />
-              {t("Sube foto o captura", "Upload photo or screenshot")}
+              {t("Sube fotos o estados de cuenta", "Upload photos or bank statements")}
             </DropdownMenuItem>
             <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={openNewRecurring}>
               <Repeat className="mr-2.5 h-6 w-6 text-positive" />
@@ -1210,9 +1207,9 @@ export function ExpenseLog() {
               <Camera className="mr-2.5 h-6 w-6 text-positive" />
               {t("Tomar foto", "Take photo")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => fileRef.current?.click()}>
+            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setPhotoPickerOpen(true)}>
               <Upload className="mr-2.5 h-6 w-6 text-positive" />
-              {t("Sube foto o captura", "Upload photo or screenshot")}
+              {t("Sube fotos o estados de cuenta", "Upload photos or bank statements")}
             </DropdownMenuItem>
             <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={openNewRecurring}>
               <Repeat className="mr-2.5 h-6 w-6 text-positive" />
@@ -1644,7 +1641,7 @@ export function ExpenseLog() {
 
           {/* Selector de origen de la foto en móvil: cámara arriba y 3 opciones abajo */}
           <Dialog open={photoPickerOpen} onOpenChange={setPhotoPickerOpen}>
-            <DialogContent className="w-[calc(100vw-2rem)] max-w-sm rounded-3xl p-4 sm:hidden">
+            <DialogContent className="w-[calc(100vw-2rem)] max-w-sm rounded-3xl p-4">
               <DialogHeader>
                 <DialogTitle className="text-lg font-bold">{t("Añadir recibo", "Add receipt")}</DialogTitle>
                 <DialogDescription className="text-sm">
