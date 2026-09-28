@@ -128,6 +128,8 @@ export function ExpenseLog() {
   const [manualOpen, setManualOpen] = useState(false);
   const [sharedOpen, setSharedOpen] = useState(false);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
+  const addMobileRef = useRef<HTMLButtonElement | null>(null);
+  const [addBlurClip, setAddBlurClip] = useState<string | undefined>(undefined);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
   const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
   const router = useRouter();
@@ -1106,7 +1108,7 @@ export function ExpenseLog() {
   return (
     <section className="space-y-4">
       <SharedExpenseInbox />
-      <div className="sticky top-14 z-40 -mx-4 flex items-center justify-between gap-3 border-b border-border bg-background/95 px-4 py-4 shadow-sm backdrop-blur-xl sm:static sm:mx-0 sm:items-start sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none sm:backdrop-blur-none">
+      <div className="sticky top-14 z-30 -mx-4 flex items-center justify-between gap-3 border-b border-border bg-background/95 px-4 py-4 shadow-sm backdrop-blur-xl sm:static sm:mx-0 sm:items-start sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none sm:backdrop-blur-none">
         <div className="min-w-0">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
             {t("Registro de gastos", "Expense Tracker")}
@@ -1118,7 +1120,21 @@ export function ExpenseLog() {
             {t("Controla tus gastos del día a día y mantente dentro de tu plan.", "Track your daily expenses and stay within your plan.")}
           </p>
         </div>
-        <DropdownMenu open={addMenuOpen} onOpenChange={setAddMenuOpen}>
+        <DropdownMenu
+          open={addMenuOpen}
+          onOpenChange={(open) => {
+            setAddMenuOpen(open);
+            if (open && addMobileRef.current) {
+              const r = addMobileRef.current.getBoundingClientRect();
+              const p = 6;
+              const x1 = r.left - p, x2 = r.right + p;
+              const y1 = r.top - 56 - p, y2 = r.bottom - 56 + p;
+              setAddBlurClip(`polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, ${x1}px ${y1}px, ${x1}px ${y2}px, ${x2}px ${y2}px, ${x2}px ${y1}px)`);
+            } else if (!open) {
+              setAddBlurClip(undefined);
+            }
+          }}
+        >
 
           <TooltipProvider delayDuration={150}>
           <Tooltip>
@@ -1126,6 +1142,7 @@ export function ExpenseLog() {
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
+                  ref={addMobileRef}
                   data-tour-expense-target="add-mobile"
                   aria-label={t("Añadir gasto", "Add expense")}
                   className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/20 sm:hidden"
@@ -1143,7 +1160,7 @@ export function ExpenseLog() {
             createPortal(
               <div
                 className="fixed inset-x-0 z-[35] bg-background/60 backdrop-blur-sm sm:hidden"
-                style={{ top: 56, bottom: "calc(82px + env(safe-area-inset-bottom, 0px))" }}
+                style={{ top: 56, bottom: "calc(82px + env(safe-area-inset-bottom, 0px))", clipPath: addBlurClip }}
                 aria-hidden="true"
               />,
               document.body,
