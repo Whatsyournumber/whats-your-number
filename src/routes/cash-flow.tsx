@@ -419,9 +419,10 @@ function CashFlow() {
   // Consejo «¿Quieres llegar antes?»: usa el ahorro sin destino y la primera meta activa
   const { value: goalsSetting } = useSyncedSetting<{ items: SavingsGoal[] }>("whatsyournumber:savings-goals", { items: [] });
   const goalsList = Array.isArray(goalsSetting?.items) ? goalsSetting.items : [];
+  const tipFree = Math.max(0, saveAmount - destGoals - destInvest);
   const tipGoal = goalsList.find((g) => g.target > 0 && g.saved < g.target && g.monthly > 0);
-  const tipMonthsSaved = tipGoal && freeAmount > 0
-    ? Math.max(0, Math.ceil((tipGoal.target - tipGoal.saved) / tipGoal.monthly) - Math.ceil((tipGoal.target - tipGoal.saved) / (tipGoal.monthly + freeAmount)))
+  const tipMonthsSaved = tipGoal && tipFree > 0
+    ? Math.max(0, Math.ceil((tipGoal.target - tipGoal.saved) / tipGoal.monthly) - Math.ceil((tipGoal.target - tipGoal.saved) / (tipGoal.monthly + tipFree)))
     : 0;
 
   return (
