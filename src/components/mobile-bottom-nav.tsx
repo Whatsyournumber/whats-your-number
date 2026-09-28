@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Sparkles, Users } from "lucide-react";
 import { BudgetVoiceAdvisor } from "@/components/budget-voice-advisor";
@@ -15,6 +15,9 @@ export function MobileBottomNav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [adviceOpen, setAdviceOpen] = useState(false);
   const [sharedOpen, setSharedOpen] = useState(false);
+  const addButtonRef = useRef<HTMLButtonElement | null>(null);
+  const footerRef = useRef<HTMLDivElement | null>(null);
+  const [blurBounds, setBlurBounds] = useState<{ footerTop: number; button: { x1: number; y1: number; x2: number; y2: number } } | null>(null);
   // El tour del paso del botón + abre el menú real mientras dura el paso.
   const [tourHold, setTourHold] = useState(false);
   useEffect(() => {
@@ -25,6 +28,25 @@ export function MobileBottomNav() {
   useEffect(() => {
     setMenuOpen(tourHold);
   }, [tourHold]);
+  useEffect(() => {
+    if (!menuOpen || tourHold) {
+      setBlurBounds(null);
+      return;
+    }
+    const measure = () => {
+      const button = addButtonRef.current?.getBoundingClientRect();
+      const footer = footerRef.current?.getBoundingClientRect();
+      if (!button || !footer) return;
+      const p = 6;
+      setBlurBounds({
+        footerTop: footer.top,
+        button: { x1: button.left - p, y1: button.top - p, x2: button.right + p, y2: button.bottom + p },
+      });
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [menuOpen, tourHold]);
 
   const isFree = !isPro && !isInvestor;
   const tabs = [
@@ -94,12 +116,28 @@ export function MobileBottomNav() {
       {menuOpen && (
         <>
           {!tourHold && (
-            <div
-              className="fixed inset-x-0 bg-background/60 backdrop-blur-sm"
-              style={{ top: 56, bottom: "calc(128px + env(safe-area-inset-bottom, 0px))" }}
-              onClick={() => setMenuOpen(false)}
-              aria-hidden
-            />
+            blurBounds && (
+              <div className="fixed inset-0" onClick={() => setMenuOpen(false)} aria-hidden>
+                <div
+                  className="fixed inset-x-0 bg-background/60 backdrop-blur-sm"
+                  style={{ top: 56, height: Math.max(0, blurBounds.button.y1 - 56) }}
+                />
+                <div
+                  className="fixed left-0 bg-background/60 backdrop-blur-sm"
+                  style={{ top: blurBounds.button.y1, width: Math.max(0, blurBounds.button.x1), height: Math.max(0, blurBounds.footerTop - blurBounds.button.y1) }}
+                />
+                <div
+                  className="fixed right-0 bg-background/60 backdrop-blur-sm"
+                  style={{ top: blurBounds.button.y1, left: blurBounds.button.x2, height: Math.max(0, blurBounds.footerTop - blurBounds.button.y1) }}
+                />
+                {blurBounds.button.y2 < blurBounds.footerTop && (
+                  <div
+                    className="fixed bg-background/60 backdrop-blur-sm"
+                    style={{ left: blurBounds.button.x1, width: blurBounds.button.x2 - blurBounds.button.x1, top: blurBounds.button.y2, height: blurBounds.footerTop - blurBounds.button.y2 }}
+                  />
+                )}
+              </div>
+            )
           )}
           <div
             data-tour-add-menu
@@ -130,9 +168,10 @@ export function MobileBottomNav() {
           </div>
         </>
       )}
-      <div className="relative grid w-full grid-cols-5 items-end justify-items-center bg-background/90 px-1 pb-[max(env(safe-area-inset-bottom,0px),10px)] pt-2 shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+      <div ref={footerRef} className="relative grid w-full grid-cols-5 items-end justify-items-center bg-background px-1 pb-[max(env(safe-area-inset-bottom,0px),10px)] pt-2 shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.35)]">
         {tabs.slice(0, 2).map((tab, i) => renderTab(tab, i === 1 && !isFree ? "-translate-x-2" : ""))}
         <button
+          ref={addButtonRef}
           type="button"
           data-tour-nav-add
           onClick={() => setMenuOpen((open) => !open)}
