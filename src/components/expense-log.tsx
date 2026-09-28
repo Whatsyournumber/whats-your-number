@@ -129,8 +129,7 @@ export function ExpenseLog() {
   const [sharedOpen, setSharedOpen] = useState(false);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   const addMobileRef = useRef<HTMLButtonElement | null>(null);
-  const [addBlurHoles, setAddBlurHoles] = useState<{ x1: number; y1: number; x2: number; y2: number }[]>([]);
-  const [addBlurBottom, setAddBlurBottom] = useState<number | null>(null);
+  const [addBlurHole, setAddBlurHole] = useState<{ x1: number; y1: number; x2: number; y2: number } | null>(null);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
   const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
   const router = useRouter();
@@ -1126,20 +1125,11 @@ export function ExpenseLog() {
           onOpenChange={(open) => {
             setAddMenuOpen(open);
             if (open && addMobileRef.current) {
-              const p = 6;
-              const holes = [addMobileRef.current, document.querySelector<HTMLElement>("[data-tour-nav-add] > span")]
-                .filter((el): el is HTMLElement => !!el)
-                .map((el) => {
-                  const r = el.getBoundingClientRect();
-                  return { x1: r.left - p, y1: r.top - p, x2: r.right + p, y2: r.bottom + p };
-                })
-                .sort((a, b) => a.y1 - b.y1);
-              setAddBlurHoles(holes);
-              const footer = document.querySelector<HTMLElement>("nav.fixed.bottom-0");
-              setAddBlurBottom(footer ? footer.getBoundingClientRect().top : null);
+              const r = addMobileRef.current.getBoundingClientRect();
+              const p = 2;
+              setAddBlurHole({ x1: r.left - p, y1: r.top - p, x2: r.right + p, y2: r.bottom + p });
             } else if (!open) {
-              setAddBlurHoles([]);
-              setAddBlurBottom(null);
+              setAddBlurHole(null);
             }
           }}
         >
@@ -1168,41 +1158,14 @@ export function ExpenseLog() {
             createPortal(
               (() => {
                 const cls = "fixed z-[45] bg-background/60 backdrop-blur-sm sm:hidden";
-                const top = 56;
-                const bottomPx = addBlurBottom ?? window.innerHeight - 82;
-                const holes = addBlurHoles
-                  .map((h) => ({ ...h, y1: Math.max(top, Math.min(h.y1, bottomPx)), y2: Math.max(top, Math.min(h.y2, bottomPx)) }))
-                  .filter((h) => h.y2 > h.y1);
-                const bands: { y1: number; y2: number; hole?: (typeof holes)[number] }[] = [];
-                let cursor = top;
-                for (const h of holes) {
-                  if (h.y1 > cursor) bands.push({ y1: cursor, y2: h.y1 });
-                  bands.push({ y1: h.y1, y2: h.y2, hole: h });
-                  cursor = Math.max(cursor, h.y2);
-                }
-                if (cursor < bottomPx) bands.push({ y1: cursor, y2: bottomPx });
-                const footerHole = addBlurHoles.length > 1 ? addBlurHoles[addBlurHoles.length - 1] : null;
+                const h = addBlurHole;
+                if (!h) return null;
                 return (
                   <>
-                    {footerHole && footerHole.y2 > bottomPx && (
-                      <div
-                        aria-hidden="true"
-                        className={cls}
-                        style={{ left: footerHole.x1, width: footerHole.x2 - footerHole.x1, top: footerHole.y2, bottom: 0 }}
-                      />
-                    )}
-                    {bands.map((b, i) => (
-                      <div key={i} aria-hidden="true">
-                        {b.hole ? (
-                          <>
-                            <div className={cls} style={{ left: 0, width: b.hole.x1, top: b.y1, height: b.y2 - b.y1 }} />
-                            <div className={cls} style={{ left: b.hole.x2, right: 0, top: b.y1, height: b.y2 - b.y1 }} />
-                          </>
-                        ) : (
-                          <div className={cls} style={{ left: 0, right: 0, top: b.y1, height: b.y2 - b.y1 }} />
-                        )}
-                      </div>
-                    ))}
+                    <div aria-hidden="true" className={cls} style={{ inset: 0, bottom: `calc(100vh - ${h.y1}px)` }} />
+                    <div aria-hidden="true" className={cls} style={{ left: 0, top: h.y1, width: h.x1, height: h.y2 - h.y1 }} />
+                    <div aria-hidden="true" className={cls} style={{ left: h.x2, right: 0, top: h.y1, height: h.y2 - h.y1 }} />
+                    <div aria-hidden="true" className={cls} style={{ left: 0, right: 0, top: h.y2, bottom: 0 }} />
                   </>
                 );
               })(),
