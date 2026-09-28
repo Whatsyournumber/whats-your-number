@@ -1120,7 +1120,20 @@ export function ExpenseLog() {
             {t("Controla tus gastos del día a día y mantente dentro de tu plan.", "Track your daily expenses and stay within your plan.")}
           </p>
         </div>
-        <DropdownMenu open={addMenuOpen} onOpenChange={setAddMenuOpen}>
+        <DropdownMenu
+          open={addMenuOpen}
+          onOpenChange={(open) => {
+            setAddMenuOpen(open);
+            if (open && addMobileRef.current) {
+              const r = addMobileRef.current.getBoundingClientRect();
+              const p = 6;
+              const x1 = r.left - p, y1 = r.top - p, x2 = r.right + p, y2 = r.bottom + p;
+              setAddBlurClip(`polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, ${x1}px ${y1}px, ${x1}px ${y2}px, ${x2}px ${y2}px, ${x2}px ${y1}px)`);
+            } else if (!open) {
+              setAddBlurClip(undefined);
+            }
+          }}
+        >
 
           <TooltipProvider delayDuration={150}>
           <Tooltip>
