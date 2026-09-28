@@ -6,5 +6,5 @@
 - [x] Permitir hasta dos objetivos y recorrido corto cuando gastos sea el único objetivo
 - [x] Mantener el onboarding completo para gastos, omitir solo el paso 8 y simplificar el último paso
 - [x] Cuatro planes: Gratis, Pro, Inversor y Familiar con accesos y menú acordes
-- [x] Precios regionales USD y checkout de Inversor según lógica regional existente; retirar Corporativo
+- [ ] Precios regionales USD, España 3/5/7 y checkout a juego; retirar Corporativo
 - [x] Comprobar menú, precios y acceso por nivel en móvil y escritorio

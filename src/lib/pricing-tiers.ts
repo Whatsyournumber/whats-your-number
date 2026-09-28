@@ -70,6 +70,13 @@ export const TIER_PRICES: Record<PricingTier, { pro: PlanPrice; investor: PlanPr
   },
 };
 
+/** España tiene su propia escala dentro del grupo accesible. */
+export const SPAIN_PRICES = {
+  pro: { monthly: 2.99, yearly: 29 },
+  investor: { monthly: 4.99, yearly: 49 },
+  family: { monthly: 6.99, yearly: 69 },
+} satisfies typeof TIER_PRICES.accessible;
+
 
 /**
  * Perfil extra del plan Familiar (a partir del 4º perfil, contando adultos e hijos).
