@@ -45,8 +45,8 @@ export function MobileBottomNav() {
   const addOptions: { icon: typeof Home; label: string; search?: { add?: boolean; action?: string }; onClick?: () => void }[] = [
     { icon: PencilLine, label: t("Manual", "Manual"), search: { add: true } as const },
     { icon: Mic, label: t("Por voz", "By voice"), search: { action: "voice" } as const },
-    { icon: Camera, label: t("Tomar foto", "Take photo"), search: { action: "photo" } as const },
-    { icon: Upload, label: t("Sube foto o captura", "Upload photo or screenshot"), search: { action: "upload" } as const },
+    { icon: Camera, label: t("Tomar foto (super, compras, etc)", "Take photo (groceries, shopping, etc)"), search: { action: "photo" } as const },
+    { icon: Upload, label: t("Fotos o estados de cuentas", "Photos or bank statements"), search: { action: "upload" } as const },
     { icon: Users, label: t("Gasto compartido", "Shared expense"), onClick: () => { setMenuOpen(false); setSharedOpen(true); } },
     ...(isPro
       ? [{ icon: Sparkles, label: t("Asesor de gastos con IA", "AI Expense Advisor"), onClick: () => { setMenuOpen(false); setAdviceOpen(true); } }]
