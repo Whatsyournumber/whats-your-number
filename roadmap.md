@@ -9,3 +9,4 @@
 - [x] Precios regionales USD, España 3/5/7 y checkout a juego; retirar Corporativo
 - [x] Comprobar menú, precios y acceso por nivel en móvil y escritorio
 - [x] Hacer desplegable “Descubre más” y mostrar nombres y etiquetas completos
+- [x] Dar etiquetas visibles y diferenciadas a Inversor y Familiar

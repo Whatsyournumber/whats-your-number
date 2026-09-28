@@ -112,7 +112,7 @@ export function AppSidebar() {
           >
             <item.icon className="h-4 w-4 shrink-0" />
             <span className="min-w-0 flex-1 whitespace-nowrap text-[13px] leading-none">{item.title}</span>
-            {locked && !collapsed && <span className={item.required === "patrimonio" ? "shrink-0 rounded-full bg-accent/20 px-2 py-1 text-[10px] font-semibold leading-none text-accent-foreground" : item.required === "investor" ? "shrink-0 rounded-full bg-info/20 px-2 py-1 text-[10px] font-semibold leading-none text-info" : "shrink-0 rounded-full bg-primary/15 px-2 py-1 text-[10px] font-semibold leading-none text-primary"}>{badge}</span>}
+            {locked && !collapsed && <span className={item.required === "patrimonio" ? "shrink-0 rounded-full bg-plan-family px-2 py-1 text-[10px] font-semibold leading-none text-plan-family-foreground" : item.required === "investor" ? "shrink-0 rounded-full bg-plan-investor px-2 py-1 text-[10px] font-semibold leading-none text-plan-investor-foreground" : "shrink-0 rounded-full bg-primary/15 px-2 py-1 text-[10px] font-semibold leading-none text-primary"}>{badge}</span>}
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
