@@ -1156,11 +1156,19 @@ export function ExpenseLog() {
           </TooltipProvider>
           {addMenuOpen &&
             createPortal(
-              <div
-                className="fixed inset-x-0 top-0 z-[45] bg-background/60 backdrop-blur-sm sm:hidden"
-                style={{ bottom: "calc(82px + env(safe-area-inset-bottom, 0px))", clipPath: addBlurClip }}
-                aria-hidden="true"
-              />,
+              (() => {
+                const bottom = "calc(82px + env(safe-area-inset-bottom, 0px))";
+                const cls = "fixed z-[45] bg-background/60 backdrop-blur-sm sm:hidden";
+                const hole = addBlurHole ?? { x1: 0, y1: 0, x2: 0, y2: 0 };
+                return (
+                  <>
+                    <div className={cls} style={{ left: 0, right: 0, top: 0, height: hole.y1 }} aria-hidden="true" />
+                    <div className={cls} style={{ left: 0, right: 0, top: hole.y2, bottom }} aria-hidden="true" />
+                    <div className={cls} style={{ left: 0, width: hole.x1, top: hole.y1, height: hole.y2 - hole.y1 }} aria-hidden="true" />
+                    <div className={cls} style={{ left: hole.x2, right: 0, top: hole.y1, height: hole.y2 - hole.y1 }} aria-hidden="true" />
+                  </>
+                );
+              })(),
               document.body,
             )}
 
