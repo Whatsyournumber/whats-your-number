@@ -1135,29 +1135,37 @@ export function ExpenseLog() {
             </TooltipContent>
           </Tooltip>
           </TooltipProvider>
-          <DropdownMenuContent align="end" className="w-80 p-2">
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setManualOpen(true)}>
-              <PencilLine className="mr-2.5 h-6 w-6 text-positive" />
+          <DropdownMenuContent align="end" className="w-[21rem] p-2">
+            <div className="px-4 pb-2 pt-3 text-center">
+              <p className="text-[22px] font-bold tracking-tight text-foreground">
+                {t("Trackea tus gastos diarios", "Track your spending")}
+              </p>
+              <p className="mt-0.5 text-[15px] font-medium text-muted-foreground">
+                {t("Elige cómo quieres agregarlos", "Choose how you want to add them")}
+              </p>
+            </div>
+            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => setManualOpen(true)}>
+              <PencilLine className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
               {t("Manual", "Manual")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => (recording ? stopRecording() : startRecording(true))}>
-              {recording ? <Square className="mr-2.5 h-6 w-6 text-negative" /> : <Mic className="mr-2.5 h-6 w-6 text-positive" />}
+            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => (recording ? stopRecording() : startRecording(true))}>
+              {recording ? <Square className="h-6 w-6 shrink-0 text-negative" strokeWidth={1.9} /> : <Mic className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />}
               {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => camRef.current?.click()}>
-              <Camera className="mr-2.5 h-6 w-6 text-positive" />
-              {t("Tomar foto", "Take photo")}
+            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => camRef.current?.click()}>
+              <Camera className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
+              {t("Tomar foto (super, compras, etc)", "Take photo (groceries, shopping, etc)")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setPhotoPickerOpen(true)}>
-              <Upload className="mr-2.5 h-6 w-6 text-positive" />
-              {t("Sube fotos o estados de cuenta", "Upload photos or bank statements")}
+            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => setPhotoPickerOpen(true)}>
+              <Upload className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
+              {t("Fotos o estados de cuentas", "Photos or bank statements")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={openNewRecurring}>
-              <Repeat className="mr-2.5 h-6 w-6 text-positive" />
+            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={openNewRecurring}>
+              <Repeat className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
               {t("Recurrente", "Recurring")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setSharedOpen(true)}>
-              <Users className="mr-2.5 h-6 w-6 text-positive" />
+            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => setSharedOpen(true)}>
+              <Users className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
               {t("Gasto compartido", "Shared expense")}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -1194,29 +1202,37 @@ export function ExpenseLog() {
               {t("Añadir gasto", "Add expense")}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-80 p-2">
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setManualOpen(true)}>
-              <PencilLine className="mr-2.5 h-6 w-6 text-positive" />
+          <DropdownMenuContent align="end" className="w-[21rem] p-2">
+            <div className="px-4 pb-2 pt-3 text-center">
+              <p className="text-[22px] font-bold tracking-tight text-foreground">
+                {t("Trackea tus gastos diarios", "Track your spending")}
+              </p>
+              <p className="mt-0.5 text-[15px] font-medium text-muted-foreground">
+                {t("Elige cómo quieres agregarlos", "Choose how you want to add them")}
+              </p>
+            </div>
+            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => setManualOpen(true)}>
+              <PencilLine className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
               {t("Manual", "Manual")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => (recording ? stopRecording() : startRecording())}>
-              {recording ? <Square className="mr-2.5 h-6 w-6 text-negative" /> : <Mic className="mr-2.5 h-6 w-6 text-positive" />}
+            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => (recording ? stopRecording() : startRecording())}>
+              {recording ? <Square className="h-6 w-6 shrink-0 text-negative" strokeWidth={1.9} /> : <Mic className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />}
               {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => camRef.current?.click()}>
-              <Camera className="mr-2.5 h-6 w-6 text-positive" />
-              {t("Tomar foto", "Take photo")}
+            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => camRef.current?.click()}>
+              <Camera className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
+              {t("Tomar foto (super, compras, etc)", "Take photo (groceries, shopping, etc)")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setPhotoPickerOpen(true)}>
-              <Upload className="mr-2.5 h-6 w-6 text-positive" />
-              {t("Sube fotos o estados de cuenta", "Upload photos or bank statements")}
+            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => setPhotoPickerOpen(true)}>
+              <Upload className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
+              {t("Fotos o estados de cuentas", "Photos or bank statements")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={openNewRecurring}>
-              <Repeat className="mr-2.5 h-6 w-6 text-positive" />
+            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={openNewRecurring}>
+              <Repeat className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
               {t("Recurrente", "Recurring")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setSharedOpen(true)}>
-              <Users className="mr-2.5 h-6 w-6 text-positive" />
+            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => setSharedOpen(true)}>
+              <Users className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
               {t("Gasto compartido", "Shared expense")}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -2328,7 +2344,7 @@ export function ExpenseLog() {
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-              <DropdownMenuContent align="end" className="w-80 p-2">
+              <DropdownMenuContent align="end" className="w-[21rem] p-2">
                 <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setManualOpen(true)}>
                   <PencilLine className="mr-2.5 h-6 w-6 text-positive" />
                   {t("Manual", "Manual")}
