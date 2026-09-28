@@ -8,7 +8,6 @@ import {
   PiggyBank,
   Globe,
   Home,
-  Waves,
   Sparkles,
   Target,
   Upload,
@@ -74,7 +73,7 @@ export function AppSidebar() {
   ];
   const discover: { title: string; url: string; icon: typeof Wallet; required: PlanTier }[] = [
     { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Sparkles, required: "pro" },
-    { title: t("Distribución del dinero", "Money Distribution"), url: "/cash-flow", icon: Waves, required: "pro" },
+    { title: t("Metas de ahorro", "Savings goals"), url: "/cash-flow", icon: Target, required: "free" },
     { title: t("Mi Número", "My Number"), url: "/retiro", icon: PiggyBank, required: "pro" },
     { title: "Life Planner", url: "/life-planner", icon: Target, required: "pro" },
     { title: "City Planner", url: "/ciudades", icon: Globe, required: "pro" },

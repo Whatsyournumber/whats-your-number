@@ -10,3 +10,4 @@
 - [x] Comprobar menú, precios y acceso por nivel en móvil y escritorio
 - [x] Hacer desplegable “Descubre más” y mostrar nombres y etiquetas completos
 - [x] Dar etiquetas visibles y diferenciadas a Inversor y Familiar
+- [x] Renombrar Distribución del dinero a Metas de ahorro, abrirla en Gratis y permitir metas editables

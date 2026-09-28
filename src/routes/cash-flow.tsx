@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PlanGate } from "@/components/plan-gate";
+import { SavingsGoals } from "@/components/savings-goals";
 import { motion } from "motion/react";
 import { AlertCircle, ArrowLeftRight, ArrowRight, CheckCircle2, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -27,19 +27,19 @@ import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 export const Route = createFileRoute("/cash-flow")({
   head: () => ({
     meta: [
-      { title: "Money Distribution — WhatsYournumber" },
+      { title: "Metas de ahorro — WhatsYournumber" },
       {
         name: "description",
-        content: "Tu flujo real mes a mes: ingresos de los EEFF cargados hacia gastos fijos, lifestyle, inversiones y flujo libre.",
+        content: "Sigue tus metas de ahorro y cómo se reparte tu dinero cada mes entre gastos, inversiones y ahorro.",
       },
-      { property: "og:title", content: "Money Distribution — WhatsYournumber" },
-      { property: "og:description", content: "Visualiza a dónde fluye cada dólar de tus ingresos cada mes, con datos reales." },
+      { property: "og:title", content: "Metas de ahorro — WhatsYournumber" },
+      { property: "og:description", content: "Sigue tus metas de ahorro y el destino de tus ingresos mensuales." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  component: () => <PlanGate required="pro" blur={false}><CashFlow /></PlanGate>,
+  component: CashFlow,
 });
 
 const MONTH_LABELS_ES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
@@ -412,7 +412,7 @@ function CashFlow() {
       <PageShell>
         <PageHeader
           eyebrow={activeMonth ? monthLabel(activeMonth) : t("Sin EEFF cargados", "No statements uploaded")}
-          title={t("Distribución del dinero", "Money Distribution")}
+          title={t("Metas de ahorro", "Savings goals")}
           subtitleClassName="sm:whitespace-nowrap"
           subtitle={
             <>
@@ -569,6 +569,7 @@ function CashFlow() {
         </div>
       </Panel>
 
+      <SavingsGoals fmt={fmt} />
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel className="flex flex-col" title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")} icon={<PieChart />}>
           <div className="space-y-3 pb-4 text-sm">
