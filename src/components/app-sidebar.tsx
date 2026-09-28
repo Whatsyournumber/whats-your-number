@@ -82,9 +82,11 @@ export function AppSidebar() {
     { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home, required: "investor" },
     { title: t("Familia", "Family"), url: "/ninos", icon: Users, required: "patrimonio" },
   ];
-  const [discoverOpen, setDiscoverOpen] = useState(() => discover.some((item) => item.url === pathname));
+  const discoverUnlocked = discover.filter((item) => !item.required || planMeetsTier(item.required, tier));
+  const discoverLocked = discover.filter((item) => item.required && !planMeetsTier(item.required, tier));
+  const [discoverOpen, setDiscoverOpen] = useState(() => discoverLocked.some((item) => item.url === pathname));
   useEffect(() => {
-    if (discover.some((item) => item.url === pathname) || searchStr.includes("tour=1")) setDiscoverOpen(true);
+    if (discoverLocked.some((item) => item.url === pathname) || searchStr.includes("tour=1")) setDiscoverOpen(true);
   }, [pathname, searchStr]);
 
   const affiliateItems: { title: string; url: string; icon: typeof Users }[] =
