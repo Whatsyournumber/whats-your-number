@@ -569,6 +569,7 @@ function CashFlow() {
         </div>
       </Panel>
 
+      <SavingsGoals fmt={fmt} />
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel className="flex flex-col" title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")} icon={<PieChart />}>
           <div className="space-y-3 pb-4 text-sm">
@@ -714,7 +715,6 @@ function CashFlow() {
           )}
         </Panel>
       </div>
-      <SavingsGoals fmt={fmt} />
       <Dialog open={ruleOpen} onOpenChange={setRuleOpen}>
         <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-xl">
           <DialogHeader>
