@@ -22,6 +22,7 @@ import {
   X,
   UserRound,
   ReceiptText,
+  Settings,
 } from "lucide-react";
 
 
@@ -45,7 +46,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
 import { useT } from "@/hooks/use-language";
 import { useRoles } from "@/hooks/use-role";
-import { useSubscription } from "@/hooks/use-subscription";
+import { planMeetsTier, useSubscription, type PlanTier } from "@/hooks/use-subscription";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { useAuth } from "@/hooks/use-auth";
 import { useProfileAvatar } from "@/hooks/use-profile-avatar";
@@ -62,59 +63,53 @@ export function AppSidebar() {
   const { affiliate } = useMyAffiliate();
   const { user } = useAuth();
   const { avatarUrl: googleAvatar } = useProfileAvatar();
-  const primary = [
-    { title: t("Dashboard", "Dashboard"), url: "/dashboard", icon: LayoutDashboard },
-    { title: t("Trackeo de gastos diarios", "Daily expense tracking"), url: "/registro-gastos", icon: ReceiptText },
-    { title: t("Análisis de Gastos", "Spending Analysis"), url: "/gastos", icon: PieChart },
-    { title: t("Distribución del dinero", "Money Distribution"), url: "/cash-flow", icon: Waves },
-    { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home },
-    { title: "WhatsYournumber", url: "/retiro", icon: PiggyBank },
-    { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark },
-    { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart },
-
-    { title: "Lifestyle Simulator", url: "/ciudades", icon: Globe },
-    { title: "Life Planner", url: "/life-planner", icon: Target },
-  ] as const;
-
-
+  const spending = [
+    { title: t("Inicio", "Home"), url: "/dashboard", icon: LayoutDashboard },
+    { title: t("Mis gastos", "My spending"), url: "/registro-gastos", icon: ReceiptText },
+    { title: t("Análisis", "Analysis"), url: "/gastos", icon: PieChart },
+  ];
+  const account = [
+    { title: t("Importar datos", "Import data"), url: "/configuracion", icon: Upload },
+    { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserRound },
+    { title: t("Configuración", "Settings"), url: "/suscripcion", icon: Settings },
+  ];
+  const discover: { title: string; url: string; icon: typeof Wallet; required: PlanTier }[] = [
+    { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Sparkles, required: "pro" },
+    { title: t("Distribución del dinero", "Money Distribution"), url: "/cash-flow", icon: Waves, required: "pro" },
+    { title: t("Mi Número", "My Number"), url: "/retiro", icon: PiggyBank, required: "pro" },
+    { title: "Life Planner", url: "/life-planner", icon: Target, required: "pro" },
+    { title: "City Planner", url: "/ciudades", icon: Globe, required: "pro" },
+    { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark, required: "investor" },
+    { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart, required: "investor" },
+    { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home, required: "investor" },
+    { title: t("Familia", "Family"), url: "/ninos", icon: Users, required: "patrimonio" },
+  ];
 
   const affiliateItems: { title: string; url: string; icon: typeof Users }[] =
     affiliate && affiliate.status !== "disabled"
       ? [{ title: t("Programa de afiliados", "Affiliate program"), url: "/afiliados", icon: Handshake }]
       : [];
 
-  const familyItems: { title: string; url: string; icon: typeof Users }[] =
-    tier === "patrimonio"
-      ? [{ title: t("Perfil familiar", "Family profiles"), url: "/ninos", icon: Users }]
-      : [];
-
-  const secondary = [
-    ...affiliateItems,
-    ...(isMobile ? [] : familyItems),
-    ...(tier !== "free" ? [{ title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Bot }] : []),
-    ...(isMobile ? [] : [{ title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog } as const]),
-    { title: t("Suscripción", "Subscription"), url: "/suscripcion", icon: CreditCard },
-    { title: t("Importar gastos", "Import expenses"), url: "/configuracion", icon: Upload },
-  ] as const;
-
-
   const adminItems = isSuperAdmin
     ? ([{ title: t("Panel admin", "Admin panel"), url: "/admin", icon: ShieldCheck }] as const)
     : ([] as const);
 
 
-  const renderItem = (item: { title: string; url: string; icon: typeof Wallet }) => {
+  const renderItem = (item: { title: string; url: string; icon: typeof Wallet; required?: PlanTier }) => {
     const active = pathname === item.url;
+    const locked = item.required && !planMeetsTier(item.required, tier);
+    const badge = item.required === "patrimonio" ? "FAMILY" : item.required === "investor" ? "INVESTOR" : "PRO";
     return (
       <SidebarMenuItem key={item.url}>
-        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className="h-8 gap-2 px-2">
+        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className="h-10 gap-2 px-2 data-[active=true]:bg-primary/15 data-[active=true]:text-primary">
           <Link
             to={item.url}
             className="flex items-center gap-2"
             onClick={() => setOpenMobile(false)}
           >
-            <item.icon className="h-3.5 w-3.5 shrink-0" />
-            <span className="truncate text-sm leading-none">{item.title}</span>
+            <item.icon className="h-4 w-4 shrink-0" />
+            <span className="min-w-0 flex-1 truncate text-sm leading-none">{item.title}</span>
+            {locked && !collapsed && <span className={item.required === "patrimonio" ? "rounded-full bg-accent/20 px-2 py-0.5 text-[9px] font-semibold text-accent-foreground" : item.required === "investor" ? "rounded-full bg-info/20 px-2 py-0.5 text-[9px] font-semibold text-info" : "rounded-full bg-primary/15 px-2 py-0.5 text-[9px] font-semibold text-primary"}>{badge}</span>}
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -164,16 +159,6 @@ export function AppSidebar() {
                 <X className="h-5 w-5" />
               </Button>
             </div>
-            {tier === "patrimonio" && (
-              <Link
-                to="/ninos"
-                onClick={() => setOpenMobile(false)}
-                className="flex h-8 items-center gap-1.5 pl-0.5 text-sm font-semibold tracking-tight"
-              >
-                <span>{t("Perfiles", "Profiles")}</span>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              </Link>
-            )}
           </div>
         ) : (
 
@@ -188,26 +173,32 @@ export function AppSidebar() {
             )}
           </div>
         )}
+        {!collapsed && <span className="mt-2 inline-flex w-fit rounded-full bg-primary/15 px-3 py-1 text-[10px] font-semibold uppercase text-primary">{t("Plan", "Plan")} {tier === "patrimonio" ? "Familiar" : tier === "investor" ? "Inversor" : tier === "pro" ? "Pro" : t("Gratis", "Free")}</span>}
       </SidebarHeader>
 
-      <SidebarContent className={isMobile ? "flex-1 gap-0.5 overflow-y-auto" : "flex-none gap-0.5 overflow-hidden"}>
+      <SidebarContent className="flex-1 gap-0.5 overflow-y-auto">
         <SidebarGroup className="p-1.5">
           <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
-            {t("Patrimonio", "Net Worth")}
+            {t("Control de gastos", "Spending control")}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-0.5">{primary.map(renderItem)}</SidebarMenu>
+            <SidebarMenu className="gap-0.5">{spending.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-
-        <div className="mx-auto my-1.5 h-px w-2/3 bg-gradient-to-r from-transparent via-border to-transparent" />
-
+        <div className="mx-3 h-px bg-border" />
         <SidebarGroup className="p-1.5">
           <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
-            {t("Inteligencia", "Intelligence")}
+            {t("Cuenta", "Account")}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-0.5">{secondary.map(renderItem)}</SidebarMenu>
+            <SidebarMenu className="gap-0.5">{account.map(renderItem)}{affiliateItems.map(renderItem)}</SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <div className="mx-3 h-px bg-border" />
+        <SidebarGroup className="p-1.5">
+          <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">{t("Descubre más", "Discover more")}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-0.5">{discover.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
@@ -223,7 +214,7 @@ export function AppSidebar() {
 
       {!collapsed && (
         <SidebarFooter className="p-2">
-          <div className="surface p-2.5">
+          <Link to={tier === "free" ? "/dashboard" : "/retiro"} onClick={() => setOpenMobile(false)} className="surface block p-2.5">
             <p className="text-[11px] text-muted-foreground">WhatsYournumber</p>
             <p className="numeric mt-0.5 text-base font-semibold">{data.fmtCompact(data.plan.targetCapital)}</p>
             {data.plan.mode !== "freedom" ? (
@@ -255,7 +246,7 @@ export function AppSidebar() {
             )}
 
 
-          </div>
+          </Link>
         </SidebarFooter>
       )}
     </Sidebar>
