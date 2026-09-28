@@ -1135,8 +1135,11 @@ export function ExpenseLog() {
                 })
                 .sort((a, b) => a.y1 - b.y1);
               setAddBlurHoles(holes);
+              const footer = document.querySelector<HTMLElement>("nav.fixed.bottom-0");
+              setAddBlurBottom(footer ? footer.getBoundingClientRect().top : null);
             } else if (!open) {
               setAddBlurHoles([]);
+              setAddBlurBottom(null);
             }
           }}
         >
