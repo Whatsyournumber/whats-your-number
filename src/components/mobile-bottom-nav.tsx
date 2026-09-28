@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Sparkles, Users } from "lucide-react";
+import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Sparkles, Users, PieChart } from "lucide-react";
 import { BudgetVoiceAdvisor } from "@/components/budget-voice-advisor";
 import { SharedExpenseDialog } from "@/components/shared-expense";
 import { useT } from "@/hooks/use-language";
@@ -26,9 +26,11 @@ export function MobileBottomNav() {
     setMenuOpen(tourHold);
   }, [tourHold]);
 
+  const isFree = !isPro && !isInvestor;
   const tabs = [
     { title: t("Inicio", "Home"), url: "/dashboard", icon: Home },
-    { title: t("Tus gastos", "Spending"), url: "/registro-gastos", icon: Wallet },
+    { title: isFree ? t("Mis gastos", "My spending") : t("Tus gastos", "Spending"), url: "/registro-gastos", icon: Wallet },
+    ...(isFree ? [{ title: t("Análisis del gasto", "Spending analysis"), url: "/gastos", icon: PieChart }] : []),
     ...(isPro ? [{ title: t("Tu número", "Your number"), url: "/retiro", icon: Target }] : []),
     ...(isInvestor
       ? [{ title: t("Portfolio", "Portfolio"), url: "/portafolio", icon: LineChart }]
@@ -128,7 +130,7 @@ export function MobileBottomNav() {
         </>
       )}
       <div className="relative grid w-full grid-cols-5 items-end justify-items-center bg-background/90 px-1 pb-[max(env(safe-area-inset-bottom,0px),10px)] pt-2 shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-        {tabs.slice(0, 2).map((tab, i) => renderTab(tab, i === 1 ? "-translate-x-2" : ""))}
+        {tabs.slice(0, 2).map((tab, i) => renderTab(tab, i === 1 && !isFree ? "-translate-x-2" : ""))}
         <button
           type="button"
           data-tour-nav-add
@@ -144,7 +146,7 @@ export function MobileBottomNav() {
             {t("Agregar gasto", "Add expense")}
           </span>
         </button>
-        {tabs.slice(2).map((tab, i) => renderTab(tab, tabs.length === 3 ? "col-start-5 translate-x-2" : i === 0 ? "translate-x-2" : ""))}
+        {tabs.slice(2).map((tab, i) => renderTab(tab, isFree ? "" : tabs.length === 3 ? "col-start-5 translate-x-2" : i === 0 ? "translate-x-2" : ""))}
       </div>
     </nav>
   );
