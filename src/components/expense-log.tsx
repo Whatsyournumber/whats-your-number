@@ -1116,7 +1116,8 @@ export function ExpenseLog() {
             {t("Controla tus gastos del día a día y mantente dentro de tu plan.", "Track your daily expenses and stay within your plan.")}
           </p>
         </div>
-        <DropdownMenu>
+        <DropdownMenu open={addMenuOpen} onOpenChange={setAddMenuOpen}>
+
           <TooltipProvider delayDuration={150}>
           <Tooltip>
             <TooltipTrigger asChild>
