@@ -211,8 +211,8 @@ export function AppTour() {
     const MOBILE_URLS = tier === "free"
       ? ["/dashboard", "/registro-gastos", "/mi-perfil"]
       : tier === "pro"
-        ? ["/dashboard", "/registro-gastos", "/retiro", "/advisor"]
-        : ["/dashboard", "/registro-gastos", "/retiro", "/portafolio", "/advisor"];
+        ? ["/dashboard", "/registro-gastos", "/retiro", "/mi-perfil"]
+        : ["/dashboard", "/registro-gastos", "/retiro", "/portafolio"];
     return STEPS.filter(
       (tourStep) =>
         planMeetsTier(tourStep.minPlan, tier) &&

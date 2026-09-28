@@ -32,7 +32,7 @@ function usePlanCopy() {
         t("Trackea el día a día de tus gastos", "Track your expenses day by day"),
         t("Análisis de gastos del mes", "Monthly expense analysis"),
         t("5 importaciones de EEFF al mes", "5 statement imports per month"),
-        t("Tu número en 3 preguntas", "Your number in 3 questions"),
+        t("Tu número simple en Inicio", "Your simple number on Home"),
         t("Resumen de tu número en Inicio", "Number summary on Home"),
         t("Presupuesto 40/40/20", "40/40/20 budget"),
       ],
