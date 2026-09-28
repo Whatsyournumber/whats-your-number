@@ -27,6 +27,8 @@ import { translateOption } from "@/lib/i18n-data";
 
 import { useProfile, type Profile } from "@/hooks/use-profile";
 import { useAuth } from "@/hooks/use-auth";
+import { useSubscription } from "@/hooks/use-subscription";
+import { PlanGate } from "@/components/plan-gate";
 import { HOME_HOLDING_NOTE, newHolding, seedHoldingsFromTotals, useHoldings, wealthTotals, type Holding } from "@/hooks/use-holdings";
 import {
   childrenOptions,
@@ -478,7 +480,7 @@ function MiPerfil() {
 
             <div className="surface flex flex-col gap-3 p-4 lg:flex-row lg:items-center">
         <div className="grid min-w-0 flex-1 grid-cols-2 gap-4 sm:grid-cols-4">
-          <Stat label={t("Patrimonio neto", "Net worth")} value={preview.fmt(preview.netWorth)} short={preview.fmtCompact(preview.netWorth)} />
+          {isPro && <Stat label={t("Patrimonio neto", "Net worth")} value={preview.fmt(preview.netWorth)} short={preview.fmtCompact(preview.netWorth)} />}
           <Stat label={t("Ahorro mensual", "Monthly savings")} value={preview.fmt(preview.savings)} short={preview.fmtCompact(preview.savings)} />
           <Stat label={t("Your Number", "Your Number")} value={preview.fmt(preview.plan.targetCapital)} short={preview.fmtCompact(preview.plan.targetCapital)} />
           <Stat label={t("Libertad", "Freedom")} value={`${preview.plan.freedomAge} ${t("años", "years")}`} />
@@ -515,23 +517,26 @@ function MiPerfil() {
             <Field label={t("Edad de retiro", "Retirement age")}>
               <Input type="number" value={form.retire_age} onChange={(e) => set("retire_age", Number(e.target.value || 0))} />
             </Field>
-            <Field label={t("Rentabilidad esperada (% anual)", "Expected return (% annual)")}>
-              <Input
-                type="number"
-                step="0.5"
-                value={form.expected_return}
-                onChange={(e) => set("expected_return", Number(e.target.value || 0))}
-              />
-            </Field>
-            <Field label={t("Tasa de retiro (% anual)", "Withdrawal rate (%/yr)")}>
-              <Input
-                type="number"
-                step="0.5"
-                value={form.withdrawal_rate || 7}
-                onChange={(e) => set("withdrawal_rate", Number(e.target.value || 0))}
-
-              />
-            </Field>
+            {isPro && (
+              <>
+                <Field label={t("Rentabilidad esperada (% anual)", "Expected return (% annual)")}>
+                  <Input
+                    type="number"
+                    step="0.5"
+                    value={form.expected_return}
+                    onChange={(e) => set("expected_return", Number(e.target.value || 0))}
+                  />
+                </Field>
+                <Field label={t("Tasa de retiro (% anual)", "Withdrawal rate (%/yr)")}>
+                  <Input
+                    type="number"
+                    step="0.5"
+                    value={form.withdrawal_rate || 7}
+                    onChange={(e) => set("withdrawal_rate", Number(e.target.value || 0))}
+                  />
+                </Field>
+              </>
+            )}
             <Field label={t("País", "Country")}>
               <select
                 className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -684,18 +689,24 @@ function MiPerfil() {
           </div>
         </Panel>
 
-        <div id="patrimonio" className="scroll-mt-24 h-full text-sm [&>*]:h-full [&_.text-2xl]:text-lg [&_.text-lg]:text-base [&_.text-xl]:text-lg [&_button]:text-xs [&_input]:h-8 [&_input]:text-xs [&_label]:text-[11px]">
-          <WealthEditor
-            value={wealth}
-            onChange={(next) => {
-              setDirty(true);
-              setWealth(next);
-            }}
-            fmt={preview.fmt}
-            retireAge={form.retire_age}
-            onRetireAge={(n) => set("retire_age", n)}
-          />
-        </div>
+        {isPro ? (
+          <div id="patrimonio" className="scroll-mt-24 h-full text-sm [&>*]:h-full [&_.text-2xl]:text-lg [&_.text-lg]:text-base [&_.text-xl]:text-lg [&_button]:text-xs [&_input]:h-8 [&_input]:text-xs [&_label]:text-[11px]">
+            <WealthEditor
+              value={wealth}
+              onChange={(next) => {
+                setDirty(true);
+                setWealth(next);
+              }}
+              fmt={preview.fmt}
+              retireAge={form.retire_age}
+              onRetireAge={(n) => set("retire_age", n)}
+            />
+          </div>
+        ) : (
+          <PlanGate required="pro" blur={false} className="h-auto min-h-[280px]">
+            <div />
+          </PlanGate>
+        )}
       </div>
 
 
