@@ -99,6 +99,10 @@ button:disabled,
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-plan-investor: var(--plan-investor);
+  --color-plan-investor-foreground: var(--plan-investor-foreground);
+  --color-plan-family: var(--plan-family);
+  --color-plan-family-foreground: var(--plan-family-foreground);
 }
 
 :root {
@@ -155,6 +159,10 @@ button:disabled,
   --sidebar-accent-foreground: oklch(0.22 0.012 260);
   --sidebar-border: oklch(0.91 0.008 260);
   --sidebar-ring: oklch(0.62 0.13 165);
+  --plan-investor: oklch(0.88 0.055 240);
+  --plan-investor-foreground: oklch(0.34 0.11 240);
+  --plan-family: oklch(0.91 0.045 315);
+  --plan-family-foreground: oklch(0.36 0.09 315);
 
   --grad-wealth: linear-gradient(135deg, oklch(0.66 0.14 162 / 0.9), oklch(0.7 0.13 220 / 0.75));
   --grad-surface: linear-gradient(160deg, oklch(1 0 0), oklch(0.97 0.006 260));
@@ -214,6 +222,10 @@ button:disabled,
   --sidebar-accent-foreground: oklch(0.97 0.005 260);
   --sidebar-border: oklch(1 0 0 / 8%);
   --sidebar-ring: oklch(0.78 0.15 165);
+  --plan-investor: oklch(0.31 0.09 240);
+  --plan-investor-foreground: oklch(0.83 0.09 230);
+  --plan-family: oklch(0.31 0.065 315);
+  --plan-family-foreground: oklch(0.89 0.07 315);
 
   --grad-wealth: linear-gradient(135deg, oklch(0.78 0.15 165 / 0.85), oklch(0.62 0.14 250 / 0.7));
   --grad-surface: linear-gradient(160deg, oklch(0.235 0.016 265), oklch(0.19 0.013 265));
