@@ -578,6 +578,76 @@ function CashFlow() {
         </div>
       </Panel>
 
+      <Panel title={t("Destino del ahorro", "Savings destination")} description={t("Ahorro total → a dónde va", "Total savings → where it goes")} icon={<PiggyBank />}>
+        <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_120px_minmax(0,1.3fr)]">
+          <motion.div
+            initial={{ opacity: 0, x: -12 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="rounded-2xl border border-positive/25 bg-positive/10 p-4"
+          >
+            <div className="flex items-center gap-3">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-positive/15 text-positive"><PiggyBank className="h-5 w-5" /></span>
+              <div className="min-w-0">
+                <p className="text-sm font-medium">{t("Ahorro total", "Total savings")}</p>
+                <p className="numeric text-lg font-semibold">{fmt(saveAmount)}</p>
+              </div>
+              <p className="numeric ml-auto text-sm font-semibold text-positive">{totalIncome > 0 ? ((saveAmount / totalIncome) * 100).toFixed(0) : 0}%</p>
+            </div>
+          </motion.div>
+
+          <div className="relative hidden h-48 lg:block">
+            <svg viewBox="0 0 120 200" className="h-full w-full" preserveAspectRatio="none">
+              {savingsDestinations.map((d, i) => {
+                const y = 30 + i * 66;
+                const w = Math.max(6, saveAmount > 0 ? (d.amount / saveAmount) * 60 : 6);
+                return (
+                  <motion.path
+                    key={d.name}
+                    d={`M0,100 C60,100 60,${y} 120,${y}`}
+                    fill="none"
+                    stroke={d.color}
+                    strokeWidth={w}
+                    strokeOpacity={0.35}
+                    strokeLinecap="round"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1, delay: 0.2 + i * 0.1 }}
+                  />
+                );
+              })}
+            </svg>
+          </div>
+
+          <div className="space-y-3">
+            {savingsDestinations.map((d, idx) => (
+              <motion.div
+                key={d.name}
+                initial={{ opacity: 0, x: 12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 + idx * 0.08 }}
+                className="rounded-2xl border border-border bg-elevated/60 p-4"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full" style={{ background: `color-mix(in srgb, ${d.color} 15%, transparent)`, color: d.color }}>{d.icon}</span>
+                  <p className="text-sm font-medium">{d.name}</p>
+                  <p className="numeric ml-auto text-sm font-semibold">{fmt(d.amount)}</p>
+                  <p className="numeric w-10 text-right text-xs text-muted-foreground">{saveAmount > 0 ? ((d.amount / saveAmount) * 100).toFixed(0) : 0}%</p>
+                </div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${saveAmount > 0 ? Math.min(100, (d.amount / saveAmount) * 100) : 0}%` }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                    className="h-full rounded-full"
+                    style={{ background: d.color }}
+                  />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </Panel>
+
       <SavingsGoals fmt={fmt} />
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel className="flex flex-col" title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")} icon={<PieChart />}>
