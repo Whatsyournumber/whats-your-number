@@ -393,17 +393,17 @@ function CashFlow() {
   }, [fixed.items, monthTx, matchesFixed, customWants, rules, travelDays, lang, retirementFundAmount]);
 
 
-  // Uso del ahorro: proyecta el ahorro mensual actual invertido en el S&P 500
-  // (10% anual histórico) hasta la edad de retiro del plan.
+  // «Tu ahorro en el tiempo»: proyecta el ahorro destinado a inversiones
+  // (10% anual histórico del S&P 500) hasta la edad de retiro del plan.
   const SP500_RATE = 10;
   const savingsYears = Math.max(1, (d.retirement.retireAge ?? 65) - d.retirement.currentAge);
   const savingsProjection = useMemo(
-    () => projectRetirementFrom(saveAmount, SP500_RATE, savingsYears, 0, d.retirement.currentAge),
-    [saveAmount, savingsYears, d.retirement.currentAge],
+    () => projectRetirementFrom(destInvest, SP500_RATE, savingsYears, 0, d.retirement.currentAge),
+    [destInvest, savingsYears, d.retirement.currentAge],
   );
   const savingsAtRetire = savingsProjection[savingsProjection.length - 1]?.value ?? 0;
   // «Tu ahorro en el tiempo»: curva de crecimiento con hitos y aporte vs interés compuesto
-  const savingsContributed = saveAmount * 12 * savingsYears;
+  const savingsContributed = destInvest * 12 * savingsYears;
   const savingsGrowth = Math.max(0, savingsAtRetire - savingsContributed);
   const chartMilestones = useMemo(() => {
     const years = [...new Set([0, 1, 5, 10, savingsYears])].filter((y) => y <= savingsYears).sort((a, b) => a - b);
@@ -649,8 +649,8 @@ function CashFlow() {
             </div>
           )}
         </div>
-        <Panel className="flex flex-col overflow-hidden" title={t("Tu ahorro en el tiempo", "Your savings over time")} description={t(`Mira lo que pueden convertirse tus ${fmt(saveAmount)}/mes.`, `See what your ${fmt(saveAmount)}/mo can become.`)} icon={<TrendingUp />}>
-          {saveAmount > 0 ? (
+        <Panel className="flex flex-col overflow-hidden" title={t("Tu ahorro en el tiempo", "Your savings over time")} description={t(`Mira lo que pueden convertirse tus ahorros de inversiones (${fmt(destInvest)}/mes).`, `See what your investment savings (${fmt(destInvest)}/mo) can become.`)} icon={<TrendingUp />}>
+          {destInvest > 0 ? (
             <>
               <div className="flex items-end justify-between gap-3">
                 <div>
@@ -711,7 +711,7 @@ function CashFlow() {
               </p>
             </>
           ) : (
-            <p className="text-xs text-muted-foreground">{t("Sin ahorro mensual todavía: edita tus categorías para verlo.", "No monthly savings yet: edit your categories to see it.")}</p>
+            <p className="text-xs text-muted-foreground">{t("Sin ahorro de inversión todavía: pulsa «Editar ahorro» para destinar dinero a inversiones.", "No investment savings yet: tap «Edit savings» to put money toward investments.")}</p>
           )}
         </Panel>
       </div>
