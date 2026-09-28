@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SavingsGoals } from "@/components/savings-goals";
 import { motion } from "motion/react";
-import { AlertCircle, ArrowLeftRight, ArrowRight, CheckCircle2, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { AlertCircle, ArrowLeftRight, ArrowRight, CheckCircle2, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { toast } from "sonner";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory } from "@/lib/i18n-data";
 
@@ -10,6 +11,7 @@ import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { NumberInput } from "@/components/ui/number-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
@@ -318,6 +320,21 @@ function CashFlow() {
   const wantsAmount = lifestyleAmount;
   const saveAmount = investAmount + freeAmount;
 
+  // Destino del ahorro: a dónde va el ahorro del mes (metas, inversiones, disponible).
+  const { value: savingsGoalsValue } = useSyncedSetting<{ items: { id: string; monthly: number }[] }>("whatsyournumber:savings-goals", { items: [] });
+  const { value: savingsAlloc, save: setSavingsAlloc } = useSyncedSetting<{ invest: number; goals: number } | null>("whatsyournumber:savings-allocation", null);
+  const [allocOpen, setAllocOpen] = useState(false);
+  const [allocDraft, setAllocDraft] = useState<{ invest: number; goals: number }>({ invest: 0, goals: 0 });
+  const goalsMonthly = (Array.isArray(savingsGoalsValue?.items) ? savingsGoalsValue.items : []).reduce((s, g) => s + (Number(g.monthly) || 0), 0);
+  // Destino del ahorro: el editor manda; si no hay nada guardado, se usan las metas y las inversiones detectadas.
+  const destInvest = Math.min(savingsAlloc?.invest ?? investAmount, saveAmount);
+  const destGoals = Math.min(savingsAlloc?.goals ?? goalsMonthly, Math.max(0, saveAmount - destInvest));
+  const savingsDestinations = [
+    { name: t("Metas de ahorro", "Savings goals"), amount: destGoals, icon: <Target className="h-5 w-5" />, color: "var(--color-positive)" },
+    { name: t("Inversiones", "Investments"), amount: destInvest, icon: <TrendingUp className="h-5 w-5" />, color: "var(--color-chart-1)" },
+    { name: t("Disponible", "Available"), amount: Math.max(0, saveAmount - destGoals - destInvest), icon: <Wallet className="h-5 w-5" />, color: "var(--color-chart-4)" },
+  ];
+
 
   const needsBreakdown = hasReal
     ? [
@@ -450,6 +467,22 @@ function CashFlow() {
           <span className="hidden sm:inline">{t("Editar categorías", "Edit categories")}</span>
           <span className="sm:hidden">{t("Editar", "Edit")}</span>
         </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="shrink-0 gap-2"
+          onClick={() => {
+            setAllocDraft({
+              invest: Math.round(savingsAlloc?.invest ?? destInvest),
+              goals: Math.round(savingsAlloc?.goals ?? destGoals),
+            });
+            setAllocOpen(true);
+          }}
+        >
+          <PiggyBank className="h-3.5 w-3.5" />
+          <span className="hidden sm:inline">{t("Editar ahorro", "Edit savings")}</span>
+          <span className="sm:hidden">{t("Ahorro", "Savings")}</span>
+        </Button>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" data-tour-cashflow-target="cards">
@@ -484,89 +517,113 @@ function CashFlow() {
         />
       </div>
 
-      <Panel title={t("Flujo de dinero", "Money flow")} description={t("Ingresos → destino final", "Income → final destination")} icon={<ArrowLeftRight />}>
-        <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_120px_minmax(0,1.3fr)]">
-          <div className="space-y-3">
-            {incomeLines.slice(0, 8).map((i, idx) => (
+      <Panel title={t("Flujo de dinero", "Money flow")} description={t("Convierte tu ahorro en progreso hacia tus metas.", "Turn your savings into progress toward your goals.")} icon={<ArrowLeftRight />}>
+        {(() => {
+          const midBuckets = [
+            { name: t("Gastos", "Expenses"), amount: needsAmount, icon: <ReceiptText className="h-5 w-5" />, color: "var(--color-chart-2)" },
+            { name: t("Ahorro total", "Total savings"), amount: saveAmount, icon: <PiggyBank className="h-5 w-5" />, color: "var(--color-positive)", highlight: true },
+            { name: t("Lifestyle / deseos", "Lifestyle / wants"), amount: wantsAmount, icon: <Wallet className="h-5 w-5" />, color: "var(--color-chart-4)" },
+          ];
+          const flowCard = (d: { name: string; amount: number; icon: ReactNode; color: string; highlight?: boolean }, total: number, idx: number, dir: "l" | "r") => (
+            <motion.div
+              key={d.name}
+              initial={{ opacity: 0, x: dir === "l" ? -12 : 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 + idx * 0.08 }}
+              className={`rounded-2xl border p-4 ${d.highlight ? "border-positive/25 bg-positive/10" : "border-border bg-elevated/60"}`}
+            >
+              <div className="flex items-center gap-3">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full" style={{ background: `color-mix(in srgb, ${d.color} 15%, transparent)`, color: d.color }}>{d.icon}</span>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">{d.name}</p>
+                  <p className="numeric text-sm font-semibold">{fmt(d.amount)}</p>
+                </div>
+                <p className="numeric ml-auto text-xs text-muted-foreground">{total > 0 ? ((d.amount / total) * 100).toFixed(0) : 0}%</p>
+              </div>
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${total > 0 ? Math.min(100, (d.amount / total) * 100) : 0}%` }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                  className="h-full rounded-full"
+                  style={{ background: d.color }}
+                />
+              </div>
+            </motion.div>
+          );
+          return (
+            <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,0.8fr)_70px_minmax(0,1.1fr)_70px_minmax(0,1.2fr)]">
               <motion.div
-                key={i.name}
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.08 }}
                 className="rounded-2xl border border-border bg-elevated/60 p-4"
               >
-                <div className="flex items-center justify-between gap-3">
-                  <p className="truncate text-sm font-medium">{i.name}</p>
-                  <p className="numeric text-sm font-semibold">{fmt(i.amount)}</p>
-                </div>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${Math.min(100, (i.amount / totalIncome) * 100)}%` }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                    className="h-full rounded-full bg-primary"
-                  />
+                <div className="flex items-center gap-3">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary/15 text-primary"><Wallet className="h-5 w-5" /></span>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">{t("Ingresos", "Income")}</p>
+                    <p className="numeric text-lg font-semibold">{fmt(totalIncome)}</p>
+                  </div>
+                  <p className="numeric ml-auto text-xs text-muted-foreground">100%</p>
                 </div>
               </motion.div>
-            ))}
-            {incomeLines.length === 0 && (
-              <p className="text-sm text-muted-foreground">{t("No encontramos abonos en este periodo.", "We did not find credits for this period.")}</p>
-            )}
-          </div>
 
-          <div className="relative hidden h-64 lg:block">
-            <svg viewBox="0 0 120 260" className="h-full w-full" preserveAspectRatio="none">
-              {buckets.map((b, i) => {
-                const y = 30 + i * 66;
-                const w = Math.max(6, (b.amount / totalIncome) * 60);
-                return (
-                  <motion.path
-                    key={b.name}
-                    d={`M0,130 C60,130 60,${y} 120,${y}`}
-                    fill="none"
-                    stroke={b.color}
-                    strokeWidth={w}
-                    strokeOpacity={0.35}
-                    strokeLinecap="round"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 1, delay: 0.2 + i * 0.1 }}
-                  />
-                );
-              })}
-            </svg>
-          </div>
+              <div className="relative hidden h-56 lg:block">
+                <svg viewBox="0 0 120 220" className="h-full w-full" preserveAspectRatio="none">
+                  {midBuckets.map((b, i) => {
+                    const y = 30 + i * 80;
+                    const w = Math.max(2.5, totalIncome > 0 ? (b.amount / totalIncome) * 22 : 2.5);
+                    return (
+                      <motion.path
+                        key={b.name}
+                        d={`M0,110 C60,110 60,${y} 120,${y}`}
+                        fill="none"
+                        stroke={b.color}
+                        strokeWidth={w}
+                        strokeOpacity={0.35}
+                        strokeLinecap="round"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 1, delay: 0.2 + i * 0.1 }}
+                      />
+                    );
+                  })}
+                </svg>
+              </div>
 
-          <div className="space-y-3" data-tour-cashflow-target="blocks">
-            {buckets.map((b, idx) => (
-              <motion.div
-                key={b.name}
-                initial={{ opacity: 0, x: 12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 + idx * 0.08 }}
-                className="rounded-2xl border border-border bg-elevated/60 p-4"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: b.color }} />
-                  <p className="text-sm font-medium">{b.name}</p>
-                  <p className="numeric ml-auto text-sm font-semibold">{fmt(b.amount)}</p>
-                </div>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${Math.min(100, (b.amount / totalIncome) * 100)}%` }}
-                    transition={{ duration: 0.8, delay: 0.3 }}
-                    className="h-full rounded-full"
-                    style={{ background: b.color }}
-                  />
-                </div>
-                <p className="mt-1.5 text-xs text-muted-foreground">
-                  {((b.amount / totalIncome) * 100).toFixed(0)}% {t("de tus ingresos", "of your income")}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+              <div className="space-y-3" data-tour-cashflow-target="blocks">
+                {midBuckets.map((b, idx) => flowCard(b, totalIncome, idx, "l"))}
+              </div>
+
+              <div className="relative hidden h-56 lg:block">
+                <svg viewBox="0 0 120 220" className="h-full w-full" preserveAspectRatio="none">
+                  {savingsDestinations.map((d, i) => {
+                    const y = 30 + i * 80;
+                    const w = Math.max(2.5, saveAmount > 0 ? (d.amount / saveAmount) * 22 : 2.5);
+                    return (
+                      <motion.path
+                        key={d.name}
+                        d={`M0,110 C60,110 60,${y} 120,${y}`}
+                        fill="none"
+                        stroke={d.color}
+                        strokeWidth={w}
+                        strokeOpacity={0.35}
+                        strokeLinecap="round"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 1, delay: 0.4 + i * 0.1 }}
+                      />
+                    );
+                  })}
+                </svg>
+              </div>
+
+              <div className="space-y-3">
+                {savingsDestinations.map((d, idx) => flowCard(d, saveAmount, idx, "r"))}
+              </div>
+            </div>
+          );
+        })()}
       </Panel>
 
       <SavingsGoals fmt={fmt} />
@@ -742,6 +799,62 @@ function CashFlow() {
                 </Select>
               </div>
             ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={allocOpen} onOpenChange={setAllocOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("Destino del ahorro", "Savings destination")}</DialogTitle>
+            <DialogDescription>
+              {t(
+                `De tus ${fmt(saveAmount)} de ahorro al mes, decide cuánto va a cada destino.`,
+                `Out of your ${fmt(saveAmount)} monthly savings, decide how much goes to each destination.`,
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 pt-2">
+            <div>
+              <label className="mb-1.5 flex items-center gap-2 text-sm font-medium">
+                <TrendingUp className="h-4 w-4 text-chart-1" />
+                {t("Inversiones al mes", "Investments per month")}
+              </label>
+              <NumberInput
+                format
+                value={allocDraft.invest}
+                onChange={(v) => setAllocDraft((d) => ({ ...d, invest: v }))}
+                placeholder="0"
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 flex items-center gap-2 text-sm font-medium">
+                <Target className="h-4 w-4 text-positive" />
+                {t("Metas de ahorro al mes", "Savings goals per month")}
+              </label>
+              <NumberInput
+                format
+                value={allocDraft.goals}
+                onChange={(v) => setAllocDraft((d) => ({ ...d, goals: v }))}
+                placeholder="0"
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {t(
+                `Disponible: ${fmt(Math.max(0, saveAmount - allocDraft.invest - allocDraft.goals))}`,
+                `Available: ${fmt(Math.max(0, saveAmount - allocDraft.invest - allocDraft.goals))}`,
+              )}
+            </p>
+            <Button
+              className="w-full"
+              onClick={() => {
+                setSavingsAlloc({ invest: Math.max(0, allocDraft.invest), goals: Math.max(0, allocDraft.goals) });
+                setAllocOpen(false);
+                toast.success(t("Destino del ahorro guardado", "Savings destination saved"));
+              }}
+            >
+              {t("Guardar", "Save")}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

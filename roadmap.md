@@ -11,3 +11,6 @@
 - [x] Hacer desplegable “Descubre más” y mostrar nombres y etiquetas completos
 - [x] Dar etiquetas visibles y diferenciadas a Inversor y Familiar
 - [x] Renombrar Distribución del dinero a Metas de ahorro, abrirla en Gratis y permitir metas editables
+
+- [x] Unificar Flujo de dinero + Destino del ahorro en un solo sankey (Ingresos → Gastos/Ahorro/Lifestyle → Metas/Inversiones/Disponible)
+- [x] Líneas del flujo más finas + editor arriba para destinar dinero a inversiones y metas
