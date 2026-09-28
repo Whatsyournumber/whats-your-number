@@ -53,11 +53,7 @@ export function useRegionalPricing() {
       ? fallbackTier()
       : "standard";
 
-  const currency: DisplayCurrency = serverCountry
-    ? currencyForCountry(serverCountry)
-    : hydrated && /^Europe\//.test(Intl.DateTimeFormat().resolvedOptions().timeZone ?? "")
-      ? "EUR"
-      : "USD";
+  const currency: DisplayCurrency = currencyForCountry(serverCountry);
 
   return {
     tier,

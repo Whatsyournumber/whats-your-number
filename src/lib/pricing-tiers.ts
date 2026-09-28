@@ -92,8 +92,7 @@ const EUROPE_COUNTRIES = new Set<string>([
 ]);
 
 export function currencyForCountry(country: string | null | undefined): DisplayCurrency {
-  if (!country) return "USD";
-  return EUROPE_COUNTRIES.has(country.trim().toUpperCase()) ? "EUR" : "USD";
+  return "USD";
 }
 
 const SYMBOL: Record<DisplayCurrency, string> = { USD: "$", EUR: "€" };
