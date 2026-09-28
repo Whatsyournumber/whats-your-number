@@ -92,7 +92,16 @@ function CashFlow() {
   const months = useMemo(() => {
     const set = new Set<string>();
     for (const t of transactions) if (t.tx_date) set.add(monthKey(t.tx_date));
-    return [...set].sort().reverse();
+    const list = [...set].sort().reverse();
+    if (list.length > 0) return list;
+    // Sin EEFF: mostrar los últimos 6 meses desde hoy.
+    const now = new Date();
+    const fallback: string[] = [];
+    for (let i = 0; i < 6; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      fallback.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
+    }
+    return fallback;
   }, [transactions]);
 
   const [month, setMonth] = useState<string | null>(null);
