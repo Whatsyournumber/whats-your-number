@@ -181,7 +181,7 @@ export function AppSidebar() {
       <SidebarContent className="flex-1 gap-0.5 overflow-y-auto">
         <SidebarGroup className="p-1.5">
           <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
-            {t("Control de gastos", "Spending control")}
+            {t("Mi dinero", "My money")}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="gap-0.5">{spending.map(renderItem)}</SidebarMenu>
