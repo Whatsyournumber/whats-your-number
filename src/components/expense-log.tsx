@@ -1141,6 +1141,7 @@ export function ExpenseLog() {
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
+                  ref={addMobileRef}
                   data-tour-expense-target="add-mobile"
                   aria-label={t("Añadir gasto", "Add expense")}
                   className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/20 sm:hidden"
