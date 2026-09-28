@@ -801,6 +801,64 @@ function CashFlow() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={allocOpen} onOpenChange={setAllocOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("Destino del ahorro", "Savings destination")}</DialogTitle>
+            <DialogDescription>
+              {t(
+                `De tus ${fmt(saveAmount)} de ahorro al mes, decide cuánto va a cada destino.`,
+                `Out of your ${fmt(saveAmount)} monthly savings, decide how much goes to each destination.`,
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 pt-2">
+            <div>
+              <label className="mb-1.5 flex items-center gap-2 text-sm font-medium">
+                <TrendingUp className="h-4 w-4 text-chart-1" />
+                {t("Inversiones al mes", "Investments per month")}
+              </label>
+              <NumberInput
+                format
+                value={allocDraft.invest}
+                onChange={(v) => setAllocDraft((d) => ({ ...d, invest: v }))}
+                placeholder="0"
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 flex items-center gap-2 text-sm font-medium">
+                <Target className="h-4 w-4 text-positive" />
+                {t("Metas de ahorro al mes", "Savings goals per month")}
+              </label>
+              <NumberInput
+                format
+                value={allocDraft.goals}
+                onChange={(v) => setAllocDraft((d) => ({ ...d, goals: v }))}
+                placeholder="0"
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {t(
+                `Disponible: ${fmt(Math.max(0, saveAmount - (Number(allocDraft.invest.replace(/\./g, "")) || 0) - (Number(allocDraft.goals.replace(/\./g, "")) || 0)))}`,
+                `Available: ${fmt(Math.max(0, saveAmount - (Number(allocDraft.invest.replace(/\./g, "")) || 0) - (Number(allocDraft.goals.replace(/\./g, "")) || 0)))}`,
+              )}
+            </p>
+            <Button
+              className="w-full"
+              onClick={() => {
+                const invest = Math.max(0, Number(allocDraft.invest.replace(/\./g, "")) || 0);
+                const goals = Math.max(0, Number(allocDraft.goals.replace(/\./g, "")) || 0);
+                setSavingsAlloc({ invest, goals });
+                setAllocOpen(false);
+                toast.success(t("Destino del ahorro guardado", "Savings destination saved"));
+              }}
+            >
+              {t("Guardar", "Save")}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </PageShell>
     </TooltipProvider>
   );
