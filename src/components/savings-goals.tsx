@@ -22,7 +22,8 @@ export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
   const { value, save, loaded } = useSyncedSetting<{ items: SavingsGoal[] }>("whatsyournumber:savings-goals", EMPTY);
   const goals = Array.isArray(value?.items) ? value.items : EMPTY.items;
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
-  const [draft, setDraft] = useState<Draft | null>(null);
+  const [draftState, setDraft] = useState<Draft | null>(null);
+  const draft = draftState;
   const [menuId, setMenuId] = useState<string | null>(null);
   const completed = (goal: SavingsGoal) => goal.target > 0 && goal.saved >= goal.target;
   const activeCount = goals.filter((goal) => !completed(goal)).length;
@@ -30,7 +31,12 @@ export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
   const visible = goals.filter((goal) => filter === "all" || (filter === "completed" ? completed(goal) : !completed(goal)));
 
   const submit = () => {
-    if (!draft || !draft.name.trim() || draft.target <= 0 || !Number.isFinite(draft.target) || !Number.isFinite(draft.saved) || !Number.isFinite(draft.monthly) || !Number.isFinite(draft.targetYear)) return;
+    let draft = draftState;
+    if (!draft) return;
+    if (!draft.name.trim()) { toast.error(t("Escribe un nombre para la meta", "Enter a goal name")); return; }
+    if (!Number.isFinite(draft.target) || draft.target <= 0) { toast.error(t("Indica cuánto quieres ahorrar en Objetivo", "Enter a target amount")); return; }
+    const year = Number.isFinite(draft.targetYear) && draft.targetYear > 0 ? draft.targetYear : new Date().getFullYear() + 1;
+    draft = { ...draft, saved: Number.isFinite(draft.saved) ? draft.saved : 0, monthly: Number.isFinite(draft.monthly) ? draft.monthly : 0, targetYear: year };
     const goal: SavingsGoal = {
       id: draft.id ?? crypto.randomUUID(), name: draft.name.trim(), target: draft.target,
       saved: Math.max(0, draft.saved), monthly: Math.max(0, draft.monthly), targetYear: Math.max(new Date().getFullYear(), Math.floor(draft.targetYear)),
@@ -103,13 +109,13 @@ export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
           {draft && <div className="grid gap-4 py-2">
             <div className="space-y-1.5"><Label htmlFor="savings-goal-name">{t("Nombre", "Name")}</Label><Input id="savings-goal-name" value={draft.name} maxLength={80} onChange={(event) => setDraft({ ...draft, name: event.target.value })} /></div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5"><Label>{t("Objetivo", "Target")}</Label><NumberInput ariaLabel={t("Objetivo", "Target")} value={draft.target} min={0} onChange={(target) => setDraft({ ...draft, target })} /></div>
-              <div className="space-y-1.5"><Label>{t("Ya ahorrado", "Already saved")}</Label><NumberInput ariaLabel={t("Ya ahorrado", "Already saved")} value={draft.saved} min={0} onChange={(saved) => setDraft({ ...draft, saved })} /></div>
-              <div className="space-y-1.5"><Label>{t("Aporte mensual", "Monthly contribution")}</Label><NumberInput ariaLabel={t("Aporte mensual", "Monthly contribution")} value={draft.monthly} min={0} onChange={(monthly) => setDraft({ ...draft, monthly })} /></div>
+              <div className="space-y-1.5"><Label>{t("Objetivo", "Target")}</Label><NumberInput ariaLabel={t("Objetivo", "Target")} value={draft.target} min={0} format onChange={(target) => setDraft({ ...draft, target })} /></div>
+              <div className="space-y-1.5"><Label>{t("Ya ahorrado", "Already saved")}</Label><NumberInput ariaLabel={t("Ya ahorrado", "Already saved")} value={draft.saved} min={0} format onChange={(saved) => setDraft({ ...draft, saved })} /></div>
+              <div className="space-y-1.5"><Label>{t("Aporte mensual", "Monthly contribution")}</Label><NumberInput ariaLabel={t("Aporte mensual", "Monthly contribution")} value={draft.monthly} min={0} format onChange={(monthly) => setDraft({ ...draft, monthly })} /></div>
               <div className="space-y-1.5"><Label htmlFor="savings-goal-year">{t("Año objetivo", "Target year")}</Label><Input id="savings-goal-year" type="number" min={new Date().getFullYear()} value={draft.targetYear} onChange={(event) => setDraft({ ...draft, targetYear: Number(event.target.value) })} /></div>
             </div>
           </div>}
-          <DialogFooter><Button variant="outline" onClick={() => setDraft(null)}>{t("Cancelar", "Cancel")}</Button><Button disabled={!draft?.name.trim() || !draft?.target || draft.target <= 0} onClick={submit}>{t("Guardar", "Save")}</Button></DialogFooter>
+          <DialogFooter><Button variant="outline" onClick={() => setDraft(null)}>{t("Cancelar", "Cancel")}</Button><Button onClick={submit}>{t("Guardar", "Save")}</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </section>
