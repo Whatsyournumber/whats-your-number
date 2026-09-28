@@ -495,159 +495,113 @@ function CashFlow() {
         />
       </div>
 
-      <Panel title={t("Flujo de dinero", "Money flow")} description={t("Ingresos → destino final", "Income → final destination")} icon={<ArrowLeftRight />}>
-        <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_120px_minmax(0,1.3fr)]">
-          <div className="space-y-3">
-            {incomeLines.slice(0, 8).map((i, idx) => (
+      <Panel title={t("Flujo de dinero", "Money flow")} description={t("Convierte tu ahorro en progreso hacia tus metas.", "Turn your savings into progress toward your goals.")} icon={<ArrowLeftRight />}>
+        {(() => {
+          const midBuckets = [
+            { name: t("Gastos", "Expenses"), amount: needsAmount, icon: <ReceiptText className="h-5 w-5" />, color: "var(--color-chart-2)" },
+            { name: t("Ahorro total", "Total savings"), amount: saveAmount, icon: <PiggyBank className="h-5 w-5" />, color: "var(--color-positive)", highlight: true },
+            { name: t("Lifestyle / deseos", "Lifestyle / wants"), amount: wantsAmount, icon: <Wallet className="h-5 w-5" />, color: "var(--color-chart-4)" },
+          ];
+          const flowCard = (d: { name: string; amount: number; icon: React.ReactNode; color: string; highlight?: boolean }, total: number, idx: number, dir: "l" | "r") => (
+            <motion.div
+              key={d.name}
+              initial={{ opacity: 0, x: dir === "l" ? -12 : 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 + idx * 0.08 }}
+              className={`rounded-2xl border p-4 ${d.highlight ? "border-positive/25 bg-positive/10" : "border-border bg-elevated/60"}`}
+            >
+              <div className="flex items-center gap-3">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full" style={{ background: `color-mix(in srgb, ${d.color} 15%, transparent)`, color: d.color }}>{d.icon}</span>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">{d.name}</p>
+                  <p className="numeric text-sm font-semibold">{fmt(d.amount)}</p>
+                </div>
+                <p className="numeric ml-auto text-xs text-muted-foreground">{total > 0 ? ((d.amount / total) * 100).toFixed(0) : 0}%</p>
+              </div>
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${total > 0 ? Math.min(100, (d.amount / total) * 100) : 0}%` }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                  className="h-full rounded-full"
+                  style={{ background: d.color }}
+                />
+              </div>
+            </motion.div>
+          );
+          return (
+            <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,0.9fr)_90px_minmax(0,1fr)_90px_minmax(0,1.2fr)]">
               <motion.div
-                key={i.name}
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.08 }}
-                className="rounded-2xl border border-border bg-elevated/60 p-4"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <p className="truncate text-sm font-medium">{i.name}</p>
-                  <p className="numeric text-sm font-semibold">{fmt(i.amount)}</p>
-                </div>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${Math.min(100, (i.amount / totalIncome) * 100)}%` }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                    className="h-full rounded-full bg-primary"
-                  />
-                </div>
-              </motion.div>
-            ))}
-            {incomeLines.length === 0 && (
-              <p className="text-sm text-muted-foreground">{t("No encontramos abonos en este periodo.", "We did not find credits for this period.")}</p>
-            )}
-          </div>
-
-          <div className="relative hidden h-64 lg:block">
-            <svg viewBox="0 0 120 260" className="h-full w-full" preserveAspectRatio="none">
-              {buckets.map((b, i) => {
-                const y = 30 + i * 66;
-                const w = Math.max(6, (b.amount / totalIncome) * 60);
-                return (
-                  <motion.path
-                    key={b.name}
-                    d={`M0,130 C60,130 60,${y} 120,${y}`}
-                    fill="none"
-                    stroke={b.color}
-                    strokeWidth={w}
-                    strokeOpacity={0.35}
-                    strokeLinecap="round"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 1, delay: 0.2 + i * 0.1 }}
-                  />
-                );
-              })}
-            </svg>
-          </div>
-
-          <div className="space-y-3" data-tour-cashflow-target="blocks">
-            {buckets.map((b, idx) => (
-              <motion.div
-                key={b.name}
-                initial={{ opacity: 0, x: 12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 + idx * 0.08 }}
-                className="rounded-2xl border border-border bg-elevated/60 p-4"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: b.color }} />
-                  <p className="text-sm font-medium">{b.name}</p>
-                  <p className="numeric ml-auto text-sm font-semibold">{fmt(b.amount)}</p>
-                </div>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${Math.min(100, (b.amount / totalIncome) * 100)}%` }}
-                    transition={{ duration: 0.8, delay: 0.3 }}
-                    className="h-full rounded-full"
-                    style={{ background: b.color }}
-                  />
-                </div>
-                <p className="mt-1.5 text-xs text-muted-foreground">
-                  {((b.amount / totalIncome) * 100).toFixed(0)}% {t("de tus ingresos", "of your income")}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </Panel>
-
-      <Panel title={t("Destino del ahorro", "Savings destination")} description={t("Ahorro total → a dónde va", "Total savings → where it goes")} icon={<PiggyBank />}>
-        <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_120px_minmax(0,1.3fr)]">
-          <motion.div
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="rounded-2xl border border-positive/25 bg-positive/10 p-4"
-          >
-            <div className="flex items-center gap-3">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-positive/15 text-positive"><PiggyBank className="h-5 w-5" /></span>
-              <div className="min-w-0">
-                <p className="text-sm font-medium">{t("Ahorro total", "Total savings")}</p>
-                <p className="numeric text-lg font-semibold">{fmt(saveAmount)}</p>
-              </div>
-              <p className="numeric ml-auto text-sm font-semibold text-positive">{totalIncome > 0 ? ((saveAmount / totalIncome) * 100).toFixed(0) : 0}%</p>
-            </div>
-          </motion.div>
-
-          <div className="relative hidden h-48 lg:block">
-            <svg viewBox="0 0 120 200" className="h-full w-full" preserveAspectRatio="none">
-              {savingsDestinations.map((d, i) => {
-                const y = 30 + i * 66;
-                const w = Math.max(6, saveAmount > 0 ? (d.amount / saveAmount) * 60 : 6);
-                return (
-                  <motion.path
-                    key={d.name}
-                    d={`M0,100 C60,100 60,${y} 120,${y}`}
-                    fill="none"
-                    stroke={d.color}
-                    strokeWidth={w}
-                    strokeOpacity={0.35}
-                    strokeLinecap="round"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 1, delay: 0.2 + i * 0.1 }}
-                  />
-                );
-              })}
-            </svg>
-          </div>
-
-          <div className="space-y-3">
-            {savingsDestinations.map((d, idx) => (
-              <motion.div
-                key={d.name}
-                initial={{ opacity: 0, x: 12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 + idx * 0.08 }}
                 className="rounded-2xl border border-border bg-elevated/60 p-4"
               >
                 <div className="flex items-center gap-3">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full" style={{ background: `color-mix(in srgb, ${d.color} 15%, transparent)`, color: d.color }}>{d.icon}</span>
-                  <p className="text-sm font-medium">{d.name}</p>
-                  <p className="numeric ml-auto text-sm font-semibold">{fmt(d.amount)}</p>
-                  <p className="numeric w-10 text-right text-xs text-muted-foreground">{saveAmount > 0 ? ((d.amount / saveAmount) * 100).toFixed(0) : 0}%</p>
-                </div>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${saveAmount > 0 ? Math.min(100, (d.amount / saveAmount) * 100) : 0}%` }}
-                    transition={{ duration: 0.8, delay: 0.3 }}
-                    className="h-full rounded-full"
-                    style={{ background: d.color }}
-                  />
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary/15 text-primary"><Wallet className="h-5 w-5" /></span>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">{t("Ingresos", "Income")}</p>
+                    <p className="numeric text-lg font-semibold">{fmt(totalIncome)}</p>
+                  </div>
+                  <p className="numeric ml-auto text-xs text-muted-foreground">100%</p>
                 </div>
               </motion.div>
-            ))}
-          </div>
-        </div>
+
+              <div className="relative hidden h-56 lg:block">
+                <svg viewBox="0 0 120 220" className="h-full w-full" preserveAspectRatio="none">
+                  {midBuckets.map((b, i) => {
+                    const y = 30 + i * 80;
+                    const w = Math.max(6, totalIncome > 0 ? (b.amount / totalIncome) * 60 : 6);
+                    return (
+                      <motion.path
+                        key={b.name}
+                        d={`M0,110 C60,110 60,${y} 120,${y}`}
+                        fill="none"
+                        stroke={b.color}
+                        strokeWidth={w}
+                        strokeOpacity={0.35}
+                        strokeLinecap="round"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 1, delay: 0.2 + i * 0.1 }}
+                      />
+                    );
+                  })}
+                </svg>
+              </div>
+
+              <div className="space-y-3" data-tour-cashflow-target="blocks">
+                {midBuckets.map((b, idx) => flowCard(b, totalIncome, idx, "l"))}
+              </div>
+
+              <div className="relative hidden h-56 lg:block">
+                <svg viewBox="0 0 120 220" className="h-full w-full" preserveAspectRatio="none">
+                  {savingsDestinations.map((d, i) => {
+                    const y = 30 + i * 80;
+                    const w = Math.max(6, saveAmount > 0 ? (d.amount / saveAmount) * 60 : 6);
+                    return (
+                      <motion.path
+                        key={d.name}
+                        d={`M0,110 C60,110 60,${y} 120,${y}`}
+                        fill="none"
+                        stroke={d.color}
+                        strokeWidth={w}
+                        strokeOpacity={0.35}
+                        strokeLinecap="round"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 1, delay: 0.4 + i * 0.1 }}
+                      />
+                    );
+                  })}
+                </svg>
+              </div>
+
+              <div className="space-y-3">
+                {savingsDestinations.map((d, idx) => flowCard(d, saveAmount, idx, "r"))}
+              </div>
+            </div>
+          );
+        })()}
       </Panel>
 
       <SavingsGoals fmt={fmt} />
