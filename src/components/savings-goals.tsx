@@ -102,8 +102,8 @@ export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
           {draft && <div className="grid gap-4 py-2">
             <div className="space-y-1.5"><Label htmlFor="savings-goal-name">{t("Nombre", "Name")}</Label><Input id="savings-goal-name" value={draft.name} maxLength={80} onChange={(event) => setDraft({ ...draft, name: event.target.value })} /></div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5"><Label htmlFor="savings-goal-target">{t("Objetivo", "Target")}</Label><NumberInput ariaLabel={t("Objetivo", "Target")} value={draft.target} min={0} onChange={(target) => setDraft({ ...draft, target })} /></div>
-              <div className="space-y-1.5"><Label htmlFor="savings-goal-saved">{t("Ya ahorrado", "Already saved")}</Label><NumberInput ariaLabel={t("Ya ahorrado", "Already saved")} value={draft.saved} min={0} onChange={(saved) => setDraft({ ...draft, saved })} /></div>
+              <div className="space-y-1.5"><Label>{t("Objetivo", "Target")}</Label><NumberInput ariaLabel={t("Objetivo", "Target")} value={draft.target} min={0} onChange={(target) => setDraft({ ...draft, target })} /></div>
+              <div className="space-y-1.5"><Label>{t("Ya ahorrado", "Already saved")}</Label><NumberInput ariaLabel={t("Ya ahorrado", "Already saved")} value={draft.saved} min={0} onChange={(saved) => setDraft({ ...draft, saved })} /></div>
               <div className="space-y-1.5"><Label>{t("Aporte mensual", "Monthly contribution")}</Label><NumberInput ariaLabel={t("Aporte mensual", "Monthly contribution")} value={draft.monthly} min={0} onChange={(monthly) => setDraft({ ...draft, monthly })} /></div>
               <div className="space-y-1.5"><Label htmlFor="savings-goal-year">{t("Año objetivo", "Target year")}</Label><Input id="savings-goal-year" type="number" min={new Date().getFullYear()} value={draft.targetYear} onChange={(event) => setDraft({ ...draft, targetYear: Number(event.target.value) })} /></div>
             </div>

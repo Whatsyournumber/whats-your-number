@@ -11,7 +11,9 @@
 
 <!-- LOVABLE:END -->
 
-The four entitlements rank free < pro < investor < patrimonio (Family): Free has the number summary on Dashboard, Pro unlocks the full number, AI, cash flow and planners, Investor adds net worth, portfolio and mortgage, and Family adds children's profiles; keep sidebar and mobile tour destinations aligned with these gates.
+The four entitlements rank free < pro < investor < patrimonio (Family): Free has the number summary on Dashboard and savings goals/money flow, Pro unlocks the full number, AI and planners, Investor adds net worth, portfolio and mortgage, and Family adds children's profiles; keep sidebar and mobile tour destinations aligned with these gates.
+
+Savings goals are stored per user through the existing synced user settings so Free users can edit them across devices without changing Life Planner's separate Pro goals.
 
 Create each shared expense and both participant records through the atomic `create_shared_expense` database function so RLS identity checks and split validation cannot leave partial data.
 
