@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { SavingsGoals } from "@/components/savings-goals";
 import { motion } from "motion/react";
 import { ArrowLeftRight, Pencil, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
