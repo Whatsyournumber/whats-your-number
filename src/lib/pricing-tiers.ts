@@ -51,7 +51,7 @@ export interface PlanPrice {
   yearly: number;
 }
 
-/** Precios visibles por tier (mismo número, la moneda cambia según región). */
+/** Precios visibles por tier, siempre en USD. */
 export const TIER_PRICES: Record<PricingTier, { pro: PlanPrice; investor: PlanPrice; family: PlanPrice }> = {
   accessible: {
     pro: { monthly: 2.99, yearly: 29 },
@@ -83,15 +83,7 @@ export const EXTRA_SEAT_PRICE: Record<PricingTier, number> = {
 
 export type DisplayCurrency = "USD" | "EUR";
 
-/** Europa (incl. no-UE): mostramos precios en EUR. */
-const EUROPE_COUNTRIES = new Set<string>([
-  "ES", "PT", "IT", "GR", "CY", "MT", "PL", "CZ", "SK", "HU", "RO", "BG", "HR",
-  "SI", "EE", "LV", "LT", "RS", "BA", "MK", "AL", "ME", "UA", "MD",
-  "FR", "DE", "BE", "NL", "LU", "AT", "IE", "CH", "NO", "SE", "DK", "FI", "IS",
-  "GB", "LI", "MC", "AD", "SM", "VA",
-]);
-
-export function currencyForCountry(country: string | null | undefined): DisplayCurrency {
+export function currencyForCountry(_country: string | null | undefined): DisplayCurrency {
   return "USD";
 }
 

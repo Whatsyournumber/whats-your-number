@@ -108,7 +108,7 @@ type StatementRow = {
   created_at: string;
 };
 
-const PRICES: Record<string, number> = { pro_plan: 7, patrimonio_plan: 19 };
+const PRICES: Record<string, number> = { pro_plan: 5.99, investor_plan: 7.99, patrimonio_plan: 9.99 };
 
 function fmtDate(value: string | null) {
   if (!value) return "—";
@@ -723,7 +723,8 @@ function AdminPage() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="pro_plan">Pro</SelectItem>
-                          <SelectItem value="family_plan">Family</SelectItem>
+                          <SelectItem value="investor_plan">Inversor</SelectItem>
+                          <SelectItem value="patrimonio_plan">Familiar</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

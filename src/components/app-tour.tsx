@@ -86,7 +86,7 @@ const STEPS: Step[] = [
       "Let AI tell you where you overspent and where to save."],
   },
   {
-    url: "/cash-flow", icon: Scale, minPlan: "free",
+    url: "/cash-flow", icon: Scale, minPlan: "pro",
     es: ["Distribución del dinero", "La regla del dinero 50/30/20 aplicada a tus números reales.",
       "Podrás editar tus ítems de necesidades, deseos y ahorro según tu plan.",
       "Pasa el cursor sobre cada bloque para ver el detalle.",
