@@ -1,7 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { SavingsGoals } from "@/components/savings-goals";
 import { motion } from "motion/react";
-import { AlertCircle, ArrowLeftRight, ArrowRight, CheckCircle2, HelpCircle, Lightbulb, Pencil, PieChart, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
+import { ArrowLeftRight, Pencil, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { useLanguage, useT } from "@/hooks/use-language";
@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { NumberInput } from "@/components/ui/number-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
 import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
@@ -403,35 +403,6 @@ function CashFlow() {
   );
   const savingsAtRetire = savingsProjection[savingsProjection.length - 1]?.value ?? 0;
   const savingsYear1 = savingsProjection[1]?.value ?? 0;
-  // Conclusión de la regla 40/40/20: el desvío más grande frente al objetivo.
-  const needsPct = totalIncome > 0 ? (needsAmount / totalIncome) * 100 : 0;
-  const savePct = totalIncome > 0 ? (saveAmount / totalIncome) * 100 : 0;
-  const wantsPct = totalIncome > 0 ? (wantsAmount / totalIncome) * 100 : 0;
-  const ruleDeviations = hasReal
-    ? [
-        { label: t("Necesidades", "Needs"), over: needsPct - 40, under: false, link: "/gastos" },
-        { label: t("Ahorro", "Savings"), over: 40 - savePct, under: true, link: "/registro-gastos" },
-        { label: t("Deseos", "Wants"), over: wantsPct - 20, under: false, link: "/gastos" },
-      ]
-        .filter((d) => d.over > 1)
-        .sort((a, b) => b.over - a.over)
-    : [];
-  const topDeviation = ruleDeviations[0] ?? null;
-  // No se presupone que todos los deseos se puedan eliminar: el recorte está
-  // limitado al exceso sobre el objetivo y al gasto de la categoría principal.
-  // El detalle de Análisis de gastos se basa en movimientos variables; los
-  // gastos fijos no tienen el mismo desglose de comercios y movimientos.
-  const topWant = [...spend.wantsBy.entries()]
-    .map(([category, amount]) => ({ category, label: translateCategory(category, lang), amount }))
-    .sort((a, b) => b.amount - a.amount)[0] ?? null;
-  const wantsTarget = Math.max(0, totalIncome * 0.2);
-  const monthlyOpportunity = hasReal && topWant
-    ? Math.max(0, Math.min(topWant.amount, wantsAmount - wantsTarget))
-    : 0;
-  const opportunityProjection = monthlyOpportunity > 0
-    ? projectRetirementFrom(monthlyOpportunity, 10, savingsYears, 0, d.retirement.currentAge)
-    : [];
-  const opportunityAtRetire = opportunityProjection[opportunityProjection.length - 1]?.value ?? 0;
 
   return (
     <TooltipProvider delayDuration={150}>
@@ -641,68 +612,8 @@ function CashFlow() {
         })()}
       </Panel>
 
-      <SavingsGoals fmt={fmt} />
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Panel className="flex flex-col" title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")} icon={<PieChart />}>
-          <div className="space-y-3 pb-4 text-sm">
-            <Row
-              label={t("Necesidades", "Needs")}
-              value={needsAmount}
-              total={totalIncome}
-              target={40}
-              fmt={fmt}
-              legend={t("Vivienda, hipoteca, alquiler, mercado, transporte, servicios, salud y educación.", "Housing, mortgage, rent, groceries, transport, utilities, health and education.")}
-            />
-            <Row
-              label={t("Ahorro & inversiones", "Savings & investing")}
-              value={saveAmount}
-              total={totalIncome}
-              target={40}
-              fmt={fmt}
-              goodWhenHigher
-              legend={t("Ahorro programado, fondos de inversión, ETF, bolsa, cripto y flujo libre ahorrado.", "Scheduled savings, investment funds, ETFs, stocks, crypto and free cash saved.")}
-            />
-            <Row
-              label={t("Deseos", "Wants")}
-              value={wantsAmount}
-              total={totalIncome}
-              target={20}
-              fmt={fmt}
-                legend={t("Viajes, restaurantes, salidas, compras, tecnología, apps, hobbies y lifestyle.", "Travel, dining out, entertainment, shopping, technology, apps, hobbies and lifestyle.")}
-            />
-          </div>
-          {topDeviation ? (
-            <Link
-              to={topDeviation.link}
-              className="mt-auto flex items-center gap-3 rounded-xl border border-negative/25 bg-negative/10 p-3 transition hover:bg-negative/15"
-            >
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-negative/20">
-                <AlertCircle className="h-4 w-4 text-negative" />
-              </span>
-              <p className="min-w-0 flex-1 whitespace-nowrap text-[13px] leading-snug text-foreground">
-                {topDeviation.under
-                  ? t(
-                      `${topDeviation.label}: ${Math.round(topDeviation.over)}% ${t("bajo tu objetivo", "below your target")}`,
-                      `${topDeviation.label}: ${Math.round(topDeviation.over)}% below your target.`,
-                    )
-                  : t(
-                      `${topDeviation.label}: ${Math.round(topDeviation.over)}% ${t("sobre tu objetivo", "above your target")}`,
-                      `${topDeviation.label}: ${Math.round(topDeviation.over)}% above your target.`,
-                    )}
-              </p>
-              <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-            </Link>
-          ) : (
-            <div className="mt-auto flex items-center gap-3 rounded-xl border border-positive/25 bg-positive/10 p-3">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-positive/20">
-                <CheckCircle2 className="h-4 w-4 text-positive" />
-              </span>
-              <p className="min-w-0 flex-1 whitespace-nowrap text-[13px] leading-snug text-foreground">
-                {t("Tu regla 40/40/20 va bien este mes.", "Your 40/40/20 rule is on track this month.")}
-              </p>
-            </div>
-          )}
-        </Panel>
+      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <SavingsGoals fmt={fmt} />
         <Panel className="flex flex-col" title={t("Uso del ahorro", "Use of savings")} description={t("Si ahorras así, lo que tendrías al retirarte", "If you save like this, what you'd have at retirement")} icon={<PiggyBank />}>
           <p className="numeric text-4xl font-semibold text-primary">{fmt(savingsAtRetire)}</p>
           <p className="mt-1.5 text-xs text-muted-foreground">
@@ -734,55 +645,6 @@ function CashFlow() {
                   `Keeping this pace at ${SP500_RATE}% a year (S&P 500).`,
                 )}
               </p>
-            </div>
-          )}
-        </Panel>
-        <Panel
-          className="flex flex-col"
-          title={t("Oportunidad del mes", "Opportunity of the month")}
-          description={t("Dónde puedes ahorrar e invertir más", "Where you could save and invest more")}
-          icon={<Lightbulb />}
-        >
-          {monthlyOpportunity > 0 && topWant ? (
-            <div className="flex flex-1 flex-col gap-4">
-              <div>
-                <p className="numeric text-4xl font-semibold text-positive">{fmt(monthlyOpportunity)}<span className="ml-1 text-base font-normal text-muted-foreground">{t("/mes", "/mo")}</span></p>
-                <p className="mt-1 text-xs text-muted-foreground">{t("de deseos por encima de tu objetivo", "of wants above your target")}</p>
-              </div>
-              <div className="border-t border-border pt-3 text-sm">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="min-w-0 font-medium text-foreground">{topWant.label}</span>
-                  <span className="numeric shrink-0 font-semibold">{fmt(topWant.amount)}</span>
-                </div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {t("Invertido en el S&P 500:", "Invested in the S&P 500:")} <strong className="text-foreground">{fmt(opportunityAtRetire)}</strong> {t("en", "in")} {savingsYears} {t("años", "years")}
-                </p>
-              </div>
-              <div className="mt-auto">
-                <Button asChild size="sm" className="w-full gap-2">
-                  <Link
-                    to="/gastos"
-                    search={{
-                      from: `${activeMonth}-01`,
-                      to: `${activeMonth}-${new Date(Number(activeMonth?.slice(0, 4)), Number(activeMonth?.slice(5, 7)), 0).getDate()}`,
-                      category: topWant.category,
-                    }}
-                  >{t("Ver dónde puedo ahorrar", "See where I can save")} <ArrowRight className="h-4 w-4" /></Link>
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-1 flex-col gap-3">
-              <p className="text-sm text-muted-foreground">
-                {!hasReal
-                  ? t("Registra tus gastos para detectar tu mejor oportunidad de ahorro.", "Add your expenses to find your best savings opportunity.")
-                  : t("Tus deseos están dentro del objetivo del 20% este mes.", "Your wants are within the 20% target this month.")}
-              </p>
-              <div className="mt-auto">
-                <Button asChild size="sm" variant="outline" className="w-full gap-2">
-                  <Link to={hasReal ? "/gastos" : "/registro-gastos"}>{hasReal ? t("Ver mis gastos", "View my spending") : t("Registrar gastos", "Add expenses")} <ArrowRight className="h-4 w-4" /></Link>
-                </Button>
-              </div>
             </div>
           )}
         </Panel>
@@ -878,88 +740,6 @@ function CashFlow() {
   );
 }
 
-function Row({
-  label,
-  value,
-  total,
-  target,
-  fmt,
-  goodWhenHigher = false,
-  legend,
-}: {
-  label: string;
-  value: number;
-  total: number;
-  target: number;
-  fmt: (n: number) => string;
-  goodWhenHigher?: boolean;
-  legend?: string;
-}) {
-  const t = useT();
-  const p = total > 0 ? (value / total) * 100 : 0;
-  const off = p - target;
-  const colorClass = goodWhenHigher
-    ? p >= target
-      ? "bg-positive"
-      : "bg-negative"
-    : off > 5
-      ? "bg-negative"
-      : "bg-primary";
-
-  const legendItems = useMemo(() => {
-    if (!legend) return [];
-    return legend
-      .split(/[.,]/)
-      .map((s) => s.trim())
-      .filter(Boolean);
-  }, [legend]);
-
-  return (
-    <div>
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className="inline-flex cursor-help items-center gap-1.5 text-muted-foreground">
-              {label}
-              {legend && <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/60" />}
-            </span>
-          </TooltipTrigger>
-          {legend && (
-            <TooltipContent side="top" className="max-w-[260px] p-0">
-              <div className="space-y-2 p-3">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-xs font-semibold text-foreground">{label}</p>
-                  <span className="numeric text-xs font-medium text-primary">{p.toFixed(0)}% / {target}%</span>
-                </div>
-                <p className="text-[11px] text-muted-foreground">
-                  {fmt(value)} {t("actual", "actual")}
-                </p>
-                <ul className="space-y-1 border-t border-border/50 pt-2">
-                  {legendItems.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
-                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />
-                      <span className="leading-relaxed">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </TooltipContent>
-          )}
-        </Tooltip>
-        <span className="numeric flex shrink-0 items-baseline gap-2 whitespace-nowrap">
-          <span className="font-medium">{fmt(value)}</span>
-          <span>
-            {p.toFixed(0)}% <span className="text-xs text-muted-foreground">/ {target}%</span>
-          </span>
-        </span>
-      </div>
-
-      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
-        <div className={`h-full rounded-full ${colorClass}`} style={{ width: `${Math.min(p, 100)}%` }} />
-      </div>
-    </div>
-  );
-}
 
 function BreakdownTooltip({
   items,
