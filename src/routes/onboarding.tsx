@@ -335,11 +335,11 @@ function OnboardingPage() {
   const go = (dir: 1 | -1) => {
     const next = expensesOnly
       ? dir === 1
-        ? step === 1
+        ? step === 7
           ? 9
           : Math.min(SUMMARY_STEP, step + 1)
         : step === 9
-          ? 1
+          ? 7
           : Math.max(1, step - 1)
       : Math.min(SUMMARY_STEP, Math.max(1, step + dir));
     setStep(next);
@@ -415,10 +415,9 @@ function OnboardingPage() {
     return true;
   };
 
+  const expensesOnlyStep = step === 9 ? 8 : Math.min(step, 8);
   const progress = expensesOnly
-    ? step === 1
-      ? 50
-      : 100
+    ? (expensesOnlyStep / 8) * 100
     : (Math.min(step, QUESTIONS) / QUESTIONS) * 100;
   const isBuilding = step === BUILD_STEP;
   const isSummary = step === SUMMARY_STEP;
@@ -447,7 +446,7 @@ function OnboardingPage() {
                 : isSummary
                   ? ""
                   : expensesOnly
-                    ? `${step === 1 ? 1 : 2} / 2`
+                    ? `${expensesOnlyStep} / 8`
                     : `${step} / ${QUESTIONS}`}
             </span>
             <LanguageToggle />
@@ -1115,6 +1114,28 @@ function OnboardingPage() {
                     />
                   </div>
                 </div>
+
+                {expensesOnly && (
+                  <div className="mt-8">
+                    <SubQuestion title={t("Ahorros y fondo de emergencia", "Savings and emergency fund")} />
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                      {t(
+                        "Indica cuánto tienes en tu cuenta bancaria para entender tus ahorros y calcular tu fondo de emergencia.",
+                        "Enter your bank balance so we can understand your savings and calculate your emergency fund.",
+                      )}
+                    </p>
+                    <div className="mt-4 space-y-2.5">
+                      <MoneyField
+                        emoji="💰"
+                        label={t("Cuenta bancaria", "Bank account")}
+                        desc={t("Dinero ahorrado disponible", "Available savings")}
+                        currency={cur}
+                        value={data.assets_bank}
+                        onChange={(v) => set("assets_bank", v)}
+                      />
+                    </div>
+                  </div>
+                )}
 
                 {household && !expensesOnly && (
                   <div className="mt-8">

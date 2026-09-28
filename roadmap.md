@@ -4,3 +4,4 @@
 - [x] Consejos con IA: detectar la categoría según lo que dice el usuario (no siempre la misma)
 - [x] Mostrar confirmación del código de invitación aplicado y llevar al inicio al cerrarla
 - [x] Permitir hasta dos objetivos y recorrido corto cuando gastos sea el único objetivo
+- [x] Mantener el onboarding completo para gastos, omitir solo el paso 8 y simplificar el último paso
