@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { SavingsGoals } from "@/components/savings-goals";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { SavingsGoals, type SavingsGoal } from "@/components/savings-goals";
 import { motion } from "motion/react";
-import { ArrowLeftRight, Pencil, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
+import { ArrowLeftRight, ArrowRight, Coins, Lightbulb, Pencil, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { useLanguage, useT } from "@/hooks/use-language";
@@ -403,6 +403,27 @@ function CashFlow() {
   );
   const savingsAtRetire = savingsProjection[savingsProjection.length - 1]?.value ?? 0;
   const savingsYear1 = savingsProjection[1]?.value ?? 0;
+  // «Tu ahorro en el tiempo»: curva de crecimiento con hitos y aporte vs interés compuesto
+  const savingsContributed = saveAmount * 12 * savingsYears;
+  const savingsGrowth = Math.max(0, savingsAtRetire - savingsContributed);
+  const chartMilestones = useMemo(() => {
+    const years = [...new Set([0, 1, 5, 10, savingsYears])].filter((y) => y <= savingsYears).sort((a, b) => a - b);
+    return years.map((y) => ({ year: y, value: savingsProjection[y]?.value ?? 0 }));
+  }, [savingsProjection, savingsYears]);
+  const chartMax = Math.max(1, ...chartMilestones.map((m) => m.value));
+  const chartPoints = chartMilestones.map((m, i) => ({
+    ...m,
+    x: chartMilestones.length > 1 ? (i / (chartMilestones.length - 1)) * 300 : 0,
+    y: 104 - (m.value / chartMax) * 92,
+  }));
+  const chartLine = chartPoints.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
+  // Consejo «¿Quieres llegar antes?»: usa el ahorro sin destino y la primera meta activa
+  const { value: goalsSetting } = useSyncedSetting<{ items: SavingsGoal[] }>("whatsyournumber:savings-goals", { items: [] });
+  const goalsList = Array.isArray(goalsSetting?.items) ? goalsSetting.items : [];
+  const tipGoal = goalsList.find((g) => g.target > 0 && g.saved < g.target && g.monthly > 0);
+  const tipMonthsSaved = tipGoal && freeAmount > 0
+    ? Math.max(0, Math.ceil((tipGoal.target - tipGoal.saved) / tipGoal.monthly) - Math.ceil((tipGoal.target - tipGoal.saved) / (tipGoal.monthly + freeAmount)))
+    : 0;
 
   return (
     <TooltipProvider delayDuration={150}>
