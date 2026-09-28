@@ -208,7 +208,11 @@ export function AppTour() {
   // (gratis, pro o familiar): ninguna clave externa puede ampliarlo.
   const availableSteps = useMemo(() => {
     // En móvil el tour es corto: una parada por cada botón de la barra inferior.
-    const MOBILE_URLS = ["/dashboard", "/registro-gastos", "/retiro", "/portafolio", "/mi-perfil", "/advisor"];
+    const MOBILE_URLS = tier === "free"
+      ? ["/dashboard", "/registro-gastos", "/mi-perfil"]
+      : tier === "pro"
+        ? ["/dashboard", "/registro-gastos", "/retiro", "/advisor"]
+        : ["/dashboard", "/registro-gastos", "/retiro", "/portafolio", "/advisor"];
     return STEPS.filter(
       (tourStep) =>
         planMeetsTier(tourStep.minPlan, tier) &&

@@ -29,7 +29,7 @@ export function MobileBottomNav() {
   const tabs = [
     { title: t("Inicio", "Home"), url: "/dashboard", icon: Home },
     { title: t("Tus gastos", "Spending"), url: "/registro-gastos", icon: Wallet },
-    { title: t("Tu número", "Your number"), url: isPro ? "/retiro" : "/dashboard", icon: Target },
+    ...(isPro ? [{ title: t("Tu número", "Your number"), url: "/retiro", icon: Target }] : []),
     ...(isInvestor
       ? [{ title: t("Portfolio", "Portfolio"), url: "/portafolio", icon: LineChart }]
       : [{ title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserRound }]),

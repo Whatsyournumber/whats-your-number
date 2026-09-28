@@ -303,24 +303,26 @@ function Pricing() {
 
           {/* Toggle mensual / anual */}
           <div className="mt-8 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-border bg-card/60 p-1 backdrop-blur">
-            <button
+            <Button
               type="button"
+              variant="ghost"
               onClick={() => setBilling("monthly")}
               className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
                 billing === "monthly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t("Mensual", "Monthly")}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="ghost"
               onClick={() => setBilling("yearly")}
               className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
                 billing === "yearly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t("Anual · 2 meses gratis", "Yearly · 2 months free")}
-            </button>
+            </Button>
           </div>
           <p className="mt-2 text-xs text-muted-foreground">{t("El plan anual se factura en un solo pago.", "The yearly plan is billed in one payment.")}</p>
         </section>
