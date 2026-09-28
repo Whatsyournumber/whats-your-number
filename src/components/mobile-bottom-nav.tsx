@@ -112,7 +112,7 @@ export function MobileBottomNav() {
         <>
           {!tourHold && (
             blurBounds && (
-              <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} aria-hidden>
+              <div className="fixed inset-0 z-[45]" onClick={() => setMenuOpen(false)} aria-hidden>
                 <div
                   className="fixed inset-x-0 bg-background/60 backdrop-blur-sm"
                   style={{ top: 0, height: Math.max(0, blurBounds.y1) }}
@@ -172,7 +172,7 @@ export function MobileBottomNav() {
           aria-expanded={menuOpen}
           className="group -mt-12 flex min-w-0 flex-col items-center gap-1 px-3 py-1"
         >
-          <span className="relative -top-1 grid h-16 w-16 shrink-0 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/40 ring-4 ring-background transition-transform group-hover:scale-105 group-active:scale-95">
+          <span className={cn("relative -top-1 grid h-16 w-16 shrink-0 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/40 ring-4 ring-background transition-transform group-hover:scale-105 group-active:scale-95", menuOpen && "z-50")}>
             <Plus className="h-8 w-8" strokeWidth={2.2} />
           </span>
           <span className="min-h-7 whitespace-nowrap text-center text-[9px] font-medium leading-tight tracking-tight text-foreground">
