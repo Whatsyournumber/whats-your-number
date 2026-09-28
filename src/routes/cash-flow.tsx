@@ -426,6 +426,8 @@ function CashFlow() {
           }
         />
 
+      <SavingsGoals fmt={fmt} />
+
       <div className="flex items-center gap-3">
         {months.length > 0 && (
           <div className="no-scrollbar -mx-1 flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto px-1 py-0.5">
