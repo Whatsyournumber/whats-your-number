@@ -340,7 +340,7 @@ function CashFlow() {
   const destInvest = Math.min(savingsAlloc?.invest ?? investAmount, saveAmount);
   const destGoals = Math.min(savingsAlloc?.goals ?? goalsMonthly, Math.max(0, saveAmount - destInvest));
   const savingsDestinations = [
-    { name: t("Metas de ahorro", "Savings goals"), amount: destGoals, icon: <Target className="h-5 w-5" />, color: "var(--color-positive)" },
+    { name: t("Metas de ahorro", "Savings goals"), amount: destGoals, icon: <PiggyBank className="h-5 w-5" />, color: "var(--color-positive)" },
     { name: t("Inversiones", "Investments"), amount: destInvest, icon: <TrendingUp className="h-5 w-5" />, color: "var(--color-chart-1)" },
     { name: t("Disponible", "Available"), amount: Math.max(0, saveAmount - destGoals - destInvest), icon: <Wallet className="h-5 w-5" />, color: "var(--color-chart-4)" },
   ];

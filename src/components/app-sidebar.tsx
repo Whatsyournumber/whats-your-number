@@ -65,7 +65,7 @@ export function AppSidebar() {
     { title: t("Inicio", "Home"), url: "/dashboard", icon: LayoutDashboard },
     { title: t("Mis gastos diarios", "My daily spending"), url: "/registro-gastos", icon: ReceiptText },
     { title: t("Análisis de mis gastos", "My spending analysis"), url: "/gastos", icon: PieChart },
-    { title: t("Metas de ahorro", "Savings goals"), url: "/cash-flow", icon: Target },
+    { title: t("Metas de ahorro", "Savings goals"), url: "/cash-flow", icon: PiggyBank },
   ];
   const account = [
     { title: t("Importar datos", "Import data"), url: "/configuracion", icon: Upload },
@@ -77,9 +77,9 @@ export function AppSidebar() {
     { title: t("Inicio", "Home"), url: "/dashboard", icon: LayoutDashboard },
     { title: t("Mis gastos diarios", "My daily spending"), url: "/registro-gastos", icon: ReceiptText },
     { title: t("Análisis de mis gastos", "My spending analysis"), url: "/gastos", icon: PieChart },
-    { title: t("Metas de ahorro", "Savings goals"), url: "/cash-flow", icon: Target },
+    { title: t("Metas de ahorro", "Savings goals"), url: "/cash-flow", icon: PiggyBank },
     { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home },
-    { title: t("Mi Número", "My Number"), url: "/retiro", icon: PiggyBank },
+    { title: t("Mi Número", "My Number"), url: "/retiro", icon: Target },
     { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark },
     { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart },
     { title: "City Planner", url: "/ciudades", icon: Globe },
@@ -95,7 +95,7 @@ export function AppSidebar() {
   const isFamilyPlan = tier === "patrimonio";
   const discover: { title: string; url: string; icon: typeof Wallet; required: PlanTier }[] = [
     { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home, required: "investor" },
-    { title: t("Mi Número", "My Number"), url: "/retiro", icon: PiggyBank, required: "pro" },
+    { title: t("Mi Número", "My Number"), url: "/retiro", icon: Target, required: "pro" },
     { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark, required: "investor" },
     { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart, required: "investor" },
     { title: "City Planner", url: "/ciudades", icon: Globe, required: "pro" },
