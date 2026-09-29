@@ -64,11 +64,14 @@ export function AssetDialog({
   onOpenChange,
   holdingId = null,
   fallbackHolding = null,
+  forPortfolio = false,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   holdingId?: string | null;
   fallbackHolding?: Holding | null;
+  /** Si es true, el activo nuevo aparece en Portafolio (no solo en Patrimonio). */
+  forPortfolio?: boolean;
 }) {
   const t = useT();
   const { holdings, saveAll, saving } = useHoldings();
@@ -149,8 +152,8 @@ export function AssetDialog({
       expected_return: numOr(draft.expected_return, base.expected_return),
       linked_liability: numOr(draft.linked_liability),
       purchased_at: draft.purchased_at || base.purchased_at || null,
-      // Lo creado desde Patrimonio no se muestra en Portafolio.
-      note: persistedHolding ? base.note : PATRIMONIO_ONLY_NOTE,
+      // Lo creado desde Patrimonio no se muestra en Portafolio; desde el onboarding sí.
+      note: persistedHolding ? base.note : forPortfolio ? null : PATRIMONIO_ONLY_NOTE,
     };
     try {
       await saveAll(persistedHolding ? holdings.map((h) => (h.id === updated.id ? updated : h)) : [...holdings, updated]);

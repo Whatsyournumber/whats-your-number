@@ -213,7 +213,7 @@ export function PlanUpgradeOnboarding() {
             <Button type="button" variant="outline" className="w-full" onClick={() => setAssetOpen(true)}>
               + {t("Añadir activo", "Add asset")}
             </Button>
-            <AssetDialog open={assetOpen} onOpenChange={setAssetOpen} />
+            <AssetDialog open={assetOpen} onOpenChange={setAssetOpen} forPortfolio />
             {section("Tu estrategia", "Your strategy")}
             <div className="grid grid-cols-3 gap-2">
               {RISKS.map((r) => (
