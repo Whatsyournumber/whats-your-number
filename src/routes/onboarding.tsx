@@ -863,6 +863,21 @@ function OnboardingPage() {
                         onClick={() => setL("housing", h.value)}
                       />
                       <AnimatePresence>
+                        {life.housing === h.value && h.value === "pagada" && (
+                          <Reveal>
+                            <div className="rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
+                              <MoneyField
+                                emoji="🏠"
+                                label={t("Valor de la propiedad", "Property value")}
+                                desc={t("Valor de tu vivienda", "Current home value")}
+                                currency={cur}
+                                value={data.assets_property}
+                                hint={t("Escribe aquí", "Type here")}
+                                onChange={(v) => set("assets_property", v)}
+                              />
+                            </div>
+                          </Reveal>
+                        )}
                         {life.housing === h.value && h.value === "hipoteca" && (
                           <Reveal>
                             <div className="rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
