@@ -205,21 +205,21 @@ export function AppSidebar() {
       <SidebarContent className="flex-1 gap-0.5 overflow-y-auto">
         {isFamilyPlan ? (
           <>
-            <SidebarGroup className="p-1.5">
-              <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
+            <SidebarGroup className="p-1">
+              <SidebarGroupLabel className="h-5 text-[10px] uppercase tracking-wide">
                 {t("Patrimonio", "Net worth")}
               </SidebarGroupLabel>
               <SidebarGroupContent>
-                <SidebarMenu className="gap-0.5">{familyWealth.map(renderItem)}</SidebarMenu>
+                <SidebarMenu className="gap-0">{familyWealth.map(renderItem)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
             <div className="mx-3 h-px bg-border" />
-            <SidebarGroup className="p-1.5">
-              <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
+            <SidebarGroup className="p-1">
+              <SidebarGroupLabel className="h-5 text-[10px] uppercase tracking-wide">
                 {t("Inteligencia", "Intelligence")}
               </SidebarGroupLabel>
               <SidebarGroupContent>
-                <SidebarMenu className="gap-0.5">{familyIntelligence.map(renderItem)}{affiliateItems.map(renderItem)}</SidebarMenu>
+                <SidebarMenu className="gap-0">{familyIntelligence.map(renderItem)}{affiliateItems.map(renderItem)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
           </>
