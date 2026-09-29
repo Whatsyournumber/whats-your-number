@@ -283,9 +283,9 @@ function GroceryInsights({ summary, fmt, onCorrect }: { summary: ReturnType<type
           );
         })}
       </div></TooltipProvider>
-      <p className="mt-2 flex items-start gap-1.5 border-t border-border pt-3 text-xs text-muted-foreground">
-        <ReceiptText className="mt-0.5 size-3.5 shrink-0" />
-        {t("Solo productos de tickets desglosados; la diferencia refleja gasto, no necesariamente una subida de precios.", "Only itemized receipt products; the difference reflects spending, not necessarily higher prices.")}
+      <p className="mt-2 flex items-center gap-1.5 whitespace-nowrap overflow-hidden border-t border-border pt-3 text-xs text-muted-foreground" title={t("Solo productos de tickets desglosados; la diferencia refleja gasto, no necesariamente una subida de precios.", "Only itemized receipt products; the difference reflects spending, not necessarily higher prices.")}>
+        <ReceiptText className="size-3.5 shrink-0" />
+        <span className="truncate">{t("Solo tickets desglosados; refleja gasto, no subida de precios.", "Itemized receipts only; reflects spending, not price increases.")}</span>
       </p>
     </section>
   );
