@@ -11,6 +11,7 @@ import {
   Sparkles,
   Compass,
   Target,
+  Upload,
   Wallet,
   ShieldCheck,
   Users,
