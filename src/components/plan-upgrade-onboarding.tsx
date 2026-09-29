@@ -101,7 +101,8 @@ export function PlanUpgradeOnboarding() {
   const v = (k: Field) => num(vals[k], ALL.find((f) => f.k === k)?.unit);
   const assets = v("assets_bank") + v("assets_cash") + v("assets_property");
   const debts = v("mortgage_balance") + v("liabilities");
-  const portfolio = v("assets_etf") + v("assets_stocks") + v("assets_retirement") + v("assets_crypto");
+  const holdingValue = (h: Holding) => h.manual_value || h.cost_basis || 0;
+  const portfolio = holdings.reduce((sum, h) => sum + holdingValue(h), 0);
   const netWorth = assets + portfolio - debts;
   const sym = currencySymbol(profile.currency);
 
