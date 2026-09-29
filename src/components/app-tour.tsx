@@ -308,6 +308,10 @@ export function AppTour() {
         { sel: "[data-tour-expense-target='plan']", badge: 1 },
         { sel: "[data-tour-expense-target='add-mobile']", badge: 2 },
       ],
+      "/cash-flow": [
+        { sel: "[data-tour-cashflow-target='alloc-m']", badge: 2 },
+        { sel: "[data-tour-savings-target='new']", badge: 3 },
+      ],
       "/retiro": [
         { sel: "[data-tour-number-target='number']", badge: 1 },
       ],
@@ -519,8 +523,9 @@ export function AppTour() {
 
   // Señala "Editar categorías" y los bloques de destino en Distribución del dinero.
   const [cashFlowMarkers, setCashFlowMarkers] = useState<{
-    blocks: { x: number; y: number };
     edit: { x: number; y: number };
+    alloc: { x: number; y: number };
+    goalNew: { x: number; y: number };
     box: { x: number; y: number; width: number; height: number };
   } | null>(null);
   useEffect(() => {
@@ -530,13 +535,15 @@ export function AppTour() {
     }
     let cancelled = false;
     const measure = () => {
-      const blocks = document.querySelector<HTMLElement>('[data-tour-cashflow-target="blocks"]')?.getBoundingClientRect();
       const edit = document.querySelector<HTMLElement>('[data-tour-cashflow-target="edit"]')?.getBoundingClientRect();
+      const alloc = document.querySelector<HTMLElement>('[data-tour-cashflow-target="alloc"]')?.getBoundingClientRect();
+      const goalNew = document.querySelector<HTMLElement>('[data-tour-savings-target="new"]')?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
-      if (!blocks || !edit || !box || cancelled) return;
+      if (!edit || !alloc || !goalNew || !box || cancelled) return;
       setCashFlowMarkers({
-        blocks: { x: blocks.left + blocks.width * 0.72, y: blocks.top + 46 },
         edit: { x: edit.left + 6, y: edit.top + 2 },
+        alloc: { x: alloc.left + 6, y: alloc.top + 2 },
+        goalNew: { x: goalNew.left + 6, y: goalNew.top + 2 },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
@@ -1115,9 +1122,9 @@ export function AppTour() {
               ))}
             </div>
           )}
-          {(isAddSpotStep ? [] : isMobile ? points.slice(0, 2) : points).length > 0 && (
+          {(isAddSpotStep ? [] : isMobile ? (isCashFlowStep ? points.slice(0, 3) : points.slice(0, 2)) : points).length > 0 && (
           <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
-            {(isAddSpotStep ? [] : isMobile ? points.slice(0, 2) : points).map((p, i) => {
+            {(isAddSpotStep ? [] : isMobile ? (isCashFlowStep ? points.slice(0, 3) : points.slice(0, 2)) : points).map((p, i) => {
               const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
               return (
                 <li key={i} className="flex items-start gap-2 text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
