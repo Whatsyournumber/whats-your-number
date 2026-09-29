@@ -134,4 +134,5 @@ export function updateConsent() {
     initGA();
   }
   updateConsentState();
+  initGTM();
 }
