@@ -31,11 +31,13 @@ export function MobileBottomNav() {
   const tabs = [
     { title: t("Inicio", "Home"), url: "/dashboard", icon: Home },
     { title: isFree ? t("Mis gastos", "My spending") : t("Tus gastos", "Spending"), url: "/registro-gastos", icon: Wallet },
-    ...(isFree ? [{ title: t("Ahorro", "Savings"), url: "/cash-flow", icon: Target }] : []),
+    ...(isFree || isPro ? [{ title: t("Ahorro", "Savings"), url: "/cash-flow", icon: Target }] : []),
     ...(isPro ? [{ title: t("Tu número", "Your number"), url: "/retiro", icon: Target }] : []),
     ...(isInvestor
       ? [{ title: t("Portfolio", "Portfolio"), url: "/portafolio", icon: LineChart }]
-      : [{ title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserRound }]),
+      : isFree
+        ? [{ title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserRound }]
+        : []),
   ];
 
   const goAdd = (search: { add?: boolean; action?: string }) => {
