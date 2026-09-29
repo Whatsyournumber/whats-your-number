@@ -1831,11 +1831,11 @@ function Gastos() {
                     </div>
                     <p className="hidden text-xs leading-relaxed text-muted-foreground sm:block">{a.diagnosis}</p>
                     <p className="text-sm font-medium text-foreground/90">→ {a.action}</p>
-                    <div className="mt-1 flex items-center gap-2 pt-1 text-xs">
+                    <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 pt-1 text-xs">
                       <span className="shrink-0 whitespace-nowrap inline-flex items-center rounded-full bg-positive/15 px-2 py-1 text-xs font-semibold text-positive sm:bg-transparent sm:px-0 sm:py-0 sm:font-medium">
                         +{fmt(a.monthlySaving)}{t("/mes de ahorro", "/mo saved")}
                       </span>
-                      <span className="min-w-0 flex-1 truncate hidden text-muted-foreground min-[420px]:block">→ {fmtCompact(fv)} {t("en", "in")} {horizonYears.toFixed(0)} {t("años al 10% (S&P 500)", "yrs at 10% (S&P 500)")}</span>
+                      <span className="min-w-0 flex-1 basis-48 truncate text-muted-foreground">→ {fmtCompact(fv)} {t("en", "in")} {horizonYears.toFixed(0)} {t("años al 10% (S&P 500)", "yrs at 10% (S&P 500)")}</span>
                       <span className="ml-auto shrink-0 inline-flex items-center gap-1">
                         <button
                           type="button"
