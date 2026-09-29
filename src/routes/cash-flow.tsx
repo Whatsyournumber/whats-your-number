@@ -435,10 +435,10 @@ function CashFlow() {
           subtitle={
             <>
               <span className="hidden sm:inline">
-                {t("Analizamos cómo se reparte cada dólar | para monitorear tu PLAN de Ahorro / Inversión mensual", "We analyze how every dollar is split | to monitor your monthly Savings / Investment PLAN")}
+                {t("Tu plan mensual de ahorro e inversión, dólar a dólar", "Your monthly savings and investment plan, dollar by dollar")}
               </span>
               <span className="sm:hidden">
-                {t("Analizamos cada dólar | tu PLAN mensual de ahorro", "We analyze every dollar | your monthly savings PLAN")}
+                {t("Tu plan mensual de ahorro e inversión", "Your monthly savings and investment plan")}
               </span>
             </>
           }
@@ -503,6 +503,7 @@ function CashFlow() {
       </div>
 
       <Panel
+        className="hidden sm:block"
         title={t("Flujo de dinero", "Money flow")}
         description={t("Convierte tu ahorro en progreso hacia tus metas.", "Turn your savings into progress toward your goals.")}
         icon={<ArrowLeftRight />}
