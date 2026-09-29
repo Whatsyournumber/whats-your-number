@@ -83,7 +83,7 @@ export function AppSidebar() {
     { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark },
     { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart },
     { title: "City Planner", url: "/ciudades", icon: Globe },
-    { title: "Life Planner", url: "/life-planner", icon: Target },
+    { title: "Life Planner", url: "/life-planner", icon: Compass },
   ];
   const familyIntelligence = [
     { title: t("Familia", "Family"), url: "/ninos", icon: Users },
