@@ -26,6 +26,10 @@ export function MobileBottomNav() {
   useEffect(() => {
     setMenuOpen(tourHold);
   }, [tourHold]);
+  // Al navegar a otra página, cierra el menú del botón +.
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   const isFree = !isPro && !isInvestor;
   const tabs = [
