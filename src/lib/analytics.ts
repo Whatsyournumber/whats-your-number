@@ -7,8 +7,10 @@ declare global {
 
 const STORAGE_KEY = "wyn.consent.v1";
 const MEASUREMENT_ID = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY"];
+const GTM_ID = "GTM-NRXQF2T7";
 
 let initialized = false;
+let gtmLoaded = false;
 
 function readConsent(): { analytics: boolean; marketing: boolean } | null {
   if (typeof window === "undefined") return null;
