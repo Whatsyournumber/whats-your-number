@@ -71,11 +71,11 @@ export function CategoryDetailDialog({
   const variation = prevAmount > 0 ? ((amount - prevAmount) / prevAmount) * 100 : null;
   const avgTicket = items.length > 0 ? amount / items.length : 0;
   const maxMerchant = merchants[0]?.amount ?? 1;
-  const outingsPerMonth = days > 0 ? Math.round((items.length / (days / 30)) * 10) / 10 : 0;
+  const outingsPerMonth = days > 0 && items.length > 0 ? Math.max(1, Math.round(items.length / (days / 30))) : 0;
   const outingsLabel = outingsPerMonth === 1
     ? t("salida de fiesta al mes", "night out per month")
     : t("salidas de fiesta al mes", "nights out per month");
-  const nightlifeHint = `${t("Cerca de", "About")} ${outingsPerMonth} ${outingsLabel}`;
+  const nightlifeHint = `${outingsPerMonth} ${outingsLabel}`;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
