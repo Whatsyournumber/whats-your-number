@@ -91,6 +91,9 @@ export function SubscriptionManager() {
             ? t("Plan mejorado. Ya tienes acceso completo.", "Plan upgraded. You have full access now.")
             : t("Cambio programado: mantienes tu plan actual hasta el final del periodo pagado.", "Change scheduled: you keep your current plan until the paid period ends."),
       );
+      // Refresca el plan en toda la app (menú, tabs y accesos) sin recarga manual.
+      await qc.invalidateQueries({ queryKey: ["subscription", user?.id, getPaddleEnvironment()] });
+      setTimeout(() => window.location.reload(), 1500);
     } catch {
       toast.error(t("No pudimos cambiar el plan.", "We couldn't change the plan."));
     } finally {
