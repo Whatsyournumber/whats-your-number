@@ -35,6 +35,7 @@ import { useProfileAvatar } from "@/hooks/use-profile-avatar";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { useAffiliateWizardActive } from "@/lib/affiliate-wizard-state";
 
+import { PlanUpgradeOnboarding } from "@/components/plan-upgrade-onboarding";
 import { LanguageProvider, useT, LanguageToggle } from "@/hooks/use-language";
 import { CurrencyToggle } from "@/components/currency-toggle";
 import { Button } from "@/components/ui/button";
@@ -347,6 +348,7 @@ function AppShell() {
           </main>
           <MobileBottomNav />
           <AppTour />
+          <PlanUpgradeOnboarding />
         </div>
       </div>
     </SidebarProvider>
