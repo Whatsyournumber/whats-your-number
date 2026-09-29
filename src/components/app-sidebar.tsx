@@ -121,20 +121,22 @@ export function AppSidebar() {
 
 
   const compact = isFamilyPlan;
+  const unlockedCount = spending.length + discoverUnlocked.length;
+  const accountCount = account.length + affiliateItems.length;
   const renderItem = (item: { title: string; url: string; icon: typeof Wallet; required?: PlanTier }) => {
     const active = pathname === item.url;
     const locked = item.required && !planMeetsTier(item.required, tier);
     const badge = item.required === "patrimonio" ? "FAMILY" : item.required === "investor" ? "INVESTOR" : "PRO";
     return (
-      <SidebarMenuItem key={item.url} className={isFamilyPlan ? "flex min-h-0 flex-1" : undefined}>
-        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className={`${compact ? "h-full min-h-7 gap-1.5" : "h-10 gap-2"} px-2 data-[active=true]:bg-primary/15 data-[active=true]:text-primary`}>
+      <SidebarMenuItem key={item.url} className="flex min-h-0 flex-1">
+        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className={`${compact ? "h-full min-h-7 gap-1.5" : "h-full min-h-0 gap-2"} px-2 data-[active=true]:bg-primary/15 data-[active=true]:text-primary`}>
           <Link
             to={item.url}
             className="flex items-center gap-2"
             onClick={() => setOpenMobile(false)}
           >
             <item.icon className={`${compact ? "h-4 w-4" : "h-[18px] w-[18px]"} shrink-0`} />
-            <span className={`min-w-0 flex-1 whitespace-nowrap ${compact ? "text-[13px]" : "text-[15px]"} leading-tight`}>{item.title}</span>
+            <span className={`min-w-0 flex-1 ${locked ? "whitespace-normal" : "whitespace-nowrap"} ${compact ? "text-[13px]" : locked ? "text-[13px]" : "text-[15px]"} leading-tight`}>{item.title}</span>
             {locked && !collapsed && <span className={item.required === "patrimonio" ? "shrink-0 rounded-full bg-plan-family px-2 py-1 text-[10px] font-semibold leading-none text-plan-family-foreground" : item.required === "investor" ? "shrink-0 rounded-full bg-plan-investor px-2 py-1 text-[10px] font-semibold leading-none text-plan-investor-foreground" : "shrink-0 rounded-full bg-primary/15 px-2 py-1 text-[10px] font-semibold leading-none text-primary"}>{badge}</span>}
           </Link>
         </SidebarMenuButton>
@@ -202,7 +204,7 @@ export function AppSidebar() {
         {!collapsed && <span className={`${compact ? "mt-1" : "mt-2"} inline-flex w-fit rounded-full bg-primary/15 px-3 py-1 text-[10px] font-semibold uppercase text-primary`}>{t("Plan", "Plan")} {tier === "patrimonio" ? "Familiar" : tier === "investor" ? "Inversor" : tier === "pro" ? "Pro" : t("Gratis", "Free")}</span>}
       </SidebarHeader>
 
-      <SidebarContent className={isFamilyPlan ? "flex-1 gap-0.5 overflow-hidden" : "flex-1 gap-0.5 overflow-y-auto"}>
+      <SidebarContent className="flex-1 gap-0.5 overflow-hidden">
         {isFamilyPlan ? (
           <>
             <SidebarGroup className="flex min-h-0 flex-[10] p-1">
@@ -225,25 +227,25 @@ export function AppSidebar() {
           </>
         ) : (
           <>
-            <SidebarGroup className="p-1.5">
+            <SidebarGroup className="min-h-0 p-1.5" style={{ flex: `${unlockedCount} 1 0%` }}>
               <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
                 {t("Mi dinero", "My money")}
               </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu className="gap-0.5">{spending.map(renderItem)}{discoverUnlocked.map(renderItem)}</SidebarMenu>
+              <SidebarGroupContent className="flex min-h-0 flex-1 flex-col">
+                <SidebarMenu className="h-full gap-0">{spending.map(renderItem)}{discoverUnlocked.map(renderItem)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
             <div className="mx-3 h-px bg-border" />
-            <SidebarGroup className="p-1.5">
+            <SidebarGroup className="min-h-0 p-1.5" style={{ flex: `${accountCount} 1 0%` }}>
               <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
                 {t("Cuenta", "Account")}
               </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu className="gap-0.5">{account.map(renderItem)}{affiliateItems.map(renderItem)}</SidebarMenu>
+              <SidebarGroupContent className="flex min-h-0 flex-1 flex-col">
+                <SidebarMenu className="h-full gap-0">{account.map(renderItem)}{affiliateItems.map(renderItem)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
             <div className="mx-3 h-px bg-border" />
-            <SidebarGroup className="p-1.5">
+            <SidebarGroup className={discoverOpen ? "min-h-0 p-1.5" : "shrink-0 p-1.5"} style={discoverOpen ? { flex: `${discoverLocked.length} 1 0%` } : undefined}>
               {!collapsed && discoverLocked.length > 0 && (
                 <Button
                   type="button"
@@ -258,8 +260,8 @@ export function AppSidebar() {
                 </Button>
               )}
               {discoverLocked.length > 0 && (
-                <SidebarGroupContent id="sidebar-discover-items" hidden={!discoverOpen && !collapsed} className={!discoverOpen && !collapsed ? "hidden" : undefined}>
-                  <SidebarMenu className="gap-0.5">{discoverLocked.map(renderItem)}</SidebarMenu>
+                <SidebarGroupContent id="sidebar-discover-items" hidden={!discoverOpen && !collapsed} className={!discoverOpen && !collapsed ? "hidden" : "flex min-h-0 flex-1 flex-col"}>
+                  <SidebarMenu className="h-full gap-0">{discoverLocked.map(renderItem)}</SidebarMenu>
                 </SidebarGroupContent>
               )}
             </SidebarGroup>
