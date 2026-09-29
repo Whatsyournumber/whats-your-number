@@ -60,12 +60,14 @@ export function PlanUpgradeOnboarding() {
   const { user } = useAuth();
   const { tier, loading } = useSubscription();
   const { profile, isLoading, save, saving } = useProfile();
+  const { holdings } = useHoldings();
   const t = useT();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [vals, setVals] = useState<Record<string, string>>({});
   const [risk, setRisk] = useState("");
+  const [assetOpen, setAssetOpen] = useState(false);
 
   useEffect(() => {
     if (!user || loading || isLoading) return;
