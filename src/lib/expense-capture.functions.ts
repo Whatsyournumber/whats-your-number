@@ -46,7 +46,7 @@ export const captureExpense = createServerFn({ method: "POST" })
     }
 
     const { data: savedRules } = await context.supabase.from("user_settings")
-      .select("value").eq("key", "whatsyournumber:grocery-rules:v1").maybeSingle();
+      .select("value").eq("user_id", context.userId).eq("key", "whatsyournumber:grocery-rules:v1").maybeSingle();
     const raw = (savedRules?.value as { v?: unknown } | null)?.v;
     const groceryRules: GroceryRule[] = Array.isArray(raw)
       ? raw.filter((r): r is GroceryRule => r && typeof r.match === "string" && r.match.length <= 120 && GROCERY_GROUPS.includes(r.group)).slice(0, 40)
