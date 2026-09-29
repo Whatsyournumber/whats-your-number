@@ -16,7 +16,6 @@ export function MobileBottomNav() {
   const [adviceOpen, setAdviceOpen] = useState(false);
   const [sharedOpen, setSharedOpen] = useState(false);
   const addButtonRef = useRef<HTMLButtonElement | null>(null);
-  const [blurBounds, setBlurBounds] = useState<{ x1: number; y1: number; x2: number; y2: number } | null>(null);
   // El tour del paso del botón + abre el menú real mientras dura el paso.
   const [tourHold, setTourHold] = useState(false);
   useEffect(() => {
