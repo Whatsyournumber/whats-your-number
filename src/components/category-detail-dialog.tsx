@@ -237,7 +237,9 @@ function GroceryInsights({ summary, fmt }: { summary: ReturnType<typeof summariz
       </div>
 
       <div className="mt-4 divide-y divide-border/70">
-        {summary.groups.map((group) => {
+        {[...summary.groups].sort((a, b) => comparable
+          ? (b.amount - b.previousAmount) - (a.amount - a.previousAmount)
+          : b.amount - a.amount).map((group) => {
           const label = groceryLabels[group.id];
           const difference = group.amount - group.previousAmount;
           const open = expanded === group.id;
