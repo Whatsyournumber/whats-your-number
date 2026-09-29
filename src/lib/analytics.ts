@@ -28,6 +28,30 @@ export function hasAnalyticsConsent(): boolean {
   return readConsent()?.analytics ?? false;
 }
 
+export function hasMarketingConsent(): boolean {
+  return readConsent()?.marketing ?? false;
+}
+
+/**
+ * Carga Google Tag Manager (Google Ads + Meta Pixel se configuran dentro de GTM).
+ * Solo se carga con consentimiento de marketing; las señales de consentimiento
+ * se envían por dataLayer antes de cargar el contenedor.
+ */
+export function initGTM() {
+  if (typeof window === "undefined" || gtmLoaded) return;
+  if (!hasMarketingConsent()) return;
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+
+  const script = document.createElement("script");
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`;
+  document.head.appendChild(script);
+
+  gtmLoaded = true;
+}
+
 function pushGtag(...args: unknown[]) {
   if (typeof window === "undefined") return;
   window.dataLayer = window.dataLayer || [];
