@@ -667,7 +667,7 @@ function CashFlow() {
             </div>
           )}
         </div>
-        <Panel className="flex flex-col overflow-hidden" title={t("Tus inversiones en el tiempo", "Your investments over time")} description={t(`Mira lo que pueden convertirse tus ahorros de inversiones (${fmt(destInvest)}/mes).`, `See what your investment savings (${fmt(destInvest)}/mo) can become.`)} icon={<TrendingUp />}>
+        <Panel className="flex flex-col overflow-hidden" title={t("Tus inversiones en el tiempo", "Your investments over time")} description={t(`Lo que pueden ser tus ahorros de inversión (${fmt(destInvest)}/mes).`, `What your investment savings (${fmt(destInvest)}/mo) can become.`)} descriptionClassName="whitespace-nowrap" icon={<TrendingUp />}>
           {destInvest > 0 ? (
             <>
               <div className="flex items-end justify-between gap-3">
@@ -721,10 +721,10 @@ function CashFlow() {
               <Button asChild size="sm" className="mt-3 w-full">
                 <Link to="/retiro">{t("Ver proyección completa", "See full projection")}<ArrowRight /></Link>
               </Button>
-              <p className="mt-2.5 text-center text-[10px] text-muted-foreground">
+              <p className="mt-2.5 whitespace-nowrap text-center text-[10px] text-muted-foreground">
                 {t(
-                  `Simulación ilustrativa al ${SP500_RATE}% anual (S&P 500). Los rendimientos reales pueden variar.`,
-                  `Illustrative simulation at ${SP500_RATE}% a year (S&P 500). Actual returns may vary.`,
+                  `Simulación al ${SP500_RATE}% anual (S&P 500). Rendimientos reales pueden variar.`,
+                  `Simulation at ${SP500_RATE}% a year (S&P 500). Actual returns may vary.`,
                 )}
               </p>
             </>
