@@ -2335,18 +2335,28 @@ export function ExpenseLog() {
           {analysisCat && (() => {
             const row = rows.find((r) => r.id === analysisCat);
             if (!row) return null;
-            const items = row.items.map((it) => ({
+            const txById = new Map(expenseTx.map((tx) => [tx.id, tx]));
+            const items = row.items.map((it) => txById.get(it.key) ?? ({
               id: it.key,
               amount: -Math.abs(it.amount),
               merchant: it.label,
               tx_date: it.date ?? null,
-            })) as unknown as Tx[];
+            } as Tx));
+            const previousItems = transactions.filter((tx) => {
+              if (tx.amount >= 0 || !tx.tx_date) return false;
+              const date = parseISO(tx.tx_date);
+              if (date < subDays(periodStart, periodDays) || date >= periodStart) return false;
+              if (isSavingsName(`${tx.merchant} ${tx.description ?? ""}`)) return false;
+              const category = tx.description?.startsWith(SHARED_PREFIX) && tx.category ? tx.category : categorizeTx(tx, categories.rules);
+              return (catOverrides[tx.id] ?? match(category) ?? "others") === row.id;
+            });
             return (
               <CategoryDetailDialog
                 open={Boolean(analysisCat)}
                 onOpenChange={(v) => !v && setAnalysisCat(null)}
                 name={row.name}
                 items={items}
+                previousItems={previousItems}
                 amount={row.actual}
                 prevAmount={prevByCategory.get(row.id) ?? 0}
                 periodTotal={rows.reduce((s, r) => s + r.actual, 0)}
