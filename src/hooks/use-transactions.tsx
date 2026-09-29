@@ -95,14 +95,15 @@ export function useTransactions() {
       // (p. ej. peajes o suscripciones), así que no se descartan.
       // El mismo gasto puede venir con importe ligeramente distinto (propina, redondeo,
       // apunte manual de 170 vs cargo real de 171,11), así que se admite una tolerancia.
-      type Kept = { day: number; merchant: string; statement: string; amount: number; manual: boolean };
+      type Kept = { id: string; day: number; merchant: string; statement: string; amount: number; manual: boolean };
       const kept = new Map<number, Kept[]>();
       const dayOf = (date: string | null) => (date ? Math.round(new Date(date).getTime() / 86_400_000) : NaN);
-      const isManual = (t: (typeof rows)[number]) => !t.statement_id || /gasto manual|manual expense/i.test(t.description ?? "");
+      const isManual = (t: (typeof rows)[number]) => !t.statement_id || /gasto manual|manual expense|^wyn-receipt:/i.test(t.description ?? "");
       // Los cargos del banco mandan: el apunte manual es el que se descarta si coinciden.
       const ordered = [...rows].sort((a, b) => Number(isManual(a)) - Number(isManual(b)));
       const closeAmount = (a: number, b: number) => Math.abs(a - b) <= Math.max(1.5, Math.max(a, b) * 0.02);
       const dropped = new Set<string>();
+      const receiptDescriptions = new Map<string, string>();
       ordered.forEach((t) => {
         const amount = Math.abs(Number(t.amount));
         const day = dayOf(t.tx_date);
@@ -110,7 +111,7 @@ export function useTransactions() {
         const manual = isManual(t);
         const bucket = Math.round(amount / 10);
         const seen = [bucket - 1, bucket, bucket + 1].flatMap((b) => kept.get(b) ?? []);
-        const isDuplicate = seen.some((k) => {
+        const duplicate = seen.find((k) => {
           if (!sameMerchant(k.merchant, t.merchant)) return false;
           const sameFile = k.statement === statement;
           // La tolerancia de importe/fecha solo aplica al par "apunte manual + cargo del banco"
@@ -126,15 +127,23 @@ export function useTransactions() {
         });
 
 
-        if (isDuplicate) {
+        if (duplicate) {
+          // Keep the bank movement's total, but retain the uploaded receipt's
+          // product lines for analysis when the two describe the same purchase.
+          if (!duplicate.manual && t.description?.startsWith("wyn-receipt:")) {
+            receiptDescriptions.set(duplicate.id, t.description);
+          }
           dropped.add(t.id);
           return;
         }
         const list = kept.get(bucket) ?? [];
-        list.push({ day, merchant: t.merchant ?? "", statement, amount, manual });
+        list.push({ id: t.id, day, merchant: t.merchant ?? "", statement, amount, manual });
         kept.set(bucket, list);
       });
-      const unique = rows.filter((t) => !dropped.has(t.id));
+      const unique = rows.filter((t) => !dropped.has(t.id)).map((t) => ({
+        ...t,
+        description: receiptDescriptions.get(t.id) ?? t.description,
+      }));
       return unique as Tx[];
 
 
