@@ -1083,7 +1083,7 @@ export function ExpenseLog() {
                   <p className="text-sm">{item.name}</p>
                   <p className="text-[11px] text-muted-foreground">{translateCategory(item.category, lang)}</p>
                 </div>
-                  <span className="numeric shrink-0 text-sm font-medium">{fmt(item.amount * receiptShare)}</span>
+                <span className="numeric shrink-0 text-sm font-medium">{fmt(item.amount * receiptShare)}</span>
               </li>
             ))}
           </ul>
