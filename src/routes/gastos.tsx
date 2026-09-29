@@ -13,6 +13,8 @@ import { enUS, es } from "date-fns/locale";
 import { BarChart3, CalendarIcon, ChevronDown, GripVertical, Lightbulb, Loader2, Pencil, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { buildTravelDays, categorizeTx, categorizeTxWithTravel } from "@/lib/categorize";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory, translateFixedName } from "@/lib/i18n-data";
