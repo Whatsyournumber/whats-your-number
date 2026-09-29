@@ -120,14 +120,14 @@ export function AppSidebar() {
     : ([] as const);
 
 
-  const compact = isFamilyPlan && !isMobile;
+  const compact = isFamilyPlan;
   const renderItem = (item: { title: string; url: string; icon: typeof Wallet; required?: PlanTier }) => {
     const active = pathname === item.url;
     const locked = item.required && !planMeetsTier(item.required, tier);
     const badge = item.required === "patrimonio" ? "FAMILY" : item.required === "investor" ? "INVESTOR" : "PRO";
     return (
-      <SidebarMenuItem key={item.url}>
-        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className={`${compact ? "h-7 gap-1.5" : "h-10 gap-2"} px-2 data-[active=true]:bg-primary/15 data-[active=true]:text-primary`}>
+      <SidebarMenuItem key={item.url} className={isFamilyPlan ? "flex min-h-0 flex-1" : undefined}>
+        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className={`${compact ? "h-full min-h-7 gap-1.5" : "h-10 gap-2"} px-2 data-[active=true]:bg-primary/15 data-[active=true]:text-primary`}>
           <Link
             to={item.url}
             className="flex items-center gap-2"
@@ -202,24 +202,24 @@ export function AppSidebar() {
         {!collapsed && <span className={`${compact ? "mt-1" : "mt-2"} inline-flex w-fit rounded-full bg-primary/15 px-3 py-1 text-[10px] font-semibold uppercase text-primary`}>{t("Plan", "Plan")} {tier === "patrimonio" ? "Familiar" : tier === "investor" ? "Inversor" : tier === "pro" ? "Pro" : t("Gratis", "Free")}</span>}
       </SidebarHeader>
 
-      <SidebarContent className="flex-1 gap-0.5 overflow-y-auto">
+      <SidebarContent className={isFamilyPlan ? "flex-1 gap-0.5 overflow-hidden" : "flex-1 gap-0.5 overflow-y-auto"}>
         {isFamilyPlan ? (
           <>
-            <SidebarGroup className="p-1">
+            <SidebarGroup className="flex min-h-0 flex-[10] p-1">
               <SidebarGroupLabel className="h-5 text-[10px] uppercase tracking-wide">
                 {t("Patrimonio", "Net worth")}
               </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu className="gap-0">{familyWealth.map(renderItem)}</SidebarMenu>
+              <SidebarGroupContent className="flex min-h-0 flex-1 flex-col">
+                <SidebarMenu className="h-full gap-0">{familyWealth.map(renderItem)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
             <div className="mx-3 h-px bg-border" />
-            <SidebarGroup className="p-1">
+            <SidebarGroup className="flex min-h-0 flex-[6] p-1">
               <SidebarGroupLabel className="h-5 text-[10px] uppercase tracking-wide">
                 {t("Inteligencia", "Intelligence")}
               </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu className="gap-0">{familyIntelligence.map(renderItem)}{affiliateItems.map(renderItem)}</SidebarMenu>
+              <SidebarGroupContent className="flex min-h-0 flex-1 flex-col">
+                <SidebarMenu className="h-full gap-0">{familyIntelligence.map(renderItem)}{affiliateItems.map(renderItem)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
           </>
