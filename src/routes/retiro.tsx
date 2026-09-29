@@ -8,6 +8,7 @@ import { PlanGate } from "@/components/plan-gate";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
+import { useSyncedSetting } from "@/hooks/use-synced-setting";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
@@ -521,11 +522,16 @@ function RetiroContent() {
                   </span>
                 </div>
                 <p className="relative mt-2 text-[11px] text-muted-foreground">
-                  {aporteIsSuggested || aporteYearsToRetire <= 0
-                    ? t(
-                        `Dinero a aportar mensual al ${rate}% por ${aporteYearsLabel}`,
-                        `Money to contribute monthly at ${rate}% for ${aporteYearsLabel}`,
-                      )
+                  {aporteIsSuggested
+                    ? targetNow > 0
+                      ? t(
+                          `Sugerido para llegar a tu meta de ${fmtCompact(targetNow)} al ${rate}% en ${aporteYearsLabel}`,
+                          `Suggested to reach your ${fmtCompact(targetNow)} goal at ${rate}% in ${aporteYearsLabel}`,
+                        )
+                      : t(
+                          `Dinero a aportar mensual al ${rate}% por ${aporteYearsLabel}`,
+                          `Money to contribute monthly at ${rate}% for ${aporteYearsLabel}`,
+                        )
                     : t(
                         `Te retirarías en ${aporteYearsToRetireLabel}`,
                         `You would retire in ${aporteYearsToRetireLabel}`,
