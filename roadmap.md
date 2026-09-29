@@ -19,3 +19,5 @@
 
 - [x] Al cambiar de plan, actualizar el nombre del plan en el menú al instante y refrescar la app automáticamente (invalidación de la suscripción + recarga a los 1,5 s en subscription-manager)
 - [ ] Verificar el menú del plan Familiar en navegador: bloqueado porque la sesión firmando no pasa la autenticación del preview; el cambio es solo la etiqueta "Mi dinero" y el layout Familiar ya se verificó antes
+
+- [ ] /retiro: "Aporte mensual" debe sugerir por defecto el monto mensual necesario para llegar a la meta; editable; si cambia el ahorro (inversión) se recalcula; subtítulo debajo del box explicando el cálculo.
