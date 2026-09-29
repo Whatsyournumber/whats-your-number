@@ -366,7 +366,8 @@ export function AppTour() {
         setSpot({ x: r.left - 6, y: r.top - 6, w: r.width + 12, h: Math.min(r.height + 12, maxH) });
       }
       // El paso del botón + ilumina solo ese botón: sin focos extra numerados.
-      const extras = (current.mobileSpot ? [] : (EXTRA_SELECTORS[current.url] ?? []))
+      // En Metas de ahorro móvil: sin líneas ni focos, solo el panel.
+      const extras = (current.mobileSpot ? [] : (EXTRA_SELECTORS[current.url] ?? []).filter(() => current.url !== "/cash-flow"))
         .map(({ sel, badge, caption }) => {
           const e = document.querySelector<HTMLElement>(sel);
           if (!e) return null;
@@ -1063,8 +1064,8 @@ export function AppTour() {
                 ? "sm:bottom-auto sm:right-6 sm:top-[clamp(10rem,30vh,16rem)]"
                 : isCashFlowStep || isNumberStep
                   ? sidebarState === "expanded"
-                    ? `sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
-                    : `sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(21rem,44vh,27rem)]"}`
+                    ? `sm:left-[calc(var(--sidebar-width)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(25rem,52vh,32rem)]"}`
+                    : `sm:left-[calc(var(--sidebar-width-icon)+1.5rem)] sm:right-auto ${isNumberStep ? "sm:bottom-[clamp(4rem,11vh,7rem)]" : "sm:bottom-auto sm:top-[clamp(25rem,52vh,32rem)]"}`
                   : isPortfolioStep
                     ? "sm:bottom-8 sm:left-auto sm:right-6"
                      : isPlannerStep
@@ -1274,15 +1275,15 @@ export function AppTour() {
               </marker>
             </defs>
             <path
-              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.55} ${cashFlowMarkers.box.y - 4} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.55 + cashFlowMarkers.edit.x) / 2} ${cashFlowMarkers.box.y - 130} ${cashFlowMarkers.edit.x} ${cashFlowMarkers.edit.y + 22}`}
+              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.55} ${cashFlowMarkers.box.y - 4} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.55 + cashFlowMarkers.edit.x) / 2} ${cashFlowMarkers.box.y - 76} ${cashFlowMarkers.edit.x} ${cashFlowMarkers.edit.y + 22}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
             <path
-              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width - 16} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.35} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width + cashFlowMarkers.alloc.x) / 2} ${cashFlowMarkers.alloc.y + 70} ${cashFlowMarkers.alloc.x} ${cashFlowMarkers.alloc.y}`}
+              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width - 16} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.35} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width + cashFlowMarkers.alloc.x) / 2} ${cashFlowMarkers.alloc.y + 36} ${cashFlowMarkers.alloc.x} ${cashFlowMarkers.alloc.y}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
             <path
-              d={`M ${cashFlowMarkers.box.x - 4} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.7} Q ${cashFlowMarkers.box.x - 70} ${cashFlowMarkers.goalNew.y + 55} ${cashFlowMarkers.goalNew.x} ${cashFlowMarkers.goalNew.y}`}
+              d={`M ${cashFlowMarkers.box.x - 4} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.7} Q ${cashFlowMarkers.box.x - 44} ${cashFlowMarkers.goalNew.y + 44} ${cashFlowMarkers.goalNew.x} ${cashFlowMarkers.goalNew.y}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
           </svg>
