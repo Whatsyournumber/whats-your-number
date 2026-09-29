@@ -46,6 +46,7 @@ export function CategoryDetailDialog({
 }: Props) {
   const t = useT();
   const groceryRules = useGroceryRules();
+  const [groceryOpen, setGroceryOpen] = useState(true);
   const byMonth = days > 62;
   const isGrocery = isSupermarket || ["supermercado", "mercado", "groceries"].includes(name.trim().toLowerCase());
   const grocery = useMemo(() => isGrocery ? summarizeGroceryReceipts(items, previousItems, groceryRules.rules) : null, [isGrocery, items, previousItems, groceryRules.rules]);
@@ -146,7 +147,13 @@ export function CategoryDetailDialog({
         )}
 
         {grocery && grocery.receiptCount > 0 && (
-          <GroceryInsights summary={grocery} fmt={fmt} onCorrect={groceryRules.learn} />
+          <section className="border-t border-border pt-3">
+            <Button type="button" variant="ghost" className="h-auto w-full justify-between gap-2 px-1 py-2 text-left" aria-expanded={groceryOpen} aria-controls="grocery-receipt-insights" onClick={() => setGroceryOpen((v) => !v)}>
+              <span className="flex min-w-0 items-center gap-2"><span className="grid size-7 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground"><Sparkles className="size-3.5" /></span><span className="min-w-0 text-sm font-semibold whitespace-normal">{t("¿Dónde se fue el dinero en el súper?", "Where did your grocery money go?")}</span></span>
+              <ChevronDown className={cn("size-4 shrink-0 text-muted-foreground transition-transform", groceryOpen && "rotate-180")} />
+            </Button>
+            {groceryOpen && <div id="grocery-receipt-insights"><GroceryInsights summary={grocery} fmt={fmt} onCorrect={groceryRules.learn} /></div>}
+          </section>
         )}
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -210,12 +217,12 @@ function GroceryInsights({ summary, fmt, onCorrect }: { summary: ReturnType<type
   const delta = summary.total - summary.previousTotal;
   const max = Math.max(...summary.groups.map((group) => group.amount), 1);
   return (
-    <section className="border-t border-border pt-3" aria-label={t("Análisis de tickets", "Receipt analysis")}>
+    <section className="pt-1" aria-label={t("Análisis de tickets", "Receipt analysis")}>
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="flex min-w-0 items-start gap-2">
           <div className="grid size-7 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground"><Sparkles className="size-3.5" /></div>
           <div>
-            <h3 className="text-sm font-semibold">{t("¿Dónde se fue el dinero en el súper?", "Where did your grocery money go?")}</h3>
+            <h3 className="text-xs font-medium text-muted-foreground">{t("Análisis de tickets", "Receipt analysis")}</h3>
             <p className="text-xs text-muted-foreground">
               {comparable
                 ? t(`Según ${summary.receiptCount} tickets de este periodo y ${summary.previousReceiptCount} del anterior.`, `Based on ${summary.receiptCount} receipts this period and ${summary.previousReceiptCount} last period.`)

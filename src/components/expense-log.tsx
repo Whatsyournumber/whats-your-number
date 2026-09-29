@@ -79,25 +79,7 @@ const ALERTS_KEY = "whatsyournumber:expense-alerts";
 const RECEIPT_DETAIL_PREFIX = "wyn-receipt:";
 const EMPTY_OVERRIDES: Record<string, string> = {};
 
-const receiptItemsFrom = (description: string | null | undefined): DraftItem[] => {
-  if (!description?.startsWith(RECEIPT_DETAIL_PREFIX)) return [];
-  try {
-    const parsed = JSON.parse(description.slice(RECEIPT_DETAIL_PREFIX.length)) as unknown;
-    if (!Array.isArray(parsed)) return [];
-    return parsed
-      .map((item) => {
-        if (!item || typeof item !== "object") return null;
-        const row = item as Record<string, unknown>;
-        const name = typeof row["name"] === "string" ? row["name"].trim() : "";
-        const amount = Math.abs(Number(row["amount"]) || 0);
-        const category = typeof row["category"] === "string" ? row["category"] : "Otros";
-        return name && amount > 0 ? { name, amount, category } : null;
-      })
-      .filter((item): item is DraftItem => item !== null);
-  } catch {
-    return [];
-  }
-};
+const receiptItemsFrom = (description: string | null | undefined): DraftItem[] => parseReceiptItems(description);
 
 const blobToBase64 = (blob: Blob) =>
   new Promise<string>((resolve, reject) => {
