@@ -71,10 +71,7 @@ export function CategoryDetailDialog({
   const variation = prevAmount > 0 ? ((amount - prevAmount) / prevAmount) * 100 : null;
   const avgTicket = items.length > 0 ? amount / items.length : 0;
   const maxMerchant = merchants[0]?.amount ?? 1;
-  const nightlifeDays = new Set(items.map((item) => item.tx_date?.slice(0, 10)).filter(Boolean)).size;
-  const nightlifeHint = nightlifeDays > 0
-    ? t(`Saliste o disfrutaste del ocio en ${nightlifeDays} ${nightlifeDays === 1 ? "día" : "días"}`, `You went out or enjoyed leisure on ${nightlifeDays} ${nightlifeDays === 1 ? "day" : "days"}`)
-    : t(`${items.length} gastos de ocio`, `${items.length} leisure expenses`);
+  const nightlifeHint = t(`Gastaste ${fmt(amount)} en salidas y ocio`, `You spent ${fmt(amount)} on nights out and leisure`);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
