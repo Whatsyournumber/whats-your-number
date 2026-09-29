@@ -1,12 +1,15 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { ChevronDown, ReceiptText, Sparkles } from "lucide-react";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
+import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useT } from "@/hooks/use-language";
 import { merchantKey, type Tx } from "@/hooks/use-transactions";
+import { summarizeGroceryReceipts, type GroceryGroup } from "@/lib/receipt-insights";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -14,6 +17,8 @@ type Props = {
   onOpenChange: (v: boolean) => void;
   name: string;
   items: Tx[];
+  previousItems?: Tx[];
+  isSupermarket?: boolean;
   amount: number;
   prevAmount: number;
   periodTotal: number;
@@ -28,6 +33,8 @@ export function CategoryDetailDialog({
   onOpenChange,
   name,
   items,
+  previousItems = [],
+  isSupermarket = false,
   amount,
   prevAmount,
   periodTotal,
@@ -37,6 +44,8 @@ export function CategoryDetailDialog({
 }: Props) {
   const t = useT();
   const byMonth = days > 62;
+  const isGrocery = isSupermarket || ["supermercado", "mercado", "groceries"].includes(name.trim().toLowerCase());
+  const grocery = useMemo(() => isGrocery ? summarizeGroceryReceipts(items, previousItems) : null, [isGrocery, items, previousItems]);
 
   const trend = useMemo(() => {
     const map = new Map<string, { label: string; gasto: number }>();
@@ -105,6 +114,10 @@ export function CategoryDetailDialog({
           />
           <Stat label={t("Ticket medio", "Avg ticket")} value={fmt(avgTicket)} hint={`${items.length} ${t("movs.", "txs")}`} />
         </div>
+
+        {grocery && grocery.receiptCount > 0 && (
+          <GroceryInsights summary={grocery} fmt={fmt} />
+        )}
 
         {trend.length > 1 && (
           <div className="mt-1 rounded-2xl border border-border bg-elevated/40 p-3">
@@ -184,6 +197,92 @@ export function CategoryDetailDialog({
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+const groceryLabels: Record<GroceryGroup, { es: string; en: string; icon: string; color: string }> = {
+  protein: { es: "Carne y proteína", en: "Meat & protein", icon: "🥩", color: "bg-chart-5" },
+  produce: { es: "Frutas y verduras", en: "Fruit & vegetables", icon: "🥬", color: "bg-chart-1" },
+  snacks: { es: "Snacks y dulces", en: "Snacks & sweets", icon: "🍬", color: "bg-chart-4" },
+  home: { es: "Hogar y limpieza", en: "Home & cleaning", icon: "🧴", color: "bg-chart-2" },
+  other: { es: "Otros productos", en: "Other products", icon: "🛒", color: "bg-chart-8" },
+};
+
+function GroceryInsights({ summary, fmt }: { summary: ReturnType<typeof summarizeGroceryReceipts>; fmt: (n: number) => string }) {
+  const t = useT();
+  const [expanded, setExpanded] = useState<GroceryGroup | null>(null);
+  const comparable = summary.previousReceiptCount > 0;
+  const delta = summary.total - summary.previousTotal;
+  const max = Math.max(...summary.groups.map((group) => group.amount), 1);
+  return (
+    <section className="border-t border-border pt-5" aria-label={t("Análisis de tickets", "Receipt analysis")}>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex min-w-0 items-start gap-3">
+          <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-accent text-accent-foreground"><Sparkles className="size-5" /></div>
+          <div>
+            <h3 className="text-base font-semibold">{t("¿Dónde se fue el dinero en el súper?", "Where did your grocery money go?")}</h3>
+            <p className="text-xs text-muted-foreground">
+              {comparable
+                ? t(`Según ${summary.receiptCount} tickets de este periodo y ${summary.previousReceiptCount} del anterior.`, `Based on ${summary.receiptCount} receipts this period and ${summary.previousReceiptCount} last period.`)
+                : t(`Según ${summary.receiptCount} tickets con productos detallados.`, `Based on ${summary.receiptCount} itemized receipts.`)}
+            </p>
+          </div>
+        </div>
+        {comparable && (
+          <div className={cn("numeric shrink-0 rounded-md px-2.5 py-1.5 text-sm font-semibold", delta > 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
+            {delta > 0 ? "+" : delta < 0 ? "−" : ""}{fmt(Math.abs(delta))}
+            <span className="ml-1 text-xs font-normal">{t("vs. tickets anteriores", "vs. prior receipts")}</span>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-4 divide-y divide-border/70">
+        {[...summary.groups].sort((a, b) => comparable
+          ? (b.amount - b.previousAmount) - (a.amount - a.previousAmount)
+          : b.amount - a.amount).map((group) => {
+          const label = groceryLabels[group.id];
+          const difference = group.amount - group.previousAmount;
+          const open = expanded === group.id;
+          return (
+            <div key={group.id}>
+              <Button variant="ghost" className="h-auto w-full justify-start rounded-md px-1 py-3 text-left hover:bg-elevated/50" onClick={() => setExpanded(open ? null : group.id)} aria-expanded={open} aria-label={`${t(label.es, label.en)}: ${fmt(group.amount)}`}>
+                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-elevated text-xl" aria-hidden="true">{label.icon}</span>
+                <span className="ml-3 grid min-w-0 flex-1 gap-1.5 sm:grid-cols-[minmax(0,1fr)_minmax(100px,0.9fr)] sm:items-center sm:gap-4">
+                  <span className="min-w-0">
+                    <span className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                      <span className="text-sm font-medium text-foreground">{t(label.es, label.en)}</span>
+                      <span className="numeric text-sm font-semibold text-foreground">{fmt(group.amount)}</span>
+                      {comparable && <span className={cn("numeric text-xs", difference > 0 ? "text-negative" : "text-positive")}>{difference > 0 ? "+" : difference < 0 ? "−" : ""}{fmt(Math.abs(difference))}</span>}
+                    </span>
+                    <span className="mt-0.5 block text-xs font-normal text-muted-foreground">
+                      {comparable
+                        ? t(`${group.count} productos vs. ${group.previousCount} antes`, `${group.count} items vs. ${group.previousCount} before`)
+                        : t(`${group.count} productos en tus tickets`, `${group.count} items on your receipts`)}
+                    </span>
+                  </span>
+                  <span className="h-1.5 overflow-hidden rounded-full bg-muted"><span className={cn("block h-full rounded-full", label.color)} style={{ width: `${Math.max(3, (group.amount / max) * 100)}%` }} /></span>
+                </span>
+                <ChevronDown className={cn("ml-3 size-4 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")} />
+              </Button>
+              {open && (
+                <ul className="mb-3 ml-[3.25rem] space-y-1 border-l border-border pl-3 sm:ml-14">
+                  {group.products.map((product) => (
+                    <li key={product.name} className="flex items-baseline justify-between gap-3 text-xs">
+                      <span className="min-w-0 break-words text-muted-foreground">{product.name}{product.count > 1 ? ` · ${product.count}×` : ""}</span>
+                      <span className="numeric shrink-0 text-foreground">{fmt(product.amount)}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <p className="mt-2 flex items-start gap-1.5 border-t border-border pt-3 text-xs text-muted-foreground">
+        <ReceiptText className="mt-0.5 size-3.5 shrink-0" />
+        {t("Solo productos de tickets desglosados; la diferencia refleja gasto, no necesariamente una subida de precios.", "Only itemized receipt products; the difference reflects spending, not necessarily higher prices.")}
+      </p>
+    </section>
   );
 }
 
