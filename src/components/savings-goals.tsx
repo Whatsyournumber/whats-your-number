@@ -56,24 +56,24 @@ export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
 
   return (
     <section className="space-y-4 border-t border-border pt-6" aria-label={t("Tus metas de ahorro", "Your savings goals")}>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-3">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-positive/15 text-positive"><Target className="h-5 w-5" /></span>
-          <div>
-            <h2 className="text-lg font-semibold">{t("Tus metas de ahorro", "Your savings goals")}</h2>
-            <p className="text-xs text-muted-foreground">{t("Sigue el progreso de tus objetivos.", "Track your goals' progress.")}</p>
+      <div className="space-y-3">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/15 text-positive"><Target className="h-4 w-4" /></span>
+            <div className="min-w-0">
+              <h2 className="text-base font-semibold leading-tight">{t("Tus metas de ahorro", "Your savings goals")}</h2>
+              <p className="truncate text-[11px] text-muted-foreground">{t("Sigue el progreso de tus objetivos.", "Track your goals' progress.")}</p>
+            </div>
           </div>
+          <Button size="sm" className="h-8 shrink-0 gap-1 px-2.5 text-xs" onClick={() => setDraft(newDraft())}><Plus className="h-3.5 w-3.5" />{t("Nueva meta", "New goal")}</Button>
         </div>
-        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
-          <Tabs value={filter} onValueChange={(value) => setFilter(value as typeof filter)}>
-            <TabsList className="max-w-full">
-              <TabsTrigger value="all">{t("Todas", "All")} ({goals.length})</TabsTrigger>
-              <TabsTrigger value="active">{t("Activas", "Active")} ({activeCount})</TabsTrigger>
-              <TabsTrigger value="completed">{t("Completadas", "Completed")} ({completedCount})</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <Button size="sm" onClick={() => setDraft(newDraft())}><Plus />{t("Nueva meta", "New goal")}</Button>
-        </div>
+        <Tabs value={filter} onValueChange={(value) => setFilter(value as typeof filter)}>
+          <TabsList className="w-full">
+            <TabsTrigger value="all">{t("Todas", "All")} ({goals.length})</TabsTrigger>
+            <TabsTrigger value="active">{t("Activas", "Active")} ({activeCount})</TabsTrigger>
+            <TabsTrigger value="completed">{t("Completadas", "Completed")} ({completedCount})</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
       {loaded && visible.length === 0 ? (
