@@ -73,7 +73,7 @@ export function CategoryDetailDialog({
   const maxMerchant = merchants[0]?.amount ?? 1;
   const nightlifeDays = new Set(items.map((item) => item.tx_date?.slice(0, 10)).filter(Boolean)).size;
   const nightlifeHint = nightlifeDays > 0
-    ? t(`Salidas y ocio en ${nightlifeDays} ${nightlifeDays === 1 ? "día" : "días"}`, `Outings and leisure over ${nightlifeDays} ${nightlifeDays === 1 ? "day" : "days"}`)
+    ? t(`Saliste o disfrutaste del ocio en ${nightlifeDays} ${nightlifeDays === 1 ? "día" : "días"}`, `You went out or enjoyed leisure on ${nightlifeDays} ${nightlifeDays === 1 ? "day" : "days"}`)
     : t(`${items.length} gastos de ocio`, `${items.length} leisure expenses`);
 
   return (
