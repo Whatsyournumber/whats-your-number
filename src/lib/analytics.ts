@@ -7,8 +7,10 @@ declare global {
 
 const STORAGE_KEY = "wyn.consent.v1";
 const MEASUREMENT_ID = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY"];
+const GTM_ID = "GTM-NRXQF2T7";
 
 let initialized = false;
+let gtmLoaded = false;
 
 function readConsent(): { analytics: boolean; marketing: boolean } | null {
   if (typeof window === "undefined") return null;
@@ -24,6 +26,30 @@ function readConsent(): { analytics: boolean; marketing: boolean } | null {
 
 export function hasAnalyticsConsent(): boolean {
   return readConsent()?.analytics ?? false;
+}
+
+export function hasMarketingConsent(): boolean {
+  return readConsent()?.marketing ?? false;
+}
+
+/**
+ * Carga Google Tag Manager (Google Ads + Meta Pixel se configuran dentro de GTM).
+ * Solo se carga con consentimiento de marketing; las señales de consentimiento
+ * se envían por dataLayer antes de cargar el contenedor.
+ */
+export function initGTM() {
+  if (typeof window === "undefined" || gtmLoaded) return;
+  if (!hasMarketingConsent()) return;
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+
+  const script = document.createElement("script");
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`;
+  document.head.appendChild(script);
+
+  gtmLoaded = true;
 }
 
 function pushGtag(...args: unknown[]) {
@@ -108,4 +134,5 @@ export function updateConsent() {
     initGA();
   }
   updateConsentState();
+  initGTM();
 }

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useRouterState } from "@tanstack/react-router";
 
-import { hasAnalyticsConsent, initGA, trackPageView, updateConsent } from "@/lib/analytics";
+import { hasAnalyticsConsent, hasMarketingConsent, initGA, initGTM, trackPageView, updateConsent } from "@/lib/analytics";
 
 /** Inicializa GA4 y envía page_view en cada cambio de ruta si hay consentimiento de medición. */
 export function GoogleAnalytics() {
@@ -17,6 +17,9 @@ export function GoogleAnalytics() {
     if (hasAnalyticsConsent()) {
       initGA();
       trackPageView(window.location.pathname);
+    }
+    if (hasMarketingConsent()) {
+      initGTM();
     }
 
     const handleStorage = (e: StorageEvent) => {
