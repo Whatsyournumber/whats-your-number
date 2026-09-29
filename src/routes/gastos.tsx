@@ -214,7 +214,7 @@ function Gastos() {
     });
   };
   const categoryOf = (t: Tx) =>
-    txCat[t.id] ?? learned.resolve(t.merchant, t.description) ?? categorizeTxWithTravel(t, categories.rules, travelDays);
+    txCat[t.id] ?? categorizeTxWithTravel(t, categories.rules, travelDays);
   const search = Route.useSearch();
   const searchRange = useMemo<DateRange | undefined>(() => {
     if (!search.from) return undefined;
