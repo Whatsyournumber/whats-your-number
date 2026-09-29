@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Ajustar menú lateral para que todos los planes aprovechen la altura disponible y muestren todos los accesos sin scroll.
+- [x] Ajustar menú lateral para que todos los planes aprovechen la altura disponible y muestren todos los accesos sin scroll.
 
 - [x] Verificar campo "Nombre de la categoría" a ancho completo (CSS aplicado; compilación OK)
 - [x] Consejos con IA: detectar la categoría según lo que dice el usuario (no siempre la misma)
