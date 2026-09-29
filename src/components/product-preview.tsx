@@ -70,7 +70,7 @@ const retirement = [
 ];
 
 const spendCategories = [
-  { name: "Mercado", value: 32, color: "var(--color-primary)" },
+  { name: "Supermercado", value: 32, color: "var(--color-primary)" },
   { name: "Restaurantes", value: 18, color: "var(--color-chart-2)" },
   { name: "Nightlife", value: 14, color: "var(--color-chart-3)" },
   { name: "Compras", value: 12, color: "var(--color-chart-4)" },

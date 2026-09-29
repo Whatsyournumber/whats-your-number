@@ -80,7 +80,7 @@ export const categories: Category[] = [
     budget: 1000,
     subcategories: [
       { name: "Supermercado", amount: 720 },
-      { name: "Mercado local", amount: 140 },
+      { name: "Supermercado", amount: 140 },
       { name: "Delivery despensa", amount: 80 },
     ],
   },

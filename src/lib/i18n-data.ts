@@ -50,10 +50,10 @@ const CATEGORY_NAMES: Record<string, string> = {
   "Ahorro e inversión": "Savings & investing",
 };
 
-/** Traduce nombres de categorías de gasto (deja intactas las personalizadas). */
+/** Traduce nombres de categorías de gasto; en español, «Mercado» heredado se muestra como «Supermercado». */
 export function translateCategory(name: string, lang: Lang) {
-  if (lang !== "en") return name;
-  return CATEGORY_NAMES[name] ?? name;
+  if (lang === "en") return CATEGORY_NAMES[name] ?? name;
+  return name === "Mercado" ? "Supermercado" : name;
 }
 
 const FIXED_NAMES: Record<string, string> = {
