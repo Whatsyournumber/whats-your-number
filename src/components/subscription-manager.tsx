@@ -1,6 +1,6 @@
 import { forwardRef, useState, type ComponentPropsWithoutRef } from "react";
 import { Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, ArrowUpRight, Check, CheckCircle2, ChevronRight, CreditCard, Crown, ExternalLink, Loader2, Mail, Plus, Receipt, ShieldCheck, Smile, Sparkles, Trash2, User, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -32,6 +32,7 @@ export function SubscriptionManager() {
   const t = useT();
   const { subscription, tier, isTrial, isPromo, loading } = useSubscription();
   const { user } = useAuth();
+  const qc = useQueryClient();
   const [busy, setBusy] = useState<string | null>(null);
 
   const billing = useQuery({
@@ -91,6 +92,9 @@ export function SubscriptionManager() {
             ? t("Plan mejorado. Ya tienes acceso completo.", "Plan upgraded. You have full access now.")
             : t("Cambio programado: mantienes tu plan actual hasta el final del periodo pagado.", "Change scheduled: you keep your current plan until the paid period ends."),
       );
+      // Refresca el plan en toda la app (menú, tabs y accesos) sin recarga manual.
+      await qc.invalidateQueries({ queryKey: ["subscription", user?.id, getPaddleEnvironment()] });
+      setTimeout(() => window.location.reload(), 1500);
     } catch {
       toast.error(t("No pudimos cambiar el plan.", "We couldn't change the plan."));
     } finally {

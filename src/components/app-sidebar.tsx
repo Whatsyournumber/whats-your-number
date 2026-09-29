@@ -94,13 +94,13 @@ export function AppSidebar() {
   ];
   const isFamilyPlan = tier === "patrimonio";
   const discover: { title: string; url: string; icon: typeof Wallet; required: PlanTier }[] = [
-    { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Sparkles, required: "pro" },
+    { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home, required: "investor" },
     { title: t("Mi Número", "My Number"), url: "/retiro", icon: PiggyBank, required: "pro" },
-    { title: "Life Planner", url: "/life-planner", icon: Target, required: "pro" },
-    { title: "City Planner", url: "/ciudades", icon: Globe, required: "pro" },
     { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark, required: "investor" },
     { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart, required: "investor" },
-    { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home, required: "investor" },
+    { title: "City Planner", url: "/ciudades", icon: Globe, required: "pro" },
+    { title: "Life Planner", url: "/life-planner", icon: Target, required: "pro" },
+    { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Sparkles, required: "pro" },
     { title: t("Familia", "Family"), url: "/ninos", icon: Users, required: "patrimonio" },
   ];
   const discoverUnlocked = discover.filter((item) => !item.required || planMeetsTier(item.required, tier));
@@ -207,7 +207,7 @@ export function AppSidebar() {
           <>
             <SidebarGroup className="flex min-h-0 flex-[10] p-1">
               <SidebarGroupLabel className="h-5 text-[10px] uppercase tracking-wide">
-                {t("Patrimonio", "Net worth")}
+                {t("Mi dinero", "My money")}
               </SidebarGroupLabel>
               <SidebarGroupContent className="flex min-h-0 flex-1 flex-col">
                 <SidebarMenu className="h-full gap-0">{familyWealth.map(renderItem)}</SidebarMenu>
