@@ -13,6 +13,8 @@ import { enUS, es } from "date-fns/locale";
 import { BarChart3, CalendarIcon, ChevronDown, GripVertical, Lightbulb, Loader2, Pencil, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { buildTravelDays, categorizeTx, categorizeTxWithTravel } from "@/lib/categorize";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory, translateFixedName } from "@/lib/i18n-data";
@@ -129,9 +131,14 @@ function usePersistedRange(fallback: () => DateRange, override?: DateRange) {
     try {
       const raw = localStorage.getItem(RANGE_KEY);
       if (!raw) return;
-      const parsed = JSON.parse(raw) as { from?: string; to?: string };
+      const parsed = JSON.parse(raw) as { from?: string; to?: string; savedAt?: string };
       if (!parsed.from) return;
-      setRange({ from: new Date(parsed.from), ...(parsed.to ? { to: new Date(parsed.to) } : {}) });
+      // Si el rango terminaba "hoy" cuando se guardó, se extiende hasta hoy para
+      // incluir los gastos nuevos (voz, tickets, manuales) registrados después.
+      const dayStr = (d: string | Date) => new Date(d).toDateString();
+      let to = parsed.to ? new Date(parsed.to) : undefined;
+      if (to && (!parsed.savedAt || dayStr(parsed.savedAt) === dayStr(to)) && to < new Date()) to = new Date();
+      setRange({ from: new Date(parsed.from), ...(to ? { to } : {}) });
     } catch {
       /* ignore */
     }
@@ -143,7 +150,7 @@ function usePersistedRange(fallback: () => DateRange, override?: DateRange) {
       if (next?.from) {
         localStorage.setItem(
           RANGE_KEY,
-          JSON.stringify({ from: next.from.toISOString(), to: next.to?.toISOString() ?? null }),
+          JSON.stringify({ from: next.from.toISOString(), to: next.to?.toISOString() ?? null, savedAt: new Date().toISOString() }),
         );
       } else {
         localStorage.removeItem(RANGE_KEY);
@@ -213,8 +220,28 @@ function Gastos() {
       return next;
     });
   };
-  const categoryOf = (t: Tx) =>
-    txCat[t.id] ?? categorizeTxWithTravel(t, categories.rules, travelDays);
+  // Gastos registrados en "Mis gastos diarios" (voz, ticket, foto, manual): la categoría
+  // elegida por el usuario manda sobre la detección automática por nombre de comercio.
+  const manualStatementsQ = useQuery({
+    queryKey: ["manual-statement-ids"],
+    queryFn: async () => {
+      const { data } = await supabase.from("statements").select("id").eq("storage_path", "manual");
+      return new Set((data ?? []).map((r) => r.id as string));
+    },
+    staleTime: 5 * 60_000,
+  });
+  const manualIds = manualStatementsQ.data;
+  const canonicalCat = (name: string) => {
+    const n = name.trim().toLowerCase();
+    if (n === "mercado") return "Supermercado";
+    return categories.rules.find((r) => r.name.toLowerCase() === n)?.name ?? name.trim();
+  };
+  const categoryOf = (t: Tx) => {
+    if (txCat[t.id]) return txCat[t.id]!;
+    const isManual = !t.statement_id || manualIds?.has(t.statement_id);
+    if (isManual && t.category && t.category.trim()) return canonicalCat(t.category);
+    return categorizeTxWithTravel(t, categories.rules, travelDays);
+  };
   const search = Route.useSearch();
   const searchRange = useMemo<DateRange | undefined>(() => {
     if (!search.from) return undefined;
@@ -290,7 +317,7 @@ function Gastos() {
       map.set(k, prev);
     }
     return [...map.values()].sort((a, b) => b.amount - a.amount);
-  }, [current, categories.rules, txCat, learned.rules]);
+  }, [current, categories.rules, txCat, learned.rules, manualIds]);
 
   const prevByCategory = useMemo(() => {
     const map = new Map<string, number>();
