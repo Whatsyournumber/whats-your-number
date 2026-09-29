@@ -694,7 +694,7 @@ function PatrimonioContent() {
           <div className="mb-2 flex flex-wrap items-center justify-start gap-4 text-xs sm:gap-6">
             <div className="flex items-center gap-2 text-positive">
               <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-positive" />
-              <span>{t("Tu portafolio", "Your portfolio")}</span>
+              <span>{t("Tu patrimonio", "Your net worth")}</span>
             </div>
             {comparing && (
               <div className="flex items-center gap-2 text-chart-2">
