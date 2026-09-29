@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Trash2 } from "lucide-react";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -11,12 +12,14 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { excludedTypes } from "@/lib/data";
 import { useCategoryRules } from "@/hooks/use-category-rules";
+import { useGroceryRules } from "@/hooks/use-grocery-rules";
 import { useCategories } from "@/hooks/use-categories";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { useProfile } from "@/hooks/use-profile";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { findBudgetCategory } from "@/lib/budget-categories";
 import { money } from "@/lib/onboarding";
+import { GROCERY_GROUPS, GROCERY_LABELS, type GroceryGroup } from "@/lib/receipt-insights";
 
 export const Route = createFileRoute("/configuracion")({
   head: () => ({
@@ -25,6 +28,8 @@ export const Route = createFileRoute("/configuracion")({
       { name: "description", content: "Importa estados de cuenta PDF/CSV, gestiona cuentas, categorías y reglas automáticas." },
       { property: "og:title", content: "Importar gastos — Finance OS" },
       { property: "og:description", content: "Importa tus estados de cuenta y deja que la IA los clasifique." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
@@ -35,6 +40,9 @@ function Configuracion() {
   const t = useT();
   const { lang } = useLanguage();
   const learned = useCategoryRules();
+  const groceryRules = useGroceryRules();
+  const [productMatch, setProductMatch] = useState("");
+  const [productGroup, setProductGroup] = useState<GroceryGroup>("pantry");
   const custom = useCategories();
   const budgets = useSpendBudgets();
   const profile = useProfile();
@@ -85,10 +93,11 @@ function Configuracion() {
       <PageHeader eyebrow={t("Sistema", "System")} title={t("Importar gastos", "Import expenses")} subtitle={t("Importa tus estados de cuenta, cuentas y reglas de clasificación.", "Upload your statements, accounts and classification rules.")} />
 
       <Tabs defaultValue="importacion">
-        <TabsList className="mb-4 w-full sm:w-auto">
+        <TabsList className="mb-4 flex h-auto w-full flex-wrap justify-start sm:w-auto">
           <TabsTrigger value="importacion">{t("Importación", "Import")}</TabsTrigger>
           <TabsTrigger value="categorias">{t("Categorías", "Categories")}</TabsTrigger>
           <TabsTrigger value="reglas">{t("Reglas", "Rules")}</TabsTrigger>
+          <TabsTrigger value="reglas-super">{t("Reglas del súper", "Grocery rules")}</TabsTrigger>
           <TabsTrigger value="preferencias">{t("Preferencias", "Preferences")}</TabsTrigger>
         </TabsList>
 
@@ -189,6 +198,17 @@ function Configuracion() {
                 ))}
               </div>
             )}
+          </Panel>
+        </TabsContent>
+
+        <TabsContent value="reglas-super">
+          <Panel title={t("Reglas del súper", "Grocery rules")} description={t("Corrige un producto en el análisis del súper o añade aquí una palabra del ticket. La corrección se aplica a tus tickets anteriores y futuros.", "Correct a product in grocery analysis or add a receipt keyword here. Corrections apply to past and future receipts.")}>
+            <form className="flex flex-wrap items-end gap-2" onSubmit={(event) => { event.preventDefault(); if (!productMatch.trim()) return; groceryRules.learn(productMatch, productGroup); setProductMatch(""); }}>
+              <div className="min-w-40 flex-1"><Label htmlFor="grocery-match">{t("Producto o palabra del ticket", "Receipt product or keyword")}</Label><Input id="grocery-match" value={productMatch} onChange={(event) => setProductMatch(event.target.value)} maxLength={120} placeholder={t("Ej. aceitunas", "E.g. olives")} className="mt-1.5" /></div>
+              <div className="min-w-40 flex-1"><Label htmlFor="grocery-group">{t("Rubro", "Group")}</Label><select id="grocery-group" value={productGroup} onChange={(event) => setProductGroup(event.target.value as GroceryGroup)} className="mt-1.5 flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground">{GROCERY_GROUPS.map((id) => <option key={id} value={id}>{GROCERY_LABELS[id].icon} {t(GROCERY_LABELS[id].es, GROCERY_LABELS[id].en)}</option>)}</select></div>
+              <Button type="submit" disabled={!productMatch.trim()}>{t("Guardar regla", "Save rule")}</Button>
+            </form>
+            {groceryRules.rules.length > 0 && <div className="mt-4 space-y-2">{groceryRules.rules.map((rule) => <div key={rule.id} className="flex items-center gap-2 rounded-md bg-elevated/60 px-3 py-2"><span className="min-w-0 truncate text-sm">{rule.match}</span><span className="text-muted-foreground">→</span><span className="min-w-0 truncate text-sm">{GROCERY_LABELS[rule.group].icon} {t(GROCERY_LABELS[rule.group].es, GROCERY_LABELS[rule.group].en)}</span><Button type="button" size="icon" variant="ghost" className="ml-auto size-7 shrink-0 text-muted-foreground" aria-label={t(`Eliminar regla de ${rule.match}`, `Delete rule for ${rule.match}`)} onClick={() => groceryRules.remove(rule.id)}><Trash2 className="size-3.5" /></Button></div>)}</div>}
           </Panel>
         </TabsContent>
 

@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Corregir aceitunas, pechuga y caramelos en el análisis del súper; mostrar la leyenda de cada rubro y permitir reglas del súper sincronizadas desde Importar gastos.
+
 - [x] Clasificar los productos del súper en los 12 rubros acordados y mostrar solo los que tienen gasto.
 
 - [x] Ajustar menú lateral para que todos los planes aprovechen la altura disponible y muestren todos los accesos sin scroll.

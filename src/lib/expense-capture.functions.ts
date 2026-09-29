@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { GROCERY_GROUPS, GROCERY_LABELS, type GroceryRule } from "@/lib/receipt-insights";
 
 const schema = z.object({
   kind: z.enum(["voice", "receipt"]),
@@ -18,7 +19,7 @@ const schema = z.object({
 export const captureExpense = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) => schema.parse(data))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const apiKey = process.env["LOVABLE_API_KEY"];
     if (!apiKey) throw new Error("Falta la configuración de IA.");
     const categories = data.categories.length ? data.categories : ["Otros"];
@@ -44,6 +45,12 @@ export const captureExpense = createServerFn({ method: "POST" })
       return { ...expense, items: [] as { name: string; amount: number; category: string }[], transcript };
     }
 
+    const { data: savedRules } = await context.supabase.from("user_settings")
+      .select("value").eq("user_id", context.userId).eq("key", "whatsyournumber:grocery-rules:v1").maybeSingle();
+    const raw = (savedRules?.value as { v?: unknown } | null)?.v;
+    const groceryRules: GroceryRule[] = Array.isArray(raw)
+      ? raw.filter((r): r is GroceryRule => r && typeof r.match === "string" && r.match.length <= 120 && GROCERY_GROUPS.includes(r.group)).slice(0, 40)
+      : [];
     const expense = await mod.parseExpenseFromReceipt(
       apiKey,
       data.data,
@@ -52,6 +59,7 @@ export const captureExpense = createServerFn({ method: "POST" })
       data.currency,
       data.today,
       data.lang,
+      groceryRules.map((rule) => ({ match: rule.match, group: data.lang === "en" ? GROCERY_LABELS[rule.group].en : GROCERY_LABELS[rule.group].es })),
     );
     return { ...expense, items: expense.items ?? [], transcript: "" };
   });

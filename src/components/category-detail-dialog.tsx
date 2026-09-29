@@ -2,14 +2,16 @@ import { useMemo, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { ChevronDown, ReceiptText, Sparkles } from "lucide-react";
+import { ChevronDown, Info, ReceiptText, Sparkles } from "lucide-react";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { Button } from "@/components/ui/button";
+import { Tooltip as Hint, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useGroceryRules } from "@/hooks/use-grocery-rules";
 import { useT } from "@/hooks/use-language";
 import { merchantKey, type Tx } from "@/hooks/use-transactions";
-import { summarizeGroceryReceipts, type GroceryGroup } from "@/lib/receipt-insights";
+import { GROCERY_GROUPS, GROCERY_LABELS, summarizeGroceryReceipts, type GroceryGroup } from "@/lib/receipt-insights";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -43,9 +45,10 @@ export function CategoryDetailDialog({
   fmtCompact,
 }: Props) {
   const t = useT();
+  const groceryRules = useGroceryRules();
   const byMonth = days > 62;
   const isGrocery = isSupermarket || ["supermercado", "mercado", "groceries"].includes(name.trim().toLowerCase());
-  const grocery = useMemo(() => isGrocery ? summarizeGroceryReceipts(items, previousItems) : null, [isGrocery, items, previousItems]);
+  const grocery = useMemo(() => isGrocery ? summarizeGroceryReceipts(items, previousItems, groceryRules.rules) : null, [isGrocery, items, previousItems, groceryRules.rules]);
 
   const trend = useMemo(() => {
     const map = new Map<string, { label: string; gasto: number }>();
@@ -143,7 +146,7 @@ export function CategoryDetailDialog({
         )}
 
         {grocery && grocery.receiptCount > 0 && (
-          <GroceryInsights summary={grocery} fmt={fmt} />
+          <GroceryInsights summary={grocery} fmt={fmt} onCorrect={groceryRules.learn} />
         )}
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -200,22 +203,7 @@ export function CategoryDetailDialog({
   );
 }
 
-const groceryLabels: Record<GroceryGroup, { es: string; en: string; icon: string; color: string }> = {
-  protein: { es: "Carne y proteínas", en: "Meat & protein", icon: "🥩", color: "bg-chart-5" },
-  produce: { es: "Frutas y verduras", en: "Fruit & vegetables", icon: "🥬", color: "bg-chart-1" },
-  dairy: { es: "Lácteos", en: "Dairy", icon: "🥛", color: "bg-chart-3" },
-  bakery: { es: "Panadería y cereales", en: "Bakery & grains", icon: "🍞", color: "bg-chart-6" },
-  pantry: { es: "Despensa", en: "Pantry", icon: "🥫", color: "bg-chart-7" },
-  drinks: { es: "Bebidas", en: "Drinks", icon: "🥤", color: "bg-chart-2" },
-  snacks: { es: "Snacks y dulces", en: "Snacks & sweets", icon: "🍬", color: "bg-chart-4" },
-  prepared: { es: "Congelados y preparados", en: "Frozen & prepared", icon: "❄️", color: "bg-chart-3" },
-  home: { es: "Hogar y limpieza", en: "Home & cleaning", icon: "🧴", color: "bg-chart-2" },
-  personal: { es: "Cuidado personal", en: "Personal care", icon: "🧴", color: "bg-chart-6" },
-  babyPets: { es: "Bebé / Mascotas", en: "Baby / Pets", icon: "👶", color: "bg-chart-5" },
-  other: { es: "Otros", en: "Other", icon: "🛒", color: "bg-chart-8" },
-};
-
-function GroceryInsights({ summary, fmt }: { summary: ReturnType<typeof summarizeGroceryReceipts>; fmt: (n: number) => string }) {
+function GroceryInsights({ summary, fmt, onCorrect }: { summary: ReturnType<typeof summarizeGroceryReceipts>; fmt: (n: number) => string; onCorrect: (name: string, group: GroceryGroup) => void }) {
   const t = useT();
   const [expanded, setExpanded] = useState<GroceryGroup | null>(null);
   const comparable = summary.previousReceiptCount > 0;
@@ -243,16 +231,16 @@ function GroceryInsights({ summary, fmt }: { summary: ReturnType<typeof summariz
         )}
       </div>
 
-      <div className="mt-2 divide-y divide-border/70">
+      <TooltipProvider delayDuration={150}><div className="mt-2 divide-y divide-border/70">
         {[...summary.groups].sort((a, b) => comparable
           ? (b.amount - b.previousAmount) - (a.amount - a.previousAmount)
           : b.amount - a.amount).map((group) => {
-          const label = groceryLabels[group.id];
+          const label = GROCERY_LABELS[group.id];
           const difference = group.amount - group.previousAmount;
           const open = expanded === group.id;
           return (
             <div key={group.id}>
-              <Button variant="ghost" className="h-auto w-full justify-start rounded-md px-1 py-2 text-left hover:bg-elevated/50" onClick={() => setExpanded(open ? null : group.id)} aria-expanded={open} aria-label={`${t(label.es, label.en)}: ${fmt(group.amount)}`}>
+              <div className="flex items-center gap-1"><Button variant="ghost" className="h-auto min-w-0 flex-1 justify-start rounded-md px-1 py-2 text-left hover:bg-elevated/50" onClick={() => setExpanded(open ? null : group.id)} aria-expanded={open} aria-label={`${t(label.es, label.en)}: ${fmt(group.amount)}`}>
                 <span className="grid size-7 shrink-0 place-items-center rounded-md bg-elevated text-sm" aria-hidden="true">{label.icon}</span>
                 <span className="ml-2 grid min-w-0 flex-1 gap-1 sm:grid-cols-[minmax(0,1fr)_minmax(70px,0.7fr)] sm:items-center sm:gap-3">
                   <span className="min-w-0">
@@ -270,13 +258,16 @@ function GroceryInsights({ summary, fmt }: { summary: ReturnType<typeof summariz
                   <span className="h-1 overflow-hidden rounded-full bg-muted"><span className={cn("block h-full rounded-full", label.color)} style={{ width: `${Math.max(3, (group.amount / max) * 100)}%` }} /></span>
                 </span>
                 <ChevronDown className={cn("ml-2 size-3.5 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")} />
-              </Button>
+              </Button><Hint><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="size-7 shrink-0 text-muted-foreground" aria-label={t(`Qué incluye ${label.es}`, `What ${label.en} includes`)}><Info className="size-3.5" /></Button></TooltipTrigger><TooltipContent side="top" className="max-w-60">{t(label.detailEs, label.detailEn)}</TooltipContent></Hint></div>
               {open && (
                 <ul className="mb-2 ml-9 space-y-1 border-l border-border pl-3">
                   {group.products.map((product) => (
-                    <li key={product.name} className="flex items-baseline justify-between gap-3 text-xs">
+                    <li key={product.name} className="flex flex-wrap items-center justify-between gap-2 text-xs">
                       <span className="min-w-0 break-words text-muted-foreground">{product.name}{product.count > 1 ? ` · ${product.count}×` : ""}</span>
-                      <span className="numeric shrink-0 text-foreground">{fmt(product.amount)}</span>
+                      <span className="numeric ml-auto shrink-0 text-foreground">{fmt(product.amount)}</span>
+                      <select aria-label={t(`Clasificar ${product.name}`, `Classify ${product.name}`)} value={group.id} onChange={(event) => onCorrect(product.name, event.target.value as GroceryGroup)} className="max-w-full rounded border border-border bg-background px-1 py-0.5 text-xs text-foreground">
+                        {GROCERY_GROUPS.map((id) => <option key={id} value={id}>{t(GROCERY_LABELS[id].es, GROCERY_LABELS[id].en)}</option>)}
+                      </select>
                     </li>
                   ))}
                 </ul>
@@ -284,7 +275,7 @@ function GroceryInsights({ summary, fmt }: { summary: ReturnType<typeof summariz
             </div>
           );
         })}
-      </div>
+      </div></TooltipProvider>
       <p className="mt-2 flex items-start gap-1.5 border-t border-border pt-3 text-xs text-muted-foreground">
         <ReceiptText className="mt-0.5 size-3.5 shrink-0" />
         {t("Solo productos de tickets desglosados; la diferencia refleja gasto, no necesariamente una subida de precios.", "Only itemized receipt products; the difference reflects spending, not necessarily higher prices.")}
