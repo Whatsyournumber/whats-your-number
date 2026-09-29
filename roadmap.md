@@ -14,3 +14,6 @@
 
 - [x] Unificar Flujo de dinero + Destino del ahorro en un solo sankey (Ingresos → Gastos/Ahorro/Lifestyle → Metas/Inversiones/Disponible)
 - [x] Líneas del flujo más finas + editor arriba para destinar dinero a inversiones y metas
+
+- [x] Al cambiar de plan, actualizar el nombre del plan en el menú al instante y refrescar la app automáticamente (invalidación de la suscripción + recarga a los 1,5 s en subscription-manager)
+- [ ] Verificar el menú del plan Familiar en navegador: bloqueado porque la sesión firmando no pasa la autenticación del preview; el cambio es solo la etiqueta "Mi dinero" y el layout Familiar ya se verificó antes
