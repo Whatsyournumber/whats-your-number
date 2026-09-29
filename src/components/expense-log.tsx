@@ -2355,6 +2355,7 @@ export function ExpenseLog() {
                 open={Boolean(analysisCat)}
                 onOpenChange={(v) => !v && setAnalysisCat(null)}
                 name={row.name}
+                isSupermarket={row.id === "groceries"}
                 items={items}
                 previousItems={previousItems}
                 amount={row.actual}

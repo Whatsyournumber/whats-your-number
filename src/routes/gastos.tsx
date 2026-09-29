@@ -1571,6 +1571,7 @@ function Gastos() {
                  }
                }}
               name={tc(detailCat)}
+              isSupermarket={detailCat === "Supermercado" || detailCat === "Mercado" || detailCat === "Groceries"}
               items={detailRows.find((r) => r.name === detailCat)?.items ?? []}
               previousItems={previous.filter((tx) => categoryOf(tx) === detailCat)}
               amount={detailRows.find((r) => r.name === detailCat)?.amount ?? 0}

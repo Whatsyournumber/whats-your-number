@@ -18,6 +18,7 @@ type Props = {
   name: string;
   items: Tx[];
   previousItems?: Tx[];
+  isSupermarket?: boolean;
   amount: number;
   prevAmount: number;
   periodTotal: number;
@@ -33,6 +34,7 @@ export function CategoryDetailDialog({
   name,
   items,
   previousItems = [],
+  isSupermarket = false,
   amount,
   prevAmount,
   periodTotal,
@@ -42,8 +44,8 @@ export function CategoryDetailDialog({
 }: Props) {
   const t = useT();
   const byMonth = days > 62;
-  const isGrocery = ["supermercado", "mercado", "groceries"].includes(name.trim().toLowerCase());
-  const grocery = useMemo(() => summarizeGroceryReceipts(items, previousItems), [items, previousItems]);
+  const isGrocery = isSupermarket || ["supermercado", "mercado", "groceries"].includes(name.trim().toLowerCase());
+  const grocery = useMemo(() => isGrocery ? summarizeGroceryReceipts(items, previousItems) : null, [isGrocery, items, previousItems]);
 
   const trend = useMemo(() => {
     const map = new Map<string, { label: string; gasto: number }>();
@@ -113,7 +115,7 @@ export function CategoryDetailDialog({
           <Stat label={t("Ticket medio", "Avg ticket")} value={fmt(avgTicket)} hint={`${items.length} ${t("movs.", "txs")}`} />
         </div>
 
-        {isGrocery && grocery.receiptCount > 0 && (
+        {grocery && grocery.receiptCount > 0 && (
           <GroceryInsights summary={grocery} fmt={fmt} />
         )}
 
@@ -261,7 +263,7 @@ function GroceryInsights({ summary, fmt }: { summary: ReturnType<typeof summariz
                 <ChevronDown className={cn("ml-3 size-4 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")} />
               </Button>
               {open && (
-                <ul className="mb-3 ml-13 space-y-1 border-l border-border pl-3 sm:ml-14">
+                <ul className="mb-3 ml-[3.25rem] space-y-1 border-l border-border pl-3 sm:ml-14">
                   {group.products.map((product) => (
                     <li key={product.name} className="flex items-baseline justify-between gap-3 text-xs">
                       <span className="min-w-0 break-words text-muted-foreground">{product.name}{product.count > 1 ? ` · ${product.count}×` : ""}</span>
