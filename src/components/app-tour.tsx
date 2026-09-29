@@ -382,8 +382,8 @@ export function AppTour() {
     };
     const timers = [120, 500, 1100].map((ms, i) =>
       window.setTimeout(() => {
-        if (current.url === "/registro-gastos") {
-          // Arriba de todo para que se vean el + de la cabecera y el plan juntos.
+        if (current.url === "/registro-gastos" || current.url === "/cash-flow") {
+          // Arriba de todo para que se vean el + de la cabecera, el plan y el botón Ahorro juntos.
           window.scrollTo({ top: 0, behavior: i === 0 ? "auto" : "smooth" });
         } else {
           const el = find();
