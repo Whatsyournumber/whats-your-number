@@ -1263,7 +1263,7 @@ export function AppTour() {
           </span>
         </div>
       )}
-      {isCashFlowStep && cashFlowMarkers?.edit && cashFlowMarkers?.blocks && cashFlowMarkers?.box && (
+      {isCashFlowStep && cashFlowMarkers?.edit && cashFlowMarkers?.alloc && cashFlowMarkers?.goalNew && cashFlowMarkers?.box && (
         <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
           <svg className="absolute inset-0 h-full w-full overflow-visible">
             <defs>
@@ -1276,7 +1276,11 @@ export function AppTour() {
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
             <path
-              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width - 16} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.35} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width + cashFlowMarkers.blocks.x) / 2} ${cashFlowMarkers.blocks.y + 70} ${cashFlowMarkers.blocks.x} ${cashFlowMarkers.blocks.y}`}
+              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width - 16} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.35} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width + cashFlowMarkers.alloc.x) / 2} ${cashFlowMarkers.alloc.y + 70} ${cashFlowMarkers.alloc.x} ${cashFlowMarkers.alloc.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${cashFlowMarkers.box.x - 4} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.7} Q ${cashFlowMarkers.box.x - 70} ${cashFlowMarkers.goalNew.y + 55} ${cashFlowMarkers.goalNew.x} ${cashFlowMarkers.goalNew.y}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
           </svg>
@@ -1288,9 +1292,15 @@ export function AppTour() {
           </span>
           <span
             className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
-            style={{ left: cashFlowMarkers.blocks.x - 14, top: cashFlowMarkers.blocks.y - 14 }}
+            style={{ left: cashFlowMarkers.alloc.x - 14, top: cashFlowMarkers.alloc.y - 14 }}
           >
             2
+          </span>
+          <span
+            className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+            style={{ left: cashFlowMarkers.goalNew.x - 26, top: cashFlowMarkers.goalNew.y + 16 }}
+          >
+            3
           </span>
         </div>
       )}
