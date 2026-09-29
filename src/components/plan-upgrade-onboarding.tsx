@@ -6,7 +6,9 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AssetDialog } from "@/components/asset-dialog";
 import { useAuth } from "@/hooks/use-auth";
+import { useHoldings, type Holding } from "@/hooks/use-holdings";
 import { useProfile, type Profile } from "@/hooks/use-profile";
 import { useSubscription, type PlanTier } from "@/hooks/use-subscription";
 import { useT } from "@/hooks/use-language";
@@ -31,17 +33,11 @@ const DEBTS: F[] = [
   { k: "mortgage_term", es: "Años restantes", en: "Years left", unit: "years", half: true },
   { k: "liabilities", es: "Otras deudas (tarjetas, préstamos)", en: "Other debts (cards, loans)" },
 ];
-const PORTFOLIO: F[] = [
-  { k: "assets_etf", es: "Fondos indexados / ETF", en: "Index funds / ETFs", half: true },
-  { k: "assets_stocks", es: "Acciones", en: "Stocks", half: true },
-  { k: "assets_retirement", es: "Plan de pensiones", en: "Pension plan", half: true },
-  { k: "assets_crypto", es: "Cripto", en: "Crypto", half: true },
-];
 const PLAN: F[] = [
   { k: "retirement_monthly_contribution", es: "Aporte mensual a inversiones", en: "Monthly investing", half: true },
   { k: "expected_return", es: "Rentabilidad esperada", en: "Expected return", unit: "pct", half: true },
 ];
-const ALL = [...ASSETS, ...DEBTS, ...PORTFOLIO, ...PLAN];
+const ALL = [...ASSETS, ...DEBTS, ...PLAN];
 const RISKS = [
   { v: "conservador", es: "Conservador", en: "Conservative", ret: 5 },
   { v: "moderado", es: "Moderado", en: "Moderate", ret: 7 },
@@ -64,12 +60,14 @@ export function PlanUpgradeOnboarding() {
   const { user } = useAuth();
   const { tier, loading } = useSubscription();
   const { profile, isLoading, save, saving } = useProfile();
+  const { holdings } = useHoldings();
   const t = useT();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [vals, setVals] = useState<Record<string, string>>({});
   const [risk, setRisk] = useState("");
+  const [assetOpen, setAssetOpen] = useState(false);
 
   useEffect(() => {
     if (!user || loading || isLoading) return;
@@ -78,7 +76,7 @@ export function PlanUpgradeOnboarding() {
       localStorage.setItem(key(user.id), tier);
       return;
     }
-    const hasData = [...ASSETS, ...DEBTS, ...PORTFOLIO].some((f) => f.k !== "assets_bank" && Number(profile[f.k]) > 0);
+    const hasData = [...ASSETS, ...DEBTS].some((f) => f.k !== "assets_bank" && Number(profile[f.k]) > 0) || holdings.length > 0;
     const upgraded = stored ? RANK[stored] < RANK.investor : !hasData;
     if (upgraded) {
       const init: Record<string, string> = {};
@@ -103,7 +101,8 @@ export function PlanUpgradeOnboarding() {
   const v = (k: Field) => num(vals[k], ALL.find((f) => f.k === k)?.unit);
   const assets = v("assets_bank") + v("assets_cash") + v("assets_property");
   const debts = v("mortgage_balance") + v("liabilities");
-  const portfolio = v("assets_etf") + v("assets_stocks") + v("assets_retirement") + v("assets_crypto");
+  const holdingValue = (h: Holding) => h.manual_value || h.cost_basis || 0;
+  const portfolio = holdings.reduce((sum, h) => sum + holdingValue(h), 0);
   const netWorth = assets + portfolio - debts;
   const sym = currencySymbol(profile.currency);
 
@@ -201,7 +200,20 @@ export function PlanUpgradeOnboarding() {
         {step === 1 && (
           <div className="space-y-3">
             {section("Tus inversiones", "Your investments")}
-            {renderFields(PORTFOLIO)}
+            {holdings.length > 0 && (
+              <div className="space-y-1.5">
+                {holdings.map((h) => (
+                  <div key={h.id} className="flex items-center justify-between rounded-xl border border-border/60 px-3 py-2 text-sm">
+                    <span className="truncate font-medium">{h.label || h.ticker || t("Activo", "Asset")}</span>
+                    <span className="shrink-0 tabular-nums text-muted-foreground">{fmt(holdingValue(h), sym)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            <Button type="button" variant="outline" className="w-full" onClick={() => setAssetOpen(true)}>
+              + {t("Añadir activo", "Add asset")}
+            </Button>
+            <AssetDialog open={assetOpen} onOpenChange={setAssetOpen} />
             {section("Tu estrategia", "Your strategy")}
             <div className="grid grid-cols-3 gap-2">
               {RISKS.map((r) => (
