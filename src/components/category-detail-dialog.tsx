@@ -71,19 +71,24 @@ export function CategoryDetailDialog({
   const variation = prevAmount > 0 ? ((amount - prevAmount) / prevAmount) * 100 : null;
   const avgTicket = items.length > 0 ? amount / items.length : 0;
   const maxMerchant = merchants[0]?.amount ?? 1;
+  const nightlifeHint = t(`Gastaste ${fmt(amount)} en salidas y ocio`, `You spent ${fmt(amount)} on nights out and leisure`);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[88vh] max-w-2xl overflow-auto">
         <DialogHeader>
-          <DialogTitle className="text-lg">{name}</DialogTitle>
+          <DialogTitle className="text-lg">{name === "Nightlife" ? t("Nightlife / Ocio", "Nightlife / Leisure") : name}</DialogTitle>
           <DialogDescription>
             {t("Análisis del rubro en el periodo seleccionado.", "Category analysis for the selected period.")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <Stat label={t("Total", "Total")} value={fmt(amount)} />
+          <Stat
+            label={t("Total", "Total")}
+            value={fmt(amount)}
+            hint={name === "Nightlife" ? nightlifeHint : undefined}
+          />
           <Stat label={t("% del gasto", "% of spend")} value={`${share.toFixed(0)}%`} />
           <Stat
             label={t("vs periodo anterior", "vs previous")}
