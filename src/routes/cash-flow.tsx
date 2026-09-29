@@ -131,7 +131,7 @@ function CashFlow() {
   const incomeLines = usingStatements ? incomeFromStatements : d.cashFlow.income;
   const totalIncome = incomeLines.reduce((s, i) => s + i.amount, 0) || d.income || 1;
 
-  // Necesidades: Vivienda/Renta, Hipoteca, Condominio, Alimentos/Mercado, Transporte, Servicios, Salud, Educación.
+  // Necesidades: Vivienda/Renta, Hipoteca, Condominio, Alimentos/Supermercado, Transporte, Servicios, Salud, Educación.
   // Deseos: Viajes, Restaurantes, Entretenimiento/Salidas, Compras, Tecnología/Apps, Hobbies/Lifestyle.
   const NEED_CATS = new Set([
     "Vivienda",
@@ -141,6 +141,7 @@ function CashFlow() {
     "Condominio",
     "Alimentos",
     "Alimentación",
+    "Supermercado",
     "Mercado",
     "Transporte",
     "Servicios",

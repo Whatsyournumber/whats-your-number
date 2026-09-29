@@ -235,7 +235,7 @@ export const RULES: CategoryRule[] = [
   },
 
   {
-    name: "Mercado",
+    name: "Supermercado",
     hints: [
       "supermercado", "supermarket", "sup.ex", "super ex", "supercor", "mercado", "market", "grocer",
       "abarrote", "mercadona", "carrefour", "lidl", "aldi", "dia 1", "mp**dia", "alcampo", "eroski",
@@ -288,7 +288,7 @@ export const RULES: CategoryRule[] = [
 
 /** Nombres de las categorías base, en el orden que se muestran. */
 export const BASE_CATEGORIES = [
-  "Mercado",
+  "Supermercado",
   "Restaurantes",
   "Delivery",
 
@@ -358,8 +358,8 @@ export function categorizeTx(t: CategorizableTx, custom: CategoryRule[] = []): s
   }
 
   const original = t.category ?? "Sin categoría";
-  // "Alimentación" sin comercio reconocible: por defecto es mercado.
-  if (FOOD_CATEGORIES.some((c) => original.toLowerCase().includes(c))) return "Mercado";
+  // "Alimentación" sin comercio reconocible: por defecto es supermercado.
+  if (FOOD_CATEGORIES.some((c) => original.toLowerCase().includes(c))) return "Supermercado";
 
   // Lo que no reconoce ninguna regla se agrupa como Otros.
   return "Otros";

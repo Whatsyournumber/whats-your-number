@@ -66,7 +66,7 @@ function Configuracion() {
   ];
 
   /** Nombres propios + etiquetas del catálogo en ambos idiomas + alias internos
-   *  (las reglas guardan el nombre canónico de categorize, p. ej. "Mercado"). */
+   *  (las reglas guardan el nombre canónico de categorize, p. ej. "Supermercado"). */
   const myCategoryNames = new Set(myCategories.map((c) => c.name.toLowerCase()));
   for (const line of budgets.lines) {
     const base = findBudgetCategory(line.id);
