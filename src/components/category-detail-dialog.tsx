@@ -115,10 +115,6 @@ export function CategoryDetailDialog({
           <Stat label={t("Ticket medio", "Avg ticket")} value={fmt(avgTicket)} hint={`${items.length} ${t("movs.", "txs")}`} />
         </div>
 
-        {grocery && grocery.receiptCount > 0 && (
-          <GroceryInsights summary={grocery} fmt={fmt} />
-        )}
-
         {trend.length > 1 && (
           <div className="mt-1 rounded-2xl border border-border bg-elevated/40 p-3">
             <p className="mb-2 text-xs text-muted-foreground">{t("Evolución del rubro", "Category trend")}</p>
@@ -144,6 +140,10 @@ export function CategoryDetailDialog({
               </AreaChart>
             </ResponsiveContainer>
           </div>
+        )}
+
+        {grocery && grocery.receiptCount > 0 && (
+          <GroceryInsights summary={grocery} fmt={fmt} />
         )}
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -203,8 +203,13 @@ export function CategoryDetailDialog({
 const groceryLabels: Record<GroceryGroup, { es: string; en: string; icon: string; color: string }> = {
   protein: { es: "Carne y proteína", en: "Meat & protein", icon: "🥩", color: "bg-chart-5" },
   produce: { es: "Frutas y verduras", en: "Fruit & vegetables", icon: "🥬", color: "bg-chart-1" },
+  dairy: { es: "Lácteos", en: "Dairy", icon: "🥛", color: "bg-chart-3" },
+  bakery: { es: "Panadería", en: "Bakery", icon: "🍞", color: "bg-chart-6" },
+  pantry: { es: "Despensa", en: "Pantry", icon: "🥫", color: "bg-chart-7" },
+  drinks: { es: "Bebidas", en: "Drinks", icon: "🥤", color: "bg-chart-2" },
   snacks: { es: "Snacks y dulces", en: "Snacks & sweets", icon: "🍬", color: "bg-chart-4" },
   home: { es: "Hogar y limpieza", en: "Home & cleaning", icon: "🧴", color: "bg-chart-2" },
+  personal: { es: "Cuidado personal", en: "Personal care", icon: "🪥", color: "bg-chart-6" },
   other: { es: "Otros productos", en: "Other products", icon: "🛒", color: "bg-chart-8" },
 };
 
@@ -215,12 +220,12 @@ function GroceryInsights({ summary, fmt }: { summary: ReturnType<typeof summariz
   const delta = summary.total - summary.previousTotal;
   const max = Math.max(...summary.groups.map((group) => group.amount), 1);
   return (
-    <section className="border-t border-border pt-5" aria-label={t("Análisis de tickets", "Receipt analysis")}>
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="flex min-w-0 items-start gap-3">
-          <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-accent text-accent-foreground"><Sparkles className="size-5" /></div>
+    <section className="border-t border-border pt-3" aria-label={t("Análisis de tickets", "Receipt analysis")}>
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="flex min-w-0 items-start gap-2">
+          <div className="grid size-7 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground"><Sparkles className="size-3.5" /></div>
           <div>
-            <h3 className="text-base font-semibold">{t("¿Dónde se fue el dinero en el súper?", "Where did your grocery money go?")}</h3>
+            <h3 className="text-sm font-semibold">{t("¿Dónde se fue el dinero en el súper?", "Where did your grocery money go?")}</h3>
             <p className="text-xs text-muted-foreground">
               {comparable
                 ? t(`Según ${summary.receiptCount} tickets de este periodo y ${summary.previousReceiptCount} del anterior.`, `Based on ${summary.receiptCount} receipts this period and ${summary.previousReceiptCount} last period.`)
@@ -229,14 +234,14 @@ function GroceryInsights({ summary, fmt }: { summary: ReturnType<typeof summariz
           </div>
         </div>
         {comparable && (
-          <div className={cn("numeric shrink-0 rounded-md px-2.5 py-1.5 text-sm font-semibold", delta > 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
+          <div className={cn("numeric rounded-md px-2 py-1 text-xs font-semibold", delta > 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
             {delta > 0 ? "+" : delta < 0 ? "−" : ""}{fmt(Math.abs(delta))}
             <span className="ml-1 text-xs font-normal">{t("vs. tickets anteriores", "vs. prior receipts")}</span>
           </div>
         )}
       </div>
 
-      <div className="mt-4 divide-y divide-border/70">
+      <div className="mt-2 divide-y divide-border/70">
         {[...summary.groups].sort((a, b) => comparable
           ? (b.amount - b.previousAmount) - (a.amount - a.previousAmount)
           : b.amount - a.amount).map((group) => {
@@ -245,27 +250,27 @@ function GroceryInsights({ summary, fmt }: { summary: ReturnType<typeof summariz
           const open = expanded === group.id;
           return (
             <div key={group.id}>
-              <Button variant="ghost" className="h-auto w-full justify-start rounded-md px-1 py-3 text-left hover:bg-elevated/50" onClick={() => setExpanded(open ? null : group.id)} aria-expanded={open} aria-label={`${t(label.es, label.en)}: ${fmt(group.amount)}`}>
-                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-elevated text-xl" aria-hidden="true">{label.icon}</span>
-                <span className="ml-3 grid min-w-0 flex-1 gap-1.5 sm:grid-cols-[minmax(0,1fr)_minmax(100px,0.9fr)] sm:items-center sm:gap-4">
+              <Button variant="ghost" className="h-auto w-full justify-start rounded-md px-1 py-2 text-left hover:bg-elevated/50" onClick={() => setExpanded(open ? null : group.id)} aria-expanded={open} aria-label={`${t(label.es, label.en)}: ${fmt(group.amount)}`}>
+                <span className="grid size-7 shrink-0 place-items-center rounded-md bg-elevated text-sm" aria-hidden="true">{label.icon}</span>
+                <span className="ml-2 grid min-w-0 flex-1 gap-1 sm:grid-cols-[minmax(0,1fr)_minmax(70px,0.7fr)] sm:items-center sm:gap-3">
                   <span className="min-w-0">
                     <span className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                      <span className="text-sm font-medium text-foreground">{t(label.es, label.en)}</span>
-                      <span className="numeric text-sm font-semibold text-foreground">{fmt(group.amount)}</span>
+                      <span className="text-xs font-medium text-foreground">{t(label.es, label.en)}</span>
+                      <span className="numeric text-xs font-semibold text-foreground">{fmt(group.amount)}</span>
                       {comparable && <span className={cn("numeric text-xs", difference > 0 ? "text-negative" : "text-positive")}>{difference > 0 ? "+" : difference < 0 ? "−" : ""}{fmt(Math.abs(difference))}</span>}
                     </span>
-                    <span className="mt-0.5 block text-xs font-normal text-muted-foreground">
+                    <span className="block text-[11px] font-normal text-muted-foreground">
                       {comparable
                         ? t(`${group.count} productos vs. ${group.previousCount} antes`, `${group.count} items vs. ${group.previousCount} before`)
                         : t(`${group.count} productos en tus tickets`, `${group.count} items on your receipts`)}
                     </span>
                   </span>
-                  <span className="h-1.5 overflow-hidden rounded-full bg-muted"><span className={cn("block h-full rounded-full", label.color)} style={{ width: `${Math.max(3, (group.amount / max) * 100)}%` }} /></span>
+                  <span className="h-1 overflow-hidden rounded-full bg-muted"><span className={cn("block h-full rounded-full", label.color)} style={{ width: `${Math.max(3, (group.amount / max) * 100)}%` }} /></span>
                 </span>
-                <ChevronDown className={cn("ml-3 size-4 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")} />
+                <ChevronDown className={cn("ml-2 size-3.5 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")} />
               </Button>
               {open && (
-                <ul className="mb-3 ml-[3.25rem] space-y-1 border-l border-border pl-3 sm:ml-14">
+                <ul className="mb-2 ml-9 space-y-1 border-l border-border pl-3">
                   {group.products.map((product) => (
                     <li key={product.name} className="flex items-baseline justify-between gap-3 text-xs">
                       <span className="min-w-0 break-words text-muted-foreground">{product.name}{product.count > 1 ? ` · ${product.count}×` : ""}</span>
