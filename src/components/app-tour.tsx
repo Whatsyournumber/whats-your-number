@@ -88,9 +88,11 @@ const STEPS: Step[] = [
   {
     url: "/cash-flow", icon: Scale, minPlan: "free",
     es: ["Metas de ahorro", "Reparte tu dinero con la regla 40/40/20 y ahorra para tus objetivos.",
+      "40% necesidades, 40% estilo de vida y 20% ahorro: ajústala a tu plan.",
       "Decide cuánto de tu ahorro va a metas y cuánto a inversiones.",
       "Crea metas (casa, carro, viaje) y mira cuándo las lograrás."],
     en: ["Savings goals", "Split your money with the 40/40/20 rule and save for your goals.",
+      "40% needs, 40% lifestyle and 20% savings: adjust it to your plan.",
       "Decide how much of your savings goes to goals and to investments.",
       "Create goals (home, car, trip) and see when you'll reach them."],
   },
