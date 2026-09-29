@@ -129,7 +129,7 @@ export function AppSidebar() {
     const badge = item.required === "patrimonio" ? "FAMILY" : item.required === "investor" ? "INVESTOR" : "PRO";
     return (
       <SidebarMenuItem key={item.url} className="flex min-h-0 flex-1">
-        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className={`${compact ? "h-full min-h-7 gap-1.5" : "h-full min-h-7 gap-2"} px-2 data-[active=true]:bg-primary/15 data-[active=true]:text-primary`}>
+        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className={`${compact ? "h-full min-h-7 gap-1.5" : "h-full min-h-0 gap-2"} px-2 data-[active=true]:bg-primary/15 data-[active=true]:text-primary`}>
           <Link
             to={item.url}
             className="flex items-center gap-2"
