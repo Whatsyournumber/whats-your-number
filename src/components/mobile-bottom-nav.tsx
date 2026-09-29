@@ -16,7 +16,6 @@ export function MobileBottomNav() {
   const [adviceOpen, setAdviceOpen] = useState(false);
   const [sharedOpen, setSharedOpen] = useState(false);
   const addButtonRef = useRef<HTMLButtonElement | null>(null);
-  const [blurBounds, setBlurBounds] = useState<{ x1: number; y1: number; x2: number; y2: number } | null>(null);
   // El tour del paso del botón + abre el menú real mientras dura el paso.
   const [tourHold, setTourHold] = useState(false);
   useEffect(() => {
@@ -27,21 +26,6 @@ export function MobileBottomNav() {
   useEffect(() => {
     setMenuOpen(tourHold);
   }, [tourHold]);
-  useEffect(() => {
-    if (!menuOpen || tourHold) {
-      setBlurBounds(null);
-      return;
-    }
-    const measure = () => {
-      const button = addButtonRef.current?.getBoundingClientRect();
-      if (!button) return;
-      const p = 2;
-      setBlurBounds({ x1: button.left - p, y1: button.top - p, x2: button.right + p, y2: button.bottom + p });
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, [menuOpen, tourHold]);
 
   const isFree = !isPro && !isInvestor;
   const tabs = [
@@ -98,7 +82,7 @@ export function MobileBottomNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 z-40 w-screen max-w-full lg:hidden">
+    <nav className={cn("fixed bottom-0 left-0 w-screen max-w-full lg:hidden", menuOpen ? "z-50" : "z-40")}>
       <SharedExpenseDialog
         open={sharedOpen}
         onOpenChange={setSharedOpen}
@@ -111,26 +95,12 @@ export function MobileBottomNav() {
       {menuOpen && (
         <>
           {!tourHold && (
-            blurBounds && (
-              <div className="fixed inset-0 z-[45]" onClick={() => setMenuOpen(false)} aria-hidden>
-                <div
-                  className="fixed inset-x-0 bg-background/60 backdrop-blur-sm"
-                  style={{ top: 56, height: Math.max(0, blurBounds.y1 - 56) }}
-                />
-                <div
-                  className="fixed left-0 bg-background/60 backdrop-blur-sm"
-                  style={{ top: blurBounds.y1, width: Math.max(0, blurBounds.x1), height: Math.max(0, blurBounds.y2 - blurBounds.y1) }}
-                />
-                <div
-                  className="fixed right-0 bg-background/60 backdrop-blur-sm"
-                  style={{ top: blurBounds.y1, left: blurBounds.x2, height: Math.max(0, blurBounds.y2 - blurBounds.y1) }}
-                />
-                <div
-                  className="fixed inset-x-0 bottom-0 bg-background/60 backdrop-blur-sm"
-                  style={{ top: blurBounds.y2 }}
-                />
-              </div>
-            )
+            <div
+              className="fixed inset-x-0 top-14 z-[45] bg-background/60 backdrop-blur-sm"
+              style={{ bottom: addButtonRef.current?.closest("nav")?.getBoundingClientRect().height ?? 82 }}
+              onClick={() => setMenuOpen(false)}
+              aria-hidden
+            />
           )}
           <div
             data-tour-add-menu
