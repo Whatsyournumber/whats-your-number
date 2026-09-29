@@ -87,14 +87,14 @@ const STEPS: Step[] = [
   },
   {
     url: "/cash-flow", icon: Scale, minPlan: "free",
-    es: ["Metas de ahorro", "Sigue tus objetivos de ahorro y cómo se reparte tu dinero.",
-      "Podrás editar tus ítems de necesidades, deseos y ahorro según tu plan.",
-      "Pasa el cursor sobre cada bloque para ver el detalle.",
-      "Al empezar usa tu plan; luego usa tus gastos reales."],
-    en: ["Savings goals", "Track your savings goals and where your money goes.",
-      "You can edit your needs, wants and savings items to match your plan.",
-      "Hover each block to see the breakdown by category.",
-      "It starts from your plan, then uses your real spending."],
+    es: ["Metas de ahorro", "Reparte tu dinero con la regla 40/40/20 y ahorra para tus objetivos.",
+      "40% necesidades, 40% estilo de vida y 20% ahorro: ajústala a tu plan.",
+      "Crea metas (casa, carro, viaje) y mira cuándo las lograrás.",
+      "Decide cuánto de tu ahorro va a metas y cuánto a inversiones."],
+    en: ["Savings goals", "Split your money with the 40/40/20 rule and save for your goals.",
+      "40% needs, 40% lifestyle and 20% savings: adjust it to your plan.",
+      "Create goals (home, car, trip) and see when you'll reach them.",
+      "Decide how much of your savings goes to goals and to investments."],
   },
   {
     url: "/retiro", icon: Target, minPlan: "pro",
@@ -193,6 +193,7 @@ const ADD_OPTIONS: { icon: typeof Plus; es: string; en: string }[] = [
   { icon: Mic, es: "Por voz", en: "By voice" },
   { icon: Camera, es: "Tomar foto (super, compras, etc)", en: "Take photo (groceries, shopping, etc)" },
   { icon: Upload, es: "Fotos o estados de cuentas", en: "Photos or bank statements" },
+  { icon: Users, es: "Gasto compartido", en: "Shared expense" },
 ];
 
 export function AppTour() {
@@ -209,10 +210,10 @@ export function AppTour() {
   const availableSteps = useMemo(() => {
     // En móvil el tour es corto: una parada por cada botón de la barra inferior.
     const MOBILE_URLS = tier === "free"
-      ? ["/dashboard", "/registro-gastos", "/mi-perfil"]
+      ? ["/dashboard", "/registro-gastos", "/cash-flow", "/mi-perfil"]
       : tier === "pro"
-        ? ["/dashboard", "/registro-gastos", "/retiro", "/mi-perfil"]
-        : ["/dashboard", "/registro-gastos", "/retiro", "/portafolio"];
+        ? ["/dashboard", "/registro-gastos", "/cash-flow", "/retiro", "/mi-perfil"]
+        : ["/dashboard", "/registro-gastos", "/cash-flow", "/retiro", "/portafolio"];
     return STEPS.filter(
       (tourStep) =>
         planMeetsTier(tourStep.minPlan, tier) &&
