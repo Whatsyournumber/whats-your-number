@@ -53,7 +53,7 @@ import { getSpendAdvice, rateSpendAdvice } from "@/lib/spend-advice.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { buildDataset } from "@/lib/profile-data";
 import { yearsToFreedom } from "@/lib/lifestyle-cities";
-import { ArrowDownRight, ArrowUpRight, Brain, ThumbsDown, ThumbsUp, TrendingUp } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Brain, ThumbsDown, ThumbsUp } from "lucide-react";
 
 type AdviceAction = {
   label: string;
@@ -1806,7 +1806,6 @@ function Gastos() {
 
             <ul className="grid gap-2 md:grid-cols-2">
               {advice.map((a, i) => {
-                const gain = yearsGain(a.monthlySaving);
                 const fv = futureValue(a.monthlySaving);
                 return (
                   <li
