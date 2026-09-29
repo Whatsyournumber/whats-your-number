@@ -18,6 +18,9 @@ export function GoogleAnalytics() {
       initGA();
       trackPageView(window.location.pathname);
     }
+    if (hasMarketingConsent()) {
+      initGTM();
+    }
 
     const handleStorage = (e: StorageEvent) => {
       if (e.key === "wyn.consent.v1") {
