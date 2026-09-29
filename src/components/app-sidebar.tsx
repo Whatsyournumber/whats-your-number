@@ -70,7 +70,7 @@ export function AppSidebar() {
   const account = [
     { title: t("Importar datos", "Import data"), url: "/configuracion", icon: Upload },
     { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserRound },
-    { title: t("Configuración", "Settings"), url: "/suscripcion", icon: Settings },
+    { title: t("Suscripción y ayuda", "Subscription & help"), url: "/suscripcion", icon: Settings },
   ];
   // Plan Familiar keeps the original grouped layout (Patrimonio / Inteligencia)
   const familyWealth = [
@@ -89,7 +89,7 @@ export function AppSidebar() {
     { title: t("Familia", "Family"), url: "/ninos", icon: Users },
     { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Sparkles },
     { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserRound },
-    { title: t("Configuración", "Settings"), url: "/suscripcion", icon: Settings },
+    { title: t("Suscripción y ayuda", "Subscription & help"), url: "/suscripcion", icon: Settings },
     { title: t("Importar datos", "Import data"), url: "/configuracion", icon: Upload },
   ];
   const isFamilyPlan = tier === "patrimonio";
@@ -289,7 +289,7 @@ export function AppSidebar() {
                 </Button>
               )}
               {discoverLocked.length > 0 && (
-                <SidebarGroupContent id="sidebar-discover-items" hidden={!discoverOpen && !collapsed} className={!discoverOpen && !collapsed ? "hidden" : "flex min-h-0 flex-1 flex-col"}>
+                <SidebarGroupContent id="sidebar-discover-items" hidden={!discoverOpen && !collapsed} className={!discoverOpen && !collapsed ? "hidden" : "flex min-h-0 flex-1 flex-col overflow-y-auto"}>
                   <SidebarMenu className="h-full gap-0">{discoverLocked.map(renderItem)}</SidebarMenu>
                 </SidebarGroupContent>
               )}
