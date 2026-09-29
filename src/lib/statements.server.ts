@@ -32,7 +32,7 @@ abono/crédito/credit/Haben, saldo/balance) y normaliza formatos locales: fechas
 o punto decimal (1,234.56); símbolos y códigos de moneda (€, $, £, R$, ₺, ¥, CHF, MXN...) y sufijos de signo como "-", "(...)", "DR"/"CR".
 Devuelve cada movimiento con: fecha (YYYY-MM-DD), comercio, descripción, monto (negativo = gasto, positivo = ingreso/abono),
 moneda ISO, y la categoría en español ELEGIDA OBLIGATORIAMENTE de esta lista exacta:
-Mercado, Restaurantes, Delivery, Nightlife, Deportes, Compras, Viajes, Transporte, Salud, Apps, Marketing digital, Bancos & Seguros, Otros.
+Supermercado, Restaurantes, Delivery, Nightlife, Deportes, Compras, Viajes, Transporte, Salud, Apps, Marketing digital, Bancos & Seguros, Otros.
 Guías clave:
 - "Restaurantes": bares, cafeterías, panaderías, heladerías, tabernas, food halls, hoteles-restaurante y cualquier consumo de comida fuera de casa (no supermercado).
 - "Delivery": Glovo, Uber Eats, Rappi, Just Eat, Deliveroo, DoorDash, PedidosYa y similares.
