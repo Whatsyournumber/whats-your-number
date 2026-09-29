@@ -267,7 +267,7 @@ export function AppSidebar() {
         )}
 
         {adminItems.length > 0 && (
-          <SidebarGroup className="p-1.5">
+          <SidebarGroup className="shrink-0 p-1.5">
             <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">Admin</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu className="gap-0.5">{adminItems.map(renderItem)}</SidebarMenu>
