@@ -76,7 +76,7 @@ export function PlanUpgradeOnboarding() {
       localStorage.setItem(key(user.id), tier);
       return;
     }
-    const hasData = [...ASSETS, ...DEBTS, ...PORTFOLIO].some((f) => f.k !== "assets_bank" && Number(profile[f.k]) > 0);
+    const hasData = [...ASSETS, ...DEBTS].some((f) => f.k !== "assets_bank" && Number(profile[f.k]) > 0) || holdings.length > 0;
     const upgraded = stored ? RANK[stored] < RANK.investor : !hasData;
     if (upgraded) {
       const init: Record<string, string> = {};
