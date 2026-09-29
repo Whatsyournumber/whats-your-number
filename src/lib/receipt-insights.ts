@@ -23,22 +23,27 @@ export function receiptItemsFrom(description: string | null | undefined): Receip
   }
 }
 
-export type GroceryGroup = "protein" | "produce" | "dairy" | "bakery" | "pantry" | "drinks" | "snacks" | "home" | "personal" | "other";
-export const GROCERY_GROUPS: GroceryGroup[] = ["protein", "produce", "dairy", "bakery", "pantry", "drinks", "snacks", "home", "personal", "other"];
+export type GroceryGroup = "protein" | "produce" | "dairy" | "bakery" | "pantry" | "snacks" | "drinks" | "prepared" | "personal" | "home" | "babyPets" | "other";
+export const GROCERY_GROUPS: GroceryGroup[] = ["protein", "produce", "dairy", "bakery", "pantry", "snacks", "drinks", "prepared", "personal", "home", "babyPets", "other"];
 
-const match = (text: string, words: string[]) => words.some((word) => new RegExp(`(^|[^a-z])${word}([s]?($|[^a-z]))`, "i").test(text));
+const normalize = (text: string) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+const match = (text: string, words: string[]) => words.some((word) => ` ${text} `.includes(` ${word} `));
 
-function groceryGroup(name: string): GroceryGroup {
-  const text = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-  if (match(text, ["carne", "pollo", "ternera", "res", "cerdo", "pavo", "jamon", "salmon", "pescado", "atun", "gamba", "huevo", "tofu", "beef", "chicken", "pork", "fish", "egg", "meat", "protein", "sausage", "salchicha", "bacon", "queso proteico"])) return "protein";
-  if (match(text, ["fruta", "verdura", "vegetal", "lechuga", "tomate", "cebolla", "zanahoria", "platano", "banana", "manzana", "naranja", "aguacate", "brocoli", "patata", "papa", "fresa", "uva", "limon", "pepino", "espinaca", "fruit", "vegetable", "lettuce", "apple", "orange", "potato", "avocado", "onion", "berry", "pepper", "pimiento", "calabacin", "pera", "melon", "sandia", "mandarina"])) return "produce";
-  if (match(text, ["leche", "queso", "yogur", "yogurt", "mantequilla", "nata", "milk", "cheese", "butter", "cream", "lacteo", "lactose", "kefir"])) return "dairy";
-  if (match(text, ["pan", "baguette", "barra", "tostada", "croissant", "bolleria", "tortilla", "bread", "bagel", "toast", "muffin", "bun"])) return "bakery";
-  if (match(text, ["chocolate", "galleta", "dulce", "caramelo", "helado", "patata frita", "snack", "golosina", "chuche", "cookie", "candy", "chips", "ice cream", "biscuit", "crisp", "gominola", "nacho"])) return "snacks";
-  if (match(text, ["agua", "zumo", "jugo", "refresco", "cafe", "te", "cerveza", "vino", "cola", "soda", "juice", "coffee", "tea", "beer", "wine", "water", "bebida"])) return "drinks";
-  if (match(text, ["champu", "shampoo", "gel", "desodorante", "dentifrico", "pasta dental", "cepillo dental", "crema facial", "compresa", "tampon", "pañal", "panal", "razor", "toothpaste", "deodorant", "diaper"])) return "personal";
-  if (match(text, ["detergente", "lejia", "jabon", "limpiador", "limpieza", "suavizante", "papel higienico", "bolsa basura", "lavavajillas", "esponja", "servilleta", "dish soap", "cleaner", "laundry", "toilet paper", "trash bag", "tissue"])) return "home";
-  if (match(text, ["arroz", "pasta", "aceite", "azucar", "sal", "harina", "lenteja", "garbanzo", "alubia", "cereal", "avena", "conserva", "tomate frito", "rice", "flour", "sugar", "oil", "bean", "lentil", "oat", "cereal", "sauce", "salsa"])) return "pantry";
+/** Receipt lines can use abbreviated shop labels as well as ordinary product names. */
+export function groceryGroup(name: string): GroceryGroup {
+  const text = normalize(name);
+  // Specific prepared food, baby and household products take precedence over shared food words.
+  if (match(text, ["congelado", "congelados", "frozen", "pizza", "plato preparado", "platos preparados", "comida preparada", "ready meal", "ready meals", "precocinado", "precocinados", "lasana", "lasaña", "croquetas", "nuggets", "empanada", "sopa preparada"])) return "prepared";
+  if (match(text, ["bebe", "infantil", "papilla", "potito", "panal", "panales", "diaper", "diapers", "baby", "mascota", "mascotas", "perro", "gato", "pienso", "pet", "dog food", "cat food", "formula infantil"])) return "babyPets";
+  if (match(text, ["detergente", "lejia", "jabon lavadora", "limpiador", "limpieza", "suavizante", "papel higienico", "papel cocina", "bolsa basura", "bolsas basura", "bolsas", "lavavajillas", "esponja", "servilleta", "dish soap", "cleaner", "laundry", "toilet paper", "trash bag", "tissue", "fairy", "higienico"])) return "home";
+  if (match(text, ["champu", "shampoo", "gel ducha", "gel corporal", "desodorante", "dentifrico", "pasta dental", "cepillo dental", "crema facial", "crema corporal", "compresa", "tampon", "razor", "toothpaste", "deodorant", "serum", "protector solar", "spf50", "skincare", "vitamina", "vitaminas", "multivitaminico", "multivitaminicos", "suplemento", "suplementos", "omega 3", "omega3", "dove", "olay"])) return "personal";
+  if (match(text, ["chocolate", "galleta", "galletas", "dulce", "dulces", "caramelo", "helado", "patatas fritas", "snack", "snacks", "golosina", "chuche", "cookie", "cookies", "candy", "chips", "ice cream", "biscuit", "crisp", "gominola", "nacho", "popcorn", "palomitas", "barrita", "barritas", "almendras", "almond", "almonds", "nuts", "frutos secos"])) return "snacks";
+  if (match(text, ["agua", "zumo", "jugo", "refresco", "cafe", "te", "cerveza", "vino", "cola", "soda", "juice", "coffee", "tea", "beer", "wine", "water", "bebida", "bebidas", "leche de avena", "oat milk"])) return "drinks";
+  if (match(text, ["leche", "queso", "yogur", "yogures", "yogurt", "mantequilla", "nata", "milk", "cheese", "butter", "cream", "lacteo", "lacteos", "kefir"])) return "dairy";
+  if (match(text, ["carne", "pollo", "ternera", "res", "cerdo", "pavo", "jamon", "salmon", "pescado", "atun", "gamba", "huevo", "huevos", "tofu", "beef", "chicken", "pork", "fish", "egg", "eggs", "meat", "protein", "proteina", "proteinas", "sausage", "salchicha", "bacon", "solomillo", "albondigas", "filete", "filetes"])) return "protein";
+  if (match(text, ["fruta", "frutas", "verdura", "verduras", "vegetal", "vegetales", "ensalada", "lechuga", "tomate", "cebolla", "zanahoria", "platano", "banana", "manzana", "naranja", "aguacate", "brocoli", "patata", "papa", "fresa", "uva", "limon", "pepino", "espinaca", "fruit", "vegetable", "lettuce", "apple", "orange", "potato", "avocado", "onion", "berry", "pepper", "pimiento", "calabacin", "pera", "melon", "sandia", "mandarina"])) return "produce";
+  if (match(text, ["pan", "baguette", "barra pan", "tostada", "croissant", "bolleria", "tortilla", "bread", "bagel", "toast", "muffin", "bun", "arroz", "pasta", "cereal", "cereales", "avena", "rice", "oat", "oats", "spaghetti", "macarrones", "harina", "flour"])) return "bakery";
+  if (match(text, ["aceite", "azucar", "sal", "lenteja", "lentejas", "garbanzo", "garbanzos", "alubia", "conserva", "conservas", "tomate frito", "oil", "sugar", "bean", "beans", "lentil", "lentils", "sauce", "salsa", "salsas", "condimento", "condimentos", "especias", "atun en lata", "canned"])) return "pantry";
   return "other";
 }
 
@@ -68,8 +73,8 @@ export function summarizeGroceryReceipts(items: Tx[], previousItems: Tx[] = []):
         if (period === 0) {
           group.amount += amount;
           group.count += 1;
-          const key = line.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
-          const product = group.products.find((p) => p.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase() === key);
+          const key = normalize(line.name);
+          const product = group.products.find((p) => normalize(p.name) === key);
           if (product) { product.amount += amount; product.count += 1; }
           else group.products.push({ name: line.name, amount, count: 1 });
         } else {

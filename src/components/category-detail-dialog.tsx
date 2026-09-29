@@ -201,16 +201,18 @@ export function CategoryDetailDialog({
 }
 
 const groceryLabels: Record<GroceryGroup, { es: string; en: string; icon: string; color: string }> = {
-  protein: { es: "Carne y proteína", en: "Meat & protein", icon: "🥩", color: "bg-chart-5" },
+  protein: { es: "Carne y proteínas", en: "Meat & protein", icon: "🥩", color: "bg-chart-5" },
   produce: { es: "Frutas y verduras", en: "Fruit & vegetables", icon: "🥬", color: "bg-chart-1" },
   dairy: { es: "Lácteos", en: "Dairy", icon: "🥛", color: "bg-chart-3" },
-  bakery: { es: "Panadería", en: "Bakery", icon: "🍞", color: "bg-chart-6" },
+  bakery: { es: "Panadería y cereales", en: "Bakery & grains", icon: "🍞", color: "bg-chart-6" },
   pantry: { es: "Despensa", en: "Pantry", icon: "🥫", color: "bg-chart-7" },
   drinks: { es: "Bebidas", en: "Drinks", icon: "🥤", color: "bg-chart-2" },
   snacks: { es: "Snacks y dulces", en: "Snacks & sweets", icon: "🍬", color: "bg-chart-4" },
+  prepared: { es: "Congelados y preparados", en: "Frozen & prepared", icon: "❄️", color: "bg-chart-3" },
   home: { es: "Hogar y limpieza", en: "Home & cleaning", icon: "🧴", color: "bg-chart-2" },
-  personal: { es: "Cuidado personal", en: "Personal care", icon: "🪥", color: "bg-chart-6" },
-  other: { es: "Otros productos", en: "Other products", icon: "🛒", color: "bg-chart-8" },
+  personal: { es: "Cuidado personal", en: "Personal care", icon: "🧴", color: "bg-chart-6" },
+  babyPets: { es: "Bebé / Mascotas", en: "Baby / Pets", icon: "👶", color: "bg-chart-5" },
+  other: { es: "Otros", en: "Other", icon: "🛒", color: "bg-chart-8" },
 };
 
 function GroceryInsights({ summary, fmt }: { summary: ReturnType<typeof summarizeGroceryReceipts>; fmt: (n: number) => string }) {
