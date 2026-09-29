@@ -106,6 +106,7 @@ export function AppSidebar() {
   const discoverUnlocked = discover.filter((item) => !item.required || planMeetsTier(item.required, tier));
   const discoverLocked = discover.filter((item) => item.required && !planMeetsTier(item.required, tier));
   const [discoverOpen, setDiscoverOpen] = useState(() => discoverLocked.some((item) => item.url === pathname));
+  const [accountOpen, setAccountOpen] = useState(true);
   useEffect(() => {
     if (discoverLocked.some((item) => item.url === pathname) || searchStr.includes("tour=1")) setDiscoverOpen(true);
   }, [pathname, searchStr]);
