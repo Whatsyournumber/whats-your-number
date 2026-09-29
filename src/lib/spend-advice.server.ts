@@ -67,7 +67,7 @@ Reglas:
 - "monthlySaving": número realista en la moneda dada, sin símbolos ni texto.
 - "overspent": true si ese rubro subió vs. el periodo anterior o rompe el objetivo.
 - Si hay un "Plan de gasto por categoría", las categorías EXCEDIDAS van primero, ordenadas por cuánto se pasaron (mayor exceso primero), y "diagnosis" debe decir real vs. plan y el exceso (ej. "1.596 vs. 500 de plan, +219%").
-- La primera acción SIEMPRE debe ser la categoría donde más se excedió el plan, si existe plan.
+- La primera acción SIEMPRE debe ser la categoría donde más se excedió el plan, si existe plan. Si no hay plan, la primera acción es la categoría de MAYOR gasto real del periodo.
 - CON PLAN: toda recomendación debe apoyarse en el plan del usuario. "action" debe citar el monto del plan como límite ("hasta X de plan"), y "monthlySaving" NUNCA puede superar el exceso (real − plan) de esa categoría, ni inventar recortes imposibles.
 - SÉ CONCRETO: siempre que puedas, nombra el comercio real que causa el exceso dentro de esa categoría y el monto exacto (ej. "Transporte: plan 200, real 443; Uber subió 300 más que el periodo anterior"). Usa los comercios del contexto que pertenecen a esa categoría.
 - MONTOS CON SÍMBOLO: cada cifra de dinero dentro de "diagnosis" y "action" lleva el símbolo de la moneda pegado al número (ej. "$23 media", "$1.050 de plan"). Nunca escribas un monto sin símbolo. "monthlySaving" sí va como número puro.
@@ -80,7 +80,7 @@ Reglas:
   · Supermercado → marca blanca, lista semanal y evitar compras de conveniencia.
   · Apps y suscripciones → cancela las que no usas, pasa a plan anual o familiar.
   · Transporte diario (Uber, taxi) → abono de transporte o combinar con transporte público en las horas caras.
-  · Nightlife (bares, discotecas, copas) → dos palancas, elige una o combina: limita las salidas al mes (cuenta las veces y pon un máximo) o reduce el coste por salida (copas en casa antes, happy hour, zonas sin consumición mínima, turnos de amigo que paga la botella).
+  · Nightlife (bares, discotecas, copas) → el "count" de esta categoría son DÍAS distintos (salidas reales), no movimientos: úsalo tal cual. Dos palancas, elige una o combina: baja las salidas al mes (ej. "Baja las salidas de 14 a 11") o reduce la media por salida (ej. "toma menos por salida, $45 de media"), y di cuánto ahorra. Trucos: copas en casa antes, happy hour, zonas sin consumición mínima.
   · Ocio y compras → regla de 48 horas, cupones y segunda mano.
   · Salud, educación, hijos → compara proveedores y aprovecha deducciones o pagos anuales, no recortes lo esencial.
   · Gasolina y coche → estaciones low-cost, mantenimiento preventivo y revisar seguros del vehículo.
@@ -104,7 +104,7 @@ function money(amount: number, currency: string): string {
 }
 
 /** Consejo propio de cada rubro: cada caja tiene su lógica de ayuda. */
-function smartTip(category: string, merchant: string | undefined, ctx: { currency: string; avg?: number; count?: number }): string {
+function smartTip(category: string, merchant: string | undefined, ctx: { currency: string; avg?: number; count?: number; planned?: number }): string {
   const name = merchant || category;
   const lower = `${category} ${merchant ?? ""}`.toLowerCase();
   const cur = ctx.currency;
@@ -145,8 +145,20 @@ function smartTip(category: string, merchant: string | undefined, ctx: { currenc
     return `Aplica la regla de 48 horas antes de comprar en ${name} y busca cupones o segunda mano`;
   }
   if (lower.includes("nightlife") || lower.includes("nocturn") || lower.includes("discot") || lower.includes("club") || lower.includes("copa") || lower.includes("bares") || lower.includes("bar ")) {
-    const base = `Limita tus salidas a ${name} al mes o reduce el coste por salida: copas en casa antes, happy hour y zonas sin consumición mínima`;
-    return freq ? `Saliste ${freq} en ${name}; elige: menos noches al mes o baja la media por noche` : base;
+    const nights = ctx.count && ctx.count > 0 ? ctx.count : null;
+    const avgNum = ctx.avg && ctx.avg > 0 ? ctx.avg : null;
+    // Con plan: salidas objetivo = plan ÷ media por salida; media objetivo = plan ÷ salidas
+    if (nights && avgNum && ctx.planned && ctx.planned > 0) {
+      const targetNights = Math.max(1, Math.floor(ctx.planned / avgNum));
+      const targetAvg = Math.max(1, Math.floor(ctx.planned / nights));
+      const saving = Math.max(1, Math.round(nights * avgNum - ctx.planned));
+      return `Baja las salidas de ${nights} a ${targetNights} al mes o toma menos por salida (${money(targetAvg, cur)} de media) y ahorras ${money(saving, cur)}`;
+    }
+    if (nights && avgNum) {
+      const less = Math.max(1, nights - 3);
+      return `Saliste ${nights} noches (${money(avgNum, cur)} media); baja a ${less} salidas o reduce la media por noche`;
+    }
+    return `Limita tus salidas a ${name} al mes o reduce el coste por salida: copas en casa antes, happy hour y zonas sin consumición mínima`;
   }
   if (lower.includes("ocio") || lower.includes("entreten")) {
     return `Pon un tope de salidas al mes en ${name} o baja el coste por salida buscando días con descuento`;
@@ -189,7 +201,11 @@ function buildFallbackActions(input: AdviceInput, existing: SpendAdvice["actions
       diagnosis: `${input.periodLabel}: gastaste ${money(b.actual, input.currency)} vs. ${money(b.planned, input.currency)} de plan, un exceso de +${Math.round((excess / b.planned) * 100)}%.`,
       action: smartTip(b.name, merchant?.name, {
         currency: input.currency,
-        ...(merchant?.count ? { count: merchant.count, avg: merchant.amount / merchant.count } : {}),
+        planned: b.planned,
+        // En Nightlife el count de la categoría ya son días distintos (salidas reales)
+        ...(input.categories.find((c) => c.name.toLowerCase() === key)?.count
+          ? { count: input.categories.find((c) => c.name.toLowerCase() === key)!.count!, avg: b.actual / input.categories.find((c) => c.name.toLowerCase() === key)!.count! }
+          : merchant?.count ? { count: merchant.count, avg: merchant.amount / merchant.count } : {}),
       }),
       monthlySaving: Math.min(excess, Math.round(excess * 0.5)),
       overspent: true,
