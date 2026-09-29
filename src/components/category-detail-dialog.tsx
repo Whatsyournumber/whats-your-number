@@ -71,11 +71,11 @@ export function CategoryDetailDialog({
   const variation = prevAmount > 0 ? ((amount - prevAmount) / prevAmount) * 100 : null;
   const avgTicket = items.length > 0 ? amount / items.length : 0;
   const maxMerchant = merchants[0]?.amount ?? 1;
-  const outingsPerMonth = days > 0 && items.length > 0 ? Math.max(1, Math.round(items.length / (days / 30))) : 0;
-  const outingsLabel = outingsPerMonth === 1
-    ? t("salida de fiesta al mes", "night out per month")
-    : t("salidas de fiesta al mes", "nights out per month");
-  const nightlifeHint = `${outingsPerMonth} ${outingsLabel}`;
+  const outings = items.length;
+  const outingsLabel = outings === 1
+    ? t("salida de fiesta", "night out")
+    : t("salidas de fiesta", "nights out");
+  const nightlifeHint = `${outings} ${outingsLabel}`;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -156,7 +156,12 @@ export function CategoryDetailDialog({
           </div>
 
           <div>
-            <p className="mb-2 text-xs font-medium text-muted-foreground">{t("Movimientos", "Transactions")}</p>
+            <p className="mb-2 text-xs font-medium text-muted-foreground">
+              {t("Movimientos", "Transactions")}
+              {name === "Nightlife" && outings > 0 && (
+                <span className="ml-1.5 normal-case text-foreground/80">· {nightlifeHint}</span>
+              )}
+            </p>
             <ul className="max-h-[240px] space-y-0.5 overflow-auto pr-1">
               {items
                 .slice()
