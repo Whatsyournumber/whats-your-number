@@ -523,8 +523,8 @@ function RetiroContent() {
                 </div>
                 <p className="relative mt-2 whitespace-nowrap text-[11px] text-muted-foreground">
                   {t(
-                    `Con ${fmt(aporteShown)}/mes al ${rate}% llegas a ${fmtCompact(final.value)} en ${aporteYearsLabel}`,
-                    `With ${fmt(aporteShown)}/mo at ${rate}% you reach ${fmtCompact(final.value)} in ${aporteYearsLabel}`,
+                    `Con ${fmt(aporteShown)}/mes al ${rate}%: ${fmt(final.value)}`,
+                    `With ${fmt(aporteShown)}/mo at ${rate}%: ${fmt(final.value)}`,
                   )}
                 </p>
               </>
