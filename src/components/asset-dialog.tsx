@@ -64,11 +64,14 @@ export function AssetDialog({
   onOpenChange,
   holdingId = null,
   fallbackHolding = null,
+  forPortfolio = false,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   holdingId?: string | null;
   fallbackHolding?: Holding | null;
+  /** Si es true, el activo nuevo aparece en Portafolio (no solo en Patrimonio). */
+  forPortfolio?: boolean;
 }) {
   const t = useT();
   const { holdings, saveAll, saving } = useHoldings();
