@@ -181,8 +181,8 @@ export function PlanUpgradeOnboarding() {
               <span key={i} className={cn("h-1 flex-1 rounded-full", i <= step ? "bg-primary" : "bg-muted")} />
             ))}
           </div>
-          <DialogTitle>{titles[step][0]}</DialogTitle>
-          <DialogDescription>{titles[step][1]}</DialogDescription>
+          <DialogTitle>{titles[step]?.[0]}</DialogTitle>
+          <DialogDescription>{titles[step]?.[1]}</DialogDescription>
         </DialogHeader>
 
         {step === 0 && (
@@ -210,7 +210,7 @@ export function PlanUpgradeOnboarding() {
                   type="button"
                   onClick={() => {
                     setRisk(r.v);
-                    if (!vals.expected_return) setVals((s) => ({ ...s, expected_return: String(r.ret) }));
+                    if (!vals["expected_return"]) setVals((s) => ({ ...s, expected_return: String(r.ret) }));
                   }}
                   className={cn(
                     "rounded-xl border px-2 py-2 text-xs font-medium transition-colors",
