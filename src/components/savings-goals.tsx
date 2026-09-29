@@ -65,7 +65,7 @@ export function SavingsGoals({ fmt }: { fmt: (amount: number) => string }) {
               <p className="truncate text-[11px] text-muted-foreground">{t("Sigue el progreso de tus objetivos.", "Track your goals' progress.")}</p>
             </div>
           </div>
-          <Button size="sm" className="h-8 shrink-0 gap-1 px-2.5 text-xs" onClick={() => setDraft(newDraft())}><Plus className="h-3.5 w-3.5" />{t("Nueva meta", "New goal")}</Button>
+          <Button size="sm" className="h-8 shrink-0 gap-1 px-2.5 text-xs" data-tour-savings-target="new" onClick={() => setDraft(newDraft())}><Plus className="h-3.5 w-3.5" />{t("Nueva meta", "New goal")}</Button>
         </div>
         <Tabs value={filter} onValueChange={(value) => setFilter(value as typeof filter)}>
           <TabsList className="w-full">
