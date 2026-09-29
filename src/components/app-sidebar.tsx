@@ -99,7 +99,7 @@ export function AppSidebar() {
     { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark, required: "investor" },
     { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart, required: "investor" },
     { title: "City Planner", url: "/ciudades", icon: Globe, required: "pro" },
-    { title: "Life Planner", url: "/life-planner", icon: Target, required: "pro" },
+    { title: "Life Planner", url: "/life-planner", icon: Compass, required: "pro" },
     { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Sparkles, required: "pro" },
     { title: t("Familia", "Family"), url: "/ninos", icon: Users, required: "patrimonio" },
   ];
