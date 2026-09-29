@@ -80,7 +80,7 @@ Reglas:
   · Supermercado → marca blanca, lista semanal y evitar compras de conveniencia.
   · Apps y suscripciones → cancela las que no usas, pasa a plan anual o familiar.
   · Transporte diario (Uber, taxi) → abono de transporte o combinar con transporte público en las horas caras.
-  · Nightlife (bares, discotecas, copas) → dos palancas, elige una o combina: limita las salidas al mes (cuenta las veces y pon un máximo) o reduce el coste por salida (copas en casa antes, happy hour, zonas sin consumición mínima, turnos de amigo que paga la botella).
+  · Nightlife (bares, discotecas, copas) → el "count" de esta categoría son DÍAS distintos (salidas reales), no movimientos: úsalo tal cual. Dos palancas, elige una o combina: baja las salidas al mes (ej. "Baja las salidas de 14 a 11") o reduce la media por salida (ej. "toma menos por salida, $45 de media"), y di cuánto ahorra. Trucos: copas en casa antes, happy hour, zonas sin consumición mínima.
   · Ocio y compras → regla de 48 horas, cupones y segunda mano.
   · Salud, educación, hijos → compara proveedores y aprovecha deducciones o pagos anuales, no recortes lo esencial.
   · Gasolina y coche → estaciones low-cost, mantenimiento preventivo y revisar seguros del vehículo.
@@ -201,7 +201,11 @@ function buildFallbackActions(input: AdviceInput, existing: SpendAdvice["actions
       diagnosis: `${input.periodLabel}: gastaste ${money(b.actual, input.currency)} vs. ${money(b.planned, input.currency)} de plan, un exceso de +${Math.round((excess / b.planned) * 100)}%.`,
       action: smartTip(b.name, merchant?.name, {
         currency: input.currency,
-        ...(merchant?.count ? { count: merchant.count, avg: merchant.amount / merchant.count } : {}),
+        planned: b.planned,
+        // En Nightlife el count de la categoría ya son días distintos (salidas reales)
+        ...(input.categories.find((c) => c.name.toLowerCase() === key)?.count
+          ? { count: input.categories.find((c) => c.name.toLowerCase() === key)!.count!, avg: b.actual / input.categories.find((c) => c.name.toLowerCase() === key)!.count! }
+          : merchant?.count ? { count: merchant.count, avg: merchant.amount / merchant.count } : {}),
       }),
       monthlySaving: Math.min(excess, Math.round(excess * 0.5)),
       overspent: true,
