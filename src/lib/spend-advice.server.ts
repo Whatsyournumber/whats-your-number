@@ -104,7 +104,7 @@ function money(amount: number, currency: string): string {
 }
 
 /** Consejo propio de cada rubro: cada caja tiene su lógica de ayuda. */
-function smartTip(category: string, merchant: string | undefined, ctx: { currency: string; avg?: number; count?: number }): string {
+function smartTip(category: string, merchant: string | undefined, ctx: { currency: string; avg?: number; count?: number; planned?: number }): string {
   const name = merchant || category;
   const lower = `${category} ${merchant ?? ""}`.toLowerCase();
   const cur = ctx.currency;
@@ -145,8 +145,20 @@ function smartTip(category: string, merchant: string | undefined, ctx: { currenc
     return `Aplica la regla de 48 horas antes de comprar en ${name} y busca cupones o segunda mano`;
   }
   if (lower.includes("nightlife") || lower.includes("nocturn") || lower.includes("discot") || lower.includes("club") || lower.includes("copa") || lower.includes("bares") || lower.includes("bar ")) {
-    const base = `Limita tus salidas a ${name} al mes o reduce el coste por salida: copas en casa antes, happy hour y zonas sin consumición mínima`;
-    return freq ? `Saliste ${freq} en ${name}; elige: menos noches al mes o baja la media por noche` : base;
+    const nights = ctx.count && ctx.count > 0 ? ctx.count : null;
+    const avgNum = ctx.avg && ctx.avg > 0 ? ctx.avg : null;
+    // Con plan: salidas objetivo = plan ÷ media por salida; media objetivo = plan ÷ salidas
+    if (nights && avgNum && ctx.planned && ctx.planned > 0) {
+      const targetNights = Math.max(1, Math.floor(ctx.planned / avgNum));
+      const targetAvg = Math.max(1, Math.floor(ctx.planned / nights));
+      const saving = Math.max(1, Math.round(nights * avgNum - ctx.planned));
+      return `Baja las salidas de ${nights} a ${targetNights} al mes o toma menos por salida (${money(targetAvg, cur)} de media) y ahorras ${money(saving, cur)}`;
+    }
+    if (nights && avgNum) {
+      const less = Math.max(1, nights - 3);
+      return `Saliste ${nights} noches (${money(avgNum, cur)} media); baja a ${less} salidas o reduce la media por noche`;
+    }
+    return `Limita tus salidas a ${name} al mes o reduce el coste por salida: copas en casa antes, happy hour y zonas sin consumición mínima`;
   }
   if (lower.includes("ocio") || lower.includes("entreten")) {
     return `Pon un tope de salidas al mes en ${name} o baja el coste por salida buscando días con descuento`;
