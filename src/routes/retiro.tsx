@@ -140,21 +140,34 @@ function RetiroContent() {
   const targetNow = isGoal ? plan.targetCapital : liveNumber > 0 ? liveNumber : plan.targetCapital;
   const gap = targetNow - final.value;
 
-  // Aporte mensual necesario para llegar a tu número antes de tu edad de retiro.
-  // Se usa el rendimiento histórico del S&P 500 (10% anual). Así el aporte baja
-  // cuanto más años tienes por delante, sin caer artificialmente a 0.
-  const sp500Monthly = minMonthlyForRetirement({
-    target: targetNow,
-    invested: investable,
-    years: Math.max(1, retireAge - retirement.currentAge),
-  });
+  // Ahorro mensual que el usuario ya destinó a inversiones en «Editar ahorro»
+  // (flujo de dinero). Si lo cambia allí, el aporte sugerido se recalcula.
+  const { value: savingsAlloc } = useSyncedSetting<{ invest: number; goals: number } | null>(
+    "whatsyournumber:savings-allocation",
+    null,
+  );
+  const investMonthly = Math.max(0, Math.round(savingsAlloc?.invest ?? 0));
 
+  // Aporte mensual sugerido: el total que necesitas aportar al 10% anual para
+  // llegar a tu meta (tu número) a tu edad de retiro, sumando lo que ya está
+  // invertido y lo que ya destinas a inversiones cada mes.
+  const suggestedContribution = (() => {
+    if (targetNow <= 0) return investMonthly;
+    const yearsToRetire = Math.max(1, retireAge - retirement.currentAge);
+    const mr = 0.1 / 12;
+    const months = Math.round(yearsToRetire * 12);
+    const growth = Math.pow(1 + mr, months);
+    const remaining = targetNow - Math.max(0, investable) * growth;
+    if (remaining <= 0) return investMonthly;
+    const needed = (remaining * mr) / (growth - 1);
+    return Math.max(investMonthly, Math.ceil(needed / 10) * 10);
+  })();
 
-  // Tu aporte mensual: el que elegiste y guardaste; si todavía no elegiste, el sugerido al 10%.
+  // Tu aporte mensual: el que elegiste y guardaste; si todavía no elegiste, el sugerido.
   const savedContribution =
     profile.retirement_monthly_contribution > 0 ? Math.round(profile.retirement_monthly_contribution) : 0;
   const [editedContribution, setEditedContribution] = useState<number | null>(null);
-  const aporteShown = editedContribution ?? (savedContribution || sp500Monthly);
+  const aporteShown = editedContribution ?? (savedContribution || suggestedContribution);
 
   const commitContribution = () => {
     const next = Math.max(0, Math.round(draftContribution));
