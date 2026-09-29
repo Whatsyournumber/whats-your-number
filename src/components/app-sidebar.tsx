@@ -277,10 +277,10 @@ export function AppSidebar() {
       </SidebarContent>
 
       {!collapsed && (
-        <SidebarFooter className="p-2">
-          <Link to={tier === "free" ? "/dashboard" : "/retiro"} onClick={() => setOpenMobile(false)} className="surface block p-2.5">
-            <p className="text-[11px] text-muted-foreground">WhatsYournumber</p>
-            <p className="numeric mt-0.5 text-base font-semibold">{data.fmtCompact(data.plan.targetCapital)}</p>
+        <SidebarFooter className={compact ? "p-1.5" : "p-2"}>
+          <Link to={tier === "free" ? "/dashboard" : "/retiro"} onClick={() => setOpenMobile(false)} className={`surface block ${compact ? "p-2" : "p-2.5"}`}>
+            {!compact && <p className="text-[11px] text-muted-foreground">WhatsYournumber</p>}
+            <p className={`numeric ${compact ? "" : "mt-0.5"} ${compact ? "text-sm" : "text-base"} font-semibold`}>{data.fmtCompact(data.plan.targetCapital)}</p>
             {data.plan.mode !== "freedom" ? (
               <p className="mt-1 flex items-center gap-1.5 whitespace-nowrap text-xs text-muted-foreground">
                 {(() => {
