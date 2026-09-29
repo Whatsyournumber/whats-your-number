@@ -1283,7 +1283,7 @@ export function AppTour() {
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
             <path
-              d={`M ${cashFlowMarkers.box.x - 4} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.7} Q ${cashFlowMarkers.box.x - 44} ${cashFlowMarkers.goalNew.y + 44} ${cashFlowMarkers.goalNew.x} ${cashFlowMarkers.goalNew.y}`}
+              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.8} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height + 4} Q ${cashFlowMarkers.box.x + cashFlowMarkers.box.width * 0.9} ${(cashFlowMarkers.box.y + cashFlowMarkers.box.height + cashFlowMarkers.goalNew.y) / 2} ${cashFlowMarkers.goalNew.x} ${cashFlowMarkers.goalNew.y}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
           </svg>
