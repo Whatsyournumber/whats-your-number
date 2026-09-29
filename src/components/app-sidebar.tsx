@@ -274,7 +274,7 @@ export function AppSidebar() {
               </SidebarGroupContent>
             </SidebarGroup>
             <div className="mx-3 h-px bg-border" />
-            <SidebarGroup className={discoverOpen ? "min-h-0 p-1.5" : "shrink-0 p-1.5"} style={discoverOpen ? { flex: `${discoverLocked.length} 1 0%` } : undefined}>
+            <SidebarGroup className={discoverOpen ? "min-h-0 p-1.5" : "shrink-0 p-1.5"} style={discoverOpen ? { flex: `${discoverLocked.length} 1 0%`, minHeight: `${discoverLocked.length * 36 + 44}px` } : undefined}>
               {!collapsed && discoverLocked.length > 0 && (
                 <Button
                   type="button"
