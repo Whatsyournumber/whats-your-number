@@ -1160,12 +1160,14 @@ export function ExpenseLog() {
                 const cls = "fixed z-[45] bg-background/60 backdrop-blur-sm sm:hidden";
                 const h = addBlurHole;
                 if (!h) return null;
+                const nav = document.querySelector("nav.fixed.bottom-0") as HTMLElement | null;
+                const footerTop = nav ? nav.getBoundingClientRect().top : window.innerHeight;
                 return (
                   <>
                     <div aria-hidden="true" className={cls} style={{ left: 0, right: 0, top: 56, height: Math.max(0, h.y1 - 56) }} />
                     <div aria-hidden="true" className={cls} style={{ left: 0, top: h.y1, width: h.x1, height: h.y2 - h.y1 }} />
                     <div aria-hidden="true" className={cls} style={{ left: h.x2, right: 0, top: h.y1, height: h.y2 - h.y1 }} />
-                    <div aria-hidden="true" className={cls} style={{ left: 0, right: 0, top: h.y2, bottom: 0 }} />
+                    <div aria-hidden="true" className={cls} style={{ left: 0, right: 0, top: h.y2, height: Math.max(0, footerTop - h.y2) }} />
                   </>
                 );
               })(),
