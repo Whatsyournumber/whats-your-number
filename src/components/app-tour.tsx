@@ -89,12 +89,12 @@ const STEPS: Step[] = [
     url: "/cash-flow", icon: Scale, minPlan: "free",
     es: ["Metas de ahorro", "Reparte tu dinero con la regla 40/40/20 y ahorra para tus objetivos.",
       "40% necesidades, 40% estilo de vida y 20% ahorro: ajústala a tu plan.",
-      "Crea metas (casa, carro, viaje) y mira cuándo las lograrás.",
-      "Decide cuánto de tu ahorro va a metas y cuánto a inversiones."],
+      "Decide cuánto de tu ahorro va a metas y cuánto a inversiones.",
+      "Crea metas (casa, carro, viaje) y mira cuándo las lograrás."],
     en: ["Savings goals", "Split your money with the 40/40/20 rule and save for your goals.",
       "40% needs, 40% lifestyle and 20% savings: adjust it to your plan.",
-      "Create goals (home, car, trip) and see when you'll reach them.",
-      "Decide how much of your savings goes to goals and to investments."],
+      "Decide how much of your savings goes to goals and to investments.",
+      "Create goals (home, car, trip) and see when you'll reach them."],
   },
   {
     url: "/retiro", icon: Target, minPlan: "pro",
@@ -310,6 +310,10 @@ export function AppTour() {
         { sel: "[data-tour-expense-target='plan']", badge: 1 },
         { sel: "[data-tour-expense-target='add-mobile']", badge: 2 },
       ],
+      "/cash-flow": [
+        { sel: "[data-tour-cashflow-target='alloc-m']", badge: 2 },
+        { sel: "[data-tour-savings-target='new']", badge: 3 },
+      ],
       "/retiro": [
         { sel: "[data-tour-number-target='number']", badge: 1 },
       ],
@@ -378,8 +382,8 @@ export function AppTour() {
     };
     const timers = [120, 500, 1100].map((ms, i) =>
       window.setTimeout(() => {
-        if (current.url === "/registro-gastos") {
-          // Arriba de todo para que se vean el + de la cabecera y el plan juntos.
+        if (current.url === "/registro-gastos" || current.url === "/cash-flow") {
+          // Arriba de todo para que se vean el + de la cabecera, el plan y el botón Ahorro juntos.
           window.scrollTo({ top: 0, behavior: i === 0 ? "auto" : "smooth" });
         } else {
           const el = find();
@@ -521,8 +525,9 @@ export function AppTour() {
 
   // Señala "Editar categorías" y los bloques de destino en Distribución del dinero.
   const [cashFlowMarkers, setCashFlowMarkers] = useState<{
-    blocks: { x: number; y: number };
     edit: { x: number; y: number };
+    alloc: { x: number; y: number };
+    goalNew: { x: number; y: number };
     box: { x: number; y: number; width: number; height: number };
   } | null>(null);
   useEffect(() => {
@@ -532,13 +537,15 @@ export function AppTour() {
     }
     let cancelled = false;
     const measure = () => {
-      const blocks = document.querySelector<HTMLElement>('[data-tour-cashflow-target="blocks"]')?.getBoundingClientRect();
       const edit = document.querySelector<HTMLElement>('[data-tour-cashflow-target="edit"]')?.getBoundingClientRect();
+      const alloc = document.querySelector<HTMLElement>('[data-tour-cashflow-target="alloc"]')?.getBoundingClientRect();
+      const goalNew = document.querySelector<HTMLElement>('[data-tour-savings-target="new"]')?.getBoundingClientRect();
       const box = tourBoxRef.current?.getBoundingClientRect();
-      if (!blocks || !edit || !box || cancelled) return;
+      if (!edit || !alloc || !goalNew || !box || cancelled) return;
       setCashFlowMarkers({
-        blocks: { x: blocks.left + blocks.width * 0.72, y: blocks.top + 46 },
         edit: { x: edit.left + 6, y: edit.top + 2 },
+        alloc: { x: alloc.left + 6, y: alloc.top + 2 },
+        goalNew: { x: goalNew.left + 6, y: goalNew.top + 2 },
         box: { x: box.left, y: box.top, width: box.width, height: box.height },
       });
     };
@@ -1117,9 +1124,9 @@ export function AppTour() {
               ))}
             </div>
           )}
-          {(isAddSpotStep ? [] : isMobile ? points.slice(0, 2) : points).length > 0 && (
+          {(isAddSpotStep ? [] : isMobile ? (isCashFlowStep ? points.slice(0, 3) : points.slice(0, 2)) : points).length > 0 && (
           <ul className="relative mt-2.5 space-y-1.5 sm:mt-3 sm:space-y-2">
-            {(isAddSpotStep ? [] : isMobile ? points.slice(0, 2) : points).map((p, i) => {
+            {(isAddSpotStep ? [] : isMobile ? (isCashFlowStep ? points.slice(0, 3) : points.slice(0, 2)) : points).map((p, i) => {
               const B = BULLET_ICONS[i % BULLET_ICONS.length] ?? Check;
               return (
                 <li key={i} className="flex items-start gap-2 text-[11px] leading-snug text-tour-muted sm:gap-2.5 sm:text-xs sm:leading-relaxed">
@@ -1258,7 +1265,7 @@ export function AppTour() {
           </span>
         </div>
       )}
-      {isCashFlowStep && cashFlowMarkers?.edit && cashFlowMarkers?.blocks && cashFlowMarkers?.box && (
+      {isCashFlowStep && cashFlowMarkers?.edit && cashFlowMarkers?.alloc && cashFlowMarkers?.goalNew && cashFlowMarkers?.box && (
         <div className="pointer-events-none fixed inset-0 z-[95] hidden sm:block" aria-hidden="true">
           <svg className="absolute inset-0 h-full w-full overflow-visible">
             <defs>
@@ -1271,7 +1278,11 @@ export function AppTour() {
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
             <path
-              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width - 16} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.35} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width + cashFlowMarkers.blocks.x) / 2} ${cashFlowMarkers.blocks.y + 70} ${cashFlowMarkers.blocks.x} ${cashFlowMarkers.blocks.y}`}
+              d={`M ${cashFlowMarkers.box.x + cashFlowMarkers.box.width - 16} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.35} Q ${(cashFlowMarkers.box.x + cashFlowMarkers.box.width + cashFlowMarkers.alloc.x) / 2} ${cashFlowMarkers.alloc.y + 70} ${cashFlowMarkers.alloc.x} ${cashFlowMarkers.alloc.y}`}
+              fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
+            />
+            <path
+              d={`M ${cashFlowMarkers.box.x - 4} ${cashFlowMarkers.box.y + cashFlowMarkers.box.height * 0.7} Q ${cashFlowMarkers.box.x - 70} ${cashFlowMarkers.goalNew.y + 55} ${cashFlowMarkers.goalNew.x} ${cashFlowMarkers.goalNew.y}`}
               fill="none" strokeWidth={1.5} strokeDasharray="5 7" markerEnd="url(#tour-cashflow-arrow)" className="stroke-positive/70"
             />
           </svg>
@@ -1283,9 +1294,15 @@ export function AppTour() {
           </span>
           <span
             className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
-            style={{ left: cashFlowMarkers.blocks.x - 14, top: cashFlowMarkers.blocks.y - 14 }}
+            style={{ left: cashFlowMarkers.alloc.x - 14, top: cashFlowMarkers.alloc.y - 14 }}
           >
             2
+          </span>
+          <span
+            className="absolute grid h-7 w-7 place-items-center rounded-full bg-positive text-xs font-bold text-background shadow-lg shadow-positive/40"
+            style={{ left: cashFlowMarkers.goalNew.x - 26, top: cashFlowMarkers.goalNew.y + 16 }}
+          >
+            3
           </span>
         </div>
       )}
