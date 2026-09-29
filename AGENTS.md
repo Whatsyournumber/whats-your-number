@@ -23,4 +23,4 @@ Validate and normalize invitation email addresses with the shared Zod helper bef
 
 Onboarding stores one primary and one optional secondary financial goal; only an exclusive spending-tracking goal skips the return-assumption step and replaces the final assets/liabilities sections with bank savings for emergency-fund context.
 
-Supermarket receipt insights parse itemized lines from transaction descriptions; when a bank charge duplicates an uploaded receipt, keep the bank charge and carry its receipt details in the read model so spending is counted once without losing products.
+Supermarket receipt insights parse itemized lines from transaction descriptions into twelve bilingual, product-name-based rubros and show only rubros with current spend; when a bank charge duplicates an uploaded receipt, keep the bank charge and carry its receipt details in the read model so spending is counted once without losing products.

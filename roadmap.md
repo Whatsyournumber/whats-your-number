@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Clasificar los productos del súper en los 12 rubros acordados y mostrar solo los que tienen gasto.
+
 - [x] Ajustar menú lateral para que todos los planes aprovechen la altura disponible y muestren todos los accesos sin scroll.
 
 - [x] Verificar campo "Nombre de la categoría" a ancho completo (CSS aplicado; compilación OK)
