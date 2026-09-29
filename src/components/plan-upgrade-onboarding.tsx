@@ -33,17 +33,11 @@ const DEBTS: F[] = [
   { k: "mortgage_term", es: "Años restantes", en: "Years left", unit: "years", half: true },
   { k: "liabilities", es: "Otras deudas (tarjetas, préstamos)", en: "Other debts (cards, loans)" },
 ];
-const PORTFOLIO: F[] = [
-  { k: "assets_etf", es: "Fondos indexados / ETF", en: "Index funds / ETFs", half: true },
-  { k: "assets_stocks", es: "Acciones", en: "Stocks", half: true },
-  { k: "assets_retirement", es: "Plan de pensiones", en: "Pension plan", half: true },
-  { k: "assets_crypto", es: "Cripto", en: "Crypto", half: true },
-];
 const PLAN: F[] = [
   { k: "retirement_monthly_contribution", es: "Aporte mensual a inversiones", en: "Monthly investing", half: true },
   { k: "expected_return", es: "Rentabilidad esperada", en: "Expected return", unit: "pct", half: true },
 ];
-const ALL = [...ASSETS, ...DEBTS, ...PORTFOLIO, ...PLAN];
+const ALL = [...ASSETS, ...DEBTS, ...PLAN];
 const RISKS = [
   { v: "conservador", es: "Conservador", en: "Conservative", ret: 5 },
   { v: "moderado", es: "Moderado", en: "Moderate", ret: 7 },
