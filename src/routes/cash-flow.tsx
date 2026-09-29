@@ -667,7 +667,7 @@ function CashFlow() {
             </div>
           )}
         </div>
-        <Panel className="flex flex-col overflow-hidden" title={t("Tus inversiones en el tiempo", "Your investments over time")} description={t(`Lo que pueden ser tus ahorros de inversión (${fmt(destInvest)}/mes).`, `What your investment savings (${fmt(destInvest)}/mo) can become.`)} descriptionClassName="whitespace-nowrap" icon={<TrendingUp />}>
+        <Panel className="flex flex-col overflow-hidden" title={t("Tus inversiones en el tiempo", "Your investments over time")} description={t(`Lo que pueden ser tus ahorros de inversión (${fmt(destInvest)}/mes).`, `What your investment savings (${fmt(destInvest)}/mo) can become.`)} descriptionClassName="whitespace-nowrap text-xs" icon={<TrendingUp />}>
           {destInvest > 0 ? (
             <>
               <div className="flex items-end justify-between gap-3">
