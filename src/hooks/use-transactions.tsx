@@ -130,7 +130,7 @@ export function useTransactions() {
         if (duplicate) {
           // Keep the bank movement's total, but retain the uploaded receipt's
           // product lines for analysis when the two describe the same purchase.
-          if (!duplicate.manual && (t.description?.startsWith("wyn-receipt:") || t.description?.includes("|wyn-receipt:"))) {
+          if (!duplicate.manual && t.description?.startsWith("wyn-receipt:")) {
             receiptDescriptions.set(duplicate.id, t.description);
           }
           dropped.add(t.id);

@@ -132,6 +132,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
       const items = (result.items ?? []).filter((item) => item.name.trim() && Number(item.amount) > 0)
         .map((item) => ({ name: item.name.trim(), amount: Number(item.amount), category: item.category }));
       if (!items.length) throw new Error(t("No encontramos productos en este ticket", "No products found on this receipt"));
+      if (items.length > 150 || JSON.stringify(items).length > 40000) throw new Error(t("El ticket tiene demasiados productos", "The receipt has too many items"));
       setReceiptItems(items);
       setReceiptName(file.name);
       if (Number(result.amount) > 0) setTotal(Math.abs(Number(result.amount)));
