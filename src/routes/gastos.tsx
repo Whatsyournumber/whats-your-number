@@ -1572,6 +1572,7 @@ function Gastos() {
                }}
               name={tc(detailCat)}
               items={detailRows.find((r) => r.name === detailCat)?.items ?? []}
+              previousItems={previous.filter((tx) => categoryOf(tx) === detailCat)}
               amount={detailRows.find((r) => r.name === detailCat)?.amount ?? 0}
               prevAmount={prevByCategory.get(detailCat) ?? 0}
               periodTotal={variableTotal}
