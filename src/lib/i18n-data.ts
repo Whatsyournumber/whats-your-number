@@ -29,6 +29,7 @@ export function translateGoalNote(note: string, lang: Lang) {
 }
 
 const CATEGORY_NAMES: Record<string, string> = {
+  "Supermercado": "Groceries",
   "Mercado": "Groceries",
   "Restaurantes": "Restaurants",
   "Delivery": "Delivery",
