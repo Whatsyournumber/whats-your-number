@@ -67,7 +67,7 @@ Reglas:
 - "monthlySaving": número realista en la moneda dada, sin símbolos ni texto.
 - "overspent": true si ese rubro subió vs. el periodo anterior o rompe el objetivo.
 - Si hay un "Plan de gasto por categoría", las categorías EXCEDIDAS van primero, ordenadas por cuánto se pasaron (mayor exceso primero), y "diagnosis" debe decir real vs. plan y el exceso (ej. "1.596 vs. 500 de plan, +219%").
-- La primera acción SIEMPRE debe ser la categoría donde más se excedió el plan, si existe plan.
+- La primera acción SIEMPRE debe ser la categoría donde más se excedió el plan, si existe plan. Si no hay plan, la primera acción es la categoría de MAYOR gasto real del periodo.
 - CON PLAN: toda recomendación debe apoyarse en el plan del usuario. "action" debe citar el monto del plan como límite ("hasta X de plan"), y "monthlySaving" NUNCA puede superar el exceso (real − plan) de esa categoría, ni inventar recortes imposibles.
 - SÉ CONCRETO: siempre que puedas, nombra el comercio real que causa el exceso dentro de esa categoría y el monto exacto (ej. "Transporte: plan 200, real 443; Uber subió 300 más que el periodo anterior"). Usa los comercios del contexto que pertenecen a esa categoría.
 - MONTOS CON SÍMBOLO: cada cifra de dinero dentro de "diagnosis" y "action" lleva el símbolo de la moneda pegado al número (ej. "$23 media", "$1.050 de plan"). Nunca escribas un monto sin símbolo. "monthlySaving" sí va como número puro.
