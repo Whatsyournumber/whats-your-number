@@ -1721,7 +1721,7 @@ export type Database = {
               _partner_name: string
               _partner_share: number
               _payer_id: string
-              _receipt_items?: Json
+              _receipt_items: Json
               _split_mode: string
               _total: number
               _tx_date: string
