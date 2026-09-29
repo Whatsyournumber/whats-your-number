@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Incluir tickets de gastos compartidos en los rubros del súper, contando únicamente la parte propia, y hacer plegable el análisis de tickets.
+
 - [x] Corregir aceitunas, pechuga y caramelos en el análisis del súper; mostrar la leyenda de cada rubro y permitir reglas del súper sincronizadas desde Importar gastos.
 
 - [x] Clasificar los productos del súper en los 12 rubros acordados y mostrar solo los que tienen gasto.

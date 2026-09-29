@@ -1,0 +1,3 @@
+-- The member-only shared expense policies already enforce row access. Use the caller's privileges for the original atomic function rather than elevating them.
+ALTER FUNCTION public.create_shared_expense(uuid, uuid, numeric, text, text, text, date, text, text, text, numeric, numeric, jsonb) SECURITY INVOKER;
+ALTER FUNCTION public.create_shared_expense(uuid, uuid, numeric, text, text, text, date, text, text, text, numeric, numeric) SECURITY INVOKER;

@@ -3,12 +3,23 @@ import type { Tx } from "@/hooks/use-transactions";
 export type ReceiptItem = { name: string; amount: number; category: string };
 
 const PREFIX = "wyn-receipt:";
+const SHARED_RECEIPT_MARKER = "|wyn-receipt:";
+
+/** Keep split/name metadata for shared expenses alongside itemized products. */
+export function sharedReceiptDescription(split: string, name: string, items: ReceiptItem[]): string {
+  return `shared:${split}|${name}${items.length ? `${SHARED_RECEIPT_MARKER}${JSON.stringify(items)}` : ""}`;
+}
 
 /** A receipt's line amounts are in the transaction's original currency. */
 export function receiptItemsFrom(description: string | null | undefined): ReceiptItem[] {
-  if (!description?.startsWith(PREFIX)) return [];
+  const detail = description?.startsWith(PREFIX)
+    ? description.slice(PREFIX.length)
+    : description?.startsWith("shared:") && description.includes(SHARED_RECEIPT_MARKER)
+      ? description.slice(description.indexOf(SHARED_RECEIPT_MARKER) + SHARED_RECEIPT_MARKER.length)
+      : null;
+  if (!detail) return [];
   try {
-    const parsed: unknown = JSON.parse(description.slice(PREFIX.length));
+    const parsed: unknown = JSON.parse(detail);
     if (!Array.isArray(parsed)) return [];
     return parsed.flatMap((item: unknown) => {
       if (!item || typeof item !== "object") return [];
@@ -83,7 +94,12 @@ export function summarizeGroceryReceipts(items: Tx[], previousItems: Tx[] = [], 
       counts[period] = (counts[period] ?? 0) + 1;
       // Converted transactions keep their original amount, so use their actual FX ratio.
       const original = Math.abs(tx.original_amount ?? tx.amount);
-      const ratio = original > 0 ? Math.abs(tx.amount) / original : 1;
+      // Shared expense lines describe the entire basket, while the transaction
+      // contains only this person's share. Scale by that share before FX conversion.
+      const lineTotal = lines.reduce((sum, line) => sum + line.amount, 0);
+      const ratio = tx.description?.startsWith("shared:") && lineTotal > 0
+        ? Math.abs(tx.amount) / lineTotal
+        : original > 0 ? Math.abs(tx.amount) / original : 1;
       for (const line of lines) {
         const group = groups.get(groceryGroup(line.name, rules));
         if (!group) continue;

@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { format } from "date-fns";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check, Loader2, Plus, Users, X } from "lucide-react";
+import { Check, Loader2, Plus, ReceiptText, Users, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -21,6 +21,8 @@ import { InviteShareActions } from "@/components/invite-share-actions";
 import { useServerFn } from "@tanstack/react-start";
 import { cn } from "@/lib/utils";
 import { normalizeValidEmail } from "@/lib/email-validation";
+import { captureExpense } from "@/lib/expense-capture.functions";
+import { sharedReceiptDescription, type ReceiptItem } from "@/lib/receipt-insights";
 
 type Mode = "equal" | "percent" | "amount";
 type Partner = { id: string; name: string };
@@ -50,6 +52,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
 
   const custom = useCategories();
   const notify = useServerFn(notifySharedExpense);
+  const readReceipt = useServerFn(captureExpense);
   // Todas las categorías: base, las creadas por el usuario y las del plan.
   const categories = useMemo(
     () => [
@@ -75,6 +78,10 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   const [myAmount, setMyAmount] = useState(0);
   const [payer, setPayer] = useState<"me" | "partner">("me");
   const [saving, setSaving] = useState(false);
+  const [reading, setReading] = useState(false);
+  const [receiptItems, setReceiptItems] = useState<ReceiptItem[]>([]);
+  const [receiptName, setReceiptName] = useState("");
+  const receiptRef = useRef<HTMLInputElement>(null);
 
   // Personas con las que ya compartiste gastos: quedan guardadas para reutilizarlas.
   const { data: knownPartners = [] } = useQuery({
@@ -105,8 +112,39 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
 
   const reset = () => {
     setTotal(0); setMerchant(""); setPartners([]); setMode("equal"); setMyPct(50); setMyAmount(0); setPayer("me");
-    setInvitePending(null);
+    setInvitePending(null); setReceiptItems([]); setReceiptName("");
   };
+
+  async function onReceipt(file?: File) {
+    if (!file) return;
+    setReading(true);
+    try {
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error(t("No pudimos abrir el ticket", "We couldn't open the receipt")));
+        reader.onload = () => resolve(String(reader.result).split(",").slice(1).join(","));
+        reader.readAsDataURL(file);
+      });
+      const result = await readReceipt({ data: {
+        kind: "receipt", data: base64, mimeType: file.type, categories, currency,
+        today: format(new Date(), "yyyy-MM-dd"), lang,
+      } });
+      const items = (result.items ?? []).filter((item) => item.name.trim() && Number(item.amount) > 0)
+        .map((item) => ({ name: item.name.trim(), amount: Number(item.amount), category: item.category }));
+      if (!items.length) throw new Error(t("No encontramos productos en este ticket", "No products found on this receipt"));
+      if (items.length > 150 || JSON.stringify(items).length > 40000) throw new Error(t("El ticket tiene demasiados productos", "The receipt has too many items"));
+      setReceiptItems(items);
+      setReceiptName(file.name);
+      if (Number(result.amount) > 0) setTotal(Math.abs(Number(result.amount)));
+      if (result.merchant) setMerchant(result.merchant);
+      const grocery = categories.find((c) => ["supermercado", "mercado", "groceries"].includes(c.toLowerCase()));
+      if (grocery) setCategory(grocery);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error));
+    } finally {
+      setReading(false);
+    }
+  }
 
   const togglePartner = (p: Partner) =>
     setPartners((prev) => {
@@ -139,6 +177,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   async function onSave() {
     if (!user?.id) return;
     if (!total || total <= 0) { toast.error(t("Escribe un monto mayor que cero", "Enter an amount greater than zero")); return; }
+    if (reading) return;
     if (!partners.length) { toast.error(t("Elige con quién lo compartes", "Choose who you share it with")); return; }
     setSaving(true);
     try {
@@ -161,6 +200,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
           _partner_name: p.name,
           _creator_share: mine,
           _partner_share: theirs,
+          _receipt_items: receiptItems,
         });
         if (error) throw error;
         if (!expenseId) throw new Error(t("No se pudo crear el gasto compartido", "The shared expense could not be created"));
@@ -170,7 +210,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
       await saveExpense({
         userId: user.id, date, category: cat, currency, amount: mine,
         merchant: merchant.trim() || translateCategory(cat, lang),
-        description: `${SHARED_PREFIX}${split}|${names}`,
+        description: sharedReceiptDescription(split, names, receiptItems),
       });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
       void queryClient.invalidateQueries({ queryKey: ["shared-partners"] });
@@ -213,6 +253,15 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
             </select>
           </div>
           <Input value={merchant} onChange={(e) => setMerchant(e.target.value)} placeholder={t("Descripción (opcional)", "Description (optional)")} />
+          <div className="flex items-center gap-2">
+            <input ref={receiptRef} type="file" accept="image/*" className="hidden" aria-label={t("Ticket del gasto compartido", "Shared expense receipt")} onChange={(e) => { void onReceipt(e.target.files?.[0]); e.target.value = ""; }} />
+            <Button type="button" variant="outline" size="sm" disabled={reading || saving} onClick={() => receiptRef.current?.click()}>
+              {reading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <ReceiptText className="mr-2 size-4" />}
+              {t("Leer ticket", "Read receipt")}
+            </Button>
+            {receiptItems.length > 0 && <span className="min-w-0 truncate text-xs text-muted-foreground">{receiptName} · {receiptItems.length} {t("productos", "items")}</span>}
+            {receiptItems.length > 0 && <Button type="button" size="icon" variant="ghost" className="ml-auto size-7 shrink-0" aria-label={t("Quitar ticket", "Remove receipt")} onClick={() => { setReceiptItems([]); setReceiptName(""); }}><X className="size-4" /></Button>}
+          </div>
 
           <div className="grid gap-2">
             <p className="text-sm font-semibold">{t("¿Con quién?", "With whom?")}</p>
@@ -296,7 +345,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
             ))}
           </div>
 
-          <Button onClick={onSave} disabled={saving} className="h-12 rounded-full bg-positive text-base font-semibold text-background hover:bg-positive/90">
+          <Button onClick={onSave} disabled={saving || reading} className="h-12 rounded-full bg-positive text-base font-semibold text-background hover:bg-positive/90">
             {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {t("Guardar gasto", "Save expense")}
           </Button>
@@ -320,7 +369,7 @@ export function SharedExpenseInbox() {
     queryFn: async () => {
       const { data: rows, error } = await supabase
         .from("shared_expense_participants")
-        .select("id, share_amount, expense_id, shared_expenses(created_by, total, currency, category, merchant, tx_date, split_mode)")
+        .select("id, share_amount, expense_id, shared_expenses(created_by, total, currency, category, merchant, tx_date, split_mode, receipt_items)")
         .eq("user_id", user!.id)
         .eq("status", "pending");
       if (error) throw error;
@@ -346,13 +395,13 @@ export function SharedExpenseInbox() {
     if (!user?.id) return;
     setBusy(row.id);
     try {
-      const exp = row.shared_expenses as unknown as { total: number; currency: string; category: string; merchant: string; tx_date: string; split_mode: string };
+      const exp = row.shared_expenses as unknown as { total: number; currency: string; category: string; merchant: string; tx_date: string; split_mode: string; receipt_items: ReceiptItem[] };
       if (accept) {
         const split = exp.split_mode.split("/").reverse().join("/");
         await saveExpense({
           userId: user.id, date: exp.tx_date, category: exp.category, currency: exp.currency,
           amount: Number(row.share_amount), merchant: exp.merchant || translateCategory(exp.category, lang),
-          description: `${SHARED_PREFIX}${split}|${row.from}`,
+          description: sharedReceiptDescription(split, row.from, Array.isArray(exp.receipt_items) ? exp.receipt_items : []),
         });
       }
       const { error } = await supabase.from("shared_expense_participants").update({ status: accept ? "accepted" : "declined" }).eq("id", row.id);

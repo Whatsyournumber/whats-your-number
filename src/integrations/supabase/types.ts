@@ -1423,6 +1423,7 @@ export type Database = {
           id: string
           merchant: string
           payer_id: string
+          receipt_items: Json
           split_mode: string
           total: number
           tx_date: string
@@ -1435,6 +1436,7 @@ export type Database = {
           id?: string
           merchant?: string
           payer_id: string
+          receipt_items?: Json
           split_mode?: string
           total: number
           tx_date?: string
@@ -1447,6 +1449,7 @@ export type Database = {
           id?: string
           merchant?: string
           payer_id?: string
+          receipt_items?: Json
           split_mode?: string
           total?: number
           tx_date?: string
@@ -1689,23 +1692,42 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      create_shared_expense: {
-        Args: {
-          _category: string
-          _creator_name: string
-          _creator_share: number
-          _currency: string
-          _merchant: string
-          _partner_id: string
-          _partner_name: string
-          _partner_share: number
-          _payer_id: string
-          _split_mode: string
-          _total: number
-          _tx_date: string
-        }
-        Returns: string
-      }
+      create_shared_expense:
+        | {
+            Args: {
+              _category: string
+              _creator_name: string
+              _creator_share: number
+              _currency: string
+              _merchant: string
+              _partner_id: string
+              _partner_name: string
+              _partner_share: number
+              _payer_id: string
+              _split_mode: string
+              _total: number
+              _tx_date: string
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              _category: string
+              _creator_name: string
+              _creator_share: number
+              _currency: string
+              _merchant: string
+              _partner_id: string
+              _partner_name: string
+              _partner_share: number
+              _payer_id: string
+              _receipt_items: Json
+              _split_mode: string
+              _total: number
+              _tx_date: string
+            }
+            Returns: string
+          }
       find_user_by_email: {
         Args: { _email: string }
         Returns: {
