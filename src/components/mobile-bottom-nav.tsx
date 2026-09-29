@@ -31,7 +31,7 @@ export function MobileBottomNav() {
   const tabs = [
     { title: t("Inicio", "Home"), url: "/dashboard", icon: Home },
     { title: isFree ? t("Mis gastos", "My spending") : t("Tus gastos", "Spending"), url: "/registro-gastos", icon: Wallet },
-    ...(isFree || isPro ? [{ title: t("Ahorro", "Savings"), url: "/cash-flow", icon: Target }] : []),
+    ...(isInvestor ? [] : isFree || isPro ? [{ title: t("Ahorro", "Savings"), url: "/cash-flow", icon: Target }] : []),
     ...(isPro ? [{ title: t("Tu número", "Your number"), url: "/retiro", icon: Target }] : []),
     ...(isInvestor
       ? [{ title: t("Portfolio", "Portfolio"), url: "/portafolio", icon: LineChart }]
