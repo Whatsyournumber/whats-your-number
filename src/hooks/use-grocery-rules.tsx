@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useSyncedSetting } from "@/hooks/use-synced-setting";
 import { GROCERY_GROUPS, type GroceryGroup, type GroceryRule } from "@/lib/receipt-insights";
 
@@ -7,7 +7,7 @@ const EMPTY: GroceryRule[] = [];
 
 export function useGroceryRules() {
   const { value: stored, save } = useSyncedSetting<GroceryRule[]>(KEY, EMPTY);
-  const rules = Array.isArray(stored) ? stored.filter((r) => r && typeof r.match === "string" && GROCERY_GROUPS.includes(r.group)) : EMPTY;
+  const rules = useMemo(() => Array.isArray(stored) ? stored.filter((r) => r && typeof r.match === "string" && GROCERY_GROUPS.includes(r.group)) : EMPTY, [stored]);
   const learn = useCallback((match: string, group: GroceryGroup) => {
     const phrase = match.trim().slice(0, 120);
     if (!phrase || !GROCERY_GROUPS.includes(group)) return;
