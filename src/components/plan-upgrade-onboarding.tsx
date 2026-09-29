@@ -200,7 +200,20 @@ export function PlanUpgradeOnboarding() {
         {step === 1 && (
           <div className="space-y-3">
             {section("Tus inversiones", "Your investments")}
-            {renderFields(PORTFOLIO)}
+            {holdings.length > 0 && (
+              <div className="space-y-1.5">
+                {holdings.map((h) => (
+                  <div key={h.id} className="flex items-center justify-between rounded-xl border border-border/60 px-3 py-2 text-sm">
+                    <span className="truncate font-medium">{h.label || h.ticker || t("Activo", "Asset")}</span>
+                    <span className="shrink-0 tabular-nums text-muted-foreground">{fmt(holdingValue(h), sym)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            <Button type="button" variant="outline" className="w-full" onClick={() => setAssetOpen(true)}>
+              + {t("Añadir activo", "Add asset")}
+            </Button>
+            <AssetDialog open={assetOpen} onOpenChange={setAssetOpen} />
             {section("Tu estrategia", "Your strategy")}
             <div className="grid grid-cols-3 gap-2">
               {RISKS.map((r) => (
