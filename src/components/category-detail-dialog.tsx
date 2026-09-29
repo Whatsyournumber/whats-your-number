@@ -156,7 +156,12 @@ export function CategoryDetailDialog({
           </div>
 
           <div>
-            <p className="mb-2 text-xs font-medium text-muted-foreground">{t("Movimientos", "Transactions")}</p>
+            <p className="mb-2 text-xs font-medium text-muted-foreground">
+              {t("Movimientos", "Transactions")}
+              {name === "Nightlife" && outings > 0 && (
+                <span className="ml-1.5 normal-case text-foreground/80">· {nightlifeHint}</span>
+              )}
+            </p>
             <ul className="max-h-[240px] space-y-0.5 overflow-auto pr-1">
               {items
                 .slice()
