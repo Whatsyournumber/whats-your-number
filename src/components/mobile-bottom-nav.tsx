@@ -98,7 +98,7 @@ export function MobileBottomNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 z-40 w-screen max-w-full lg:hidden">
+    <nav className={cn("fixed bottom-0 left-0 w-screen max-w-full lg:hidden", menuOpen ? "z-50" : "z-40")}>
       <SharedExpenseDialog
         open={sharedOpen}
         onOpenChange={setSharedOpen}
