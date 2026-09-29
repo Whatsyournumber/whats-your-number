@@ -251,11 +251,25 @@ export function AppSidebar() {
               </SidebarGroupContent>
             </SidebarGroup>
             <div className="mx-3 h-px bg-border" />
-            <SidebarGroup className="min-h-0 p-1.5" style={{ flex: `${accountCount} 1 0%` }}>
-              <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
-                {t("Cuenta", "Account")}
-              </SidebarGroupLabel>
-              <SidebarGroupContent className="flex min-h-0 flex-1 flex-col">
+            <SidebarGroup className={accountOpen ? "min-h-0 p-1.5" : "shrink-0 p-1.5"} style={accountOpen ? { flex: `${accountCount} 1 0%` } : undefined}>
+              {!collapsed ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  aria-expanded={accountOpen}
+                  aria-controls="sidebar-account-items"
+                  onClick={() => setAccountOpen((open) => !open)}
+                  className="h-8 w-full justify-between px-2 text-[10px] font-medium uppercase tracking-wide text-sidebar-foreground/70 hover:text-sidebar-foreground"
+                >
+                  {t("Cuenta", "Account")}
+                  <ChevronDown className={`h-4 w-4 transition-transform ${accountOpen ? "rotate-180" : ""}`} />
+                </Button>
+              ) : (
+                <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
+                  {t("Cuenta", "Account")}
+                </SidebarGroupLabel>
+              )}
+              <SidebarGroupContent id="sidebar-account-items" hidden={!accountOpen && !collapsed} className={accountOpen ? "flex min-h-0 flex-1 flex-col overflow-y-auto" : "hidden"}>
                 <SidebarMenu className="h-full gap-0">{account.map(renderItem)}{affiliateItems.map(renderItem)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
