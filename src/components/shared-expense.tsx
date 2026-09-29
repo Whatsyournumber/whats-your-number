@@ -254,7 +254,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
           </div>
           <Input value={merchant} onChange={(e) => setMerchant(e.target.value)} placeholder={t("Descripción (opcional)", "Description (optional)")} />
           <div className="flex items-center gap-2">
-            <input ref={receiptRef} type="file" accept="image/*,application/pdf" className="hidden" aria-label={t("Ticket del gasto compartido", "Shared expense receipt")} onChange={(e) => { void onReceipt(e.target.files?.[0]); e.target.value = ""; }} />
+            <input ref={receiptRef} type="file" accept="image/*" className="hidden" aria-label={t("Ticket del gasto compartido", "Shared expense receipt")} onChange={(e) => { void onReceipt(e.target.files?.[0]); e.target.value = ""; }} />
             <Button type="button" variant="outline" size="sm" disabled={reading || saving} onClick={() => receiptRef.current?.click()}>
               {reading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <ReceiptText className="mr-2 size-4" />}
               {t("Leer ticket", "Read receipt")}
