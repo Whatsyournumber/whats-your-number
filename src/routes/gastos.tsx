@@ -1834,9 +1834,9 @@ function Gastos() {
                     <p className="text-sm font-medium text-foreground/90">→ {a.action}</p>
                     <div className="mt-1 flex flex-wrap items-center gap-3 pt-1 text-xs">
                       <span className="inline-flex items-center rounded-full bg-positive/15 px-2 py-1 text-xs font-semibold text-positive sm:bg-transparent sm:px-0 sm:py-0 sm:font-medium">
-                        +{fmt(a.monthlySaving)}{t("/mes", "/mo")}
+                        +{fmt(a.monthlySaving)}{t("/mes de ahorro", "/mo saved")}
                       </span>
-                      <span className="hidden text-muted-foreground sm:inline">{fmtCompact(fv)} {t("en S&P 500 en", "in S&P 500 in")} {horizonYears.toFixed(0)}a</span>
+                      <span className="hidden text-muted-foreground sm:inline">→ {fmtCompact(fv)} {t("en", "in")} {horizonYears.toFixed(0)} {t("años si lo inviertes al 10% anual (S&P 500)", "yrs if invested at 10% a year (S&P 500)")}</span>
                       {gain !== null && gain > 0 && (
                         <span className="inline-flex items-center gap-1 text-positive">
                           <TrendingUp className="h-3 w-3" />
