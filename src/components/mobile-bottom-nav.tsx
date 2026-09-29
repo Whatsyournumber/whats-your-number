@@ -26,21 +26,6 @@ export function MobileBottomNav() {
   useEffect(() => {
     setMenuOpen(tourHold);
   }, [tourHold]);
-  useEffect(() => {
-    if (!menuOpen || tourHold) {
-      setBlurBounds(null);
-      return;
-    }
-    const measure = () => {
-      const button = addButtonRef.current?.getBoundingClientRect();
-      if (!button) return;
-      const p = 2;
-      setBlurBounds({ x1: button.left - p, y1: button.top - p, x2: button.right + p, y2: button.bottom + p });
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, [menuOpen, tourHold]);
 
   const isFree = !isPro && !isInvestor;
   const tabs = [
