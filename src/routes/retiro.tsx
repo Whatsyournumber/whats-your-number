@@ -521,21 +521,11 @@ function RetiroContent() {
                     S&P 500 · 10%
                   </span>
                 </div>
-                <p className="relative mt-2 text-[11px] text-muted-foreground">
-                  {aporteIsSuggested
-                    ? targetNow > 0
-                      ? t(
-                          `Sugerido para llegar a tu meta de ${fmtCompact(targetNow)} al ${rate}% en ${aporteYearsLabel}`,
-                          `Suggested to reach your ${fmtCompact(targetNow)} goal at ${rate}% in ${aporteYearsLabel}`,
-                        )
-                      : t(
-                          `Dinero a aportar mensual al ${rate}% por ${aporteYearsLabel}`,
-                          `Money to contribute monthly at ${rate}% for ${aporteYearsLabel}`,
-                        )
-                    : t(
-                        `Te retirarías en ${aporteYearsToRetireLabel}`,
-                        `You would retire in ${aporteYearsToRetireLabel}`,
-                      )}
+                <p className="relative mt-2 whitespace-nowrap text-[11px] text-muted-foreground">
+                  {t(
+                    `Con ${fmt(aporteShown)}/mes al ${rate}%: ${fmt(final.value)}`,
+                    `With ${fmt(aporteShown)}/mo at ${rate}%: ${fmt(final.value)}`,
+                  )}
                 </p>
               </>
             )}
