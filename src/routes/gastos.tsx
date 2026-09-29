@@ -697,7 +697,10 @@ function Gastos() {
             name: c.name,
             amount: c.amount,
             prevAmount: prevByCategory.get(c.name) ?? 0,
-            count: c.items.length,
+            // Nightlife cuenta días distintos (salidas reales), no movimientos
+            count: /nightlife|nocturn/i.test(c.name)
+              ? new Set(c.items.map((i) => String(i.date).slice(0, 10))).size
+              : c.items.length,
           })),
           merchants: merchants.slice(0, 14).map((m) => ({
             name: m.name,
