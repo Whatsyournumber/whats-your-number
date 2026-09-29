@@ -76,14 +76,18 @@ export function CategoryDetailDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[88vh] max-w-2xl overflow-auto">
         <DialogHeader>
-          <DialogTitle className="text-lg">{name}</DialogTitle>
+          <DialogTitle className="text-lg">{name === "Nightlife" ? t("Nightlife / Ocio", "Nightlife / Leisure") : name}</DialogTitle>
           <DialogDescription>
             {t("Análisis del rubro en el periodo seleccionado.", "Category analysis for the selected period.")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <Stat label={t("Total", "Total")} value={fmt(amount)} />
+          <Stat
+            label={t("Total", "Total")}
+            value={fmt(amount)}
+            hint={name === "Nightlife" ? t(`Tus salidas sumaron ${fmt(amount)}`, `Your outings added up to ${fmt(amount)}`) : undefined}
+          />
           <Stat label={t("% del gasto", "% of spend")} value={`${share.toFixed(0)}%`} />
           <Stat
             label={t("vs periodo anterior", "vs previous")}
