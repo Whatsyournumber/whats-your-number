@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useT } from "@/hooks/use-language";
 import { merchantKey, type Tx } from "@/hooks/use-transactions";
-import { GROCERY_GROUPS, summarizeGroceryReceipts, type GroceryGroup } from "@/lib/receipt-insights";
+import { summarizeGroceryReceipts, type GroceryGroup } from "@/lib/receipt-insights";
 import { cn } from "@/lib/utils";
 
 type Props = {
