@@ -98,7 +98,7 @@ export function useTransactions() {
       type Kept = { id: string; day: number; merchant: string; statement: string; amount: number; manual: boolean };
       const kept = new Map<number, Kept[]>();
       const dayOf = (date: string | null) => (date ? Math.round(new Date(date).getTime() / 86_400_000) : NaN);
-      const isManual = (t: (typeof rows)[number]) => !t.statement_id || /gasto manual|manual expense|^wyn-receipt:/i.test(t.description ?? "");
+      const isManual = (t: (typeof rows)[number]) => !t.statement_id || /gasto manual|manual expense|^wyn-receipt:|^shared:/i.test(t.description ?? "");
       // Los cargos del banco mandan: el apunte manual es el que se descarta si coinciden.
       const ordered = [...rows].sort((a, b) => Number(isManual(a)) - Number(isManual(b)));
       const closeAmount = (a: number, b: number) => Math.abs(a - b) <= Math.max(1.5, Math.max(a, b) * 0.02);
@@ -130,7 +130,7 @@ export function useTransactions() {
         if (duplicate) {
           // Keep the bank movement's total, but retain the uploaded receipt's
           // product lines for analysis when the two describe the same purchase.
-          if (!duplicate.manual && t.description?.startsWith("wyn-receipt:")) {
+          if (!duplicate.manual && (t.description?.startsWith("wyn-receipt:") || t.description?.includes("|wyn-receipt:"))) {
             receiptDescriptions.set(duplicate.id, t.description);
           }
           dropped.add(t.id);

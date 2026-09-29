@@ -58,6 +58,7 @@ import { InviteShareActions } from "@/components/invite-share-actions";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Users } from "lucide-react";
 import { normalizeValidEmail } from "@/lib/email-validation";
+import { receiptItemsFrom as parseReceiptItems } from "@/lib/receipt-insights";
 
 const editInitials = (name: string) => {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -1034,6 +1035,10 @@ export function ExpenseLog() {
   /** Fila de "Últimos gastos", reutilizada en la tarjeta y en el popup con todo el historial. */
   const renderLatestTx = (x: (typeof expenseTx)[number]) => {
     const receiptItems = receiptItemsFrom(x.description);
+    const receiptTotal = receiptItems.reduce((sum, item) => sum + item.amount, 0);
+    const receiptShare = parseShared(x.description) && receiptTotal > 0
+      ? Math.abs(x.original_amount ?? x.amount) / receiptTotal
+      : 1;
     const expanded = expandedTx === x.id;
     return (
       <li key={x.id} className="py-2.5">
@@ -1078,7 +1083,7 @@ export function ExpenseLog() {
                   <p className="text-sm">{item.name}</p>
                   <p className="text-[11px] text-muted-foreground">{translateCategory(item.category, lang)}</p>
                 </div>
-                <span className="numeric shrink-0 text-sm font-medium">{fmt(item.amount)}</span>
+                  <span className="numeric shrink-0 text-sm font-medium">{fmt(item.amount * receiptShare)}</span>
               </li>
             ))}
           </ul>

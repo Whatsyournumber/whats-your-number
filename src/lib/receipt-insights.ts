@@ -97,14 +97,13 @@ export function summarizeGroceryReceipts(items: Tx[], previousItems: Tx[] = [], 
       // Shared expense lines describe the entire basket, while the transaction
       // contains only this person's share. Scale by that share before FX conversion.
       const lineTotal = lines.reduce((sum, line) => sum + line.amount, 0);
-      const ratio = original > 0 ? Math.abs(tx.amount) / original : 1;
-      const share = tx.description?.startsWith("shared:") && lineTotal > 0
-        ? Math.min(1, original / lineTotal)
-        : 1;
+      const ratio = tx.description?.startsWith("shared:") && lineTotal > 0
+        ? Math.abs(tx.amount) / lineTotal
+        : original > 0 ? Math.abs(tx.amount) / original : 1;
       for (const line of lines) {
         const group = groups.get(groceryGroup(line.name, rules));
         if (!group) continue;
-        const amount = line.amount * ratio * share;
+        const amount = line.amount * ratio;
         if (period === 0) {
           group.amount += amount;
           group.count += 1;
