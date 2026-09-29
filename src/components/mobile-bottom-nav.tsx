@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Wallet, Target, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Sparkles, Users } from "lucide-react";
+import { Home, Wallet, Target, PiggyBank, LineChart, Plus, UserRound, PencilLine, Mic, Camera, Upload, Sparkles, Users } from "lucide-react";
 import { BudgetVoiceAdvisor } from "@/components/budget-voice-advisor";
 import { SharedExpenseDialog } from "@/components/shared-expense";
 import { useT } from "@/hooks/use-language";
@@ -35,7 +35,7 @@ export function MobileBottomNav() {
   const tabs = [
     { title: t("Inicio", "Home"), url: "/dashboard", icon: Home },
     { title: isFree ? t("Mis gastos", "My spending") : t("Tus gastos", "Spending"), url: "/registro-gastos", icon: Wallet },
-    ...(isInvestor ? [] : isFree || isPro ? [{ title: t("Ahorro", "Savings"), url: "/cash-flow", icon: Target }] : []),
+    ...(isInvestor ? [] : isFree || isPro ? [{ title: t("Ahorro", "Savings"), url: "/cash-flow", icon: PiggyBank }] : []),
     ...(isPro ? [{ title: t("Tu número", "Your number"), url: "/retiro", icon: Target }] : []),
     ...(isInvestor
       ? [{ title: t("Portfolio", "Portfolio"), url: "/portafolio", icon: LineChart }]
