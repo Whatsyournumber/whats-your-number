@@ -120,20 +120,21 @@ export function AppSidebar() {
     : ([] as const);
 
 
+  const compact = isFamilyPlan && !isMobile;
   const renderItem = (item: { title: string; url: string; icon: typeof Wallet; required?: PlanTier }) => {
     const active = pathname === item.url;
     const locked = item.required && !planMeetsTier(item.required, tier);
     const badge = item.required === "patrimonio" ? "FAMILY" : item.required === "investor" ? "INVESTOR" : "PRO";
     return (
       <SidebarMenuItem key={item.url}>
-        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className="h-10 gap-2 px-2 data-[active=true]:bg-primary/15 data-[active=true]:text-primary">
+        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className={`${compact ? "h-7 gap-1.5" : "h-10 gap-2"} px-2 data-[active=true]:bg-primary/15 data-[active=true]:text-primary`}>
           <Link
             to={item.url}
             className="flex items-center gap-2"
             onClick={() => setOpenMobile(false)}
           >
-            <item.icon className="h-[18px] w-[18px] shrink-0" />
-            <span className="min-w-0 flex-1 whitespace-nowrap text-[15px] leading-tight">{item.title}</span>
+            <item.icon className={`${compact ? "h-4 w-4" : "h-[18px] w-[18px]"} shrink-0`} />
+            <span className={`min-w-0 flex-1 whitespace-nowrap ${compact ? "text-[13px]" : "text-[15px]"} leading-tight`}>{item.title}</span>
             {locked && !collapsed && <span className={item.required === "patrimonio" ? "shrink-0 rounded-full bg-plan-family px-2 py-1 text-[10px] font-semibold leading-none text-plan-family-foreground" : item.required === "investor" ? "shrink-0 rounded-full bg-plan-investor px-2 py-1 text-[10px] font-semibold leading-none text-plan-investor-foreground" : "shrink-0 rounded-full bg-primary/15 px-2 py-1 text-[10px] font-semibold leading-none text-primary"}>{badge}</span>}
           </Link>
         </SidebarMenuButton>
@@ -143,7 +144,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r">
-      <SidebarHeader className="px-3 py-3">
+      <SidebarHeader className={compact ? "px-3 py-2" : "px-3 py-3"}>
         {isMobile ? (
           <div className="space-y-2">
             <div className="relative flex h-10 items-center justify-between">
@@ -193,32 +194,32 @@ export function AppSidebar() {
             {!collapsed && (
               <div className="min-w-0">
                 <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
-                <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
+                {!compact && <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>}
               </div>
             )}
           </div>
         )}
-        {!collapsed && <span className="mt-2 inline-flex w-fit rounded-full bg-primary/15 px-3 py-1 text-[10px] font-semibold uppercase text-primary">{t("Plan", "Plan")} {tier === "patrimonio" ? "Familiar" : tier === "investor" ? "Inversor" : tier === "pro" ? "Pro" : t("Gratis", "Free")}</span>}
+        {!collapsed && <span className={`${compact ? "mt-1" : "mt-2"} inline-flex w-fit rounded-full bg-primary/15 px-3 py-1 text-[10px] font-semibold uppercase text-primary`}>{t("Plan", "Plan")} {tier === "patrimonio" ? "Familiar" : tier === "investor" ? "Inversor" : tier === "pro" ? "Pro" : t("Gratis", "Free")}</span>}
       </SidebarHeader>
 
       <SidebarContent className="flex-1 gap-0.5 overflow-y-auto">
         {isFamilyPlan ? (
           <>
-            <SidebarGroup className="p-1.5">
-              <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
+            <SidebarGroup className="p-1">
+              <SidebarGroupLabel className="h-5 text-[10px] uppercase tracking-wide">
                 {t("Patrimonio", "Net worth")}
               </SidebarGroupLabel>
               <SidebarGroupContent>
-                <SidebarMenu className="gap-0.5">{familyWealth.map(renderItem)}</SidebarMenu>
+                <SidebarMenu className="gap-0">{familyWealth.map(renderItem)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
             <div className="mx-3 h-px bg-border" />
-            <SidebarGroup className="p-1.5">
-              <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
+            <SidebarGroup className="p-1">
+              <SidebarGroupLabel className="h-5 text-[10px] uppercase tracking-wide">
                 {t("Inteligencia", "Intelligence")}
               </SidebarGroupLabel>
               <SidebarGroupContent>
-                <SidebarMenu className="gap-0.5">{familyIntelligence.map(renderItem)}{affiliateItems.map(renderItem)}</SidebarMenu>
+                <SidebarMenu className="gap-0">{familyIntelligence.map(renderItem)}{affiliateItems.map(renderItem)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
           </>
@@ -276,10 +277,10 @@ export function AppSidebar() {
       </SidebarContent>
 
       {!collapsed && (
-        <SidebarFooter className="p-2">
-          <Link to={tier === "free" ? "/dashboard" : "/retiro"} onClick={() => setOpenMobile(false)} className="surface block p-2.5">
-            <p className="text-[11px] text-muted-foreground">WhatsYournumber</p>
-            <p className="numeric mt-0.5 text-base font-semibold">{data.fmtCompact(data.plan.targetCapital)}</p>
+        <SidebarFooter className={compact ? "p-1.5" : "p-2"}>
+          <Link to={tier === "free" ? "/dashboard" : "/retiro"} onClick={() => setOpenMobile(false)} className={`surface block ${compact ? "p-2" : "p-2.5"}`}>
+            {!compact && <p className="text-[11px] text-muted-foreground">WhatsYournumber</p>}
+            <p className={`numeric ${compact ? "" : "mt-0.5"} ${compact ? "text-sm" : "text-base"} font-semibold`}>{data.fmtCompact(data.plan.targetCapital)}</p>
             {data.plan.mode !== "freedom" ? (
               <p className="mt-1 flex items-center gap-1.5 whitespace-nowrap text-xs text-muted-foreground">
                 {(() => {
