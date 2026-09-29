@@ -71,7 +71,11 @@ export function CategoryDetailDialog({
   const variation = prevAmount > 0 ? ((amount - prevAmount) / prevAmount) * 100 : null;
   const avgTicket = items.length > 0 ? amount / items.length : 0;
   const maxMerchant = merchants[0]?.amount ?? 1;
-  const outings = items.length;
+  // Se cuentan días distintos con gasto de fiesta: varias copas la misma noche son una sola salida.
+  const outings = useMemo(
+    () => new Set(items.map((tx) => tx.tx_date).filter(Boolean)).size,
+    [items],
+  );
   const outingsLabel = outings === 1
     ? t("salida de fiesta", "night out")
     : t("salidas de fiesta", "nights out");
