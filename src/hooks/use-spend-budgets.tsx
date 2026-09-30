@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { DEFAULT_BUDGET_IDS, type BudgetGroup } from "@/lib/budget-categories";
+import {
+  DEFAULT_BUDGET_IDS,
+  findBudgetCategory,
+  type BudgetGroup,
+} from "@/lib/budget-categories";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 
