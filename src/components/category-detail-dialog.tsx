@@ -159,7 +159,7 @@ export function CategoryDetailDialog({
 
         {grocery && grocery.receiptCount > 0 && (
           <section className="border-t border-border pt-3">
-            <Button type="button" variant="ghost" className="h-auto w-full justify-between gap-2 px-1 py-2 text-left" aria-expanded={groceryOpen} aria-controls="grocery-receipt-insights" onClick={() => setGroceryOpen((v) => !v)}>
+            <Button type="button" variant="ghost" className="h-auto w-full justify-between gap-2 px-1 py-1.5 text-left" aria-expanded={groceryOpen} aria-controls="grocery-receipt-insights" onClick={() => setGroceryOpen((v) => !v)}>
               <span className="flex min-w-0 items-center gap-2"><span className="grid size-7 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground"><Sparkles className="size-3.5" /></span><span className="min-w-0 text-sm font-semibold whitespace-normal">{t(`Análisis de ${grocery.receiptCount} tickets del súper del mes`, `Analysis of ${grocery.receiptCount} grocery receipts this month`)}</span></span>
               <ChevronDown className={cn("size-4 shrink-0 text-muted-foreground transition-transform", groceryOpen && "rotate-180")} />
             </Button>
@@ -228,8 +228,8 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
   const delta = summary.total - summary.previousTotal;
   const max = Math.max(...summary.groups.map((group) => group.amount), 1);
   return (
-    <section className="pt-1" aria-label={t(`Análisis de ${summary.receiptCount} tickets del súper del mes`, `Analysis of ${summary.receiptCount} grocery receipts this month`)}>
-      <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1 pl-9 mt-0.5">
+    <section className="pt-0" aria-label={t(`Análisis de ${summary.receiptCount} tickets del súper del mes`, `Analysis of ${summary.receiptCount} grocery receipts this month`)}>
+      <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1 pl-9 mt-0">
         <p className="min-w-0 text-xs text-muted-foreground">
           {t("Podrás cambiar de categoría si no se registra correctamente.", "You can change the category if it wasn't captured correctly.")}
         </p>
