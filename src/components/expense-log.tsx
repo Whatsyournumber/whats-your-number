@@ -42,7 +42,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets, type BudgetLine } from "@/hooks/use-spend-budgets";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
 import { useSyncedSetting } from "@/hooks/use-synced-setting";
-import { BUDGET_CATEGORIES, findBudgetCategory } from "@/lib/budget-categories";
+import { BUDGET_CATEGORIES, findBudgetCategory, type BudgetGroup } from "@/lib/budget-categories";
 import { BASE_CATEGORIES, categorizeTx } from "@/lib/categorize";
 import { captureExpense } from "@/lib/expense-capture.functions";
 import { StatementImporter } from "@/components/statement-importer";
