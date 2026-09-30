@@ -769,7 +769,7 @@ function CashFlow() {
         <DialogContent className="max-w-md">
           <DialogHeader className="min-w-0">
             <DialogTitle>{t("Destino del ahorro", "Savings destination")}</DialogTitle>
-            <DialogDescription className="overflow-hidden whitespace-nowrap text-xs" title={t(
+            <DialogDescription className="text-xs sm:overflow-hidden sm:whitespace-nowrap sm:text-ellipsis" title={t(
               `De tus ${fmt(saveAmount)} de ahorro al mes, decide cuánto va a cada destino.`,
               `Out of your ${fmt(saveAmount)} monthly savings, decide how much goes to each destination.`,
             )}>
