@@ -2806,6 +2806,83 @@ export function ExpenseLog() {
         </DialogContent>
       </Dialog>
 
+      {/* Desglose de «Suscripciones / apps»: nombre, monto y día de cobro de cada app. */}
+      <Dialog open={subsOpen} onOpenChange={setSubsOpen}>
+        <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("Suscripciones / apps", "Subscriptions / apps")}</DialogTitle>
+            <DialogDescription>
+              {t("Cada app con su monto y día de cobro; el total se suma solo.", "Each app with its amount and billing day; the total adds up automatically.")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3">
+            {subsDraft.map((a, idx) => (
+              <div key={a.id} className="flex items-end gap-2">
+                <div className="grid min-w-0 flex-1 gap-1.5">
+                  {idx === 0 && <Label>{t("App", "App")}</Label>}
+                  <Input
+                    value={a.name}
+                    onChange={(e) => setSubsDraft((d) => d.map((x) => (x.id === a.id ? { ...x, name: e.target.value } : x)))}
+                    placeholder={t("Nombre de la app", "App name")}
+                    aria-label={t("Nombre de la app", "App name")}
+                  />
+                </div>
+                <div className="grid w-24 shrink-0 gap-1.5">
+                  {idx === 0 && <Label>{`${t("Monto", "Amount")} (${currency})`}</Label>}
+                  <NumberInput
+                    value={a.amount}
+                    onChange={(v) => setSubsDraft((d) => d.map((x) => (x.id === a.id ? { ...x, amount: v || 0 } : x)))}
+                    min={0}
+                    aria-label={t("Monto mensual", "Monthly amount")}
+                  />
+                </div>
+                <div className="grid w-20 shrink-0 gap-1.5">
+                  {idx === 0 && <Label>{t("Día", "Day")}</Label>}
+                  <Select
+                    value={String(a.day)}
+                    onValueChange={(v) => setSubsDraft((d) => d.map((x) => (x.id === a.id ? { ...x, day: Number(v) || 1 } : x)))}
+                  >
+                    <SelectTrigger aria-label={t("Día de cobro", "Billing day")}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60">
+                      {Array.from({ length: 31 }, (_, d) => d + 1).map((d) => (
+                        <SelectItem key={d} value={String(d)}>
+                          {d}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSubsDraft((d) => d.filter((x) => x.id !== a.id))}
+                  className="grid h-10 w-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-negative"
+                  aria-label={`${t("Eliminar", "Delete")} ${a.name}`}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setSubsDraft((d) => [...d, { id: crypto.randomUUID(), name: "", emoji: "📱", amount: 0, day: 1 }])}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              {t("Añadir otra", "Add another")}
+            </Button>
+            <div className="flex items-center justify-between rounded-xl bg-muted/40 px-3 py-2 text-sm">
+              <span className="text-muted-foreground">{t("Total apps", "Total apps")}</span>
+              <span className="numeric font-semibold">{fmt(subsDraft.reduce((s, a) => s + (Number(a.amount) || 0), 0))}</span>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={onSaveSubs}>{t("Guardar", "Save")}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={Boolean(editTx)} onOpenChange={(open) => !open && setEditTx(null)}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
