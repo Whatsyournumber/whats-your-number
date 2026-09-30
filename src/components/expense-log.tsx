@@ -2253,7 +2253,7 @@ export function ExpenseLog() {
                           </button>
                         </li>
                         {isApps && appsExpanded &&
-                          [...appSubs]
+                          [...displaySubs]
                             .sort((a, b) => a.day - b.day)
                             .map((a) => (
                               <li key={a.id} className="flex items-center gap-3 pl-6">
