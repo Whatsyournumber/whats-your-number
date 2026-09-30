@@ -544,20 +544,20 @@ export function ManualExpenseDialog({
         </div>
 
         <div className="grid gap-3 border-t border-border pt-4">
-          <Label className="text-base font-medium">{t("Compartido", "Shared")}</Label>
-          <div className="flex flex-wrap items-start gap-6">
+          <Label>{t("Compartido", "Shared")}</Label>
+          <div className="flex flex-wrap items-start gap-4">
             {[...(partner && !knownPartners.some((p) => p.id === partner.id) ? [partner] : []), ...knownPartners].map((person) => (
-              <Button key={person.id} type="button" variant="ghost" className="flex h-auto max-w-24 flex-col items-center gap-2 p-0 font-normal hover:bg-transparent" onClick={() => setPartner(partner?.id === person.id ? null : person)} aria-pressed={partner?.id === person.id}>
-                <span className={cn("relative grid h-20 w-20 place-items-center rounded-full bg-muted text-2xl font-semibold sm:h-24 sm:w-24", partner?.id === person.id && "ring-2 ring-positive")}>
+              <Button key={person.id} type="button" variant="ghost" className="flex h-auto max-w-16 flex-col items-center gap-1 p-0 font-normal hover:bg-transparent" onClick={() => setPartner(partner?.id === person.id ? null : person)} aria-pressed={partner?.id === person.id}>
+                <span className={cn("relative grid h-12 w-12 place-items-center rounded-full bg-muted text-sm font-semibold", partner?.id === person.id && "ring-2 ring-positive")}>
                   {person.name.trim().slice(0, 2).toUpperCase()}
-                  {partner?.id === person.id && <Check className="absolute -left-1 -top-1 h-5 w-5 rounded-full bg-positive p-0.5 text-background" />}
+                  {partner?.id === person.id && <Check className="absolute -left-1 -top-1 h-4 w-4 rounded-full bg-positive p-0.5 text-background" />}
                 </span>
-                <span className="w-full break-words text-center text-sm">{person.name}</span>
+                <span className="w-full truncate text-center text-xs text-muted-foreground">{person.name}</span>
               </Button>
             ))}
-            <Button type="button" variant="ghost" className="flex h-auto w-20 flex-col items-center gap-2 p-0 font-normal hover:bg-transparent sm:w-24" onClick={() => setInviting((value) => !value)} aria-label={t("Añadir persona", "Add person")}>
-              <span className="grid h-20 w-20 place-items-center rounded-full border border-border text-muted-foreground sm:h-24 sm:w-24"><Plus className="h-8 w-8" /></span>
-              <span className="text-sm text-muted-foreground">{t("Añadir", "Add")}</span>
+            <Button type="button" variant="ghost" className="flex h-auto w-12 flex-col items-center gap-1 p-0 font-normal hover:bg-transparent" onClick={() => setInviting((value) => !value)} aria-label={t("Añadir persona", "Add person")}>
+              <span className="grid h-12 w-12 place-items-center rounded-full border border-border text-muted-foreground"><Plus className="h-5 w-5" /></span>
+              <span className="w-full truncate text-center text-xs text-muted-foreground">{t("Añadir", "Add")}</span>
             </Button>
           </div>
           {inviting && (
