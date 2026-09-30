@@ -25,4 +25,4 @@ Onboarding stores one primary and one optional secondary financial goal; only an
 
 Supermarket receipt insights parse itemized lines from transaction descriptions into twelve bilingual, product-name-based rubros and show only rubros with current spend; when a bank charge duplicates an uploaded receipt, keep the bank charge and carry its receipt details in the read model so spending is counted once without losing products.
 
-Grocery corrections are saved per user through synced settings and applied to both current and previous itemized receipts; this lets corrections improve future analysis without rewriting bank transactions.
+Grocery rules are synced per user; list products from deduplicated transactions, not a second catalogue, and apply corrections to past and future receipts without rewriting bank data.
