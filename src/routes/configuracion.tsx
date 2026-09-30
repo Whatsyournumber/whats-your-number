@@ -16,12 +16,10 @@ import { useGroceryRules } from "@/hooks/use-grocery-rules";
 import { useCategories } from "@/hooks/use-categories";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { useProfile } from "@/hooks/use-profile";
-import { useTransactions } from "@/hooks/use-transactions";
 import { useLanguage, useT } from "@/hooks/use-language";
-import { categorizeTx } from "@/lib/categorize";
 import { findBudgetCategory } from "@/lib/budget-categories";
 import { money } from "@/lib/onboarding";
-import { GROCERY_GROUPS, GROCERY_LABELS, groceryGroup, receiptItemsFrom, type GroceryGroup } from "@/lib/receipt-insights";
+import { GROCERY_GROUPS, GROCERY_LABELS, type GroceryGroup } from "@/lib/receipt-insights";
 
 export const Route = createFileRoute("/configuracion")({
   head: () => ({
@@ -43,7 +41,6 @@ function Configuracion() {
   const { lang } = useLanguage();
   const learned = useCategoryRules();
   const groceryRules = useGroceryRules();
-  const { transactions } = useTransactions();
   const [productMatch, setProductMatch] = useState("");
   const [productGroup, setProductGroup] = useState<GroceryGroup>("pantry");
   const custom = useCategories();
@@ -90,23 +87,6 @@ function Configuracion() {
   const myRules = learned.rules.filter(
     (r) => myCategoryNames.size === 0 || myCategoryNames.has(r.category.trim().toLowerCase()),
   );
-
-  // Show actual products from every itemized grocery receipt, not just saved corrections.
-  // useTransactions already merges a matching bank charge and uploaded receipt into one entry.
-  const detectedProducts = new Map<string, { name: string; count: number }>();
-  for (const tx of transactions) {
-    const category = tx.category?.trim().toLowerCase();
-    const grocery = category === "supermercado" || category === "mercado" || category === "groceries"
-      || categorizeTx(tx, custom.rules).toLowerCase() === "supermercado";
-    if (!grocery) continue;
-    for (const item of receiptItemsFrom(tx.description)) {
-      const key = item.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
-      const existing = detectedProducts.get(key);
-      if (existing) existing.count += 1;
-      else detectedProducts.set(key, { name: item.name, count: 1 });
-    }
-  }
-  const products = [...detectedProducts.values()].map((item) => ({ ...item, group: groceryGroup(item.name, groceryRules.rules) }));
 
   return (
     <PageShell>
@@ -222,22 +202,17 @@ function Configuracion() {
         </TabsContent>
 
         <TabsContent value="reglas-super">
-          <Panel title={t("Reglas del súper", "Grocery rules")} description={t("Todos los rubros y productos detectados en tus tickets. Cambia un producto de rubro y quedará aprendido para los próximos tickets.", "All groups and products detected on your receipts. Move a product to another group and it will be remembered for future receipts.")}>
+          <Panel title={t("Reglas del súper", "Grocery rules")} description={t("Qué productos van en cada rubro. Solo tus cambios se guardan como reglas para los próximos tickets.", "What belongs in each group. Only your changes are saved as rules for future receipts.")}>
             <form className="flex flex-wrap items-end gap-2" onSubmit={(event) => { event.preventDefault(); if (!productMatch.trim()) return; groceryRules.learn(productMatch, productGroup); setProductMatch(""); }}>
               <div className="min-w-40 flex-1"><Label htmlFor="grocery-match">{t("Producto o palabra del ticket", "Receipt product or keyword")}</Label><Input id="grocery-match" value={productMatch} onChange={(event) => setProductMatch(event.target.value)} maxLength={120} placeholder={t("Ej. aceitunas", "E.g. olives")} className="mt-1.5" /></div>
               <div className="min-w-40 flex-1"><Label htmlFor="grocery-group">{t("Rubro", "Group")}</Label><select id="grocery-group" value={productGroup} onChange={(event) => setProductGroup(event.target.value as GroceryGroup)} className="mt-1.5 flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground">{GROCERY_GROUPS.map((id) => <option key={id} value={id}>{GROCERY_LABELS[id].icon} {t(GROCERY_LABELS[id].es, GROCERY_LABELS[id].en)}</option>)}</select></div>
               <Button type="submit" disabled={!productMatch.trim()}>{t("Guardar regla", "Save rule")}</Button>
             </form>
-            <div className="mt-5 grid gap-3 md:grid-cols-2">{GROCERY_GROUPS.map((g) => { const items = products.filter((item) => item.group === g).sort((a, b) => a.name.localeCompare(b.name)); const rules = groceryRules.rules.filter((rule) => rule.group === g && !detectedProducts.has(rule.match.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase())).sort((a, b) => a.match.localeCompare(b.match)); return (
+            <div className="mt-5 grid gap-3 md:grid-cols-2">{GROCERY_GROUPS.map((g, index) => { const rules = groceryRules.rules.filter((rule) => rule.group === g).sort((a, b) => a.match.localeCompare(b.match)); return (
               <div key={g} className="rounded-lg border border-border bg-elevated/40 p-3">
-                <div className="mb-2 flex items-center gap-2"><span className="text-base">{GROCERY_LABELS[g].icon}</span><span className="text-sm font-medium">{t(GROCERY_LABELS[g].es, GROCERY_LABELS[g].en)}</span><span className="ml-auto text-xs text-muted-foreground">{items.length}</span></div>
-                <p className="mb-2 text-xs text-muted-foreground">{t(GROCERY_LABELS[g].detailEs, GROCERY_LABELS[g].detailEn)}</p>
-                {items.length === 0 && rules.length === 0 && <p className="text-xs text-muted-foreground">{t("Sin productos detectados", "No products detected")}</p>}
-                <div className="space-y-1">{items.map((item) => <div key={item.name} className="flex items-center gap-2 rounded-md bg-background/50 px-2 py-1.5">
-                  <span className="min-w-0 flex-1 break-words text-sm">{item.name}{item.count > 1 && <span className="ml-1 text-xs text-muted-foreground">· {item.count}×</span>}</span>
-                  <select aria-label={t(`Rubro de ${item.name}`, `Group for ${item.name}`)} value={item.group} onChange={(e) => groceryRules.learn(item.name, e.target.value as GroceryGroup)} className="h-8 max-w-32 shrink-0 rounded-md border border-input bg-background px-1 text-xs text-foreground">{GROCERY_GROUPS.map((id) => <option key={id} value={id}>{t(GROCERY_LABELS[id].es, GROCERY_LABELS[id].en)}</option>)}</select>
-                </div>)}</div>
-                {rules.length > 0 && <div className="mt-3 border-t border-border pt-2"><p className="mb-1 text-xs text-muted-foreground">{t("Palabras aprendidas", "Learned keywords")}</p><div className="space-y-1">{rules.map((rule) => <div key={rule.id} className="flex items-center gap-2 rounded-md bg-background/50 px-2 py-1.5"><span className="min-w-0 flex-1 break-words text-sm">{rule.match}</span><select aria-label={t(`Rubro de ${rule.match}`, `Group for ${rule.match}`)} value={rule.group} onChange={(e) => groceryRules.learn(rule.match, e.target.value as GroceryGroup)} className="h-8 max-w-32 shrink-0 rounded-md border border-input bg-background px-1 text-xs text-foreground">{GROCERY_GROUPS.map((id) => <option key={id} value={id}>{t(GROCERY_LABELS[id].es, GROCERY_LABELS[id].en)}</option>)}</select><Button type="button" size="icon" variant="ghost" className="size-8 shrink-0 text-muted-foreground" aria-label={t(`Eliminar regla de ${rule.match}`, `Delete rule for ${rule.match}`)} onClick={() => groceryRules.remove(rule.id)}><Trash2 className="size-3.5" /></Button></div>)}</div></div>}
+                <div className="mb-2 flex items-center gap-2"><span className="text-xs font-semibold text-muted-foreground">{index + 1}.</span><span className="text-base">{GROCERY_LABELS[g].icon}</span><span className="text-sm font-medium">{t(GROCERY_LABELS[g].es, GROCERY_LABELS[g].en)}</span></div>
+                <p className="text-xs text-muted-foreground">{t(GROCERY_LABELS[g].detailEs, GROCERY_LABELS[g].detailEn)}</p>
+                {rules.length > 0 && <div className="mt-3 border-t border-border pt-2"><p className="mb-2 text-xs text-muted-foreground">{t("Reglas nuevas", "New rules")} · {rules.length}</p><div className="space-y-1">{rules.map((rule) => <div key={rule.id} className="flex items-center gap-2 rounded-md bg-background/50 px-2 py-1.5"><span className="min-w-0 flex-1 break-words text-sm">{rule.match}</span><select aria-label={t(`Rubro de ${rule.match}`, `Group for ${rule.match}`)} value={rule.group} onChange={(e) => groceryRules.learn(rule.match, e.target.value as GroceryGroup)} className="h-8 max-w-32 shrink-0 rounded-md border border-input bg-background px-1 text-xs text-foreground">{GROCERY_GROUPS.map((id) => <option key={id} value={id}>{t(GROCERY_LABELS[id].es, GROCERY_LABELS[id].en)}</option>)}</select><Button type="button" size="icon" variant="ghost" className="size-8 shrink-0 text-muted-foreground" aria-label={t(`Eliminar regla de ${rule.match}`, `Delete rule for ${rule.match}`)} onClick={() => groceryRules.remove(rule.id)}><Trash2 className="size-3.5" /></Button></div>)}</div></div>}
               </div>); })}</div>
           </Panel>
         </TabsContent>
