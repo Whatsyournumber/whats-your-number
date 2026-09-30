@@ -2241,7 +2241,12 @@ export function ExpenseLog() {
                             className={cn("min-w-0 flex-1", isApps && "cursor-pointer")}
                             onClick={isApps ? () => setAppsExpanded((v) => !v) : undefined}
                           >
-                            <p className="truncate text-sm leading-5 sm:text-base sm:leading-6">{emoji ? i.name.slice(emoji.length).trim() : i.name}</p>
+                            <p className="flex items-center gap-1.5 truncate text-sm leading-5 sm:text-base sm:leading-6">
+                              <span className="truncate">{emoji ? i.name.slice(emoji.length).trim() : i.name}</span>
+                              {isApps && (
+                                <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform", appsExpanded && "rotate-180")} />
+                              )}
+                            </p>
                             <div className="flex items-baseline justify-between gap-3">
                               <p className="min-w-0 truncate text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs sm:leading-5 sm:whitespace-nowrap">
                                 {isApps
@@ -2251,17 +2256,6 @@ export function ExpenseLog() {
                               <span className="numeric shrink-0 text-sm font-semibold sm:text-base">{fmt(i.amount)}</span>
                             </div>
                           </div>
-                          {!isApps && <span className="h-7 w-7 shrink-0" aria-hidden />}
-                          {isApps && (
-                            <button
-                              type="button"
-                              onClick={() => setAppsExpanded((v) => !v)}
-                              className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                              aria-label={t("Ver apps", "See apps")}
-                            >
-                              <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", appsExpanded && "rotate-180")} />
-                            </button>
-                          )}
                           <button
                             type="button"
                             onClick={() => (isApps ? openSubsEditor() : i.planId ? setPlanOpen(true) : openEditRecurring(i))}
@@ -2286,7 +2280,7 @@ export function ExpenseLog() {
                                     <span className="numeric shrink-0 text-sm text-muted-foreground sm:text-base">{fmt(a.amount)}</span>
                                   </div>
                                 </div>
-                                <span className="w-[4.25rem] shrink-0 sm:w-[4.5rem]" />
+                                <span className="w-7 shrink-0" />
                               </li>
                             ))}
                         </Fragment>
