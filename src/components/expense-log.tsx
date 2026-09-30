@@ -2242,13 +2242,15 @@ export function ExpenseLog() {
                             onClick={isApps ? () => setAppsExpanded((v) => !v) : undefined}
                           >
                             <p className="truncate text-sm leading-5 sm:text-base sm:leading-6">{emoji ? i.name.slice(emoji.length).trim() : i.name}</p>
-                            <p className="text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs sm:leading-5 sm:whitespace-nowrap">
-                              {isApps
-                                ? t(`${displaySubs.length} apps · próximo cobro ${format(i.next, "d MMM", { locale })}`, `${displaySubs.length} apps · next charge ${format(i.next, "d MMM", { locale })}`)
-                                : format(i.next, "d MMM", { locale })}
-                            </p>
+                            <div className="flex items-baseline justify-between gap-3">
+                              <p className="min-w-0 truncate text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs sm:leading-5 sm:whitespace-nowrap">
+                                {isApps
+                                  ? t(`${displaySubs.length} apps · próximo cobro ${format(i.next, "d MMM", { locale })}`, `${displaySubs.length} apps · next charge ${format(i.next, "d MMM", { locale })}`)
+                                  : format(i.next, "d MMM", { locale })}
+                              </p>
+                              <span className="numeric shrink-0 text-sm font-semibold sm:text-base">{fmt(i.amount)}</span>
+                            </div>
                           </div>
-                          <span className="numeric shrink-0 text-sm font-semibold sm:text-base">{fmt(i.amount)}</span>
                           {isApps && (
                             <button
                               type="button"
@@ -2276,12 +2278,14 @@ export function ExpenseLog() {
                                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-muted/50 text-sm sm:h-10 sm:w-10 sm:text-base">{a.emoji}</span>
                                 <div className="min-w-0 flex-1">
                                   <p className="truncate text-sm leading-5 sm:text-base sm:leading-6">{a.name}</p>
-                                  <p className="text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs sm:leading-5 sm:whitespace-nowrap">
-                                    {format(nextChargeDate(a.day), "d MMM", { locale })}
-                                  </p>
+                                  <div className="flex items-baseline justify-between gap-3">
+                                    <p className="min-w-0 truncate text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs sm:leading-5 sm:whitespace-nowrap">
+                                      {format(nextChargeDate(a.day), "d MMM", { locale })}
+                                    </p>
+                                    <span className="numeric shrink-0 text-sm text-muted-foreground sm:text-base">{fmt(a.amount)}</span>
+                                  </div>
                                 </div>
-                                <span className="numeric shrink-0 text-sm text-muted-foreground sm:text-base">{fmt(a.amount)}</span>
-                                <span className="w-7 shrink-0" />
+                                <span className="w-[4.25rem] shrink-0 sm:w-[4.5rem]" />
                               </li>
                             ))}
                         </Fragment>
