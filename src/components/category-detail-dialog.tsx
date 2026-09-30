@@ -54,7 +54,7 @@ export function CategoryDetailDialog({
   const addedByGroup = useMemo(() => {
     const map = new Map<GroceryGroup, string[]>();
     for (const rule of groceryRules.rules) {
-      if (rule.origin === "corrected") continue;
+      if (rule.origin !== "added") continue;
       const list = map.get(rule.group) ?? [];
       list.push(rule.match);
       map.set(rule.group, list);
