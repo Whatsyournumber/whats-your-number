@@ -50,6 +50,17 @@ export function CategoryDetailDialog({
   const byMonth = days > 62;
   const isGrocery = isSupermarket || ["supermercado", "mercado", "groceries"].includes(name.trim().toLowerCase());
   const grocery = useMemo(() => isGrocery ? summarizeGroceryReceipts(items, previousItems, groceryRules.rules) : null, [isGrocery, items, previousItems, groceryRules.rules]);
+  // Productos que el usuario añadió a mano en Reglas del súper, por rubro; las correcciones no aparecen.
+  const addedByGroup = useMemo(() => {
+    const map = new Map<GroceryGroup, string[]>();
+    for (const rule of groceryRules.rules) {
+      if (rule.origin === "corrected") continue;
+      const list = map.get(rule.group) ?? [];
+      list.push(rule.match);
+      map.set(rule.group, list);
+    }
+    return map;
+  }, [groceryRules.rules]);
 
   const trend = useMemo(() => {
     const map = new Map<string, { label: string; gasto: number }>();
