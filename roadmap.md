@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Numerar los 12 rubros del súper, mostrar ejemplos de productos que corresponden a cada uno y listar como reglas solo las correcciones guardadas, no todos los tickets leídos.
+
 - [x] Mostrar en Reglas del súper los 12 rubros y los productos detectados en tickets, junto con las correcciones que se reutilizan en futuros tickets.
 
 - [x] Incluir tickets de gastos compartidos en los rubros del súper, contando únicamente la parte propia, y hacer plegable el análisis de tickets.
