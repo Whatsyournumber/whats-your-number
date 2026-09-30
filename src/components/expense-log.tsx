@@ -2233,16 +2233,16 @@ export function ExpenseLog() {
                         : isAppsName(i.name);
                       return (
                         <Fragment key={i.id}>
-                        <li className="flex items-center gap-3">
-                          <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full text-base", colors[idx % colors.length])}>
-                            {emoji ?? <Repeat className="h-4 w-4" />}
+                        <li className="flex items-center gap-3 sm:gap-4">
+                          <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full text-base sm:h-12 sm:w-12 sm:text-lg", colors[idx % colors.length])}>
+                            {emoji ?? <Repeat className="h-4 w-4 sm:h-5 sm:w-5" />}
                           </span>
                           <div
                             className={cn("min-w-0 flex-1", isApps && "cursor-pointer")}
                             onClick={isApps ? () => setAppsExpanded((v) => !v) : undefined}
                           >
-                            <p className="truncate text-sm leading-5">{emoji ? i.name.slice(emoji.length).trim() : i.name}</p>
-                            <p className="text-[0.6875rem] leading-4 text-muted-foreground">
+                            <p className="truncate text-sm leading-5 sm:text-[0.9375rem] sm:leading-6">{emoji ? i.name.slice(emoji.length).trim() : i.name}</p>
+                            <p className="text-[0.6875rem] leading-4 text-muted-foreground sm:whitespace-nowrap">
                               {isApps
                                 ? t(`${displaySubs.length} apps · próximo cobro ${format(i.next, "d MMM", { locale })}`, `${displaySubs.length} apps · next charge ${format(i.next, "d MMM", { locale })}`)
                                 : format(i.next, "d MMM", { locale })}
