@@ -481,7 +481,7 @@ export function ManualExpenseDialog({
                       <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                  <PopoverContent portal={false} className="w-[--radix-popover-trigger-width] p-0" align="start">
                     <Command filter={(value, search) => value.toLowerCase().includes(search.toLowerCase()) ? 1 : 0}>
                       <CommandInput
                         placeholder={t("Buscar categoría", "Search category")}
