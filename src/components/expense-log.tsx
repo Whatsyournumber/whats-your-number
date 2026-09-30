@@ -2251,6 +2251,7 @@ export function ExpenseLog() {
                               <span className="numeric shrink-0 text-sm font-semibold sm:text-base">{fmt(i.amount)}</span>
                             </div>
                           </div>
+                          {!isApps && <span className="h-7 w-7 shrink-0" aria-hidden />}
                           {isApps && (
                             <button
                               type="button"
