@@ -997,6 +997,15 @@ export const SPEND_PLAN_FIELDS = [
     en: "Nightlife",
   },
   {
+    key: "fixed_debt",
+    group: "lifestyle",
+    fixed: false,
+    budgetId: "hogar",
+    emoji: "\u{1F9F9}",
+    es: "Hogar",
+    en: "Household",
+  },
+  {
     key: "fixed_shopping",
     group: "lifestyle",
     fixed: false,
