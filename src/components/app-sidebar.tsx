@@ -136,8 +136,8 @@ export function AppSidebar() {
     const locked = item.required && !planMeetsTier(item.required, tier);
     const badge = item.required === "patrimonio" ? "FAMILY" : item.required === "investor" ? "INVESTOR" : "PRO";
     return (
-      <SidebarMenuItem key={item.url} className="flex min-h-0 flex-1">
-        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className={`${compact ? "h-full min-h-7 gap-1.5" : "h-full min-h-0 gap-2"} px-2 data-[active=true]:bg-primary/15 data-[active=true]:text-primary`}>
+      <SidebarMenuItem key={item.url} className={`flex flex-1 shrink-0 ${compact ? "min-h-7" : locked ? "min-h-10" : "min-h-9"}`}>
+        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className={`${compact ? "h-full min-h-7 gap-1.5" : "h-full gap-2"} px-2 data-[active=true]:bg-primary/15 data-[active=true]:text-primary`}>
           <Link
             to={item.url}
             className="flex items-center gap-2"
@@ -219,7 +219,7 @@ export function AppSidebar() {
               <SidebarGroupLabel className="h-5 text-[10px] uppercase tracking-wide">
                 {t("Mi dinero", "My money")}
               </SidebarGroupLabel>
-              <SidebarGroupContent className="flex min-h-0 flex-1 flex-col">
+              <SidebarGroupContent className="flex min-h-0 flex-1 flex-col overflow-y-auto">
                 <SidebarMenu className="h-full gap-0">{familyWealth.map(renderItem)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
@@ -253,7 +253,7 @@ export function AppSidebar() {
               <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
                 {t("Mi dinero", "My money")}
               </SidebarGroupLabel>
-              <SidebarGroupContent className="flex min-h-0 flex-1 flex-col">
+              <SidebarGroupContent className="flex min-h-0 flex-1 flex-col overflow-y-auto">
                 <SidebarMenu className="h-full gap-0">{spending.map(renderItem)}{discoverUnlocked.map(renderItem)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
@@ -281,7 +281,7 @@ export function AppSidebar() {
               </SidebarGroupContent>
             </SidebarGroup>
             <div className="mx-3 h-px bg-border" />
-            <SidebarGroup className={discoverOpen ? "min-h-0 p-1.5" : "shrink-0 p-1.5"} style={discoverOpen ? { flex: `${discoverLocked.length} 1 0%`, minHeight: `${discoverLocked.length * 36 + 44}px` } : undefined}>
+            <SidebarGroup className={discoverOpen ? "min-h-0 p-1.5" : "shrink-0 p-1.5"} style={discoverOpen ? { flex: `${discoverLocked.length} 1 0%` } : undefined}>
               {!collapsed && discoverLocked.length > 0 && (
                 <Button
                   type="button"
