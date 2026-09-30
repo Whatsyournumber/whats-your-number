@@ -673,7 +673,7 @@ export function ExpenseLog() {
     const fromPlan = planned.map((l) => {
       const cat = findBudgetCategory(l.id);
       // «Suscripciones / apps» con desglose: el total y la fecha salen de las apps.
-      const isApps = l.id === "apps" && appSubs.length > 0;
+      const isApps = isAppsPlanLine(l) && appSubs.length > 0;
       const day = isApps ? Math.min(...appSubs.map((a) => a.day)) : (l.dueDay ?? 1);
       return {
         id: `plan:${l.id}`,
@@ -2211,7 +2211,7 @@ export function ExpenseLog() {
                         "bg-amber-500/15 text-amber-300",
                         "bg-rose-500/15 text-rose-300",
                       ];
-                      const isApps = i.planId === "apps";
+                      const isApps = Boolean(i.planId && budgets.lines.some((l) => l.id === i.planId && isAppsPlanLine(l)));
                       return (
                         <Fragment key={i.id}>
                         <li className="flex items-center gap-3">
