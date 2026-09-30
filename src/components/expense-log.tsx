@@ -835,6 +835,10 @@ export function ExpenseLog() {
   const [recording, setRecording] = useState(false);
   const [voiceDialogOpen, setVoiceDialogOpen] = useState(false);
   const [voiceStarting, setVoiceStarting] = useState(false);
+  const [draftInviting, setDraftInviting] = useState(false);
+  const [draftEmail, setDraftEmail] = useState("");
+  const [draftLooking, setDraftLooking] = useState(false);
+  const [draftInvitePending, setDraftInvitePending] = useState<string | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const camRef = useRef<HTMLInputElement | null>(null);
@@ -1001,6 +1005,36 @@ export function ExpenseLog() {
 
   const stopRecording = () => recorderRef.current?.stop();
 
+  const findDraftPartner = async () => {
+    const email = normalizeValidEmail(draftEmail);
+    if (!email) {
+      toast.error(t("Escribe un correo válido", "Enter a valid email"));
+      return;
+    }
+    setDraftLooking(true);
+    try {
+      const { data, error } = await supabase.rpc("find_user_by_email", { _email: email });
+      if (error) throw error;
+      const person = Array.isArray(data) ? data[0] : null;
+      if (!person) {
+        setDraftInvitePending(email);
+        return;
+      }
+      if (person.id === user?.id) {
+        toast.error(t("Elige a otra persona", "Choose someone else"));
+        return;
+      }
+      setDraft((current) => current ? { ...current, partner: { id: person.id, name: person.full_name || email } } : current);
+      setDraftInviting(false);
+      setDraftEmail("");
+      setDraftInvitePending(null);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t("No se pudo buscar a la persona", "Could not find the person"));
+    } finally {
+      setDraftLooking(false);
+    }
+  };
+
   // Acciones que llegan desde el botón "+" de la barra móvil inferior.
   useEffect(() => {
     if (!actionParam) return;
@@ -1038,8 +1072,9 @@ export function ExpenseLog() {
           _partner_name: draft.partner.name,
           _creator_share: ownAmount,
           _partner_share: draft.amount - ownAmount,
+          _receipt_items: [],
         });
-        if (shareError) throw shareError;
+        if (shareError) throw new Error(shareError.message);
         if (!expenseId) throw new Error(t("No se pudo compartir el gasto", "Could not share the expense"));
         sharedDescription = `${SHARED_PREFIX}50/50|${draft.partner.name}`;
         void notifyShared({ data: { expenseId } }).catch(() => {});
@@ -1057,18 +1092,21 @@ export function ExpenseLog() {
             ? `${RECEIPT_DETAIL_PREFIX}${JSON.stringify(draft.items)}`
             : t("Registro rápido", "Quick log")),
       });
+      setDraft(null);
+      setTranscript("");
+      setDraftInviting(false);
+      setDraftEmail("");
+      setDraftInvitePending(null);
+      void queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
       if (draft.partner) void queryClient.invalidateQueries({ queryKey: ["shared-partners"] });
-      await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
       setPeriod("month");
       if (draft.source === "receipt" && draft.items.length > 0) setExpandedTx(savedId);
       toast.success(t("Gasto guardado", "Expense saved"), {
         description: `${draft.merchant} · ${fmt(draft.amount)}`,
       });
-      setDraft(null);
-      setTranscript("");
       window.setTimeout(() => latestExpensesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : String(error));
+      toast.error(error instanceof Error ? error.message : t("No se pudo guardar el gasto", "Could not save the expense"));
     } finally {
       setSaving(false);
     }
@@ -2510,7 +2548,7 @@ export function ExpenseLog() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={Boolean(draft)} onOpenChange={(open) => !open && setDraft(null)}>
+      <Dialog open={Boolean(draft)} onOpenChange={(open) => { if (!open && !saving) setDraft(null); }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{t("Confirma el gasto", "Confirm the expense")}</DialogTitle>
@@ -2554,19 +2592,32 @@ export function ExpenseLog() {
                 </Select>
               </div>
               {draft.source === "voice" && (
-                <div className="grid gap-1.5">
-                  <Label>{t("Tipo de gasto", "Expense type")}</Label>
-                  <div className="flex flex-wrap gap-2">
-                    <Button type="button" size="sm" variant={draft.partner ? "outline" : "default"} onClick={() => setDraft({ ...draft, partner: null })}>
-                      {t("Individual", "Individual")}
-                    </Button>
-                    {editKnownPartners.map((p) => (
-                      <Button key={p.id} type="button" size="sm" variant={draft.partner?.id === p.id ? "default" : "outline"} onClick={() => setDraft({ ...draft, partner: p })}>
-                        <Users className="mr-1.5 h-3.5 w-3.5" />
-                        {`${t("Con", "With")} ${p.name.split(" ")[0]}`}
+                <div className="grid gap-3 border-t border-border pt-4">
+                  <Label>{t("Compartido", "Shared")}</Label>
+                  <div className="flex flex-wrap items-start gap-4">
+                    {[...(draft.partner && !editKnownPartners.some((p) => p.id === draft.partner?.id) ? [draft.partner] : []), ...editKnownPartners].map((person) => (
+                      <Button key={person.id} type="button" variant="ghost" className="flex h-auto max-w-16 flex-col items-center gap-1 p-0 font-normal hover:bg-transparent" onClick={() => setDraft({ ...draft, partner: draft.partner?.id === person.id ? null : person })} aria-pressed={draft.partner?.id === person.id}>
+                        <span className={cn("relative grid h-12 w-12 place-items-center rounded-full bg-muted text-sm font-semibold", draft.partner?.id === person.id && "ring-2 ring-positive")}>
+                          {editInitials(person.name)}
+                          {draft.partner?.id === person.id && <Check className="absolute -left-1 -top-1 h-4 w-4 rounded-full bg-positive p-0.5 text-background" />}
+                        </span>
+                        <span className="w-full truncate text-center text-xs text-muted-foreground">{person.name.split(" ")[0]}</span>
                       </Button>
                     ))}
+                    <Button type="button" variant="ghost" className="flex h-auto w-12 flex-col items-center gap-1 p-0 font-normal hover:bg-transparent" onClick={() => setDraftInviting((value) => !value)} aria-label={t("Añadir persona", "Add person")}>
+                      <span className="grid h-12 w-12 place-items-center rounded-full border border-border text-muted-foreground"><Plus className="h-5 w-5" /></span>
+                      <span className="w-full text-center text-xs text-muted-foreground">{t("Añadir", "Add")}</span>
+                    </Button>
                   </div>
+                  {draftInviting && (
+                    <div className="flex gap-2">
+                      <Input type="email" value={draftEmail} onChange={(e) => { setDraftEmail(e.target.value); setDraftInvitePending(null); }} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void findDraftPartner(); } }} placeholder={t("Correo de la otra persona", "Other person's email")} aria-label={t("Correo de la otra persona", "Other person's email")} />
+                      <Button type="button" variant="outline" onClick={findDraftPartner} disabled={draftLooking || !normalizeValidEmail(draftEmail)}>
+                        {draftLooking ? <Loader2 className="h-4 w-4 animate-spin" /> : t("Añadir", "Add")}
+                      </Button>
+                    </div>
+                  )}
+                  {draftInviting && draftInvitePending && <InviteShareActions email={draftInvitePending} onClose={() => setDraftInvitePending(null)} />}
                   {draft.partner && (
                     <p className="text-xs text-muted-foreground">
                       {t(`Compartido 50/50: tu parte es ${fmt(draft.amount / 2)}`, `Split 50/50: your share is ${fmt(draft.amount / 2)}`)}
