@@ -21,6 +21,21 @@ import { findBudgetCategory } from "@/lib/budget-categories";
 import { money } from "@/lib/onboarding";
 import { GROCERY_GROUPS, GROCERY_LABELS, type GroceryGroup } from "@/lib/receipt-insights";
 
+const GROCERY_EXAMPLES: Record<GroceryGroup, { es: string; en: string }> = {
+  protein: { es: "Salmón, huevos, pechuga, atún, ternera, tofu", en: "Salmon, eggs, chicken breast, tuna, beef, tofu" },
+  produce: { es: "Plátano, manzana, tomate, lechuga, zanahoria", en: "Banana, apple, tomato, lettuce, carrots" },
+  dairy: { es: "Yogur, queso, leche, kéfir, mantequilla", en: "Yogurt, cheese, milk, kefir, butter" },
+  bakery: { es: "Pan, arroz, pasta, avena, cereales", en: "Bread, rice, pasta, oats, cereal" },
+  pantry: { es: "Aceitunas, aceite, legumbres, salsas, conservas", en: "Olives, oil, beans, sauces, canned goods" },
+  snacks: { es: "Chocolate, galletas, almendras, palomitas, caramelos", en: "Chocolate, cookies, almonds, popcorn, candy" },
+  drinks: { es: "Agua, café, té, zumo, refrescos", en: "Water, coffee, tea, juice, soft drinks" },
+  prepared: { es: "Pizza, croquetas, platos preparados, congelados", en: "Pizza, croquettes, ready meals, frozen foods" },
+  personal: { es: "Champú, sérum, protector solar, vitaminas", en: "Shampoo, serum, sunscreen, vitamins" },
+  home: { es: "Detergente, papel higiénico, bolsas de basura", en: "Detergent, toilet paper, trash bags" },
+  babyPets: { es: "Pañales, comida infantil, pienso para mascotas", en: "Diapers, baby food, pet food" },
+  other: { es: "Productos que todavía no encajan en otro rubro", en: "Products that don't yet fit another group" },
+};
+
 export const Route = createFileRoute("/configuracion")({
   head: () => ({
     meta: [
@@ -43,6 +58,7 @@ function Configuracion() {
   const groceryRules = useGroceryRules();
   const [productMatch, setProductMatch] = useState("");
   const [productGroup, setProductGroup] = useState<GroceryGroup>("pantry");
+  const [groupItems, setGroupItems] = useState<Partial<Record<GroceryGroup, string>>>({});
   const custom = useCategories();
   const budgets = useSpendBudgets();
   const profile = useProfile();
@@ -212,6 +228,11 @@ function Configuracion() {
               <div key={g} className="rounded-lg border border-border bg-elevated/40 p-3">
                 <div className="mb-2 flex items-center gap-2"><span className="text-xs font-semibold text-muted-foreground">{index + 1}.</span><span className="text-base">{GROCERY_LABELS[g].icon}</span><span className="text-sm font-medium">{t(GROCERY_LABELS[g].es, GROCERY_LABELS[g].en)}</span></div>
                 <p className="text-xs text-muted-foreground">{t(GROCERY_LABELS[g].detailEs, GROCERY_LABELS[g].detailEn)}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{t("Ejemplos", "Examples")}: {t(GROCERY_EXAMPLES[g].es, GROCERY_EXAMPLES[g].en)}</p>
+                <form className="mt-3 flex gap-2" onSubmit={(event) => { event.preventDefault(); const name = groupItems[g]?.trim(); if (!name) return; groceryRules.learn(name, g); setGroupItems((current) => ({ ...current, [g]: "" })); }}>
+                  <Input aria-label={t(`Añadir producto a ${GROCERY_LABELS[g].es}`, `Add product to ${GROCERY_LABELS[g].en}`)} value={groupItems[g] ?? ""} onChange={(event) => setGroupItems((current) => ({ ...current, [g]: event.target.value }))} maxLength={120} placeholder={t("Añadir producto o palabra", "Add product or keyword")} className="min-w-0 flex-1" />
+                  <Button type="submit" size="sm" variant="outline" disabled={!groupItems[g]?.trim()}>{t("Añadir", "Add")}</Button>
+                </form>
                 {rules.length > 0 && <div className="mt-3 border-t border-border pt-2"><p className="mb-2 text-xs text-muted-foreground">{t("Reglas nuevas", "New rules")} · {rules.length}</p><div className="space-y-1">{rules.map((rule) => <div key={rule.id} className="flex items-center gap-2 rounded-md bg-background/50 px-2 py-1.5"><span className="min-w-0 flex-1 break-words text-sm">{rule.match}</span><select aria-label={t(`Rubro de ${rule.match}`, `Group for ${rule.match}`)} value={rule.group} onChange={(e) => groceryRules.learn(rule.match, e.target.value as GroceryGroup)} className="h-8 max-w-32 shrink-0 rounded-md border border-input bg-background px-1 text-xs text-foreground">{GROCERY_GROUPS.map((id) => <option key={id} value={id}>{t(GROCERY_LABELS[id].es, GROCERY_LABELS[id].en)}</option>)}</select><Button type="button" size="icon" variant="ghost" className="size-8 shrink-0 text-muted-foreground" aria-label={t(`Eliminar regla de ${rule.match}`, `Delete rule for ${rule.match}`)} onClick={() => groceryRules.remove(rule.id)}><Trash2 className="size-3.5" /></Button></div>)}</div></div>}
               </div>); })}</div>
           </Panel>
