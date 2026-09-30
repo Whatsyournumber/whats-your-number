@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { ChevronDown, Info, ReceiptText, Sparkles } from "lucide-react";
+import { ChevronDown, Info, ReceiptText, Sparkles, Users } from "lucide-react";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { useT } from "@/hooks/use-language";
 import { merchantKey, type Tx } from "@/hooks/use-transactions";
 import { GROCERY_GROUPS, GROCERY_LABELS, summarizeGroceryReceipts, type GroceryGroup } from "@/lib/receipt-insights";
 import { cn } from "@/lib/utils";
+import { parseShared } from "@/components/shared-expense";
 
 type Props = {
   open: boolean;
@@ -209,7 +210,7 @@ export function CategoryDetailDialog({
                     <span className="w-14 shrink-0 text-xs text-muted-foreground">
                       {tx.tx_date ? format(parseISO(tx.tx_date), "d MMM", { locale: es }) : "—"}
                     </span>
-                    <span className="min-w-0 truncate text-sm">{tx.merchant}</span>
+                     <span className="flex min-w-0 items-center gap-1.5 text-sm"><span className="truncate">{tx.merchant}</span>{parseShared(tx.description) && <Users className="size-3.5 shrink-0 text-positive" aria-label={t("Compartido", "Shared")} />}{parseShared(tx.description)?.name && <span className="truncate text-xs text-muted-foreground">· {parseShared(tx.description)?.name}</span>}</span>
                     <span className="numeric ml-auto text-sm font-medium">{fmt(Math.abs(tx.amount))}</span>
                   </li>
                 ))}

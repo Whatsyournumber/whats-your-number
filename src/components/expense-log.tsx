@@ -58,7 +58,7 @@ import { InviteShareActions } from "@/components/invite-share-actions";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Users } from "lucide-react";
 import { normalizeValidEmail } from "@/lib/email-validation";
-import { receiptItemsFrom as parseReceiptItems } from "@/lib/receipt-insights";
+import { receiptItemsFrom as parseReceiptItems, sharedReceiptDescription } from "@/lib/receipt-insights";
 
 const editInitials = (name: string) => {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -1097,7 +1097,9 @@ export function ExpenseLog() {
         });
         if (shareError) throw new Error(shareError.message);
         if (!expenseId) throw new Error(t("No se pudo compartir el gasto", "Could not share the expense"));
-        sharedDescription = `${SHARED_PREFIX}${draftSplit(draft)}|${draft.partner.name}`;
+        sharedDescription = draft.source === "receipt"
+          ? sharedReceiptDescription(draftSplit(draft), draft.partner.name, draft.items)
+          : `${SHARED_PREFIX}${draftSplit(draft)}|${draft.partner.name}`;
         void notifyShared({ data: { expenseId } }).catch(() => {});
       }
       const savedId = await saveExpense({
@@ -2340,7 +2342,7 @@ export function ExpenseLog() {
                       </div>
                       {expandedCat && r.items.length > 0 && (
                         <ul className="ml-12 mt-2 divide-y divide-border/40 rounded-lg bg-muted/20 px-3 sm:ml-[3.25rem]">
-                          {r.items.slice(0, 12).map((it, i) => (
+                           {r.items.slice(0, 12).map((it, i) => (
                             <li
                               key={`${it.key}-${i}`}
                               draggable
@@ -2373,11 +2375,15 @@ export function ExpenseLog() {
                                 onClick={(event) => event.stopPropagation()}
                                 aria-label={t(`Seleccionar ${it.label}`, `Select ${it.label}`)}
                               />
-                              <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm">{it.label}</p>
+                               <div className="min-w-0 flex-1">
+                                 <p className="flex min-w-0 items-center gap-1.5 text-sm">
+                                   <span className="truncate">{it.label}</span>
+                                   {parseShared(expenseTx.find((x) => x.id === it.key)?.description) && <Users className="h-3.5 w-3.5 shrink-0 text-positive" aria-label={t("Compartido", "Shared")} />}
+                                 </p>
                                 {it.date && (
                                   <p className="text-[11px] text-muted-foreground">
                                     {format(parseISO(it.date), "d MMM", { locale })}
+                                     {parseShared(expenseTx.find((x) => x.id === it.key)?.description)?.name && ` · ${t("con", "with")} ${parseShared(expenseTx.find((x) => x.id === it.key)?.description)?.name}`}
                                   </p>
                                 )}
                               </div>
