@@ -321,7 +321,7 @@ function OnboardingPage() {
     setFixed("fixed_subscriptions", next.reduce((s, c) => s + (c.amount || 0), 0));
   };
   const addAppSub = () =>
-    setAppSubs((cs) => [...cs, { id: `appsub-${cs.length}`, name: "", emoji: "📱" }]);
+    setAppSubs((cs) => [...cs, { id: `appsub-${cs.length}`, name: "", amount: 0, emoji: "📱" }]);
   const customCatsTotal = customCats.reduce((s, c) => s + (c.amount || 0), 0);
 
   const cur = data.currency || defaultCurrency();
