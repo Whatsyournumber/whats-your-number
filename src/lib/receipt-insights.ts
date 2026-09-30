@@ -36,7 +36,7 @@ export function receiptItemsFrom(description: string | null | undefined): Receip
 
 export type GroceryGroup = "protein" | "produce" | "dairy" | "bakery" | "pantry" | "snacks" | "drinks" | "prepared" | "personal" | "home" | "babyPets" | "other";
 export const GROCERY_GROUPS: GroceryGroup[] = ["protein", "produce", "dairy", "bakery", "pantry", "snacks", "drinks", "prepared", "personal", "home", "babyPets", "other"];
-export type GroceryRule = { id: string; match: string; group: GroceryGroup };
+export type GroceryRule = { id: string; match: string; group: GroceryGroup; origin?: "added" | "corrected" };
 export const GROCERY_LABELS: Record<GroceryGroup, { es: string; en: string; icon: string; detailEs: string; detailEn: string; color: string }> = {
   protein: { es: "Carne y proteínas", en: "Meat & protein", icon: "🥩", detailEs: "Carne, pollo, pescado, huevos y proteína deportiva", detailEn: "Meat, chicken, fish, eggs and sports protein", color: "bg-chart-5" },
   produce: { es: "Frutas y verduras", en: "Fruit & vegetables", icon: "🥬", detailEs: "Frutas, verduras, ensaladas y productos frescos", detailEn: "Fruit, vegetables, salads and fresh produce", color: "bg-chart-1" },
