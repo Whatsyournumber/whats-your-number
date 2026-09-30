@@ -50,6 +50,17 @@ export function CategoryDetailDialog({
   const byMonth = days > 62;
   const isGrocery = isSupermarket || ["supermercado", "mercado", "groceries"].includes(name.trim().toLowerCase());
   const grocery = useMemo(() => isGrocery ? summarizeGroceryReceipts(items, previousItems, groceryRules.rules) : null, [isGrocery, items, previousItems, groceryRules.rules]);
+  // Productos que el usuario añadió a mano en Reglas del súper, por rubro; las correcciones no aparecen.
+  const addedByGroup = useMemo(() => {
+    const map = new Map<GroceryGroup, string[]>();
+    for (const rule of groceryRules.rules) {
+      if (rule.origin === "corrected") continue;
+      const list = map.get(rule.group) ?? [];
+      list.push(rule.match);
+      map.set(rule.group, list);
+    }
+    return map;
+  }, [groceryRules.rules]);
 
   const trend = useMemo(() => {
     const map = new Map<string, { label: string; gasto: number }>();
@@ -152,7 +163,7 @@ export function CategoryDetailDialog({
               <span className="flex min-w-0 items-center gap-2"><span className="grid size-7 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground"><Sparkles className="size-3.5" /></span><span className="min-w-0 text-sm font-semibold whitespace-normal">{t(`Análisis de ${grocery.receiptCount} tickets del súper del mes`, `Analysis of ${grocery.receiptCount} grocery receipts this month`)}</span></span>
               <ChevronDown className={cn("size-4 shrink-0 text-muted-foreground transition-transform", groceryOpen && "rotate-180")} />
             </Button>
-            {groceryOpen && <div id="grocery-receipt-insights"><GroceryInsights summary={grocery} fmt={fmt} onCorrect={groceryRules.learn} /></div>}
+            {groceryOpen && <div id="grocery-receipt-insights"><GroceryInsights summary={grocery} fmt={fmt} onCorrect={groceryRules.learn} addedByGroup={addedByGroup} /></div>}
           </section>
         )}
 
@@ -210,7 +221,7 @@ export function CategoryDetailDialog({
   );
 }
 
-function GroceryInsights({ summary, fmt, onCorrect }: { summary: ReturnType<typeof summarizeGroceryReceipts>; fmt: (n: number) => string; onCorrect: (name: string, group: GroceryGroup) => void }) {
+function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: ReturnType<typeof summarizeGroceryReceipts>; fmt: (n: number) => string; onCorrect: (name: string, group: GroceryGroup) => void; addedByGroup: Map<GroceryGroup, string[]> }) {
   const t = useT();
   const [expanded, setExpanded] = useState<GroceryGroup | null>(null);
   const comparable = summary.previousReceiptCount > 0;
@@ -257,7 +268,7 @@ function GroceryInsights({ summary, fmt, onCorrect }: { summary: ReturnType<type
                   <span className="h-1 overflow-hidden rounded-full bg-muted"><span className={cn("block h-full rounded-full", label.color)} style={{ width: `${Math.max(3, (group.amount / max) * 100)}%` }} /></span>
                 </span>
                 <ChevronDown className={cn("ml-2 size-3.5 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")} />
-              </Button><Hint><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="size-7 shrink-0 text-muted-foreground" aria-label={t(`Qué incluye ${label.es}`, `What ${label.en} includes`)}><Info className="size-3.5" /></Button></TooltipTrigger><TooltipContent side="top" className="max-w-60">{t(label.detailEs, label.detailEn)}</TooltipContent></Hint></div>
+              </Button><Hint><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="size-7 shrink-0 text-muted-foreground" aria-label={t(`Qué incluye ${label.es}`, `What ${label.en} includes`)}><Info className="size-3.5" /></Button></TooltipTrigger><TooltipContent side="top" className="max-w-60">{t(label.detailEs, label.detailEn)}{addedByGroup.get(group.id) && <span className="mt-1 block text-muted-foreground">{t("Añadidos por ti: ", "Added by you: ")}{addedByGroup.get(group.id)!.join(", ")}</span>}</TooltipContent></Hint></div>
               {open && (
                 <ul className="mb-2 ml-9 space-y-1 border-l border-border pl-3">
                   {group.products.map((product) => (
