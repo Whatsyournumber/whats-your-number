@@ -98,10 +98,23 @@ export function useSpendBudgets() {
       const remote = (Array.isArray(data?.lines) ? (data.lines as BudgetLine[]) : []).filter(
         (l) => l && typeof l.id === "string",
       );
+      const remoteWithHogar = withHogar(remote);
       if (remote.some((l) => Number(l?.amount) > 0)) {
         // La nube manda: es el mismo plan en móvil, tablet y ordenador.
-        setLines(remote);
-        writeLocal(storageKey, remote);
+        setLines(remoteWithHogar);
+        writeLocal(storageKey, remoteWithHogar);
+        if (remoteWithHogar.length !== remote.length) {
+          // Nueva categoría base: se sube para que también exista en la nube.
+          void supabase
+            .from("spend_plans")
+            .upsert(
+              { user_id: userId, lines: remoteWithHogar },
+              { onConflict: "user_id" },
+            )
+            .then(({ error: upErr }) => {
+              if (upErr) console.error("spend_plans hogar seed", upErr.message);
+            });
+        }
       } else if (local.length) {
         // Primera vez con sincronización: subimos el plan de este dispositivo.
         void supabase
