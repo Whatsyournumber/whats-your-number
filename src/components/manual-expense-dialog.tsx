@@ -309,8 +309,8 @@ export function ManualExpenseDialog({
           <DialogTitle>{t("Cargar gasto manualmente", "Add expense manually")}</DialogTitle>
           <DialogDescription>
             {t(
-              "Si no quieres subir tus estados de cuenta, añade tus gastos variables con su fecha.",
-              "If you don't want to upload statements, add your variable expenses with their date.",
+              "Añade tu gasto manual, sea individual o compartido",
+              "Add your expense manually, whether individual or shared",
             )}
           </DialogDescription>
         </DialogHeader>
