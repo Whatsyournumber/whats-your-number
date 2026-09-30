@@ -782,12 +782,25 @@ function CashFlow() {
                 <TrendingUp className="h-4 w-4 text-chart-1" />
                 {t("Inversiones al mes", "Investments per month")}
               </label>
-              <NumberInput
-                format
-                value={allocDraft.invest}
-                onChange={(v) => setAllocDraft((d) => ({ ...d, invest: v }))}
-                placeholder="0"
-              />
+              <div className="relative">
+                <NumberInput
+                  format
+                  value={allocDraft.invest}
+                  onChange={(v) => setAllocDraft((d) => ({ ...d, invest: v }))}
+                  placeholder="0"
+                  className="pr-14"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setAllocDraft((d) => ({ ...d, invest: Math.max(0, saveAmount - Math.max(0, d.goals)) }))
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold uppercase tracking-wide text-muted-foreground transition hover:text-primary"
+                  aria-label={t("Usar todo en ahorro e inversión", "Use all for savings & investment")}
+                >
+                  {t("Máx", "Max")}
+                </button>
+              </div>
             </div>
             <div>
               <label className="mb-1.5 flex items-center gap-2 text-sm font-medium">
@@ -801,28 +814,12 @@ function CashFlow() {
                 placeholder="0"
               />
             </div>
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-xs text-muted-foreground">
-                {t(
-                  `Disponible: ${fmt(Math.max(0, saveAmount - allocDraft.invest - allocDraft.goals))}`,
-                  `Available: ${fmt(Math.max(0, saveAmount - allocDraft.invest - allocDraft.goals))}`,
-                )}
-              </p>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="h-7 shrink-0 px-2 text-xs"
-                onClick={() =>
-                  setAllocDraft((d) => {
-                    const remaining = Math.max(0, saveAmount - Math.max(0, d.goals));
-                    return { ...d, invest: remaining };
-                  })
-                }
-              >
-                {t("Máx · usar todo en ahorro e inversión", "Max · use all for savings & investment")}
-              </Button>
-            </div>
+            <p className="text-xs text-muted-foreground">
+              {t(
+                `Disponible: ${fmt(Math.max(0, saveAmount - allocDraft.invest - allocDraft.goals))}`,
+                `Available: ${fmt(Math.max(0, saveAmount - allocDraft.invest - allocDraft.goals))}`,
+              )}
+            </p>
             <Button
               className="w-full"
               onClick={() => {
