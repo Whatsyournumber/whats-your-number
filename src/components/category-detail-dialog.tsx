@@ -149,7 +149,7 @@ export function CategoryDetailDialog({
         {grocery && grocery.receiptCount > 0 && (
           <section className="border-t border-border pt-3">
             <Button type="button" variant="ghost" className="h-auto w-full justify-between gap-2 px-1 py-2 text-left" aria-expanded={groceryOpen} aria-controls="grocery-receipt-insights" onClick={() => setGroceryOpen((v) => !v)}>
-              <span className="flex min-w-0 items-center gap-2"><span className="grid size-7 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground"><Sparkles className="size-3.5" /></span><span className="min-w-0 text-sm font-semibold whitespace-normal">{t("¿Dónde se fue el dinero en el súper?", "Where did your grocery money go?")}</span></span>
+              <span className="flex min-w-0 items-center gap-2"><span className="grid size-7 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground"><Sparkles className="size-3.5" /></span><span className="min-w-0 text-sm font-semibold whitespace-normal">{t(`Análisis de ${grocery.receiptCount} tickets del súper del mes`, `Analysis of ${grocery.receiptCount} grocery receipts this month`)}</span></span>
               <ChevronDown className={cn("size-4 shrink-0 text-muted-foreground transition-transform", groceryOpen && "rotate-180")} />
             </Button>
             {groceryOpen && <div id="grocery-receipt-insights"><GroceryInsights summary={grocery} fmt={fmt} onCorrect={groceryRules.learn} /></div>}
@@ -217,19 +217,11 @@ function GroceryInsights({ summary, fmt, onCorrect }: { summary: ReturnType<type
   const delta = summary.total - summary.previousTotal;
   const max = Math.max(...summary.groups.map((group) => group.amount), 1);
   return (
-    <section className="pt-1" aria-label={t("Análisis de tickets", "Receipt analysis")}>
+    <section className="pt-1" aria-label={t(`Análisis de ${summary.receiptCount} tickets del súper del mes`, `Analysis of ${summary.receiptCount} grocery receipts this month`)}>
       <div className="flex flex-wrap items-start justify-between gap-2">
-        <div className="flex min-w-0 items-start gap-2">
-          <div className="grid size-7 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground"><Sparkles className="size-3.5" /></div>
-          <div>
-            <h3 className="text-xs font-medium text-muted-foreground">{t("Análisis de tickets", "Receipt analysis")}</h3>
-            <p className="text-xs text-muted-foreground">
-              {comparable
-                ? t(`Según ${summary.receiptCount} tickets de este periodo y ${summary.previousReceiptCount} del anterior.`, `Based on ${summary.receiptCount} receipts this period and ${summary.previousReceiptCount} last period.`)
-                : t(`Según ${summary.receiptCount} tickets con productos detallados.`, `Based on ${summary.receiptCount} itemized receipts.`)}
-            </p>
-          </div>
-        </div>
+        <p className="min-w-0 text-xs text-muted-foreground">
+          {t("Podrás cambiar de categoría si no se registra correctamente.", "You can change the category if it wasn't captured correctly.")}
+        </p>
         {comparable && (
           <div className={cn("numeric rounded-md px-2 py-1 text-xs font-semibold", delta > 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
             {delta > 0 ? "+" : delta < 0 ? "−" : ""}{fmt(Math.abs(delta))}
