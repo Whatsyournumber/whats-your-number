@@ -54,6 +54,7 @@ export const DEFAULT_BUDGET_IDS = [
   "delivery",
   "travel",
   "nightlife",
+  "hogar",
   "shopping",
   "apps",
 ];

@@ -42,7 +42,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets, type BudgetLine } from "@/hooks/use-spend-budgets";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
 import { useSyncedSetting } from "@/hooks/use-synced-setting";
-import { BUDGET_CATEGORIES, findBudgetCategory } from "@/lib/budget-categories";
+import { BUDGET_CATEGORIES, findBudgetCategory, type BudgetGroup } from "@/lib/budget-categories";
 import { BASE_CATEGORIES, categorizeTx } from "@/lib/categorize";
 import { captureExpense } from "@/lib/expense-capture.functions";
 import { StatementImporter } from "@/components/statement-importer";
@@ -527,7 +527,21 @@ export function ExpenseLog() {
     for (const l of budgets.lines) {
       if (l.amount > 0) merged.set(l.id, l);
     }
-    return [...merged.values()].filter((l) => l.amount > 0);
+    const result = [...merged.values()].filter((l) => l.amount > 0);
+    // Hogar es variable: si el plan aún no lo trae, aparece con 0 para poder rellenarlo.
+    if (result.length && !result.some((l) => l.id === "hogar")) {
+      const groupOf = (l: BudgetLine): BudgetGroup =>
+        findBudgetCategory(l.id)?.group ?? l.group ?? "other";
+      let insertAt = result.length;
+      for (let i = result.length - 1; i >= 0; i--) {
+        if (groupOf(result[i]!) === "lifestyle") {
+          insertAt = i + 1;
+          break;
+        }
+      }
+      result.splice(insertAt, 0, { id: "hogar", amount: 0 });
+    }
+    return result;
   }, [onboardingLines, budgets.lines]);
 
   /**

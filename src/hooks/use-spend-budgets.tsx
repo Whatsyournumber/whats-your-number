@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { DEFAULT_BUDGET_IDS, type BudgetGroup } from "@/lib/budget-categories";
+import {
+  DEFAULT_BUDGET_IDS,
+  findBudgetCategory,
+  type BudgetGroup,
+} from "@/lib/budget-categories";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -39,6 +43,22 @@ function writeLocal(storageKey: string, lines: BudgetLine[]) {
   }
 }
 
+/** «Hogar» llegó después: los planes guardados sin él lo reciben como gasto
+ *  variable (monto 0) para que se pueda rellenar sin tocar la nube a mano. */
+function withHogar(ls: BudgetLine[]): BudgetLine[] {
+  if (!ls.length || ls.some((l) => l.id === "hogar")) return ls;
+  const groupOf = (l: BudgetLine): BudgetGroup =>
+    findBudgetCategory(l.id)?.group ?? l.group ?? "other";
+  let insertAt = ls.length;
+  for (let i = ls.length - 1; i >= 0; i--) {
+    if (groupOf(ls[i]!) === "lifestyle") {
+      insertAt = i + 1;
+      break;
+    }
+  }
+  return [...ls.slice(0, insertAt), { id: "hogar", amount: 0 }, ...ls.slice(insertAt)];
+}
+
 /** Objetivo de gasto por categoría. Se guarda en la cuenta (nube) para que
  *  todos los dispositivos vean el mismo plan; el navegador solo es caché. */
 export function useSpendBudgets() {
@@ -54,7 +74,9 @@ export function useSpendBudgets() {
     setLines([]);
     setLoaded(false);
 
-    const local = readLocal(storageKey);
+    const localRaw = readLocal(storageKey);
+    const local = withHogar(localRaw);
+    if (local.length !== localRaw.length) writeLocal(storageKey, local);
     if (local.length) setLines(local);
 
     if (!userId) {
@@ -76,10 +98,23 @@ export function useSpendBudgets() {
       const remote = (Array.isArray(data?.lines) ? (data.lines as BudgetLine[]) : []).filter(
         (l) => l && typeof l.id === "string",
       );
+      const remoteWithHogar = withHogar(remote);
       if (remote.some((l) => Number(l?.amount) > 0)) {
         // La nube manda: es el mismo plan en móvil, tablet y ordenador.
-        setLines(remote);
-        writeLocal(storageKey, remote);
+        setLines(remoteWithHogar);
+        writeLocal(storageKey, remoteWithHogar);
+        if (remoteWithHogar.length !== remote.length) {
+          // Nueva categoría base: se sube para que también exista en la nube.
+          void supabase
+            .from("spend_plans")
+            .upsert(
+              { user_id: userId, lines: remoteWithHogar },
+              { onConflict: "user_id" },
+            )
+            .then(({ error: upErr }) => {
+              if (upErr) console.error("spend_plans hogar seed", upErr.message);
+            });
+        }
       } else if (local.length) {
         // Primera vez con sincronización: subimos el plan de este dispositivo.
         void supabase
