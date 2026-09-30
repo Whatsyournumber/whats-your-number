@@ -32,7 +32,8 @@ export const SHARED_PREFIX = "shared:";
 export function parseShared(description?: string | null) {
   if (!description?.startsWith(SHARED_PREFIX)) return null;
   const [split, name] = description.slice(SHARED_PREFIX.length).split("|");
-  return { split: split ?? "", name: name ?? "" };
+  const cleanName = name?.split("wyn-receipt:")[0]?.trim() ?? "";
+  return { split: split ?? "", name: cleanName };
 }
 
 const modeLabel = (mode: Mode, myPct: number) =>
