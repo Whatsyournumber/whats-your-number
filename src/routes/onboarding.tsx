@@ -5,6 +5,8 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
+  ChevronDown,
+  ChevronUp,
   Compass,
   FileUp,
   Loader2,
@@ -14,6 +16,7 @@ import {
   PartyPopper as PartyPopperIcon,
   Search,
   Sparkles,
+  Trash2,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
