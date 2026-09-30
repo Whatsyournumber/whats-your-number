@@ -10,6 +10,11 @@ export const expenseSchema = z.object({
   category: z.string(),
 });
 
+/** Nota de voz: además, la parte del usuario si el gasto se reparte. */
+export const voiceExpenseSchema = expenseSchema.extend({
+  myShare: z.number().nullable(),
+});
+
 /** Recibo: además del total, el detalle de los productos comprados. */
 export const receiptSchema = expenseSchema.extend({
   items: z.array(
@@ -138,15 +143,18 @@ export async function parseExpenseFromText(
   currency: string,
   today: string,
   lang: "es" | "en" = "es",
-): Promise<ParsedExpense> {
+): Promise<ParsedExpense & { myShare: number | null }> {
   const gateway = createLovableAiGatewayProvider(apiKey);
   const { output } = await generateText({
     model: gateway("google/gemini-3.5-flash"),
-    system: prompt(categories, currency, today, lang),
+    system: [
+      prompt(categories, currency, today, lang),
+      "myShare: si el gasto se comparte, la parte que paga el usuario (quien habla). Ejemplos con total 100: «a medias» o «dividido» -> 50; «70/30 con Carlos» o «yo pago el 70%» -> 70; «Carlos pone 20» -> 80; «yo pongo 30 y Ana el resto» -> 30. Si hay un porcentaje ambiguo, el primer número es del usuario. Si no se comparte, null.",
+    ].join(" "),
     prompt: `Extrae el gasto de esta frase: "${text}"`,
-    output: Output.object({ schema: expenseSchema }),
+    output: Output.object({ schema: voiceExpenseSchema }),
   });
-  return output as ParsedExpense;
+  return output as ParsedExpense & { myShare: number | null };
 }
 
 /** Lee la foto de un recibo: total, comercio, fecha, categoría y el detalle de la compra. */

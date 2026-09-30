@@ -61,5 +61,5 @@ export const captureExpense = createServerFn({ method: "POST" })
       data.lang,
       groceryRules.map((rule) => ({ match: rule.match, group: data.lang === "en" ? GROCERY_LABELS[rule.group].en : GROCERY_LABELS[rule.group].es })),
     );
-    return { ...expense, items: expense.items ?? [], transcript: "" };
+    return { ...expense, items: expense.items ?? [], transcript: "", myShare: null as number | null };
   });
