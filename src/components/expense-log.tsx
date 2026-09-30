@@ -672,13 +672,16 @@ export function ExpenseLog() {
     const dated = new Set(planned.map((l) => l.id));
     const fromPlan = planned.map((l) => {
       const cat = findBudgetCategory(l.id);
+      // «Suscripciones / apps» con desglose: el total y la fecha salen de las apps.
+      const isApps = l.id === "apps" && appSubs.length > 0;
+      const day = isApps ? Math.min(...appSubs.map((a) => a.day)) : (l.dueDay ?? 1);
       return {
         id: `plan:${l.id}`,
         planId: l.id,
         name: `${cat?.emoji ?? l.emoji ?? "📦"} ${cat ? t(cat.es, cat.en) : (l.label ?? l.id)}`,
-        amount: l.amount,
-        dayOfMonth: l.dueDay ?? 1,
-        next: nextChargeDate(l.dueDay),
+        amount: isApps ? appSubsTotal : l.amount,
+        dayOfMonth: day,
+        next: nextChargeDate(day),
       };
     });
     const fromFixed = fixedUpcoming
