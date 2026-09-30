@@ -1392,51 +1392,93 @@ function OnboardingPage() {
                           />
                           {f.key === "fixed_subscriptions" && (
                             <div className="mt-2 space-y-2 border-l-2 border-border pl-4 ml-5">
-                              {appSubs.map((s) => (
-                                <div
-                                  key={s.id}
-                                  className="flex items-center gap-3 rounded-xl border border-border/70 bg-elevated/30 px-3.5 py-2.5"
-                                >
-                                  <span className="text-sm">{s.emoji}</span>
-                                  {s.name ? (
-                                    <p className="text-xs font-medium">{s.name}</p>
-                                  ) : (
+                              {subsOpen &&
+                                appSubs.map((s) => (
+                                  <div
+                                    key={s.id}
+                                    className="flex items-center gap-3 rounded-xl border border-border/70 bg-elevated/30 px-3.5 py-2.5"
+                                  >
+                                    <span className="text-sm">{s.emoji}</span>
+                                    {editingSubId === s.id || !s.name ? (
+                                      <input
+                                        type="text"
+                                        value={s.name}
+                                        autoFocus={editingSubId === s.id}
+                                        aria-label={t("Nombre de la suscripción", "Subscription name")}
+                                        placeholder={t("Nombre (ej. Disney+)", "Name (e.g. Disney+)")}
+                                        onChange={(e) =>
+                                          setAppSub(s.id, {
+                                            name: e.target.value,
+                                            emoji: s.id === "spotify" || s.id === "netflix" ? s.emoji : "📱",
+                                          })
+                                        }
+                                        onBlur={() => setEditingSubId(null)}
+                                        onKeyDown={(e) => {
+                                          if (e.key === "Enter" || e.key === "Escape") {
+                                            e.currentTarget.blur();
+                                          }
+                                        }}
+                                        className="min-w-0 flex-1 bg-transparent text-xs font-medium outline-none placeholder:font-normal placeholder:text-muted-foreground/60"
+                                      />
+                                    ) : (
+                                      <button
+                                        type="button"
+                                        onClick={() => setEditingSubId(s.id)}
+                                        aria-label={t("Editar", "Edit") + " " + s.name}
+                                        className="min-w-0 flex-1 truncate text-left text-xs font-medium"
+                                      >
+                                        {s.name}
+                                      </button>
+                                    )}
                                     <input
-                                      type="text"
-                                      value={s.name}
-                                      placeholder={t("Nombre (ej. Disney+)", "Name (e.g. Disney+)")}
+                                      type="number"
+                                      inputMode="decimal"
+                                      min={0}
+                                      step="any"
+                                      value={s.amount || ""}
+                                      aria-label={s.name || t("Suscripción", "Subscription")}
+                                      onWheel={(e) => e.currentTarget.blur()}
                                       onChange={(e) =>
-                                        setAppSub(s.id, {
-                                          name: e.target.value,
-                                          emoji: "📱",
-                                        })
+                                        setAppSub(s.id, { amount: Number(e.target.value || 0) })
                                       }
-                                      className="min-w-0 flex-1 bg-transparent text-xs font-medium outline-none placeholder:font-normal placeholder:text-muted-foreground/60"
+                                      placeholder={cur}
+                                      className="w-20 rounded-lg border border-border bg-transparent px-2 py-1.5 text-right text-xs outline-none focus:border-primary/60"
                                     />
-                                  )}
-                                  <input
-                                    type="number"
-                                    inputMode="decimal"
-                                    min={0}
-                                    step="any"
-                                    value={s.amount || ""}
-                                    aria-label={s.name || t("Suscripción", "Subscription")}
-                                    onWheel={(e) => e.currentTarget.blur()}
-                                    onChange={(e) =>
-                                      setAppSub(s.id, { amount: Number(e.target.value || 0) })
-                                    }
-                                    placeholder={cur}
-                                    className="ml-auto w-20 rounded-lg border border-border bg-transparent px-2 py-1.5 text-right text-xs outline-none focus:border-primary/60"
-                                  />
-                                </div>
-                              ))}
-                              <button
-                                type="button"
-                                onClick={addAppSub}
-                                className="flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
-                              >
-                                + {t("Añadir otra", "Add another")}
-                              </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => removeAppSub(s.id)}
+                                      aria-label={t("Eliminar", "Delete") + " " + s.name}
+                                      className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                                    >
+                                      <Trash2 className="h-3.5 w-3.5" />
+                                    </button>
+                                  </div>
+                                ))}
+                              <div className="flex items-center justify-between">
+                                <button
+                                  type="button"
+                                  onClick={addAppSub}
+                                  className="flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+                                >
+                                  + {t("Añadir otra", "Add another")}
+                                </button>
+                                {appSubs.length > 0 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setSubsOpen((o) => !o)}
+                                    className="flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/40"
+                                  >
+                                    {subsOpen ? (
+                                      <ChevronUp className="h-3.5 w-3.5" />
+                                    ) : (
+                                      <ChevronDown className="h-3.5 w-3.5" />
+                                    )}
+                                    {subsOpen
+                                      ? t("Ocultar", "Hide")
+                                      : `${appSubs.length} ${t("suscripciones", "subscriptions")}`}
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           )}
                         </div>
