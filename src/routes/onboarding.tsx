@@ -1819,6 +1819,7 @@ function MoneyField({
           />
           <span className="text-xs text-muted-foreground">{currency}</span>
         </span>
+        {action}
       </label>
       {error && (
         <p role="alert" className="mt-2 text-sm font-medium text-destructive">
