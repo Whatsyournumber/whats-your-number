@@ -2211,27 +2211,58 @@ export function ExpenseLog() {
                         "bg-amber-500/15 text-amber-300",
                         "bg-rose-500/15 text-rose-300",
                       ];
+                      const isApps = i.planId === "apps";
                       return (
-                        <li key={i.id} className="flex items-center gap-3">
+                        <Fragment key={i.id}>
+                        <li className="flex items-center gap-3">
                           <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full text-base", colors[idx % colors.length])}>
                             {emoji ?? <Repeat className="h-4 w-4" />}
                           </span>
                           <div className="min-w-0 flex-1">
                             <p className="truncate text-sm leading-5">{emoji ? i.name.slice(emoji.length).trim() : i.name}</p>
                             <p className="text-[0.6875rem] leading-4 text-muted-foreground">
-                              {format(i.next, "d MMM", { locale })}
+                              {isApps && appSubs.length
+                                ? t(`${appSubs.length} apps · próximo cobro ${format(i.next, "d MMM", { locale })}`, `${appSubs.length} apps · next charge ${format(i.next, "d MMM", { locale })}`)
+                                : format(i.next, "d MMM", { locale })}
                             </p>
                           </div>
                           <span className="numeric shrink-0 text-sm font-semibold">{fmt(i.amount)}</span>
+                          {isApps && appSubs.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => setAppsExpanded((v) => !v)}
+                              className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                              aria-label={t("Ver apps", "See apps")}
+                            >
+                              <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", appsExpanded && "rotate-180")} />
+                            </button>
+                          )}
                           <button
                             type="button"
-                            onClick={() => (i.planId ? setPlanOpen(true) : openEditRecurring(i))}
+                            onClick={() => (isApps ? openSubsEditor() : i.planId ? setPlanOpen(true) : openEditRecurring(i))}
                             className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                            aria-label={t("Editar gasto recurrente", "Edit recurring expense")}
+                            aria-label={isApps ? t("Editar suscripciones", "Edit subscriptions") : t("Editar gasto recurrente", "Edit recurring expense")}
                           >
                             <Pencil className="h-3.5 w-3.5" />
                           </button>
                         </li>
+                        {isApps && appsExpanded &&
+                          [...appSubs]
+                            .sort((a, b) => a.day - b.day)
+                            .map((a) => (
+                              <li key={a.id} className="flex items-center gap-3 pl-6">
+                                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-muted/50 text-sm">{a.emoji}</span>
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-sm leading-5">{a.name}</p>
+                                  <p className="text-[0.6875rem] leading-4 text-muted-foreground">
+                                    {format(nextChargeDate(a.day), "d MMM", { locale })}
+                                  </p>
+                                </div>
+                                <span className="numeric shrink-0 text-sm text-muted-foreground">{fmt(a.amount)}</span>
+                                <span className="w-7 shrink-0" />
+                              </li>
+                            ))}
+                        </Fragment>
                       );
                     })}
                   </ul>
