@@ -120,6 +120,7 @@ function prompt(categories: string[], currency: string, today: string, lang: "es
     `Hoy es ${today}. La moneda del usuario es ${currency}.`,
     `Devuelve la categoría ELEGIDA de esta lista exacta: ${categories.join(", ")}.`,
     "amount siempre positivo (el gasto). date en formato YYYY-MM-DD; si no se menciona usa hoy.",
+    "Si el gasto se divide o comparte con alguien (p. ej. «dividida con Carlos», «a medias con Ana»), amount debe ser el TOTAL del gasto, nunca la mitad ni la parte de una persona.",
     "merchant: el comercio o concepto corto, sin adjetivos.",
     lang === "en"
       ? "The input can be in ANY language or script (Arabic, French, Chinese, Japanese, Russian, Hebrew, Thai...): always write merchant and any free text in ENGLISH, translating it faithfully. Transliterate proper names/brands into the Latin alphabet. Never return text in the original script."
