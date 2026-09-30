@@ -475,8 +475,8 @@ function MiPerfil() {
             <PageHeader
               title={t("Mis datos", "My data")}
               subtitle={t(
-                "Edita cualquier campo: patrimonio, dashboard, retiro y objetivos se recalculan con tus números.",
-                "Edit any field: net worth, dashboard, retirement and goals recalculate with your numbers.",
+                "Edita cualquier campo: todo se recalcula con tus números.",
+                "Edit any field: everything recalculates with your numbers.",
               )}
             />
 
