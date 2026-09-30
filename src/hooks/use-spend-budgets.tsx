@@ -43,6 +43,22 @@ function writeLocal(storageKey: string, lines: BudgetLine[]) {
   }
 }
 
+/** «Hogar» llegó después: los planes guardados sin él lo reciben como gasto
+ *  variable (monto 0) para que se pueda rellenar sin tocar la nube a mano. */
+function withHogar(ls: BudgetLine[]): BudgetLine[] {
+  if (!ls.length || ls.some((l) => l.id === "hogar")) return ls;
+  const groupOf = (l: BudgetLine): BudgetGroup =>
+    findBudgetCategory(l.id)?.group ?? l.group ?? "other";
+  let insertAt = ls.length;
+  for (let i = ls.length - 1; i >= 0; i--) {
+    if (groupOf(ls[i]!) === "lifestyle") {
+      insertAt = i + 1;
+      break;
+    }
+  }
+  return [...ls.slice(0, insertAt), { id: "hogar", amount: 0 }, ...ls.slice(insertAt)];
+}
+
 /** Objetivo de gasto por categoría. Se guarda en la cuenta (nube) para que
  *  todos los dispositivos vean el mismo plan; el navegador solo es caché. */
 export function useSpendBudgets() {
