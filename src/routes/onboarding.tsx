@@ -311,11 +311,11 @@ function OnboardingPage() {
     setCustomCats((cats) => cats.map((c) => (c.id === id ? { ...c, ...patch } : c)));
 
   // Desglose de Apps/Suscripciones en gastos fijos: Spotify y Netflix + suscripciones extra.
-  const [appSubs, setAppSubs] = useState<{ id: string; name: string; amount: number }[]>([
-    { id: "spotify", name: "Spotify", emoji: "🎵" },
-    { id: "netflix", name: "Netflix", emoji: "🎬" },
+  const [appSubs, setAppSubs] = useState<{ id: string; name: string; amount: number; emoji: string }[]>([
+    { id: "spotify", name: "Spotify", amount: 0, emoji: "🎵" },
+    { id: "netflix", name: "Netflix", amount: 0, emoji: "🎬" },
   ]);
-  const setAppSub = (id: string, patch: Partial<{ name: string; amount: number }>) => {
+  const setAppSub = (id: string, patch: Partial<{ name: string; amount: number; emoji: string }>) => {
     const next = appSubs.map((c) => (c.id === id ? { ...c, ...patch } : c));
     setAppSubs(next);
     setFixed("fixed_subscriptions", next.reduce((s, c) => s + (c.amount || 0), 0));
