@@ -405,6 +405,26 @@ function OnboardingPage() {
         .filter((c) => c.amount > 0 && c.name.trim())
         .map((c) => ({ id: `custom:${norm(c.name)}`, label: c.name.trim(), amount: c.amount })),
     );
+    // El desglose de apps (Spotify, Netflix, …) alimenta la fila «Suscripciones / apps» de gastos fijos.
+    const subs = appSubs
+      .filter((s) => s.name.trim() && s.amount > 0)
+      .map((s) => ({ id: s.id, name: s.name.trim(), emoji: s.emoji, amount: s.amount, day: 1 }));
+    if (subs.length) {
+      const subsKey = `whatsyournumber:app-subscriptions:${user?.id ?? "anon"}`;
+      try {
+        if (!window.localStorage.getItem(subsKey)) {
+          window.localStorage.setItem(subsKey, JSON.stringify(subs));
+          if (user) {
+            void supabase
+              .from("user_settings")
+              .upsert({ user_id: user.id, key: "whatsyournumber:app-subscriptions", value: { v: subs } }, { onConflict: "user_id,key" })
+              .then(({ error }) => error && console.error("app-subscriptions seed", error.message));
+          }
+        }
+      } catch {
+        /* ignore */
+      }
+    }
     // Sin prueba automática: toda cuenta nueva entra en el plan gratis.
   };
 
