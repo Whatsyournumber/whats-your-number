@@ -774,8 +774,8 @@ function CashFlow() {
               `Out of your ${fmt(saveAmount)} monthly savings, decide how much goes to each destination.`,
             )}>
               {t(
-                `Reparte tus ${fmt(saveAmount)} al mes`,
-                `Split your ${fmt(saveAmount)} per month`,
+                `Reparte tus ${fmt(saveAmount)} entre inversión y metas`,
+                `Split your ${fmt(saveAmount)} between investments and goals`,
               )}
             </DialogDescription>
 
