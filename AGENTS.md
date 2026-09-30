@@ -17,7 +17,7 @@ The sidebar distributes remaining height among each plan's unlocked groups accor
 
 Savings goals are stored per user through the existing synced user settings so Free users can edit them across devices without changing Life Planner's separate Pro goals.
 
-Create each shared expense and both participant records atomically via `create_shared_expense`; keep receipt items with the purchase and count only each member's share, avoiding partial or doubled data.
+Create shared expenses and both participants atomically via `create_shared_expense`, with each member's share counted once and receipt items retained. Keep its public RPC an authenticated invoker wrapper around a checked private definer function so participant SELECT policies pass without exposing a definer in the API.
 
 Validate and normalize invitation email addresses with the shared Zod helper before account lookup or external sharing so both expense flows behave consistently.
 
