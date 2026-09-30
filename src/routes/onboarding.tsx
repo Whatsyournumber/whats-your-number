@@ -318,13 +318,25 @@ function OnboardingPage() {
     { id: "spotify", name: "Spotify", amount: 0, emoji: "🎵" },
     { id: "netflix", name: "Netflix", amount: 0, emoji: "🎬" },
   ]);
+  const [subsOpen, setSubsOpen] = useState(true);
+  const [editingSubId, setEditingSubId] = useState<string | null>(null);
   const setAppSub = (id: string, patch: Partial<{ name: string; amount: number; emoji: string }>) => {
     const next = appSubs.map((c) => (c.id === id ? { ...c, ...patch } : c));
     setAppSubs(next);
     setFixed("fixed_subscriptions", next.reduce((s, c) => s + (c.amount || 0), 0));
   };
   const addAppSub = () =>
-    setAppSubs((cs) => [...cs, { id: `appsub-${cs.length}`, name: "", amount: 0, emoji: "📱" }]);
+    setAppSubs((cs) => {
+      const next = [...cs, { id: `appsub-${cs.length}`, name: "", amount: 0, emoji: "📱" }];
+      setEditingSubId(next[next.length - 1]!.id);
+      return next;
+    });
+  const removeAppSub = (id: string) => {
+    const next = appSubs.filter((c) => c.id !== id);
+    setAppSubs(next);
+    if (editingSubId === id) setEditingSubId(null);
+    setFixed("fixed_subscriptions", next.reduce((s, c) => s + (c.amount || 0), 0));
+  };
   const customCatsTotal = customCats.reduce((s, c) => s + (c.amount || 0), 0);
 
   const cur = data.currency || defaultCurrency();
