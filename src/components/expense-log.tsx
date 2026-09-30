@@ -606,22 +606,22 @@ export function ExpenseLog() {
   const [appsExpanded, setAppsExpanded] = useState(false);
   const appSubsTotal = appSubs.reduce((s, a) => s + (Number(a.amount) || 0), 0);
 
+  const DEFAULT_APP_SUBS: AppSub[] = [
+    { id: "spotify", name: "Spotify", emoji: "🎵", amount: 0, day: 1 },
+    { id: "netflix", name: "Netflix", emoji: "🎬", amount: 0, day: 1 },
+  ];
+  // Lo que se muestra al desplegar: las apps guardadas o las de inicio.
+  const displaySubs = appSubs.length ? appSubs : DEFAULT_APP_SUBS;
+
   const openSubsEditor = () => {
-    setSubsDraft(
-      appSubs.length
-        ? appSubs.map((a) => ({ ...a }))
-        : [
-            { id: "spotify", name: "Spotify", emoji: "🎵", amount: 0, day: 1 },
-            { id: "netflix", name: "Netflix", emoji: "🎬", amount: 0, day: 1 },
-          ],
-    );
+    setSubsDraft(displaySubs.map((a) => ({ ...a })));
     setSubsOpen(true);
   };
 
   const onSaveSubs = () => {
     const clean = subsDraft
       .map((a) => ({ ...a, name: a.name.trim(), amount: Math.max(0, Math.round(Number(a.amount) || 0)), day: Math.min(31, Math.max(1, Number(a.day) || 1)) }))
-      .filter((a) => a.name && a.amount > 0);
+      .filter((a) => a.name);
     saveAppSubs(clean);
     const total = clean.reduce((s, a) => s + a.amount, 0);
     const firstDay = clean.length ? Math.min(...clean.map((a) => a.day)) : 1;
