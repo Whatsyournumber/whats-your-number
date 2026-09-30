@@ -546,8 +546,8 @@ function CashFlow() {
       >
         {(() => {
           const midBuckets = [
-            { name: t("Gastos", "Expenses"), amount: needsAmount, icon: <ReceiptText className="h-5 w-5" />, color: "var(--color-chart-2)" },
-            { name: t("Ahorro total", "Total savings"), amount: saveAmount, icon: <PiggyBank className="h-5 w-5" />, color: "var(--color-positive)", highlight: true },
+            { name: t("Necesidades básicas", "Basic needs"), amount: needsAmount, icon: <ReceiptText className="h-5 w-5" />, color: "var(--color-chart-2)" },
+            { name: t("Potencial ahorro", "Savings potential"), amount: saveAmount, icon: <PiggyBank className="h-5 w-5" />, color: "var(--color-positive)", highlight: true },
             { name: t("Lifestyle / deseos", "Lifestyle / wants"), amount: wantsAmount, icon: <Wallet className="h-5 w-5" />, color: "var(--color-chart-4)" },
           ];
           const flowCard = (d: { name: string; amount: number; icon: ReactNode; color: string; highlight?: boolean }, total: number, idx: number, dir: "l" | "r") => (
