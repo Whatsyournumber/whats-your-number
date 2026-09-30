@@ -748,8 +748,16 @@ function MiPerfil() {
             />
           </div>
         ) : (
-          <PlanGate required={isPro ? "investor" : "pro"} blur={false} className="h-auto min-h-[280px]">
-            <div />
+          <PlanGate required={isPro ? "investor" : "pro"} className="h-auto min-h-[280px]">
+            <div className="text-sm [&>*]:h-full [&_.text-2xl]:text-lg [&_.text-lg]:text-base [&_.text-xl]:text-lg [&_button]:text-xs [&_input]:h-8 [&_input]:text-xs [&_label]:text-[11px]">
+              <WealthEditor
+                value={wealth}
+                onChange={(next) => setWealth(next)}
+                fmt={preview.fmt}
+                retireAge={form.retire_age}
+                onRetireAge={(n) => set("retire_age", n)}
+              />
+            </div>
           </PlanGate>
         )}
       </div>
