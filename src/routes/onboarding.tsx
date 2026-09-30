@@ -5,6 +5,8 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
+  ChevronDown,
+  ChevronUp,
   Compass,
   FileUp,
   Loader2,
@@ -14,6 +16,7 @@ import {
   PartyPopper as PartyPopperIcon,
   Search,
   Sparkles,
+  Trash2,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -315,13 +318,25 @@ function OnboardingPage() {
     { id: "spotify", name: "Spotify", amount: 0, emoji: "🎵" },
     { id: "netflix", name: "Netflix", amount: 0, emoji: "🎬" },
   ]);
+  const [subsOpen, setSubsOpen] = useState(true);
+  const [editingSubId, setEditingSubId] = useState<string | null>(null);
   const setAppSub = (id: string, patch: Partial<{ name: string; amount: number; emoji: string }>) => {
     const next = appSubs.map((c) => (c.id === id ? { ...c, ...patch } : c));
     setAppSubs(next);
     setFixed("fixed_subscriptions", next.reduce((s, c) => s + (c.amount || 0), 0));
   };
   const addAppSub = () =>
-    setAppSubs((cs) => [...cs, { id: `appsub-${cs.length}`, name: "", amount: 0, emoji: "📱" }]);
+    setAppSubs((cs) => {
+      const next = [...cs, { id: `appsub-${cs.length}`, name: "", amount: 0, emoji: "📱" }];
+      setEditingSubId(next[next.length - 1]!.id);
+      return next;
+    });
+  const removeAppSub = (id: string) => {
+    const next = appSubs.filter((c) => c.id !== id);
+    setAppSubs(next);
+    if (editingSubId === id) setEditingSubId(null);
+    setFixed("fixed_subscriptions", next.reduce((s, c) => s + (c.amount || 0), 0));
+  };
   const customCatsTotal = customCats.reduce((s, c) => s + (c.amount || 0), 0);
 
   const cur = data.currency || defaultCurrency();
@@ -1377,51 +1392,93 @@ function OnboardingPage() {
                           />
                           {f.key === "fixed_subscriptions" && (
                             <div className="mt-2 space-y-2 border-l-2 border-border pl-4 ml-5">
-                              {appSubs.map((s) => (
-                                <div
-                                  key={s.id}
-                                  className="flex items-center gap-3 rounded-xl border border-border/70 bg-elevated/30 px-3.5 py-2.5"
-                                >
-                                  <span className="text-sm">{s.emoji}</span>
-                                  {s.name ? (
-                                    <p className="text-xs font-medium">{s.name}</p>
-                                  ) : (
+                              {subsOpen &&
+                                appSubs.map((s) => (
+                                  <div
+                                    key={s.id}
+                                    className="flex items-center gap-3 rounded-xl border border-border/70 bg-elevated/30 px-3.5 py-2.5"
+                                  >
+                                    <span className="text-sm">{s.emoji}</span>
+                                    {editingSubId === s.id || !s.name ? (
+                                      <input
+                                        type="text"
+                                        value={s.name}
+                                        autoFocus={editingSubId === s.id}
+                                        aria-label={t("Nombre de la suscripción", "Subscription name")}
+                                        placeholder={t("Nombre (ej. Disney+)", "Name (e.g. Disney+)")}
+                                        onChange={(e) =>
+                                          setAppSub(s.id, {
+                                            name: e.target.value,
+                                            emoji: s.id === "spotify" || s.id === "netflix" ? s.emoji : "📱",
+                                          })
+                                        }
+                                        onBlur={() => setEditingSubId(null)}
+                                        onKeyDown={(e) => {
+                                          if (e.key === "Enter" || e.key === "Escape") {
+                                            e.currentTarget.blur();
+                                          }
+                                        }}
+                                        className="min-w-0 flex-1 bg-transparent text-xs font-medium outline-none placeholder:font-normal placeholder:text-muted-foreground/60"
+                                      />
+                                    ) : (
+                                      <button
+                                        type="button"
+                                        onClick={() => setEditingSubId(s.id)}
+                                        aria-label={t("Editar", "Edit") + " " + s.name}
+                                        className="min-w-0 flex-1 truncate text-left text-xs font-medium"
+                                      >
+                                        {s.name}
+                                      </button>
+                                    )}
                                     <input
-                                      type="text"
-                                      value={s.name}
-                                      placeholder={t("Nombre (ej. Disney+)", "Name (e.g. Disney+)")}
+                                      type="number"
+                                      inputMode="decimal"
+                                      min={0}
+                                      step="any"
+                                      value={s.amount || ""}
+                                      aria-label={s.name || t("Suscripción", "Subscription")}
+                                      onWheel={(e) => e.currentTarget.blur()}
                                       onChange={(e) =>
-                                        setAppSub(s.id, {
-                                          name: e.target.value,
-                                          emoji: "📱",
-                                        })
+                                        setAppSub(s.id, { amount: Number(e.target.value || 0) })
                                       }
-                                      className="min-w-0 flex-1 bg-transparent text-xs font-medium outline-none placeholder:font-normal placeholder:text-muted-foreground/60"
+                                      placeholder={cur}
+                                      className="w-20 rounded-lg border border-border bg-transparent px-2 py-1.5 text-right text-xs outline-none focus:border-primary/60"
                                     />
-                                  )}
-                                  <input
-                                    type="number"
-                                    inputMode="decimal"
-                                    min={0}
-                                    step="any"
-                                    value={s.amount || ""}
-                                    aria-label={s.name || t("Suscripción", "Subscription")}
-                                    onWheel={(e) => e.currentTarget.blur()}
-                                    onChange={(e) =>
-                                      setAppSub(s.id, { amount: Number(e.target.value || 0) })
-                                    }
-                                    placeholder={cur}
-                                    className="ml-auto w-20 rounded-lg border border-border bg-transparent px-2 py-1.5 text-right text-xs outline-none focus:border-primary/60"
-                                  />
-                                </div>
-                              ))}
-                              <button
-                                type="button"
-                                onClick={addAppSub}
-                                className="flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
-                              >
-                                + {t("Añadir otra", "Add another")}
-                              </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => removeAppSub(s.id)}
+                                      aria-label={t("Eliminar", "Delete") + " " + s.name}
+                                      className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                                    >
+                                      <Trash2 className="h-3.5 w-3.5" />
+                                    </button>
+                                  </div>
+                                ))}
+                              <div className="flex items-center justify-between">
+                                <button
+                                  type="button"
+                                  onClick={addAppSub}
+                                  className="flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+                                >
+                                  + {t("Añadir otra", "Add another")}
+                                </button>
+                                {appSubs.length > 0 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setSubsOpen((o) => !o)}
+                                    className="flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/40"
+                                  >
+                                    {subsOpen ? (
+                                      <ChevronUp className="h-3.5 w-3.5" />
+                                    ) : (
+                                      <ChevronDown className="h-3.5 w-3.5" />
+                                    )}
+                                    {subsOpen
+                                      ? t("Ocultar", "Hide")
+                                      : `${appSubs.length} ${t("suscripciones", "subscriptions")}`}
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           )}
                         </div>
@@ -1756,6 +1813,7 @@ function MoneyField({
   currency,
   hint,
   error = false,
+  action,
 }: {
   label: string;
   desc?: string;
@@ -1765,6 +1823,7 @@ function MoneyField({
   currency: string;
   hint?: string;
   error?: boolean;
+  action?: React.ReactNode;
 }) {
   const t = useT();
   return (
@@ -1802,6 +1861,7 @@ function MoneyField({
           />
           <span className="text-xs text-muted-foreground">{currency}</span>
         </span>
+        {action}
       </label>
       {error && (
         <p role="alert" className="mt-2 text-sm font-medium text-destructive">
