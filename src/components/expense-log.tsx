@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, FileSpreadsheet, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, FileSpreadsheet, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Trash2, TrendingUp, Upload, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { FolderIcon, GooglePhotosIcon } from "@/components/expense-source-icons";
@@ -593,6 +593,43 @@ export function ExpenseLog() {
     "whatsyournumber:expense-category-overrides",
     EMPTY_OVERRIDES,
   );
+
+  // Desglose de «Suscripciones / apps»: cada app con su monto y día de cobro.
+  // Se guarda en la cuenta para verse igual en todos los dispositivos.
+  type AppSub = { id: string; name: string; emoji: string; amount: number; day: number };
+  const { value: appSubs, save: saveAppSubs } = useSyncedSetting<AppSub[]>("whatsyournumber:app-subscriptions", []);
+  const [subsOpen, setSubsOpen] = useState(false);
+  const [subsDraft, setSubsDraft] = useState<AppSub[]>([]);
+  const [appsExpanded, setAppsExpanded] = useState(false);
+  const appSubsTotal = appSubs.reduce((s, a) => s + (Number(a.amount) || 0), 0);
+
+  const openSubsEditor = () => {
+    setSubsDraft(
+      appSubs.length
+        ? appSubs.map((a) => ({ ...a }))
+        : [
+            { id: "spotify", name: "Spotify", emoji: "🎵", amount: 0, day: 1 },
+            { id: "netflix", name: "Netflix", emoji: "🎬", amount: 0, day: 1 },
+          ],
+    );
+    setSubsOpen(true);
+  };
+
+  const onSaveSubs = () => {
+    const clean = subsDraft
+      .map((a) => ({ ...a, name: a.name.trim(), amount: Math.max(0, Math.round(Number(a.amount) || 0)), day: Math.min(31, Math.max(1, Number(a.day) || 1)) }))
+      .filter((a) => a.name && a.amount > 0);
+    saveAppSubs(clean);
+    const total = clean.reduce((s, a) => s + a.amount, 0);
+    const firstDay = clean.length ? Math.min(...clean.map((a) => a.day)) : 1;
+    const existing = budgets.lines.find((l) => l.id === "apps");
+    budgets.save([
+      ...budgets.lines.filter((l) => l.id !== "apps"),
+      { ...existing, id: "apps", amount: total, dueDay: firstDay },
+    ]);
+    setSubsOpen(false);
+    toast.success(t("Suscripciones actualizadas", "Subscriptions updated"));
+  };
 
   const moveExpense = (key: string, toId: string) => {
     moveExpenses([key], toId);
