@@ -293,6 +293,7 @@ export const BASE_CATEGORIES = [
   "Delivery",
 
   "Nightlife",
+  "Hogar",
   "Deportes",
   "Compras",
   "Viajes",

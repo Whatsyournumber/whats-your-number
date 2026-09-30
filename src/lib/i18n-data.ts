@@ -34,6 +34,7 @@ const CATEGORY_NAMES: Record<string, string> = {
   "Restaurantes": "Restaurants",
   "Delivery": "Delivery",
   "Nightlife": "Nightlife",
+  "Hogar": "Household",
   "Deportes": "Sports",
   "Compras": "Shopping",
   "Viajes": "Travel",
