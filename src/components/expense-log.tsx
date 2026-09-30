@@ -74,6 +74,20 @@ type Draft = {
   category: string;
   items: DraftItem[];
   source: "voice" | "receipt";
+  partner?: { id: string; name: string } | null;
+};
+
+const normName = (v: string) => v.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+/** Busca en lo dictado el nombre (o primer nombre) de alguien con quien ya compartiste gastos. */
+const partnerFromTranscript = (text: string, partners: { id: string; name: string }[]) => {
+  const words = new Set(normName(text).split(/[^a-z0-9]+/).filter(Boolean));
+  const full = normName(text);
+  return partners.find((p) => {
+    const n = normName(p.name).trim();
+    if (!n || n === "?") return false;
+    const first = n.split(/\s+/)[0] ?? "";
+    return full.includes(n) || (first.length >= 3 && words.has(first));
+  }) ?? null;
 };
 
 const ALERTS_KEY = "whatsyournumber:expense-alerts";
@@ -139,7 +153,7 @@ export function ExpenseLog() {
   const notifyShared = useServerFn(notifySharedExpense);
   const { data: editKnownPartners = [] } = useQuery({
     queryKey: ["shared-partners", user?.id],
-    enabled: Boolean(user?.id) && Boolean(editTx),
+    enabled: Boolean(user?.id),
     queryFn: async () => {
       const { data: rows } = await supabase
         .from("shared_expense_participants")
@@ -873,6 +887,10 @@ export function ExpenseLog() {
       });
       setTranscript(result.transcript ?? "");
       openDraft(kind, result);
+      if (kind === "voice" && result.transcript) {
+        const match = partnerFromTranscript(result.transcript, editKnownPartners);
+        if (match) setDraft((d) => (d ? { ...d, partner: match } : d));
+      }
     } catch (error) {
       toast.error(
         t("No pudimos leer el gasto. Inténtalo de nuevo.", "We couldn't read the expense. Please try again."),
@@ -1003,18 +1021,43 @@ export function ExpenseLog() {
     }
     setSaving(true);
     try {
+      let ownAmount = draft.amount;
+      let sharedDescription: string | null = null;
+      if (draft.partner) {
+        ownAmount = draft.amount / 2;
+        const { data: expenseId, error: shareError } = await supabase.rpc("create_shared_expense", {
+          _partner_id: draft.partner.id,
+          _payer_id: user.id,
+          _total: draft.amount,
+          _currency: currency,
+          _category: draft.category,
+          _merchant: draft.merchant,
+          _tx_date: draft.date,
+          _split_mode: "50/50",
+          _creator_name: (profile?.full_name as string | undefined)?.split(" ")[0] || t("Yo", "Me"),
+          _partner_name: draft.partner.name,
+          _creator_share: ownAmount,
+          _partner_share: draft.amount - ownAmount,
+        });
+        if (shareError) throw shareError;
+        if (!expenseId) throw new Error(t("No se pudo compartir el gasto", "Could not share the expense"));
+        sharedDescription = `${SHARED_PREFIX}50/50|${draft.partner.name}`;
+        void notifyShared({ data: { expenseId } }).catch(() => {});
+      }
       const savedId = await saveExpense({
         userId: user.id,
         date: draft.date,
         merchant: draft.merchant,
         category: draft.category,
-        amount: draft.amount,
+        amount: ownAmount,
         currency,
         description:
-          draft.source === "receipt" && draft.items.length > 0
+          sharedDescription ??
+          (draft.source === "receipt" && draft.items.length > 0
             ? `${RECEIPT_DETAIL_PREFIX}${JSON.stringify(draft.items)}`
-            : t("Registro rápido", "Quick log"),
+            : t("Registro rápido", "Quick log")),
       });
+      if (draft.partner) void queryClient.invalidateQueries({ queryKey: ["shared-partners"] });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
       setPeriod("month");
       if (draft.source === "receipt" && draft.items.length > 0) setExpandedTx(savedId);
@@ -2510,7 +2553,27 @@ export function ExpenseLog() {
                   </SelectContent>
                 </Select>
               </div>
-
+              {draft.source === "voice" && (
+                <div className="grid gap-1.5">
+                  <Label>{t("Tipo de gasto", "Expense type")}</Label>
+                  <div className="flex flex-wrap gap-2">
+                    <Button type="button" size="sm" variant={draft.partner ? "outline" : "default"} onClick={() => setDraft({ ...draft, partner: null })}>
+                      {t("Individual", "Individual")}
+                    </Button>
+                    {editKnownPartners.map((p) => (
+                      <Button key={p.id} type="button" size="sm" variant={draft.partner?.id === p.id ? "default" : "outline"} onClick={() => setDraft({ ...draft, partner: p })}>
+                        <Users className="mr-1.5 h-3.5 w-3.5" />
+                        {`${t("Con", "With")} ${p.name.split(" ")[0]}`}
+                      </Button>
+                    ))}
+                  </div>
+                  {draft.partner && (
+                    <p className="text-xs text-muted-foreground">
+                      {t(`Compartido 50/50: tu parte es ${fmt(draft.amount / 2)}`, `Split 50/50: your share is ${fmt(draft.amount / 2)}`)}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           )}
           <DialogFooter>
