@@ -840,6 +840,7 @@ export function ExpenseLog() {
   const [draftLooking, setDraftLooking] = useState(false);
   const [draftInvitePending, setDraftInvitePending] = useState<string | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
+  const cancelVoiceRef = useRef(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const camRef = useRef<HTMLInputElement | null>(null);
   const docsRef = useRef<HTMLInputElement | null>(null);
@@ -986,6 +987,10 @@ export function ExpenseLog() {
         stream.getTracks().forEach((track) => track.stop());
         const blob = new Blob(chunks, { type: recorder.mimeType || "audio/webm" });
         setRecording(false);
+        if (cancelVoiceRef.current) {
+          cancelVoiceRef.current = false;
+          return;
+        }
         if (blob.size < 2048) {
           toast.error(t("La nota quedó vacía. Vuelve a grabar.", "That recording was empty. Try again."));
           return;
@@ -1004,6 +1009,12 @@ export function ExpenseLog() {
   };
 
   const stopRecording = () => recorderRef.current?.stop();
+
+  const cancelRecording = () => {
+    cancelVoiceRef.current = true;
+    recorderRef.current?.stop();
+    setVoiceDialogOpen(false);
+  };
 
   const findDraftPartner = async () => {
     const email = normalizeValidEmail(draftEmail);
