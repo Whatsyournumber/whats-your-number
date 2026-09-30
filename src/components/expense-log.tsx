@@ -2620,7 +2620,7 @@ export function ExpenseLog() {
                   {draftInviting && draftInvitePending && <InviteShareActions email={draftInvitePending} onClose={() => setDraftInvitePending(null)} />}
                   {draft.partner && (
                     <p className="text-xs text-muted-foreground">
-                      {t(`Compartido 50/50: mi parte es ${fmt(draft.amount / 2)}`, `Split 50/50: my share is ${fmt(draft.amount / 2)}`)}
+                      {t(`Compartido 50/50: tu parte es ${fmt(draft.amount / 2)}`, `Split 50/50: your share is ${fmt(draft.amount / 2)}`)}
                     </p>
                   )}
                 </div>
