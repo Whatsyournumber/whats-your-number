@@ -268,7 +268,7 @@ function GroceryInsights({ summary, fmt, onCorrect }: { summary: ReturnType<type
                   <span className="h-1 overflow-hidden rounded-full bg-muted"><span className={cn("block h-full rounded-full", label.color)} style={{ width: `${Math.max(3, (group.amount / max) * 100)}%` }} /></span>
                 </span>
                 <ChevronDown className={cn("ml-2 size-3.5 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")} />
-              </Button><Hint><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="size-7 shrink-0 text-muted-foreground" aria-label={t(`Qué incluye ${label.es}`, `What ${label.en} includes`)}><Info className="size-3.5" /></Button></TooltipTrigger><TooltipContent side="top" className="max-w-60">{t(label.detailEs, label.detailEn)}</TooltipContent></Hint></div>
+              </Button><Hint><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="size-7 shrink-0 text-muted-foreground" aria-label={t(`Qué incluye ${label.es}`, `What ${label.en} includes`)}><Info className="size-3.5" /></Button></TooltipTrigger><TooltipContent side="top" className="max-w-60">{t(label.detailEs, label.detailEn)}{addedByGroup.get(group.id) && <span className="mt-1 block text-muted-foreground">{t("Añadidos por ti: ", "Added by you: ")}{addedByGroup.get(group.id)!.join(", ")}</span>}</TooltipContent></Hint></div>
               {open && (
                 <ul className="mb-2 ml-9 space-y-1 border-l border-border pl-3">
                   {group.products.map((product) => (
