@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Mostrar en Reglas del súper los 12 rubros y los productos detectados en tickets, junto con las correcciones que se reutilizan en futuros tickets.
+- [x] Mostrar en Reglas del súper los 12 rubros y los productos detectados en tickets, junto con las correcciones que se reutilizan en futuros tickets.
 
 - [x] Incluir tickets de gastos compartidos en los rubros del súper, contando únicamente la parte propia, y hacer plegable el análisis de tickets.
 
