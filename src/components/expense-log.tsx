@@ -2280,7 +2280,7 @@ export function ExpenseLog() {
                                     <span className="numeric shrink-0 text-sm text-muted-foreground sm:text-base">{fmt(a.amount)}</span>
                                   </div>
                                 </div>
-                                <span className="w-[4.25rem] shrink-0 sm:w-[4.5rem]" />
+                                <span className="w-7 shrink-0" />
                               </li>
                             ))}
                         </Fragment>
