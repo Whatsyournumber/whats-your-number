@@ -1093,7 +1093,7 @@ export function ExpenseLog() {
           _partner_name: draft.partner.name,
           _creator_share: ownAmount,
           _partner_share: draft.amount - ownAmount,
-          _receipt_items: [],
+          _receipt_items: draft.source === "receipt" ? draft.items.slice(0, 150).map((i) => ({ name: String(i.name).slice(0, 120), amount: Number(i.amount) || 0 })) : [],
         });
         if (shareError) throw new Error(shareError.message);
         if (!expenseId) throw new Error(t("No se pudo compartir el gasto", "Could not share the expense"));
@@ -2616,7 +2616,7 @@ export function ExpenseLog() {
                   </SelectContent>
                 </Select>
               </div>
-              {draft.source === "voice" && (
+              {(draft.source === "voice" || draft.source === "receipt") && (
                 <div className="grid gap-3 border-t border-border pt-4">
                   <Label>{t("Compartido", "Shared")}</Label>
                   <div className="flex flex-wrap items-start gap-4">
