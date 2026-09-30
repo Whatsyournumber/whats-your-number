@@ -690,7 +690,7 @@ export function ExpenseLog() {
     // Se listan todos los gastos fijos: nada queda oculto bajo el total.
     return [...fromPlan, ...fromFixed].sort((a, b) => a.next.getTime() - b.next.getTime());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [planLines, fixedUpcoming, catOverrides, match, t, daysInMonth]);
+  }, [planLines, fixedUpcoming, catOverrides, match, t, daysInMonth, appSubs, appSubsTotal]);
 
   const rows = useMemo(() => {
     const actual = new Map<string, number>();
