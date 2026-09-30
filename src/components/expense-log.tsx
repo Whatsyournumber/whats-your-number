@@ -3062,6 +3062,11 @@ export function ExpenseLog() {
           if (totalPlan > 0) setTarget(Math.round(totalPlan));
         }}
         fmt={fmt}
+        appSubs={displaySubs}
+        onEditApps={() => {
+          setPlanOpen(false);
+          openSubsEditor();
+        }}
       />
 
       {dragInfo ? (
