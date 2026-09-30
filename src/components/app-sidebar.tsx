@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
@@ -107,7 +107,13 @@ export function AppSidebar() {
   const discoverUnlocked = discover.filter((item) => !item.required || planMeetsTier(item.required, tier));
   const discoverLocked = discover.filter((item) => item.required && !planMeetsTier(item.required, tier));
   const [discoverOpen, setDiscoverOpen] = useState(() => discoverLocked.some((item) => item.url === pathname));
-  const [accountOpen, setAccountOpen] = useState(true);
+  // "Mi cuenta" starts collapsed only for Inversor and Familiar; other plans start open.
+  const [accountOpen, setAccountOpen] = useState(() => tier !== "investor" && tier !== "patrimonio");
+  const accountTouched = useRef(false);
+  useEffect(() => {
+    if (accountTouched.current) return;
+    setAccountOpen(!(tier === "investor" || tier === "patrimonio"));
+  }, [tier]);
   useEffect(() => {
     if (discoverLocked.some((item) => item.url === pathname) || searchStr.includes("tour=1")) setDiscoverOpen(true);
   }, [pathname, searchStr]);
