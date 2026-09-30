@@ -801,12 +801,28 @@ function CashFlow() {
                 placeholder="0"
               />
             </div>
-            <p className="text-xs text-muted-foreground">
-              {t(
-                `Disponible: ${fmt(Math.max(0, saveAmount - allocDraft.invest - allocDraft.goals))}`,
-                `Available: ${fmt(Math.max(0, saveAmount - allocDraft.invest - allocDraft.goals))}`,
-              )}
-            </p>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-xs text-muted-foreground">
+                {t(
+                  `Disponible: ${fmt(Math.max(0, saveAmount - allocDraft.invest - allocDraft.goals))}`,
+                  `Available: ${fmt(Math.max(0, saveAmount - allocDraft.invest - allocDraft.goals))}`,
+                )}
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-7 shrink-0 px-2 text-xs"
+                onClick={() =>
+                  setAllocDraft((d) => {
+                    const remaining = Math.max(0, saveAmount - Math.max(0, d.goals));
+                    return { ...d, invest: remaining };
+                  })
+                }
+              >
+                {t("Máx · usar todo en ahorro e inversión", "Max · use all for savings & investment")}
+              </Button>
+            </div>
             <Button
               className="w-full"
               onClick={() => {
