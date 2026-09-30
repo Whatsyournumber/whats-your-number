@@ -119,7 +119,6 @@ export function ManualExpenseDialog({
   const [catQuery, setCatQuery] = useState("");
   const [creating, setCreating] = useState(false);
   const [newCat, setNewCat] = useState("");
-  const [newCatKind, setNewCatKind] = useState<"fixed" | "variable">("variable");
   const [inviting, setInviting] = useState(false);
   const [partner, setPartner] = useState<{ id: string; name: string } | null>(null);
   const [email, setEmail] = useState("");
@@ -194,24 +193,20 @@ export function ManualExpenseDialog({
         {
           id: planId,
           label: trimmedNew,
-          emoji: newCatKind === "fixed" ? "📌" : "🏷️",
+          emoji: "🏷️",
           keywords: [trimmedNew.toLowerCase()],
-          group: newCatKind === "fixed" ? "essentials" : "lifestyle",
+          group: "lifestyle",
           amount: 0,
         },
       ]);
       toast.success(
         t("Categoría añadida a tu plan", "Category added to your plan"),
         {
-          description:
-            newCatKind === "fixed"
-              ? t("Como gasto fijo mensual", "As a monthly fixed expense")
-              : t("Como gasto variable mensual", "As a monthly variable expense"),
+          description: t("Como gasto variable mensual", "As a monthly variable expense"),
         },
       );
     }
     setNewCat("");
-    setNewCatKind("variable");
     setCreating(false);
   };
 
@@ -433,39 +428,9 @@ export function ManualExpenseDialog({
                     {t("Cancelar", "Cancel")}
                   </Button>
                 </div>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-medium text-muted-foreground shrink-0">
-                    {t("Tipo de gasto", "Expense type")}
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => setNewCatKind("fixed")}
-                      className={cn(
-                        "flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition",
-                        newCatKind === "fixed"
-                          ? "border-primary bg-primary/20 text-white"
-                          : "border-white/10 bg-white/5 text-muted-foreground"
-                      )}
-                    >
-                      <span aria-hidden>📌</span>
-                      {t("Fijo", "Fixed")}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setNewCatKind("variable")}
-                      className={cn(
-                        "flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition",
-                        newCatKind === "variable"
-                          ? "border-primary bg-primary/20 text-white"
-                          : "border-white/10 bg-white/5 text-muted-foreground"
-                      )}
-                    >
-                      <span aria-hidden>🏷️</span>
-                      {t("Variable", "Variable")}
-                    </button>
-                  </div>
-                </div>
+                <p className="text-xs text-muted-foreground">
+                  {t("Se añadirá como gasto variable a tu plan", "It will be added as a variable expense to your plan")}
+                </p>
               </div>
             ) : (
               <div className="flex gap-2">
