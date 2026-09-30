@@ -1771,6 +1771,7 @@ function MoneyField({
   currency,
   hint,
   error = false,
+  action,
 }: {
   label: string;
   desc?: string;
@@ -1780,6 +1781,7 @@ function MoneyField({
   currency: string;
   hint?: string;
   error?: boolean;
+  action?: React.ReactNode;
 }) {
   const t = useT();
   return (
