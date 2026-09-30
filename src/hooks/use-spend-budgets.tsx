@@ -74,7 +74,9 @@ export function useSpendBudgets() {
     setLines([]);
     setLoaded(false);
 
-    const local = readLocal(storageKey);
+    const localRaw = readLocal(storageKey);
+    const local = withHogar(localRaw);
+    if (local.length !== localRaw.length) writeLocal(storageKey, local);
     if (local.length) setLines(local);
 
     if (!userId) {
