@@ -782,12 +782,25 @@ function CashFlow() {
                 <TrendingUp className="h-4 w-4 text-chart-1" />
                 {t("Inversiones al mes", "Investments per month")}
               </label>
-              <NumberInput
-                format
-                value={allocDraft.invest}
-                onChange={(v) => setAllocDraft((d) => ({ ...d, invest: v }))}
-                placeholder="0"
-              />
+              <div className="relative">
+                <NumberInput
+                  format
+                  value={allocDraft.invest}
+                  onChange={(v) => setAllocDraft((d) => ({ ...d, invest: v }))}
+                  placeholder="0"
+                  className="pr-14"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setAllocDraft((d) => ({ ...d, invest: Math.max(0, saveAmount - Math.max(0, d.goals)) }))
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold uppercase tracking-wide text-muted-foreground transition hover:text-primary"
+                  aria-label={t("Usar todo en ahorro e inversión", "Use all for savings & investment")}
+                >
+                  {t("Máx", "Max")}
+                </button>
+              </div>
             </div>
             <div>
               <label className="mb-1.5 flex items-center gap-2 text-sm font-medium">
