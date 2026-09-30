@@ -767,9 +767,12 @@ function CashFlow() {
 
       <Dialog open={allocOpen} onOpenChange={setAllocOpen}>
         <DialogContent className="max-w-md">
-          <DialogHeader>
+            <DialogHeader className="min-w-0">
             <DialogTitle>{t("Destino del ahorro", "Savings destination")}</DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="overflow-hidden whitespace-nowrap" title={t(
+              `De tus ${fmt(saveAmount)} de ahorro al mes, decide cuánto va a cada destino.`,
+              `Out of your ${fmt(saveAmount)} monthly savings, decide how much goes to each destination.`,
+            )}>
               {t(
                 `De tus ${fmt(saveAmount)} de ahorro al mes, decide cuánto va a cada destino.`,
                 `Out of your ${fmt(saveAmount)} monthly savings, decide how much goes to each destination.`,
@@ -807,12 +810,25 @@ function CashFlow() {
                 <Target className="h-4 w-4 text-positive" />
                 {t("Metas de ahorro al mes", "Savings goals per month")}
               </label>
-              <NumberInput
-                format
-                value={allocDraft.goals}
-                onChange={(v) => setAllocDraft((d) => ({ ...d, goals: v }))}
-                placeholder="0"
-              />
+              <div className="relative">
+                <NumberInput
+                  format
+                  value={allocDraft.goals}
+                  onChange={(v) => setAllocDraft((d) => ({ ...d, goals: v }))}
+                  placeholder="0"
+                  className="pr-14"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setAllocDraft((d) => ({ ...d, goals: Math.max(0, saveAmount - Math.max(0, d.invest)) }))
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold uppercase tracking-wide text-muted-foreground transition hover:text-primary"
+                  aria-label={t("Usar todo en metas de ahorro", "Use all for savings goals")}
+                >
+                  {t("Máx", "Max")}
+                </button>
+              </div>
             </div>
             <p className="text-xs text-muted-foreground">
               {t(
