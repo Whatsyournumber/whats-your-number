@@ -36,6 +36,7 @@ const ONBOARDING_VARIABLE_KEYS: SpendPlanKey[] = [
   "fixed_professional",
   "fixed_travel",
   "fixed_nightlife",
+  "fixed_debt",
   "fixed_shopping",
   "fixed_health",
   "fixed_family",
