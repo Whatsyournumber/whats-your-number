@@ -28,6 +28,7 @@ export const BUDGET_CATEGORIES: BudgetCategory[] = [
   { id: "nightlife", emoji: "🎉", es: "Ocio/Nightlife", en: "Nightlife", group: "lifestyle", aliases: ["nightlife", "ocio"] },
   { id: "shopping", emoji: "🛍️", es: "Compras", en: "Shopping", group: "lifestyle", aliases: ["compras", "shopping"] },
   { id: "clothing", emoji: "👕", es: "Ropa", en: "Clothing", group: "lifestyle", aliases: ["ropa", "clothing"] },
+  { id: "hogar", emoji: "🧹", es: "Hogar", en: "Household", group: "lifestyle", aliases: ["hogar", "household", "limpieza", "cleaning", "ferreteria", "ferretería", "home supplies"] },
   { id: "beauty", emoji: "💇", es: "Cuidado personal", en: "Personal care", group: "lifestyle", aliases: ["belleza", "cuidado personal", "beauty", "personal care"] },
   { id: "gym", emoji: "🏋️", es: "Gimnasio/Deportes", en: "Gym/Sports", group: "essentials", aliases: ["deportes", "gimnasio", "sports", "gym"] },
   { id: "apps", emoji: "📱", es: "Apps/Suscripciones", en: "Apps/Subscriptions", group: "essentials", aliases: ["apps", "suscripciones", "subscriptions"] },
