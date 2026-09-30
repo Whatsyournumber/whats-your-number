@@ -2256,17 +2256,6 @@ export function ExpenseLog() {
                               <span className="numeric shrink-0 text-sm font-semibold sm:text-base">{fmt(i.amount)}</span>
                             </div>
                           </div>
-                          {!isApps && <span className="h-7 w-7 shrink-0" aria-hidden />}
-                          {isApps && (
-                            <button
-                              type="button"
-                              onClick={() => setAppsExpanded((v) => !v)}
-                              className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                              aria-label={t("Ver apps", "See apps")}
-                            >
-                              <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", appsExpanded && "rotate-180")} />
-                            </button>
-                          )}
                           <button
                             type="button"
                             onClick={() => (isApps ? openSubsEditor() : i.planId ? setPlanOpen(true) : openEditRecurring(i))}
