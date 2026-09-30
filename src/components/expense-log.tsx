@@ -840,6 +840,7 @@ export function ExpenseLog() {
   const [draftLooking, setDraftLooking] = useState(false);
   const [draftInvitePending, setDraftInvitePending] = useState<string | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
+  const cancelVoiceRef = useRef(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const camRef = useRef<HTMLInputElement | null>(null);
   const docsRef = useRef<HTMLInputElement | null>(null);
@@ -986,6 +987,10 @@ export function ExpenseLog() {
         stream.getTracks().forEach((track) => track.stop());
         const blob = new Blob(chunks, { type: recorder.mimeType || "audio/webm" });
         setRecording(false);
+        if (cancelVoiceRef.current) {
+          cancelVoiceRef.current = false;
+          return;
+        }
         if (blob.size < 2048) {
           toast.error(t("La nota quedó vacía. Vuelve a grabar.", "That recording was empty. Try again."));
           return;
@@ -1004,6 +1009,12 @@ export function ExpenseLog() {
   };
 
   const stopRecording = () => recorderRef.current?.stop();
+
+  const cancelRecording = () => {
+    cancelVoiceRef.current = true;
+    recorderRef.current?.stop();
+    setVoiceDialogOpen(false);
+  };
 
   const findDraftPartner = async () => {
     const email = normalizeValidEmail(draftEmail);
@@ -1369,11 +1380,11 @@ export function ExpenseLog() {
       <Dialog
         open={voiceDialogOpen}
         onOpenChange={(open) => {
-          if (!open && recording) stopRecording();
+          if (!open && recording) cancelRecording();
           if (!open && !recording && busy !== "voice") setVoiceDialogOpen(false);
         }}
       >
-        <DialogContent className="w-[calc(100%-2rem)] max-w-sm overflow-hidden rounded-2xl border-negative/25 bg-card p-0 text-center shadow-2xl sm:hidden [&>button]:hidden">
+        <DialogContent className="w-[calc(100%-2rem)] max-w-sm overflow-hidden rounded-2xl border-negative/25 bg-card p-0 text-center shadow-2xl sm:hidden">
           <div className="relative flex min-h-[360px] flex-col items-center justify-center overflow-hidden px-6 py-8">
             <div className="relative mb-6 grid h-32 w-32 place-items-center">
               {recording && (
