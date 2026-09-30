@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Mostrar el icono compartido y el nombre de Carlos dentro de la categoría; conservar los productos del recibo compartido.
+
 - [x] Gasto manual: ofrecer todas las categorías del plan y permitir añadir a una persona desde la parte inferior del formulario.
 - [x] Gasto manual: mostrar «Compartido» con avatares y botón Añadir como la referencia, conservando el reparto existente.
 - [x] Gasto por voz: mostrar personas compartidas como en el gasto manual; guardar la parte propia y cerrar la confirmación tras guardar.
