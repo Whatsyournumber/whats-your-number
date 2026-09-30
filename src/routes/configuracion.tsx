@@ -219,7 +219,7 @@ function Configuracion() {
 
         <TabsContent value="reglas-super">
           <Panel title={t("Reglas del súper", "Grocery rules")} description={t("Qué productos van en cada rubro. Solo tus cambios se guardan como reglas para los próximos tickets.", "What belongs in each group. Only your changes are saved as rules for future receipts.")}>
-            <form className="flex flex-wrap items-end gap-2" onSubmit={(event) => { event.preventDefault(); if (!productMatch.trim()) return; groceryRules.learn(productMatch, productGroup); setProductMatch(""); }}>
+            <form className="flex flex-wrap items-end gap-2" onSubmit={(event) => { event.preventDefault(); if (!productMatch.trim()) return; groceryRules.learn(productMatch, productGroup, "added"); setProductMatch(""); }}>
               <div className="min-w-40 flex-1"><Label htmlFor="grocery-match">{t("Producto o palabra del ticket", "Receipt product or keyword")}</Label><Input id="grocery-match" value={productMatch} onChange={(event) => setProductMatch(event.target.value)} maxLength={120} placeholder={t("Ej. aceitunas", "E.g. olives")} className="mt-1.5" /></div>
               <div className="min-w-40 flex-1"><Label htmlFor="grocery-group">{t("Rubro", "Group")}</Label><select id="grocery-group" value={productGroup} onChange={(event) => setProductGroup(event.target.value as GroceryGroup)} className="mt-1.5 flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground">{GROCERY_GROUPS.map((id) => <option key={id} value={id}>{GROCERY_LABELS[id].icon} {t(GROCERY_LABELS[id].es, GROCERY_LABELS[id].en)}</option>)}</select></div>
               <Button type="submit" disabled={!productMatch.trim()}>{t("Guardar regla", "Save rule")}</Button>
@@ -229,7 +229,7 @@ function Configuracion() {
                 <div className="mb-2 flex items-center gap-2"><span className="text-xs font-semibold text-muted-foreground">{index + 1}.</span><span className="text-base">{GROCERY_LABELS[g].icon}</span><span className="text-sm font-medium">{t(GROCERY_LABELS[g].es, GROCERY_LABELS[g].en)}</span></div>
                 <p className="text-xs text-muted-foreground">{t(GROCERY_LABELS[g].detailEs, GROCERY_LABELS[g].detailEn)}</p>
                 <p className="mt-1 text-xs text-muted-foreground">{t("Ejemplos", "Examples")}: {t(GROCERY_EXAMPLES[g].es, GROCERY_EXAMPLES[g].en)}</p>
-                <form className="mt-3 flex gap-2" onSubmit={(event) => { event.preventDefault(); const name = groupItems[g]?.trim(); if (!name) return; groceryRules.learn(name, g); setGroupItems((current) => ({ ...current, [g]: "" })); }}>
+                <form className="mt-3 flex gap-2" onSubmit={(event) => { event.preventDefault(); const name = groupItems[g]?.trim(); if (!name) return; groceryRules.learn(name, g, "added"); setGroupItems((current) => ({ ...current, [g]: "" })); }}>
                   <Input aria-label={t(`Añadir producto a ${GROCERY_LABELS[g].es}`, `Add product to ${GROCERY_LABELS[g].en}`)} value={groupItems[g] ?? ""} onChange={(event) => setGroupItems((current) => ({ ...current, [g]: event.target.value }))} maxLength={120} placeholder={t("Añadir producto o palabra", "Add product or keyword")} className="min-w-0 flex-1" />
                   <Button type="submit" size="sm" variant="outline" disabled={!groupItems[g]?.trim()}>{t("Añadir", "Add")}</Button>
                 </form>
