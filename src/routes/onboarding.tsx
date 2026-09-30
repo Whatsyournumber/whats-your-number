@@ -1367,14 +1367,64 @@ function OnboardingPage() {
                   <div className="space-y-2.5">
                     {SPEND_PLAN_FIELDS.filter((f) => ONBOARDING_FIXED_KEYS.includes(f.key)).map(
                       (f) => (
-                        <MoneyField
-                          key={f.key}
-                          emoji={f.emoji}
-                          label={t(f.es, f.en)}
-                          currency={cur}
-                          value={data[f.key]}
-                          onChange={(v) => setFixed(f.key, v)}
-                        />
+                        <div key={f.key}>
+                          <MoneyField
+                            emoji={f.emoji}
+                            label={t(f.es, f.en)}
+                            currency={cur}
+                            value={data[f.key]}
+                            onChange={(v) => setFixed(f.key, v)}
+                          />
+                          {f.key === "fixed_subscriptions" && (
+                            <div className="mt-2 space-y-2 border-l-2 border-border pl-4 ml-5">
+                              {appSubs.map((s) => (
+                                <div
+                                  key={s.id}
+                                  className="flex items-center gap-3 rounded-xl border border-border/70 bg-elevated/30 px-3.5 py-2.5"
+                                >
+                                  <span className="text-sm">{s.emoji}</span>
+                                  {s.name ? (
+                                    <p className="text-xs font-medium">{s.name}</p>
+                                  ) : (
+                                    <input
+                                      type="text"
+                                      value={s.name}
+                                      placeholder={t("Nombre (ej. Disney+)", "Name (e.g. Disney+)")}
+                                      onChange={(e) =>
+                                        setAppSub(s.id, {
+                                          name: e.target.value,
+                                          emoji: "📱",
+                                        })
+                                      }
+                                      className="min-w-0 flex-1 bg-transparent text-xs font-medium outline-none placeholder:font-normal placeholder:text-muted-foreground/60"
+                                    />
+                                  )}
+                                  <input
+                                    type="number"
+                                    inputMode="decimal"
+                                    min={0}
+                                    step="any"
+                                    value={s.amount || ""}
+                                    aria-label={s.name || t("Suscripción", "Subscription")}
+                                    onWheel={(e) => e.currentTarget.blur()}
+                                    onChange={(e) =>
+                                      setAppSub(s.id, { amount: Number(e.target.value || 0) })
+                                    }
+                                    placeholder={cur}
+                                    className="ml-auto w-20 rounded-lg border border-border bg-transparent px-2 py-1.5 text-right text-xs outline-none focus:border-primary/60"
+                                  />
+                                </div>
+                              ))}
+                              <button
+                                type="button"
+                                onClick={addAppSub}
+                                className="flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+                              >
+                                + {t("Añadir otra", "Add another")}
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       ),
                     )}
                   </div>
