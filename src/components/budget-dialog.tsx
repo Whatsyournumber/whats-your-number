@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CalendarDays, Check, Pencil, Plus, Trash2, X } from "lucide-react";
+import { CalendarDays, Check, ChevronDown, Pencil, Plus, Trash2, X } from "lucide-react";
 
 import {
   AlertDialog,
@@ -32,10 +32,17 @@ type Props = {
   lines: BudgetLine[];
   onSave: (lines: BudgetLine[]) => void;
   fmt: (n: number) => string;
+  /** Desglose de «Apps/Suscripciones» (app, monto y día de cobro). */
+  appSubs?: { id: string; name: string; emoji: string; amount: number; day: number }[];
+  /** Abre el editor de apps. */
+  onEditApps?: () => void;
 };
 
+const isAppsLine = (l: BudgetLine) =>
+  l.id === "apps" || /^custom:.*(app|suscrip)/i.test(l.id) || /apps|suscripciones|subscriptions/i.test(l.label ?? "");
+
 /** Pop-up para definir un objetivo de gasto personalizado por categoría. */
-export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) {
+export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, onEditApps }: Props) {
   const t = useT();
   const { lang } = useLanguage();
   const [draft, setDraft] = useState<BudgetLine[]>([]);
@@ -44,6 +51,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
   const [customGroup, setCustomGroup] = useState<Exclude<BudgetGroup, "other">>("lifestyle");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
+  const [appsOpen, setAppsOpen] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -210,7 +218,19 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                           className="h-9 min-w-0 flex-1 text-sm"
                         />
                       ) : (
-                        <span className="min-w-0 flex-1 truncate text-sm">{label(l)}</span>
+                        appSubs && isAppsLine(l) ? (
+                          <button
+                            type="button"
+                            onClick={() => setAppsOpen((v) => !v)}
+                            className="flex min-w-0 flex-1 items-center gap-1.5 text-left text-sm"
+                            aria-label={t("Ver apps", "See apps")}
+                          >
+                            <span className="truncate">{label(l)}</span>
+                            <ChevronDown className={`h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform ${appsOpen ? "rotate-180" : ""}`} />
+                          </button>
+                        ) : (
+                          <span className="min-w-0 flex-1 truncate text-sm">{label(l)}</span>
+                        )
                       )}
                       {editingId !== l.id ? (
                         <button
@@ -262,6 +282,28 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
+                    {appSubs && isAppsLine(l) && appsOpen && (
+                      <div className="mt-2 space-y-1.5 border-t border-border/40 pt-2">
+                        {[...appSubs].sort((a, b) => a.day - b.day).map((a) => (
+                          <div key={a.id} className="flex items-center gap-2 pl-1 text-sm">
+                            <span className="w-5 shrink-0 text-center">{a.emoji}</span>
+                            <span className="min-w-0 flex-1 truncate">{a.name}</span>
+                            <span className="shrink-0 text-xs text-muted-foreground">{t(`día ${a.day}`, `day ${a.day}`)}</span>
+                            <span className="numeric w-20 shrink-0 text-right text-muted-foreground">{fmt(a.amount)}</span>
+                          </div>
+                        ))}
+                        {onEditApps && (
+                          <button
+                            type="button"
+                            onClick={onEditApps}
+                            className="flex items-center gap-1.5 pl-1 pt-1 text-xs font-medium text-primary hover:underline"
+                          >
+                            <Pencil className="h-3 w-3" />
+                            {t("Editar apps", "Edit apps")}
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
