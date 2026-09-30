@@ -234,7 +234,7 @@ function Configuracion() {
                   <Button type="submit" size="sm" variant="outline" disabled={!groupItems[g]?.trim()}>{t("Añadir", "Add")}</Button>
                 </form>
                 {manual.length > 0 && <div className="mt-3 border-t border-border pt-2"><p className="mb-2 text-xs text-muted-foreground">{t("Reglas manuales", "Manual rules")} · {manual.length}</p><div className="space-y-1">{manual.map(renderRule)}</div></div>}
-                {corrected.length > 0 && <div className="mt-3 border-t border-border pt-2"><p className="mb-2 text-xs text-muted-foreground">{t("Correcciones", "Corrections")} · {corrected.length}</p><div className="space-y-1">{corrected.map(renderRule)}</div></div>}
+                {corrected.length > 0 && <div className="mt-3 border-t border-border pt-2"><p className="mb-2 text-xs text-muted-foreground">{t("Reglas manuales", "Manual rules")} · {corrected.length}</p><div className="space-y-1">{corrected.map(renderRule)}</div></div>}
               </div>); })}</div>
           </Panel>
         </TabsContent>
