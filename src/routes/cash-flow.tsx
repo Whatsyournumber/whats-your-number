@@ -769,7 +769,10 @@ function CashFlow() {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>{t("Destino del ahorro", "Savings destination")}</DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="truncate" title={t(
+              `De tus ${fmt(saveAmount)} de ahorro al mes, decide cuánto va a cada destino.`,
+              `Out of your ${fmt(saveAmount)} monthly savings, decide how much goes to each destination.`,
+            )}>
               {t(
                 `De tus ${fmt(saveAmount)} de ahorro al mes, decide cuánto va a cada destino.`,
                 `Out of your ${fmt(saveAmount)} monthly savings, decide how much goes to each destination.`,
