@@ -2274,22 +2274,22 @@ export function ExpenseLog() {
                           setExpandedCategory(expandedCat ? null : r.id);
                         }}
                         className={cn(
-                          "flex items-center gap-3",
+                           "grid grid-cols-[2.25rem_minmax(0,1fr)_auto_auto] items-center gap-x-3 gap-y-1 sm:flex sm:gap-3",
                           r.items.length > 0 && "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                         )}
                         aria-expanded={r.items.length > 0 ? expandedCat : undefined}
                       >
                         <span
                           className={cn(
-                            "grid h-9 w-9 shrink-0 place-items-center rounded-full text-base sm:h-10 sm:w-10",
+                             "row-span-2 grid h-9 w-9 shrink-0 place-items-center rounded-full text-base sm:h-10 sm:w-10",
                             r.planned > 0 && r.actual > r.planned ? "bg-negative/20" : "bg-positive/15",
                           )}
                         >
                           {r.emoji}
                         </span>
-                        <div className="min-w-0 flex-1 lg:flex lg:items-center lg:gap-3">
+                         <div className="row-span-2 min-w-0 flex-1 lg:flex lg:items-center lg:gap-3">
                           <div className="min-w-0 lg:w-44 lg:shrink-0">
-                            <p className="truncate text-sm leading-5">{r.name}</p>
+                             <p className="text-sm leading-5 [overflow-wrap:anywhere]">{r.name}</p>
                             <p className="numeric text-[0.6875rem] leading-4 text-muted-foreground">
                               {r.planned > 0 ? `${fmt(r.actual)} / ${fmt(r.planned)}` : fmt(r.actual)}
                             </p>
@@ -2303,7 +2303,7 @@ export function ExpenseLog() {
                         </div>
                         <span
                           className={cn(
-                            "numeric w-11 shrink-0 text-right text-sm sm:w-12",
+                             "numeric col-start-3 row-start-1 w-11 shrink-0 text-right text-sm sm:w-12",
                             r.planned > 0 && r.actual > r.planned ? "text-negative" : "text-foreground",
                           )}
                         >
@@ -2316,7 +2316,7 @@ export function ExpenseLog() {
                               event.stopPropagation();
                               setAnalysisCat(r.id);
                             }}
-                            className="flex h-7 shrink-0 items-center gap-1.5 rounded-full px-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                             className="col-span-2 col-start-3 row-start-2 flex h-7 shrink-0 items-center justify-self-end gap-1.5 rounded-full px-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                             aria-label={t(`Ver análisis de ${r.name}`, `View ${r.name} analysis`)}
                           >
                             <BarChart3 className="h-3.5 w-3.5" />
@@ -2332,7 +2332,7 @@ export function ExpenseLog() {
                               event.stopPropagation();
                               setExpandedCategory(expandedCat ? null : r.id);
                             }}
-                            className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                             className="col-start-4 row-start-1 grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                             aria-label={expandedCat ? t("Ocultar gastos", "Hide expenses") : t("Ver gastos", "View expenses")}
                             aria-expanded={expandedCat}
                           >
