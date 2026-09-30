@@ -233,7 +233,8 @@ function Configuracion() {
                   <Input aria-label={t(`Añadir producto a ${GROCERY_LABELS[g].es}`, `Add product to ${GROCERY_LABELS[g].en}`)} value={groupItems[g] ?? ""} onChange={(event) => setGroupItems((current) => ({ ...current, [g]: event.target.value }))} maxLength={120} placeholder={t("Añadir producto o palabra", "Add product or keyword")} className="min-w-0 flex-1" />
                   <Button type="submit" size="sm" variant="outline" disabled={!groupItems[g]?.trim()}>{t("Añadir", "Add")}</Button>
                 </form>
-                {all.length > 0 && <div className="mt-3 border-t border-border pt-2"><p className="mb-2 text-xs text-muted-foreground">{t("Reglas manuales", "Manual rules")} · {all.length}</p><div className="space-y-1">{[...manual, ...corrected].map(renderRule)}</div></div>}
+                {manual.length > 0 && <div className="mt-3 border-t border-border pt-2"><p className="mb-2 text-xs text-muted-foreground">{t("Reglas manuales", "Manual rules")} · {manual.length}</p><div className="space-y-1">{manual.map(renderRule)}</div></div>}
+                {corrected.length > 0 && <div className="mt-3 border-t border-border pt-2"><p className="mb-2 text-xs text-muted-foreground">{t("Cambios de categoría", "Category changes")} · {corrected.length}</p><div className="space-y-1">{corrected.map(renderRule)}</div></div>}
               </div>); })}</div>
           </Panel>
         </TabsContent>
