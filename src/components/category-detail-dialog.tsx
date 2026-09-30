@@ -229,7 +229,7 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
   const max = Math.max(...summary.groups.map((group) => group.amount), 1);
   return (
     <section className="pt-1" aria-label={t(`Análisis de ${summary.receiptCount} tickets del súper del mes`, `Analysis of ${summary.receiptCount} grocery receipts this month`)}>
-      <div className="flex flex-wrap items-start justify-between gap-2 pl-9">
+      <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1 pl-9 mt-0.5">
         <p className="min-w-0 text-xs text-muted-foreground">
           {t("Podrás cambiar de categoría si no se registra correctamente.", "You can change the category if it wasn't captured correctly.")}
         </p>
