@@ -2233,16 +2233,16 @@ export function ExpenseLog() {
                         : isAppsName(i.name);
                       return (
                         <Fragment key={i.id}>
-                        <li className="flex items-center gap-3">
-                          <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full text-base", colors[idx % colors.length])}>
-                            {emoji ?? <Repeat className="h-4 w-4" />}
+                        <li className="flex items-center gap-3 sm:gap-4">
+                          <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full text-base sm:h-12 sm:w-12 sm:text-lg", colors[idx % colors.length])}>
+                            {emoji ?? <Repeat className="h-4 w-4 sm:h-5 sm:w-5" />}
                           </span>
                           <div
                             className={cn("min-w-0 flex-1", isApps && "cursor-pointer")}
                             onClick={isApps ? () => setAppsExpanded((v) => !v) : undefined}
                           >
-                            <p className="truncate text-sm leading-5">{emoji ? i.name.slice(emoji.length).trim() : i.name}</p>
-                            <p className="text-[0.6875rem] leading-4 text-muted-foreground">
+                            <p className="truncate text-sm leading-5 sm:text-[0.9375rem] sm:leading-6">{emoji ? i.name.slice(emoji.length).trim() : i.name}</p>
+                            <p className="text-[0.6875rem] leading-4 text-muted-foreground sm:whitespace-nowrap">
                               {isApps
                                 ? t(`${displaySubs.length} apps · próximo cobro ${format(i.next, "d MMM", { locale })}`, `${displaySubs.length} apps · next charge ${format(i.next, "d MMM", { locale })}`)
                                 : format(i.next, "d MMM", { locale })}
@@ -2272,15 +2272,15 @@ export function ExpenseLog() {
                           [...displaySubs]
                             .sort((a, b) => a.day - b.day)
                             .map((a) => (
-                              <li key={a.id} className="flex items-center gap-3 pl-6">
-                                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-muted/50 text-sm">{a.emoji}</span>
+                              <li key={a.id} className="flex items-center gap-3 pl-6 sm:gap-4 sm:pl-8">
+                                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-muted/50 text-sm sm:h-10 sm:w-10 sm:text-base">{a.emoji}</span>
                                 <div className="min-w-0 flex-1">
-                                  <p className="truncate text-sm leading-5">{a.name}</p>
-                                  <p className="text-[0.6875rem] leading-4 text-muted-foreground">
+                                  <p className="truncate text-sm leading-5 sm:text-[0.9375rem] sm:leading-6">{a.name}</p>
+                                  <p className="text-[0.6875rem] leading-4 text-muted-foreground sm:whitespace-nowrap">
                                     {format(nextChargeDate(a.day), "d MMM", { locale })}
                                   </p>
                                 </div>
-                                <span className="numeric shrink-0 text-sm text-muted-foreground">{fmt(a.amount)}</span>
+                                <span className="numeric shrink-0 text-sm text-muted-foreground sm:text-[0.9375rem]">{fmt(a.amount)}</span>
                                 <span className="w-7 shrink-0" />
                               </li>
                             ))}
