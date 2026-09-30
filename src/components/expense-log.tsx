@@ -622,10 +622,10 @@ export function ExpenseLog() {
     saveAppSubs(clean);
     const total = clean.reduce((s, a) => s + a.amount, 0);
     const firstDay = clean.length ? Math.min(...clean.map((a) => a.day)) : 1;
-    const existing = budgets.lines.find((l) => l.id === "apps");
+    const existing = budgets.lines.find(isAppsPlanLine);
     budgets.save([
-      ...budgets.lines.filter((l) => l.id !== "apps"),
-      { ...existing, id: "apps", amount: total, dueDay: firstDay },
+      ...budgets.lines.filter((l) => !isAppsPlanLine(l)),
+      { ...existing, id: existing?.id ?? "apps", label: existing?.label, amount: total, dueDay: firstDay, group: "essentials" },
     ]);
     setSubsOpen(false);
     toast.success(t("Suscripciones actualizadas", "Subscriptions updated"));
