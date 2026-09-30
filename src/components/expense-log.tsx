@@ -1982,7 +1982,7 @@ export function ExpenseLog() {
           ))}
 
           {(target > 0 || monthVariable > 0) && (
-            <div className="grid gap-4 xl:grid-cols-[1fr_320px]">
+            <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_400px]">
               <div data-tour-expense-target="chart" className="rounded-2xl border border-border bg-card p-4 sm:p-6">
                 <h3 className="text-base font-semibold">
                   {t("Gasto diario vs. presupuesto esperado", "Daily spend vs. expected budget")}
@@ -2241,14 +2241,14 @@ export function ExpenseLog() {
                             className={cn("min-w-0 flex-1", isApps && "cursor-pointer")}
                             onClick={isApps ? () => setAppsExpanded((v) => !v) : undefined}
                           >
-                            <p className="truncate text-sm leading-5 sm:text-[0.9375rem] sm:leading-6">{emoji ? i.name.slice(emoji.length).trim() : i.name}</p>
-                            <p className="text-[0.6875rem] leading-4 text-muted-foreground sm:whitespace-nowrap">
+                            <p className="truncate text-sm leading-5 sm:text-base sm:leading-6">{emoji ? i.name.slice(emoji.length).trim() : i.name}</p>
+                            <p className="text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs sm:leading-5 sm:whitespace-nowrap">
                               {isApps
                                 ? t(`${displaySubs.length} apps · próximo cobro ${format(i.next, "d MMM", { locale })}`, `${displaySubs.length} apps · next charge ${format(i.next, "d MMM", { locale })}`)
                                 : format(i.next, "d MMM", { locale })}
                             </p>
                           </div>
-                          <span className="numeric shrink-0 text-sm font-semibold">{fmt(i.amount)}</span>
+                          <span className="numeric shrink-0 text-sm font-semibold sm:text-base">{fmt(i.amount)}</span>
                           {isApps && (
                             <button
                               type="button"
@@ -2272,15 +2272,15 @@ export function ExpenseLog() {
                           [...displaySubs]
                             .sort((a, b) => a.day - b.day)
                             .map((a) => (
-                              <li key={a.id} className="flex items-center gap-3 pl-6 sm:gap-4 sm:pl-8">
+                              <li key={a.id} className="flex items-center gap-3 pl-6 sm:gap-4 sm:pl-9">
                                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-muted/50 text-sm sm:h-10 sm:w-10 sm:text-base">{a.emoji}</span>
                                 <div className="min-w-0 flex-1">
-                                  <p className="truncate text-sm leading-5 sm:text-[0.9375rem] sm:leading-6">{a.name}</p>
-                                  <p className="text-[0.6875rem] leading-4 text-muted-foreground sm:whitespace-nowrap">
+                                  <p className="truncate text-sm leading-5 sm:text-base sm:leading-6">{a.name}</p>
+                                  <p className="text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs sm:leading-5 sm:whitespace-nowrap">
                                     {format(nextChargeDate(a.day), "d MMM", { locale })}
                                   </p>
                                 </div>
-                                <span className="numeric shrink-0 text-sm text-muted-foreground sm:text-[0.9375rem]">{fmt(a.amount)}</span>
+                                <span className="numeric shrink-0 text-sm text-muted-foreground sm:text-base">{fmt(a.amount)}</span>
                                 <span className="w-7 shrink-0" />
                               </li>
                             ))}
@@ -2289,9 +2289,9 @@ export function ExpenseLog() {
                     })}
                   </ul>
                   {/* Total de los gastos fijos listados (coincide con lo mostrado arriba). */}
-                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/60 pl-[3.25rem] pr-10 pt-3.5">
-                    <p className="text-sm font-semibold">{t("Total gastos fijos", "Total fixed expenses")}</p>
-                    <p className="numeric text-sm font-semibold">
+                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/60 pl-[3.25rem] pr-10 pt-3.5 sm:pl-14">
+                    <p className="text-sm font-semibold sm:text-[0.9375rem]">{t("Total gastos fijos", "Total fixed expenses")}</p>
+                    <p className="numeric text-sm font-semibold sm:text-[0.9375rem]">
                       {fmt(upcoming.reduce((s, i) => s + i.amount, 0))}
                     </p>
                   </div>
