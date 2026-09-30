@@ -606,22 +606,22 @@ export function ExpenseLog() {
   const [appsExpanded, setAppsExpanded] = useState(false);
   const appSubsTotal = appSubs.reduce((s, a) => s + (Number(a.amount) || 0), 0);
 
+  const DEFAULT_APP_SUBS: AppSub[] = [
+    { id: "spotify", name: "Spotify", emoji: "🎵", amount: 0, day: 1 },
+    { id: "netflix", name: "Netflix", emoji: "🎬", amount: 0, day: 1 },
+  ];
+  // Lo que se muestra al desplegar: las apps guardadas o las de inicio.
+  const displaySubs = appSubs.length ? appSubs : DEFAULT_APP_SUBS;
+
   const openSubsEditor = () => {
-    setSubsDraft(
-      appSubs.length
-        ? appSubs.map((a) => ({ ...a }))
-        : [
-            { id: "spotify", name: "Spotify", emoji: "🎵", amount: 0, day: 1 },
-            { id: "netflix", name: "Netflix", emoji: "🎬", amount: 0, day: 1 },
-          ],
-    );
+    setSubsDraft(displaySubs.map((a) => ({ ...a })));
     setSubsOpen(true);
   };
 
   const onSaveSubs = () => {
     const clean = subsDraft
       .map((a) => ({ ...a, name: a.name.trim(), amount: Math.max(0, Math.round(Number(a.amount) || 0)), day: Math.min(31, Math.max(1, Number(a.day) || 1)) }))
-      .filter((a) => a.name && a.amount > 0);
+      .filter((a) => a.name);
     saveAppSubs(clean);
     const total = clean.reduce((s, a) => s + a.amount, 0);
     const firstDay = clean.length ? Math.min(...clean.map((a) => a.day)) : 1;
@@ -2221,16 +2221,19 @@ export function ExpenseLog() {
                           <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full text-base", colors[idx % colors.length])}>
                             {emoji ?? <Repeat className="h-4 w-4" />}
                           </span>
-                          <div className="min-w-0 flex-1">
+                          <div
+                            className={cn("min-w-0 flex-1", isApps && "cursor-pointer")}
+                            onClick={isApps ? () => setAppsExpanded((v) => !v) : undefined}
+                          >
                             <p className="truncate text-sm leading-5">{emoji ? i.name.slice(emoji.length).trim() : i.name}</p>
                             <p className="text-[0.6875rem] leading-4 text-muted-foreground">
-                              {isApps && appSubs.length
-                                ? t(`${appSubs.length} apps · próximo cobro ${format(i.next, "d MMM", { locale })}`, `${appSubs.length} apps · next charge ${format(i.next, "d MMM", { locale })}`)
+                              {isApps
+                                ? t(`${displaySubs.length} apps · próximo cobro ${format(i.next, "d MMM", { locale })}`, `${displaySubs.length} apps · next charge ${format(i.next, "d MMM", { locale })}`)
                                 : format(i.next, "d MMM", { locale })}
                             </p>
                           </div>
                           <span className="numeric shrink-0 text-sm font-semibold">{fmt(i.amount)}</span>
-                          {isApps && appSubs.length > 0 && (
+                          {isApps && (
                             <button
                               type="button"
                               onClick={() => setAppsExpanded((v) => !v)}
@@ -2250,7 +2253,7 @@ export function ExpenseLog() {
                           </button>
                         </li>
                         {isApps && appsExpanded &&
-                          [...appSubs]
+                          [...displaySubs]
                             .sort((a, b) => a.day - b.day)
                             .map((a) => (
                               <li key={a.id} className="flex items-center gap-3 pl-6">
