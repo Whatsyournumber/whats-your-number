@@ -265,7 +265,7 @@ export function AppSidebar() {
                   variant="ghost"
                   aria-expanded={accountOpen}
                   aria-controls="sidebar-account-items"
-                  onClick={() => setAccountOpen((open) => !open)}
+                  onClick={() => { accountTouched.current = true; setAccountOpen((open) => !open); }}
                   className="h-8 w-full justify-between px-2 text-[10px] font-medium uppercase tracking-wide text-sidebar-foreground/70 hover:text-sidebar-foreground"
                 >
                   {t("Mi cuenta", "My account")}
