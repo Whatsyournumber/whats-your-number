@@ -75,7 +75,10 @@ export function NumberInput({
           setText("0");
           onChange(0);
         } else {
-          setText(pretty(Number(text)));
+          const num = Number(text.replace(/[^0-9.,-]/g, "").replace(/\./g, "").replace(/,/g, ""));
+          const next = Number.isFinite(num) ? num : value;
+          setText(pretty(next));
+          if (num !== next) onChange(next);
         }
       }}
     />
