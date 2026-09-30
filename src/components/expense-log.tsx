@@ -600,6 +600,8 @@ export function ExpenseLog() {
   /** Línea del plan que representa «Suscripciones / apps» (id fijo o personalizada). */
   const isAppsPlanLine = (l: { id: string; label?: string }) =>
     l.id === "apps" || /^custom:.*(app|suscrip)/i.test(l.id) || /apps|suscripciones|subscriptions/i.test(l.label ?? "");
+  /** Gasto recurrente suelto que es «Suscripciones / apps» (p. ej. el del onboarding). */
+  const isAppsName = (name: string) => /suscrip|subscrip|\bapps?\b/i.test(name);
   const { value: appSubs, save: saveAppSubs } = useSyncedSetting<AppSub[]>("whatsyournumber:app-subscriptions", []);
   const [subsOpen, setSubsOpen] = useState(false);
   const [subsDraft, setSubsDraft] = useState<AppSub[]>([]);
@@ -625,11 +627,16 @@ export function ExpenseLog() {
     saveAppSubs(clean);
     const total = clean.reduce((s, a) => s + a.amount, 0);
     const firstDay = clean.length ? Math.min(...clean.map((a) => a.day)) : 1;
+    // Si las apps vienen de un gasto recurrente suelto, se actualiza ese gasto.
+    const fixedApps = expenseFixedItems.find((i) => isAppsName(i.name));
+    if (fixedApps) fixed.update(fixedApps.id, { amount: total, dayOfMonth: firstDay });
     const existing = budgets.lines.find(isAppsPlanLine);
-    budgets.save([
-      ...budgets.lines.filter((l) => !isAppsPlanLine(l)),
-      { ...existing, id: existing?.id ?? "apps", amount: total, dueDay: firstDay, group: "essentials" },
-    ]);
+    if (existing || !fixedApps) {
+      budgets.save([
+        ...budgets.lines.filter((l) => !isAppsPlanLine(l)),
+        { ...existing, id: existing?.id ?? "apps", amount: total, dueDay: firstDay, group: "essentials" },
+      ]);
+    }
     setSubsOpen(false);
     toast.success(t("Suscripciones actualizadas", "Subscriptions updated"));
   };
