@@ -208,7 +208,16 @@ function Configuracion() {
               <div className="min-w-40 flex-1"><Label htmlFor="grocery-group">{t("Rubro", "Group")}</Label><select id="grocery-group" value={productGroup} onChange={(event) => setProductGroup(event.target.value as GroceryGroup)} className="mt-1.5 flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground">{GROCERY_GROUPS.map((id) => <option key={id} value={id}>{GROCERY_LABELS[id].icon} {t(GROCERY_LABELS[id].es, GROCERY_LABELS[id].en)}</option>)}</select></div>
               <Button type="submit" disabled={!productMatch.trim()}>{t("Guardar regla", "Save rule")}</Button>
             </form>
-            {groceryRules.rules.length > 0 && <div className="mt-4 space-y-2">{groceryRules.rules.map((rule) => <div key={rule.id} className="flex items-center gap-2 rounded-md bg-elevated/60 px-3 py-2"><span className="min-w-0 truncate text-sm">{rule.match}</span><span className="text-muted-foreground">→</span><span className="min-w-0 truncate text-sm">{GROCERY_LABELS[rule.group].icon} {t(GROCERY_LABELS[rule.group].es, GROCERY_LABELS[rule.group].en)}</span><Button type="button" size="icon" variant="ghost" className="ml-auto size-7 shrink-0 text-muted-foreground" aria-label={t(`Eliminar regla de ${rule.match}`, `Delete rule for ${rule.match}`)} onClick={() => groceryRules.remove(rule.id)}><Trash2 className="size-3.5" /></Button></div>)}</div>}
+            {groceryRules.rules.length > 0 && <p className="mt-4 text-xs text-muted-foreground">{t("Cambia el rubro de cualquier producto y el próximo ticket lo leerá así.", "Change any product's group and your next receipt will read it that way.")}</p>}
+            {groceryRules.rules.length > 0 && <div className="mt-3 grid gap-3 md:grid-cols-2">{GROCERY_GROUPS.filter((g) => groceryRules.rules.some((r) => r.group === g)).map((g) => { const items = groceryRules.rules.filter((r) => r.group === g).sort((a, b) => a.match.localeCompare(b.match)); return (
+              <div key={g} className="rounded-lg border border-border bg-elevated/40 p-3">
+                <div className="mb-2 flex items-center gap-2"><span className="text-base">{GROCERY_LABELS[g].icon}</span><span className="text-sm font-medium">{t(GROCERY_LABELS[g].es, GROCERY_LABELS[g].en)}</span><span className="ml-auto text-xs text-muted-foreground">{items.length}</span></div>
+                <div className="space-y-1">{items.map((rule) => <div key={rule.id} className="flex items-center gap-2 rounded-md bg-background/50 px-2 py-1.5">
+                  <span className="min-w-0 flex-1 truncate text-sm" title={rule.match}>{rule.match}</span>
+                  <select aria-label={t(`Rubro de ${rule.match}`, `Group for ${rule.match}`)} value={rule.group} onChange={(e) => groceryRules.learn(rule.match, e.target.value as GroceryGroup)} className="h-7 w-10 shrink-0 cursor-pointer rounded-md border border-input bg-background px-1 text-sm text-foreground">{GROCERY_GROUPS.map((id) => <option key={id} value={id}>{GROCERY_LABELS[id].icon} {t(GROCERY_LABELS[id].es, GROCERY_LABELS[id].en)}</option>)}</select>
+                  <Button type="button" size="icon" variant="ghost" className="size-7 shrink-0 text-muted-foreground" aria-label={t(`Eliminar regla de ${rule.match}`, `Delete rule for ${rule.match}`)} onClick={() => groceryRules.remove(rule.id)}><Trash2 className="size-3.5" /></Button>
+                </div>)}</div>
+              </div>); })}</div>}
           </Panel>
         </TabsContent>
 
