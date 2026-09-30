@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Gasto manual: ofrecer todas las categorías del plan y permitir añadir a una persona desde la parte inferior del formulario.
+- [ ] Gasto manual: mostrar «Compartido» con avatares y botón Añadir como la referencia, conservando el reparto existente.
+
 - [x] Numerar los 12 rubros del súper, mostrar ejemplos de productos que corresponden a cada uno y listar como reglas solo las correcciones guardadas, no todos los tickets leídos.
 
 - [x] Mostrar en Reglas del súper los 12 rubros y los productos detectados en tickets, junto con las correcciones que se reutilizan en futuros tickets.

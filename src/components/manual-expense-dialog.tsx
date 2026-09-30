@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, Check, ChevronDown, Loader2, PencilLine, Plus } from "lucide-react";
@@ -43,6 +44,9 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { supabase } from "@/integrations/supabase/client";
+import { InviteShareActions } from "@/components/invite-share-actions";
+import { normalizeValidEmail } from "@/lib/email-validation";
+import { notifySharedExpense } from "@/lib/shared-expense.functions";
 import { translateCategory } from "@/lib/i18n-data";
 import { cn } from "@/lib/utils";
 
@@ -97,6 +101,7 @@ export function ManualExpenseDialog({
   const budgets = useSpendBudgets();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const notifyShared = useServerFn(notifySharedExpense);
 
   const [openState, setOpenState] = useState(false);
   const open = openProp ?? openState;
@@ -115,6 +120,55 @@ export function ManualExpenseDialog({
   const [creating, setCreating] = useState(false);
   const [newCat, setNewCat] = useState("");
   const [newCatKind, setNewCatKind] = useState<"fixed" | "variable">("variable");
+  const [inviting, setInviting] = useState(false);
+  const [partner, setPartner] = useState<{ id: string; name: string } | null>(null);
+  const [email, setEmail] = useState("");
+  const [looking, setLooking] = useState(false);
+  const [invitePending, setInvitePending] = useState<string | null>(null);
+
+  const { data: knownPartners = [] } = useQuery({
+    queryKey: ["shared-partners", user?.id],
+    enabled: Boolean(user?.id) && open,
+    queryFn: async () => {
+      if (!user?.id) return [];
+      const { data } = await supabase.from("shared_expense_participants")
+        .select("user_id, display_name, created_at")
+        .neq("user_id", user.id)
+        .order("created_at", { ascending: false }).limit(100);
+      const unique = new Map<string, { id: string; name: string }>();
+      for (const row of data ?? []) {
+        if (!unique.has(row.user_id)) unique.set(row.user_id, { id: row.user_id, name: row.display_name || "?" });
+      }
+      return [...unique.values()];
+    },
+  });
+
+  async function findPartner() {
+    const validEmail = normalizeValidEmail(email);
+    if (!validEmail) {
+      toast.error(t("Escribe un correo válido", "Enter a valid email"));
+      return;
+    }
+    setLooking(true);
+    try {
+      const { data, error } = await supabase.rpc("find_user_by_email", { _email: validEmail });
+      if (error) throw error;
+      const row = Array.isArray(data) ? data[0] : null;
+      if (!row) { setInvitePending(validEmail); return; }
+      if (row.id === user?.id) {
+        toast.error(t("Elige a otra persona", "Choose someone else"));
+        return;
+      }
+      setPartner({ id: row.id, name: (row.full_name as string) || validEmail });
+      setEmail("");
+      setInviting(false);
+      setInvitePending(null);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error));
+    } finally {
+      setLooking(false);
+    }
+  }
 
   const currency = (profile?.currency as string) || "EUR";
 
@@ -173,26 +227,56 @@ export function ManualExpenseDialog({
     }
     setSaving(true);
     try {
-      const statementId = await ensureManualStatement(user.id);
       const txDateStr = format(effectiveDate, "yyyy-MM-dd");
+      const merchantName = merchant.trim() || translateCategory(category, lang);
+      let ownAmount = amount;
+      let description = t("Gasto manual", "Manual expense");
+      if (partner) {
+        ownAmount = amount / 2;
+        const { data: expenseId, error: shareError } = await supabase.rpc("create_shared_expense", {
+          _partner_id: partner.id,
+          _payer_id: user.id,
+          _total: amount,
+          _currency: currency,
+          _category: category,
+          _merchant: merchantName,
+          _tx_date: txDateStr,
+          _split_mode: "50/50",
+          _creator_name: (profile?.full_name as string | undefined)?.split(" ")[0] || t("Yo", "Me"),
+          _partner_name: partner.name,
+          _creator_share: ownAmount,
+          _partner_share: amount - ownAmount,
+        });
+        if (shareError) throw shareError;
+        if (!expenseId) throw new Error(t("No se pudo compartir el gasto", "Could not share the expense"));
+        description = `shared:50/50|${partner.name}`;
+        // Compartir no debe impedir que se registre tu parte si falla el aviso.
+        void notifyShared({ data: { expenseId } }).catch(() => {});
+      }
+      const statementId = await ensureManualStatement(user.id);
       const { error } = await supabase.from("imported_transactions").insert({
         user_id: user.id,
         statement_id: statementId,
         tx_date: txDateStr,
-        merchant: merchant.trim() || translateCategory(category, lang),
-        description: t("Gasto manual", "Manual expense"),
-        amount: -Math.abs(amount),
+        merchant: merchantName,
+        description,
+        amount: -Math.abs(ownAmount),
         currency,
         category,
       });
       if (error) throw new Error(error.message);
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      if (partner) void queryClient.invalidateQueries({ queryKey: ["shared-partners"] });
       const fmtStr = precision === "month" ? "MMM yyyy" : "d MMM yyyy";
       toast.success(t("Gasto guardado", "Expense saved"), {
         description: `${format(effectiveDate, fmtStr, (lang === "es" ? { locale: es } : undefined))} · ${translateCategory(category, lang)}`,
       });
       setMerchant("");
       setAmount(0);
+      setPartner(null);
+      setInviting(false);
+      setEmail("");
+      setInvitePending(null);
       setOpen(false);
       if (onSaved) {
         onSaved();
@@ -220,7 +304,7 @@ export function ManualExpenseDialog({
           )}
         </DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="max-h-[92dvh] overflow-y-auto sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{t("Cargar gasto manualmente", "Add expense manually")}</DialogTitle>
           <DialogDescription>
@@ -403,7 +487,7 @@ export function ManualExpenseDialog({
                         value={catQuery}
                         onValueChange={setCatQuery}
                       />
-                      <CommandList>
+                      <CommandList className="max-h-[min(50dvh,420px)]">
                         <CommandEmpty>
                           {t("No se encontraron categorías", "No categories found")}
                         </CommandEmpty>
@@ -411,7 +495,7 @@ export function ManualExpenseDialog({
                           {categories.map((name) => (
                             <CommandItem
                               key={name}
-                              value={name}
+                              value={`${name} ${translateCategory(name, lang)}`}
                               onSelect={() => {
                                 setCategory(name);
                                 setCatQuery("");
@@ -459,6 +543,33 @@ export function ManualExpenseDialog({
           </div>
         </div>
 
+        <div className="grid gap-3 border-t border-border pt-4">
+          <Label className="text-base font-medium">{t("Compartido", "Shared")}</Label>
+          <div className="flex flex-wrap items-start gap-6">
+            {[...(partner && !knownPartners.some((p) => p.id === partner.id) ? [partner] : []), ...knownPartners].map((person) => (
+              <Button key={person.id} type="button" variant="ghost" className="flex h-auto max-w-24 flex-col items-center gap-2 p-0 font-normal hover:bg-transparent" onClick={() => setPartner(partner?.id === person.id ? null : person)} aria-pressed={partner?.id === person.id}>
+                <span className={cn("relative grid h-20 w-20 place-items-center rounded-full bg-muted text-2xl font-semibold sm:h-24 sm:w-24", partner?.id === person.id && "ring-2 ring-positive")}>
+                  {person.name.trim().slice(0, 2).toUpperCase()}
+                  {partner?.id === person.id && <Check className="absolute -left-1 -top-1 h-5 w-5 rounded-full bg-positive p-0.5 text-background" />}
+                </span>
+                <span className="w-full break-words text-center text-sm">{person.name}</span>
+              </Button>
+            ))}
+            <Button type="button" variant="ghost" className="flex h-auto w-20 flex-col items-center gap-2 p-0 font-normal hover:bg-transparent sm:w-24" onClick={() => setInviting((value) => !value)} aria-label={t("Añadir persona", "Add person")}>
+              <span className="grid h-20 w-20 place-items-center rounded-full border border-border text-muted-foreground sm:h-24 sm:w-24"><Plus className="h-8 w-8" /></span>
+              <span className="text-sm text-muted-foreground">{t("Añadir", "Add")}</span>
+            </Button>
+          </div>
+          {inviting && (
+            <div className="flex gap-2">
+              <Input autoFocus type="email" value={email} onChange={(e) => { setEmail(e.target.value); setInvitePending(null); }} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void findPartner(); } }} placeholder={t("Correo de la otra persona", "Other person's email")} aria-label={t("Correo de la otra persona", "Other person's email")} />
+              <Button type="button" variant="outline" onClick={findPartner} disabled={looking || !normalizeValidEmail(email)}>
+                {looking ? <Loader2 className="h-4 w-4 animate-spin" /> : t("Añadir", "Add")}
+              </Button>
+            </div>
+          )}
+          {inviting && invitePending && <InviteShareActions email={invitePending} onClose={() => setInvitePending(null)} />}
+        </div>
         <DialogFooter>
           <Button onClick={onSave} disabled={saving}>
             {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

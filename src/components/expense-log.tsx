@@ -388,9 +388,8 @@ export function ExpenseLog() {
         ...BASE_CATEGORIES,
         ...categories.rules.map((r) => r.name),
         ...budgets.lines
-          .filter((line) => line.id.startsWith("custom:") && !line.id.startsWith("custom:fixed:"))
-          .map((line) => line.label?.trim() || line.id.slice(7))
-          .filter(Boolean),
+          .map((line) => line.label?.trim())
+          .filter((label): label is string => Boolean(label)),
       ]),
     ],
     [budgets.lines, categories.rules],
