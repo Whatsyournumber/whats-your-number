@@ -767,7 +767,7 @@ function CashFlow() {
 
       <Dialog open={allocOpen} onOpenChange={setAllocOpen}>
         <DialogContent className="max-w-md">
-          <DialogHeader>
+            <DialogHeader className="min-w-0">
             <DialogTitle>{t("Destino del ahorro", "Savings destination")}</DialogTitle>
             <DialogDescription className="truncate" title={t(
               `De tus ${fmt(saveAmount)} de ahorro al mes, decide cuánto va a cada destino.`,
