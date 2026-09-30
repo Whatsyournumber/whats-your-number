@@ -1380,11 +1380,19 @@ export function ExpenseLog() {
       <Dialog
         open={voiceDialogOpen}
         onOpenChange={(open) => {
-          if (!open && recording) stopRecording();
+          if (!open && recording) cancelRecording();
           if (!open && !recording && busy !== "voice") setVoiceDialogOpen(false);
         }}
       >
         <DialogContent className="w-[calc(100%-2rem)] max-w-sm overflow-hidden rounded-2xl border-negative/25 bg-card p-0 text-center shadow-2xl sm:hidden [&>button]:hidden">
+          <button
+            type="button"
+            aria-label={t("Cerrar", "Close")}
+            onClick={cancelRecording}
+            className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+          >
+            <X className="h-5 w-5" strokeWidth={1.8} />
+          </button>
           <div className="relative flex min-h-[360px] flex-col items-center justify-center overflow-hidden px-6 py-8">
             <div className="relative mb-6 grid h-32 w-32 place-items-center">
               {recording && (
