@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Numerar los 12 rubros del súper, mostrar ejemplos de productos que corresponden a cada uno y listar como reglas solo las correcciones guardadas, no todos los tickets leídos.
+- [x] Numerar los 12 rubros del súper, mostrar ejemplos de productos que corresponden a cada uno y listar como reglas solo las correcciones guardadas, no todos los tickets leídos.
 
 - [x] Mostrar en Reglas del súper los 12 rubros y los productos detectados en tickets, junto con las correcciones que se reutilizan en futuros tickets.
 
