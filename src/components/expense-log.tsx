@@ -696,7 +696,14 @@ export function ExpenseLog() {
     });
     const fromFixed = fixedUpcoming
       .filter((i) => !dated.has(catOverrides[i.id] ?? match(i.name) ?? ""))
-      .map((i) => ({ ...i, planId: null as string | null }));
+      .map((i) => {
+        // El gasto recurrente de apps toma total y fecha del desglose guardado.
+        if (isAppsName(i.name) && appSubs.length > 0) {
+          const day = Math.min(...appSubs.map((a) => a.day));
+          return { ...i, amount: appSubsTotal, dayOfMonth: day, next: nextChargeDate(day), planId: null as string | null };
+        }
+        return { ...i, planId: null as string | null };
+      });
     // Se listan todos los gastos fijos: nada queda oculto bajo el total.
     return [...fromPlan, ...fromFixed].sort((a, b) => a.next.getTime() - b.next.getTime());
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -2221,7 +2228,9 @@ export function ExpenseLog() {
                         "bg-amber-500/15 text-amber-300",
                         "bg-rose-500/15 text-rose-300",
                       ];
-                      const isApps = Boolean(i.planId && budgets.lines.some((l) => l.id === i.planId && isAppsPlanLine(l)));
+                      const isApps = i.planId
+                        ? budgets.lines.some((l) => l.id === i.planId && isAppsPlanLine(l)) || i.planId === "apps"
+                        : isAppsName(i.name);
                       return (
                         <Fragment key={i.id}>
                         <li className="flex items-center gap-3">
