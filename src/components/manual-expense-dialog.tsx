@@ -246,8 +246,9 @@ export function ManualExpenseDialog({
           _partner_name: partner.name,
           _creator_share: ownAmount,
           _partner_share: amount - ownAmount,
+          _receipt_items: [],
         });
-        if (shareError) throw shareError;
+        if (shareError) throw new Error(shareError.message);
         if (!expenseId) throw new Error(t("No se pudo compartir el gasto", "Could not share the expense"));
         description = `shared:50/50|${partner.name}`;
         // Compartir no debe impedir que se registre tu parte si falla el aviso.
@@ -286,7 +287,7 @@ export function ManualExpenseDialog({
         void navigate({ to: "/gastos", search: { from: monthStart, to: monthEnd, category } });
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : String(error));
+      toast.error(error instanceof Error ? error.message : t("No se pudo guardar el gasto", "Could not save the expense"));
     } finally {
       setSaving(false);
     }
