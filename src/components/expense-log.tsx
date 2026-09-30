@@ -2595,12 +2595,10 @@ export function ExpenseLog() {
                   <NumberInput value={draft.amount} onChange={(v) => setDraft({ ...draft, amount: v || 0 })} min={0} format />
                 )}
               </div>
-              {draft.source !== "receipt" && (
-                <div className="grid gap-1.5">
-                  <Label>{t("Fecha", "Date")}</Label>
-                  <Input type="date" value={draft.date} onChange={(e) => setDraft({ ...draft, date: e.target.value })} />
-                </div>
-              )}
+              <div className="grid gap-1.5">
+                <Label>{t("Fecha", "Date")}</Label>
+                <Input type="date" value={draft.date} onChange={(e) => setDraft({ ...draft, date: e.target.value })} />
+              </div>
               <div className="grid gap-1.5">
                 <Label>{t("Categoría", "Category")}</Label>
                 <Select value={draft.category} onValueChange={(v) => setDraft({ ...draft, category: v })}>
