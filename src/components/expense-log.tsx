@@ -2241,7 +2241,12 @@ export function ExpenseLog() {
                             className={cn("min-w-0 flex-1", isApps && "cursor-pointer")}
                             onClick={isApps ? () => setAppsExpanded((v) => !v) : undefined}
                           >
-                            <p className="truncate text-sm leading-5 sm:text-base sm:leading-6">{emoji ? i.name.slice(emoji.length).trim() : i.name}</p>
+                            <p className="flex items-center gap-1.5 truncate text-sm leading-5 sm:text-base sm:leading-6">
+                              <span className="truncate">{emoji ? i.name.slice(emoji.length).trim() : i.name}</span>
+                              {isApps && (
+                                <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform", appsExpanded && "rotate-180")} />
+                              )}
+                            </p>
                             <div className="flex items-baseline justify-between gap-3">
                               <p className="min-w-0 truncate text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs sm:leading-5 sm:whitespace-nowrap">
                                 {isApps
