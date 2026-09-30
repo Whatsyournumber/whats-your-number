@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Gasto manual: ofrecer todas las categorías del plan y permitir añadir a una persona desde la parte inferior del formulario.
+- [x] Gasto manual: ofrecer todas las categorías del plan y permitir añadir a una persona desde la parte inferior del formulario.
 
 - [x] Numerar los 12 rubros del súper, mostrar ejemplos de productos que corresponden a cada uno y listar como reglas solo las correcciones guardadas, no todos los tickets leídos.
 

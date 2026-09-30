@@ -389,7 +389,7 @@ export function ExpenseLog() {
         ...categories.rules.map((r) => r.name),
         ...budgets.lines
           .map((line) => line.label?.trim())
-          .filter(Boolean),
+          .filter((label): label is string => Boolean(label)),
       ]),
     ],
     [budgets.lines, categories.rules],
