@@ -75,6 +75,14 @@ type Draft = {
   items: DraftItem[];
   source: "voice" | "receipt";
   partner?: { id: string; name: string } | null;
+  /** Mi parte cuando el gasto se comparte (amount sigue siendo el total). */
+  myShare?: number | null;
+};
+
+const draftShare = (d: Draft) => Math.min(d.amount, Math.max(0, d.myShare ?? d.amount / 2));
+const draftSplit = (d: Draft) => {
+  const pct = d.amount > 0 ? Math.round((draftShare(d) / d.amount) * 100) : 50;
+  return `${pct}/${100 - pct}`;
 };
 
 const normName = (v: string) => v.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -894,7 +902,9 @@ export function ExpenseLog() {
       openDraft(kind, result);
       if (kind === "voice" && result.transcript) {
         const match = partnerFromTranscript(result.transcript, editKnownPartners);
-        if (match) setDraft((d) => (d ? { ...d, partner: match } : d));
+        const share = Number(result.myShare);
+        const myShare = Number.isFinite(share) && share > 0 ? Math.abs(share) : null;
+        if (match || myShare) setDraft((d) => (d ? { ...d, partner: match ?? d.partner ?? null, myShare } : d));
       }
     } catch (error) {
       toast.error(
@@ -1069,7 +1079,7 @@ export function ExpenseLog() {
       let ownAmount = draft.amount;
       let sharedDescription: string | null = null;
       if (draft.partner) {
-        ownAmount = draft.amount / 2;
+        ownAmount = Math.round(draftShare(draft) * 100) / 100;
         const { data: expenseId, error: shareError } = await supabase.rpc("create_shared_expense", {
           _partner_id: draft.partner.id,
           _payer_id: user.id,
@@ -1078,7 +1088,7 @@ export function ExpenseLog() {
           _category: draft.category,
           _merchant: draft.merchant,
           _tx_date: draft.date,
-          _split_mode: "50/50",
+          _split_mode: draftSplit(draft),
           _creator_name: (profile?.full_name as string | undefined)?.split(" ")[0] || t("Yo", "Me"),
           _partner_name: draft.partner.name,
           _creator_share: ownAmount,
@@ -1087,7 +1097,7 @@ export function ExpenseLog() {
         });
         if (shareError) throw new Error(shareError.message);
         if (!expenseId) throw new Error(t("No se pudo compartir el gasto", "Could not share the expense"));
-        sharedDescription = `${SHARED_PREFIX}50/50|${draft.partner.name}`;
+        sharedDescription = `${SHARED_PREFIX}${draftSplit(draft)}|${draft.partner.name}`;
         void notifyShared({ data: { expenseId } }).catch(() => {});
       }
       const savedId = await saveExpense({
@@ -2578,8 +2588,12 @@ export function ExpenseLog() {
                 </div>
               )}
               <div className="grid gap-1.5">
-                <Label>{`${t("Monto", "Amount")} (${currency})`}</Label>
-                <NumberInput value={draft.amount} onChange={(v) => setDraft({ ...draft, amount: v || 0 })} min={0} format />
+                <Label>{draft.partner ? `${t("Mi parte", "My share")} (${currency})` : `${t("Monto", "Amount")} (${currency})`}</Label>
+                {draft.partner ? (
+                  <NumberInput value={draftShare(draft)} onChange={(v) => setDraft({ ...draft, myShare: Math.min(draft.amount, v || 0) })} min={0} format />
+                ) : (
+                  <NumberInput value={draft.amount} onChange={(v) => setDraft({ ...draft, amount: v || 0 })} min={0} format />
+                )}
               </div>
               {draft.source !== "receipt" && (
                 <div className="grid gap-1.5">
@@ -2631,7 +2645,10 @@ export function ExpenseLog() {
                   {draftInviting && draftInvitePending && <InviteShareActions email={draftInvitePending} onClose={() => setDraftInvitePending(null)} />}
                   {draft.partner && (
                     <p className="text-xs text-muted-foreground">
-                      {t(`Compartido 50/50: tu parte es ${fmt(draft.amount / 2)}`, `Split 50/50: your share is ${fmt(draft.amount / 2)}`)}
+                      {t(
+                        `Total ${fmt(draft.amount)} · ${draftSplit(draft)} · ${draft.partner.name.split(" ")[0]} paga ${fmt(draft.amount - draftShare(draft))}`,
+                        `Total ${fmt(draft.amount)} · ${draftSplit(draft)} · ${draft.partner.name.split(" ")[0]} pays ${fmt(draft.amount - draftShare(draft))}`,
+                      )}
                     </p>
                   )}
                 </div>
