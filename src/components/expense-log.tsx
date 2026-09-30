@@ -2221,16 +2221,19 @@ export function ExpenseLog() {
                           <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full text-base", colors[idx % colors.length])}>
                             {emoji ?? <Repeat className="h-4 w-4" />}
                           </span>
-                          <div className="min-w-0 flex-1">
+                          <div
+                            className={cn("min-w-0 flex-1", isApps && "cursor-pointer")}
+                            onClick={isApps ? () => setAppsExpanded((v) => !v) : undefined}
+                          >
                             <p className="truncate text-sm leading-5">{emoji ? i.name.slice(emoji.length).trim() : i.name}</p>
                             <p className="text-[0.6875rem] leading-4 text-muted-foreground">
-                              {isApps && appSubs.length
-                                ? t(`${appSubs.length} apps · próximo cobro ${format(i.next, "d MMM", { locale })}`, `${appSubs.length} apps · next charge ${format(i.next, "d MMM", { locale })}`)
+                              {isApps
+                                ? t(`${displaySubs.length} apps · próximo cobro ${format(i.next, "d MMM", { locale })}`, `${displaySubs.length} apps · next charge ${format(i.next, "d MMM", { locale })}`)
                                 : format(i.next, "d MMM", { locale })}
                             </p>
                           </div>
                           <span className="numeric shrink-0 text-sm font-semibold">{fmt(i.amount)}</span>
-                          {isApps && appSubs.length > 0 && (
+                          {isApps && (
                             <button
                               type="button"
                               onClick={() => setAppsExpanded((v) => !v)}
