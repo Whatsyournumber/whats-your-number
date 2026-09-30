@@ -597,6 +597,9 @@ export function ExpenseLog() {
   // Desglose de «Suscripciones / apps»: cada app con su monto y día de cobro.
   // Se guarda en la cuenta para verse igual en todos los dispositivos.
   type AppSub = { id: string; name: string; emoji: string; amount: number; day: number };
+  /** Línea del plan que representa «Suscripciones / apps» (id fijo o personalizada). */
+  const isAppsPlanLine = (l: { id: string; label?: string }) =>
+    l.id === "apps" || /^custom:.*(app|suscrip)/i.test(l.id) || /apps|suscripciones|subscriptions/i.test(l.label ?? "");
   const { value: appSubs, save: saveAppSubs } = useSyncedSetting<AppSub[]>("whatsyournumber:app-subscriptions", []);
   const [subsOpen, setSubsOpen] = useState(false);
   const [subsDraft, setSubsDraft] = useState<AppSub[]>([]);
@@ -625,7 +628,7 @@ export function ExpenseLog() {
     const existing = budgets.lines.find(isAppsPlanLine);
     budgets.save([
       ...budgets.lines.filter((l) => !isAppsPlanLine(l)),
-      { ...existing, id: existing?.id ?? "apps", label: existing?.label, amount: total, dueDay: firstDay, group: "essentials" },
+      { ...existing, id: existing?.id ?? "apps", amount: total, dueDay: firstDay, group: "essentials" },
     ]);
     setSubsOpen(false);
     toast.success(t("Suscripciones actualizadas", "Subscriptions updated"));
