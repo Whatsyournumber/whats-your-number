@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, FileSpreadsheet, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Upload, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, FileSpreadsheet, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Trash2, TrendingUp, Upload, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { FolderIcon, GooglePhotosIcon } from "@/components/expense-source-icons";
@@ -594,6 +594,46 @@ export function ExpenseLog() {
     EMPTY_OVERRIDES,
   );
 
+  // Desglose de «Suscripciones / apps»: cada app con su monto y día de cobro.
+  // Se guarda en la cuenta para verse igual en todos los dispositivos.
+  type AppSub = { id: string; name: string; emoji: string; amount: number; day: number };
+  /** Línea del plan que representa «Suscripciones / apps» (id fijo o personalizada). */
+  const isAppsPlanLine = (l: { id: string; label?: string }) =>
+    l.id === "apps" || /^custom:.*(app|suscrip)/i.test(l.id) || /apps|suscripciones|subscriptions/i.test(l.label ?? "");
+  const { value: appSubs, save: saveAppSubs } = useSyncedSetting<AppSub[]>("whatsyournumber:app-subscriptions", []);
+  const [subsOpen, setSubsOpen] = useState(false);
+  const [subsDraft, setSubsDraft] = useState<AppSub[]>([]);
+  const [appsExpanded, setAppsExpanded] = useState(false);
+  const appSubsTotal = appSubs.reduce((s, a) => s + (Number(a.amount) || 0), 0);
+
+  const openSubsEditor = () => {
+    setSubsDraft(
+      appSubs.length
+        ? appSubs.map((a) => ({ ...a }))
+        : [
+            { id: "spotify", name: "Spotify", emoji: "🎵", amount: 0, day: 1 },
+            { id: "netflix", name: "Netflix", emoji: "🎬", amount: 0, day: 1 },
+          ],
+    );
+    setSubsOpen(true);
+  };
+
+  const onSaveSubs = () => {
+    const clean = subsDraft
+      .map((a) => ({ ...a, name: a.name.trim(), amount: Math.max(0, Math.round(Number(a.amount) || 0)), day: Math.min(31, Math.max(1, Number(a.day) || 1)) }))
+      .filter((a) => a.name && a.amount > 0);
+    saveAppSubs(clean);
+    const total = clean.reduce((s, a) => s + a.amount, 0);
+    const firstDay = clean.length ? Math.min(...clean.map((a) => a.day)) : 1;
+    const existing = budgets.lines.find(isAppsPlanLine);
+    budgets.save([
+      ...budgets.lines.filter((l) => !isAppsPlanLine(l)),
+      { ...existing, id: existing?.id ?? "apps", amount: total, dueDay: firstDay, group: "essentials" },
+    ]);
+    setSubsOpen(false);
+    toast.success(t("Suscripciones actualizadas", "Subscriptions updated"));
+  };
+
   const moveExpense = (key: string, toId: string) => {
     moveExpenses([key], toId);
   };
@@ -635,13 +675,16 @@ export function ExpenseLog() {
     const dated = new Set(planned.map((l) => l.id));
     const fromPlan = planned.map((l) => {
       const cat = findBudgetCategory(l.id);
+      // «Suscripciones / apps» con desglose: el total y la fecha salen de las apps.
+      const isApps = isAppsPlanLine(l) && appSubs.length > 0;
+      const day = isApps ? Math.min(...appSubs.map((a) => a.day)) : (l.dueDay ?? 1);
       return {
         id: `plan:${l.id}`,
         planId: l.id,
         name: `${cat?.emoji ?? l.emoji ?? "📦"} ${cat ? t(cat.es, cat.en) : (l.label ?? l.id)}`,
-        amount: l.amount,
-        dayOfMonth: l.dueDay ?? 1,
-        next: nextChargeDate(l.dueDay),
+        amount: isApps ? appSubsTotal : l.amount,
+        dayOfMonth: day,
+        next: nextChargeDate(day),
       };
     });
     const fromFixed = fixedUpcoming
@@ -650,7 +693,7 @@ export function ExpenseLog() {
     // Se listan todos los gastos fijos: nada queda oculto bajo el total.
     return [...fromPlan, ...fromFixed].sort((a, b) => a.next.getTime() - b.next.getTime());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [planLines, fixedUpcoming, catOverrides, match, t, daysInMonth]);
+  }, [planLines, fixedUpcoming, catOverrides, match, t, daysInMonth, appSubs, appSubsTotal]);
 
   const rows = useMemo(() => {
     const actual = new Map<string, number>();
@@ -2171,27 +2214,58 @@ export function ExpenseLog() {
                         "bg-amber-500/15 text-amber-300",
                         "bg-rose-500/15 text-rose-300",
                       ];
+                      const isApps = Boolean(i.planId && budgets.lines.some((l) => l.id === i.planId && isAppsPlanLine(l)));
                       return (
-                        <li key={i.id} className="flex items-center gap-3">
+                        <Fragment key={i.id}>
+                        <li className="flex items-center gap-3">
                           <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full text-base", colors[idx % colors.length])}>
                             {emoji ?? <Repeat className="h-4 w-4" />}
                           </span>
                           <div className="min-w-0 flex-1">
                             <p className="truncate text-sm leading-5">{emoji ? i.name.slice(emoji.length).trim() : i.name}</p>
                             <p className="text-[0.6875rem] leading-4 text-muted-foreground">
-                              {format(i.next, "d MMM", { locale })}
+                              {isApps && appSubs.length
+                                ? t(`${appSubs.length} apps · próximo cobro ${format(i.next, "d MMM", { locale })}`, `${appSubs.length} apps · next charge ${format(i.next, "d MMM", { locale })}`)
+                                : format(i.next, "d MMM", { locale })}
                             </p>
                           </div>
                           <span className="numeric shrink-0 text-sm font-semibold">{fmt(i.amount)}</span>
+                          {isApps && appSubs.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => setAppsExpanded((v) => !v)}
+                              className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                              aria-label={t("Ver apps", "See apps")}
+                            >
+                              <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", appsExpanded && "rotate-180")} />
+                            </button>
+                          )}
                           <button
                             type="button"
-                            onClick={() => (i.planId ? setPlanOpen(true) : openEditRecurring(i))}
+                            onClick={() => (isApps ? openSubsEditor() : i.planId ? setPlanOpen(true) : openEditRecurring(i))}
                             className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                            aria-label={t("Editar gasto recurrente", "Edit recurring expense")}
+                            aria-label={isApps ? t("Editar suscripciones", "Edit subscriptions") : t("Editar gasto recurrente", "Edit recurring expense")}
                           >
                             <Pencil className="h-3.5 w-3.5" />
                           </button>
                         </li>
+                        {isApps && appsExpanded &&
+                          [...appSubs]
+                            .sort((a, b) => a.day - b.day)
+                            .map((a) => (
+                              <li key={a.id} className="flex items-center gap-3 pl-6">
+                                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-muted/50 text-sm">{a.emoji}</span>
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-sm leading-5">{a.name}</p>
+                                  <p className="text-[0.6875rem] leading-4 text-muted-foreground">
+                                    {format(nextChargeDate(a.day), "d MMM", { locale })}
+                                  </p>
+                                </div>
+                                <span className="numeric shrink-0 text-sm text-muted-foreground">{fmt(a.amount)}</span>
+                                <span className="w-7 shrink-0" />
+                              </li>
+                            ))}
+                        </Fragment>
                       );
                     })}
                   </ul>
@@ -2731,6 +2805,83 @@ export function ExpenseLog() {
               <span />
             )}
             <Button onClick={onSaveRecurring}>{t("Guardar", "Save")}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Desglose de «Suscripciones / apps»: nombre, monto y día de cobro de cada app. */}
+      <Dialog open={subsOpen} onOpenChange={setSubsOpen}>
+        <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("Suscripciones / apps", "Subscriptions / apps")}</DialogTitle>
+            <DialogDescription>
+              {t("Cada app con su monto y día de cobro; el total se suma solo.", "Each app with its amount and billing day; the total adds up automatically.")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3">
+            {subsDraft.map((a, idx) => (
+              <div key={a.id} className="flex items-end gap-2">
+                <div className="grid min-w-0 flex-1 gap-1.5">
+                  {idx === 0 && <Label>{t("App", "App")}</Label>}
+                  <Input
+                    value={a.name}
+                    onChange={(e) => setSubsDraft((d) => d.map((x) => (x.id === a.id ? { ...x, name: e.target.value } : x)))}
+                    placeholder={t("Nombre de la app", "App name")}
+                    aria-label={t("Nombre de la app", "App name")}
+                  />
+                </div>
+                <div className="grid w-24 shrink-0 gap-1.5">
+                  {idx === 0 && <Label>{`${t("Monto", "Amount")} (${currency})`}</Label>}
+                  <NumberInput
+                    value={a.amount}
+                    onChange={(v) => setSubsDraft((d) => d.map((x) => (x.id === a.id ? { ...x, amount: v || 0 } : x)))}
+                    min={0}
+                    aria-label={t("Monto mensual", "Monthly amount")}
+                  />
+                </div>
+                <div className="grid w-20 shrink-0 gap-1.5">
+                  {idx === 0 && <Label>{t("Día", "Day")}</Label>}
+                  <Select
+                    value={String(a.day)}
+                    onValueChange={(v) => setSubsDraft((d) => d.map((x) => (x.id === a.id ? { ...x, day: Number(v) || 1 } : x)))}
+                  >
+                    <SelectTrigger aria-label={t("Día de cobro", "Billing day")}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60">
+                      {Array.from({ length: 31 }, (_, d) => d + 1).map((d) => (
+                        <SelectItem key={d} value={String(d)}>
+                          {d}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSubsDraft((d) => d.filter((x) => x.id !== a.id))}
+                  className="grid h-10 w-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-negative"
+                  aria-label={`${t("Eliminar", "Delete")} ${a.name}`}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setSubsDraft((d) => [...d, { id: crypto.randomUUID(), name: "", emoji: "📱", amount: 0, day: 1 }])}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              {t("Añadir otra", "Add another")}
+            </Button>
+            <div className="flex items-center justify-between rounded-xl bg-muted/40 px-3 py-2 text-sm">
+              <span className="text-muted-foreground">{t("Total apps", "Total apps")}</span>
+              <span className="numeric font-semibold">{fmt(subsDraft.reduce((s, a) => s + (Number(a.amount) || 0), 0))}</span>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={onSaveSubs}>{t("Guardar", "Save")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
