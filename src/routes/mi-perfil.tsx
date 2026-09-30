@@ -66,7 +66,8 @@ function MiPerfil() {
   const tr = (label: string) => translateOption(label, lang);
   const { profile, isLoading, save, saving } = useProfile();
   const { user } = useAuth();
-  const { isPro } = useSubscription();
+  const { isPro, isInvestor } = useSubscription();
+  const proOnly = isPro && !isInvestor;
   const googleAvatar =
     (user?.user_metadata?.["avatar_url"] as string | undefined) ??
     (user?.user_metadata?.["picture"] as string | undefined) ??
@@ -604,6 +605,21 @@ function MiPerfil() {
                   />
                 </Field>
               ))}
+            {proOnly && (() => {
+              const others = (form.assets_cash || 0) + (form.assets_bank || 0) + (form.assets_retirement || 0) + (form.assets_stocks || 0) + (form.assets_crypto || 0);
+              const total = others + (form.assets_etf || 0);
+              return (
+                <Field label={t("Cuánto tengo (invertido / ahorrado)", "How much I have (invested / saved)")}>
+                  <Input
+                    type="number"
+                    min={0}
+                    value={total || ""}
+                    onChange={(e) => set("assets_etf", Math.max(0, Number(e.target.value || 0) - others))}
+                    placeholder="0"
+                  />
+                </Field>
+              );
+            })()}
           </div>
         </Panel>
 
@@ -718,7 +734,7 @@ function MiPerfil() {
           </div>
         </Panel>
 
-        {isPro ? (
+        {isInvestor ? (
           <div id="patrimonio" className="scroll-mt-24 h-full text-sm [&>*]:h-full [&_.text-2xl]:text-lg [&_.text-lg]:text-base [&_.text-xl]:text-lg [&_button]:text-xs [&_input]:h-8 [&_input]:text-xs [&_label]:text-[11px]">
             <WealthEditor
               value={wealth}
@@ -732,7 +748,7 @@ function MiPerfil() {
             />
           </div>
         ) : (
-          <PlanGate required="pro" blur={false} className="h-auto min-h-[280px]">
+          <PlanGate required={isPro ? "investor" : "pro"} blur={false} className="h-auto min-h-[280px]">
             <div />
           </PlanGate>
         )}

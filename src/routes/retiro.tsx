@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import { useProfile } from "@/hooks/use-profile";
+import { useSubscription } from "@/hooks/use-subscription";
 import { useHoldings, holdingValue } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
 
@@ -46,6 +47,10 @@ function RetiroContent() {
   const t = useT();
   const { profile, save, saving } = useProfile();
   const { holdings } = useHoldings();
+  const { isPro, isInvestor } = useSubscription();
+  const proOnly = isPro && !isInvestor;
+  const [editingHave, setEditingHave] = useState(false);
+  const [draftHave, setDraftHave] = useState(0);
   const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
   const holdingQuotes = useQuotes(holdingSymbols);
   const prices = Object.fromEntries(
@@ -450,6 +455,67 @@ function RetiroContent() {
 
 
 
+        {proOnly ? (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.07, ease: "easeOut" }}
+            className="surface relative flex h-full flex-col overflow-hidden p-5"
+          >
+            <div className="relative flex items-start justify-between gap-3">
+              <p className="whitespace-nowrap text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                {t("Cuánto tengo", "How much I have")}
+              </p>
+              {!editingHave && (
+                <button
+                  type="button"
+                  onClick={() => { setDraftHave(Math.round(investable)); setEditingHave(true); }}
+                  className="shrink-0 rounded-full p-1 text-muted-foreground hover:bg-elevated hover:text-foreground"
+                  title={t("Editar cuánto tengo", "Edit how much I have")}
+                >
+                  <Pencil className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+            {editingHave ? (() => {
+              const commitHave = () => {
+                const nextEtf = Math.max(0, (profile.assets_etf || 0) + (draftHave - investable));
+                void save({ assets_etf: nextEtf }).then(() => {
+                  toast.success(t("Monto actualizado", "Amount updated"));
+                  setEditingHave(false);
+                });
+              };
+              return (
+                <div className="relative mt-3 flex flex-1 flex-col justify-between gap-3">
+                  <div className="flex items-center gap-1.5">
+                    <span className="numeric text-lg font-semibold text-muted-foreground">{currencySymbol(d.currency)}</span>
+                    <Input
+                      inputMode="numeric"
+                      autoFocus
+                      className="numeric h-10 w-32 text-2xl font-semibold leading-none"
+                      value={draftHave ? String(draftHave) : ""}
+                      onChange={(e) => { const digits = e.target.value.replace(/[^\d]/g, ""); setDraftHave(digits ? Number(digits) : 0); }}
+                      onKeyDown={(e) => { if (e.key === "Escape") setEditingHave(false); if (e.key === "Enter") commitHave(); }}
+                    />
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Button size="sm" className="rounded-full px-4" disabled={saving} onClick={commitHave}>
+                      {saving ? t("Guardando", "Saving") : t("Guardar", "Save")}
+                    </Button>
+                    <Button size="sm" variant="ghost" className="rounded-full px-3" onClick={() => setEditingHave(false)}>
+                      {t("Cancelar", "Cancel")}
+                    </Button>
+                  </div>
+                </div>
+              );
+            })() : (
+              <>
+                <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">{fmt(investable)}</p>
+                <p className="relative mt-auto pt-2 text-[11px] text-muted-foreground">{t("Invertido y ahorrado", "Invested and saved")}</p>
+              </>
+            )}
+          </motion.div>
+        ) : (
         <Link to="/mi-perfil" hash="patrimonio" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Cuánto tengo", "How much I have")}
@@ -459,6 +525,7 @@ function RetiroContent() {
             index={2}
           />
         </Link>
+        )}
 
         {!isGoal && (
           <motion.div
