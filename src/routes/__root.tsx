@@ -8,6 +8,7 @@ import {
   useNavigate,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { LogOut, UserRound } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
