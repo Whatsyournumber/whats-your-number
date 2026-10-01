@@ -2260,7 +2260,7 @@ export function ExpenseLog() {
                             </p>
                             <div className="flex items-baseline justify-between gap-3">
                               <p className="min-w-0 truncate text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs sm:leading-5 sm:whitespace-nowrap">
-                                {isApps
+                                {isApps && displaySubs.length
                                   ? t(`${displaySubs.length} apps · próximo cobro ${format(i.next, "d MMM", { locale })}`, `${displaySubs.length} apps · next charge ${format(i.next, "d MMM", { locale })}`)
                                   : format(i.next, "d MMM", { locale })}
                               </p>
@@ -2276,6 +2276,13 @@ export function ExpenseLog() {
                             <Pencil className="h-3.5 w-3.5" />
                           </button>
                         </li>
+                        {isApps && appsExpanded && !displaySubs.length && (
+                          <li className="pl-6 text-xs text-muted-foreground sm:pl-9">
+                            <button type="button" onClick={openSubsEditor} className="font-medium text-primary hover:underline">
+                              {t("Desglosa tus apps", "Break down your apps")}
+                            </button>
+                          </li>
+                        )}
                         {isApps && appsExpanded &&
                           [...displaySubs]
                             .sort((a, b) => a.day - b.day)
