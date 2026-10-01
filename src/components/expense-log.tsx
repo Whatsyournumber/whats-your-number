@@ -608,15 +608,26 @@ export function ExpenseLog() {
   const [appsExpanded, setAppsExpanded] = useState(false);
   const appSubsTotal = appSubs.reduce((s, a) => s + (Number(a.amount) || 0), 0);
 
-  const DEFAULT_APP_SUBS: AppSub[] = [
-    { id: "spotify", name: "Spotify", emoji: "🎵", amount: 0, day: 1 },
-    { id: "netflix", name: "Netflix", emoji: "🎬", amount: 0, day: 1 },
-  ];
-  // Lo que se muestra al desplegar: las apps guardadas o las de inicio.
-  const displaySubs = appSubs.length ? appSubs : DEFAULT_APP_SUBS;
+  // Solo se muestran como reales las apps guardadas; nunca marcadores a 0.
+  const displaySubs = appSubs;
 
   const openSubsEditor = () => {
-    setSubsDraft(displaySubs.map((a) => ({ ...a })));
+    if (appSubs.length) {
+      setSubsDraft(appSubs.map((a) => ({ ...a })));
+    } else {
+      // Sin desglose guardado: se parte del monto actual para no perderlo al guardar.
+      const fixedApps = expenseFixedItems.find((i) => isAppsName(i.name));
+      const planApps = budgets.lines.find(isAppsPlanLine);
+      const currentAmount = Math.max(0, Math.round(Number(fixedApps?.amount ?? planApps?.amount ?? 0) || 0));
+      const currentDay = Math.min(31, Math.max(1, Number(fixedApps?.dayOfMonth ?? planApps?.dueDay ?? 1) || 1));
+      setSubsDraft([
+        ...(currentAmount > 0
+          ? [{ id: "current", name: t("Otras apps", "Other apps"), emoji: "📱", amount: currentAmount, day: currentDay }]
+          : []),
+        { id: "spotify", name: "Spotify", emoji: "🎵", amount: 0, day: currentDay },
+        { id: "netflix", name: "Netflix", emoji: "🎬", amount: 0, day: currentDay },
+      ]);
+    }
     setSubsOpen(true);
   };
 
@@ -2249,7 +2260,7 @@ export function ExpenseLog() {
                             </p>
                             <div className="flex items-baseline justify-between gap-3">
                               <p className="min-w-0 truncate text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs sm:leading-5 sm:whitespace-nowrap">
-                                {isApps
+                                {isApps && displaySubs.length
                                   ? t(`${displaySubs.length} apps · próximo cobro ${format(i.next, "d MMM", { locale })}`, `${displaySubs.length} apps · next charge ${format(i.next, "d MMM", { locale })}`)
                                   : format(i.next, "d MMM", { locale })}
                               </p>
@@ -2265,6 +2276,13 @@ export function ExpenseLog() {
                             <Pencil className="h-3.5 w-3.5" />
                           </button>
                         </li>
+                        {isApps && appsExpanded && !displaySubs.length && (
+                          <li className="pl-6 text-xs text-muted-foreground sm:pl-9">
+                            <button type="button" onClick={openSubsEditor} className="font-medium text-primary hover:underline">
+                              {t("Desglosa tus apps", "Break down your apps")}
+                            </button>
+                          </li>
+                        )}
                         {isApps && appsExpanded &&
                           [...displaySubs]
                             .sort((a, b) => a.day - b.day)

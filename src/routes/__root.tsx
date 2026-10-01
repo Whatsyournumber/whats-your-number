@@ -8,6 +8,7 @@ import {
   useNavigate,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { LogOut, UserRound } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -46,7 +47,7 @@ function NotFoundComponent() {
   return <NotFoundPage />;
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
