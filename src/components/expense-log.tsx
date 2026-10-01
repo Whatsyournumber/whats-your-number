@@ -608,15 +608,26 @@ export function ExpenseLog() {
   const [appsExpanded, setAppsExpanded] = useState(false);
   const appSubsTotal = appSubs.reduce((s, a) => s + (Number(a.amount) || 0), 0);
 
-  const DEFAULT_APP_SUBS: AppSub[] = [
-    { id: "spotify", name: "Spotify", emoji: "🎵", amount: 0, day: 1 },
-    { id: "netflix", name: "Netflix", emoji: "🎬", amount: 0, day: 1 },
-  ];
-  // Lo que se muestra al desplegar: las apps guardadas o las de inicio.
-  const displaySubs = appSubs.length ? appSubs : DEFAULT_APP_SUBS;
+  // Solo se muestran como reales las apps guardadas; nunca marcadores a 0.
+  const displaySubs = appSubs;
 
   const openSubsEditor = () => {
-    setSubsDraft(displaySubs.map((a) => ({ ...a })));
+    if (appSubs.length) {
+      setSubsDraft(appSubs.map((a) => ({ ...a })));
+    } else {
+      // Sin desglose guardado: se parte del monto actual para no perderlo al guardar.
+      const fixedApps = expenseFixedItems.find((i) => isAppsName(i.name));
+      const planApps = budgets.lines.find(isAppsPlanLine);
+      const currentAmount = Math.max(0, Math.round(Number(fixedApps?.amount ?? planApps?.amount ?? 0) || 0));
+      const currentDay = Math.min(31, Math.max(1, Number(fixedApps?.dayOfMonth ?? planApps?.dueDay ?? 1) || 1));
+      setSubsDraft([
+        ...(currentAmount > 0
+          ? [{ id: "current", name: t("Otras apps", "Other apps"), emoji: "📱", amount: currentAmount, day: currentDay }]
+          : []),
+        { id: "spotify", name: "Spotify", emoji: "🎵", amount: 0, day: currentDay },
+        { id: "netflix", name: "Netflix", emoji: "🎬", amount: 0, day: currentDay },
+      ]);
+    }
     setSubsOpen(true);
   };
 

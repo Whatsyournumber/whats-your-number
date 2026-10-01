@@ -320,10 +320,18 @@ function OnboardingPage() {
   ]);
   const [subsOpen, setSubsOpen] = useState(true);
   const [editingSubId, setEditingSubId] = useState<string | null>(null);
+  // Ajusta el total por la diferencia del desglose, sin pisar lo que el usuario
+  // escribió directamente en el campo (la parte sin desglosar se conserva).
+  const syncSubsTotal = (prev: typeof appSubs, next: typeof appSubs) => {
+    const sum = (l: typeof appSubs) => l.reduce((s, c) => s + (c.amount || 0), 0);
+    const nextSum = sum(next);
+    const current = Number(data.fixed_subscriptions) || 0;
+    setFixed("fixed_subscriptions", Math.max(nextSum, current - sum(prev) + nextSum));
+  };
   const setAppSub = (id: string, patch: Partial<{ name: string; amount: number; emoji: string }>) => {
     const next = appSubs.map((c) => (c.id === id ? { ...c, ...patch } : c));
     setAppSubs(next);
-    setFixed("fixed_subscriptions", next.reduce((s, c) => s + (c.amount || 0), 0));
+    syncSubsTotal(appSubs, next);
   };
   const addAppSub = () =>
     setAppSubs((cs) => {
@@ -335,7 +343,7 @@ function OnboardingPage() {
     const next = appSubs.filter((c) => c.id !== id);
     setAppSubs(next);
     if (editingSubId === id) setEditingSubId(null);
-    setFixed("fixed_subscriptions", next.reduce((s, c) => s + (c.amount || 0), 0));
+    syncSubsTotal(appSubs, next);
   };
   const customCatsTotal = customCats.reduce((s, c) => s + (c.amount || 0), 0);
 
