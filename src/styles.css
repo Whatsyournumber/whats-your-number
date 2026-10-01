@@ -238,11 +238,32 @@ button:disabled,
     border-color: var(--color-border);
   }
 
+  /* Evita que la pantalla se desplace de lado en móvil (iPhone). */
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+  }
+
+  /* iPhone hace zoom al tocar campos con letra < 16px y la página queda movida. */
+  @supports (-webkit-touch-callout: none) {
+    @media (max-width: 767px) {
+      input,
+      select,
+      textarea {
+        font-size: 16px !important;
+      }
+    }
   }
 
   h1,
