@@ -292,6 +292,8 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                         <button
                           type="button"
                           onClick={() => setConfirmDelete(l.id)}
+                          // Evita que el mousedown dispare el blur del input y desmonte este botón.
+                          onMouseDown={(e) => e.preventDefault()}
                           className="grid h-9 w-9 shrink-0 place-items-center text-muted-foreground/70 transition hover:text-negative"
                           aria-label={t("Eliminar gasto", "Delete expense")}
                         >
