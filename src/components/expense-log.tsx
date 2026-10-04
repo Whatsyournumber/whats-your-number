@@ -3167,8 +3167,12 @@ export function ExpenseLog() {
               <Input value={editMerchant} onChange={(e) => setEditMerchant(e.target.value)} />
             </div>
             <div className="grid gap-1.5">
-              <Label>{`${t("Monto", "Amount")} (${currency})`}</Label>
-              <NumberInput value={editAmount} onChange={(v) => setEditAmount(v || 0)} min={0} format />
+              <Label>{editSharedWith ? `${t("Monto total", "Total amount")} (${currency})` : `${t("Monto", "Amount")} (${currency})`}</Label>
+              {editSharedWith ? (
+                <NumberInput value={editTotal} onChange={(v) => setEditTotal(v || 0)} min={0} format />
+              ) : (
+                <NumberInput value={editAmount} onChange={(v) => setEditAmount(v || 0)} min={0} format />
+              )}
             </div>
             <div className="grid gap-1.5">
               <Label>{t("Fecha", "Date")}</Label>
