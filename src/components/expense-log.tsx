@@ -2662,6 +2662,7 @@ export function ExpenseLog() {
 
 
         <div ref={latestExpensesRef} id="latest-expenses" className="min-w-0 scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6">
+          <h3 className="mb-4 text-lg font-semibold">{t("Últimos gastos", "Latest expenses")}</h3>
           <div className="flex items-center gap-1 rounded-full border border-border bg-muted/40 p-1">
             {([
               { key: "all", label: t("Todos", "All") },
@@ -2685,8 +2686,7 @@ export function ExpenseLog() {
 
           {latestTab === "shared" && (
             <div className="mt-4">
-              <h3 className="text-lg font-semibold">{t("Últimos gastos", "Latest expenses")}</h3>
-              <div className="mt-3 space-y-3">
+              <div className="space-y-3">
                 {sharedBalances.map((b) => {
                   const isOwed = b.balance > 0.005;
                   const iOwe = b.balance < -0.005;
