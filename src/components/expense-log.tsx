@@ -1400,8 +1400,10 @@ export function ExpenseLog() {
   /** Fila de "Últimos gastos", reutilizada en la tarjeta y en el popup con todo el historial. */
   const renderLatestTx = (x: (typeof expenseTx)[number]) => {
     const shared = parseShared(x.description);
-    // La otra persona te debe su parte: el registro se guarda en positivo y se muestra en verde.
-    const sharedDebt = Boolean(shared) && Number(x.amount) > 0;
+    // Verde si la otra persona te debe su parte (su % del reparto > 0), aunque
+    // el registro guarde tu parte en negativo. Rojo solo si no te debe nada.
+    const theirPct = shared ? Number(shared.split.split("/")[1] ?? 0) : 0;
+    const sharedDebt = Boolean(shared) && theirPct > 0;
     const receiptItems = receiptItemsFrom(x.description);
     const receiptTotal = receiptItems.reduce((sum, item) => sum + item.amount, 0);
     const receiptShare = shared && receiptTotal > 0
