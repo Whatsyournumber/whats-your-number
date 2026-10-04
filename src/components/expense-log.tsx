@@ -64,6 +64,11 @@ import { normalizeValidEmail } from "@/lib/email-validation";
 import { receiptItemsFrom as parseReceiptItems, sharedReceiptDescription } from "@/lib/receipt-insights";
 
 const firstNameOf = (name: string) => name.trim().split(/\s+/)[0] || name;
+// Corta el texto de forma limpia (sin puntos suspensivos) para que no pase a dos líneas.
+const clipText = (text: string, max: number) => {
+  const trimmed = text.trim();
+  return trimmed.length > max ? trimmed.slice(0, max).trimEnd() : trimmed;
+};
 
 const editInitials = (name: string) => {
   const parts = name.trim().split(/\s+/).filter(Boolean);
