@@ -647,7 +647,10 @@ export function ExpenseLog() {
     return [...map.values()].map((entry) => {
       const payments = paymentRows.filter((row) => row.partner_id === entry.id);
       const netPaid = payments.reduce((sum, row) => sum + (row.paid_by_user ? 1 : -1) * convertAmount(Number(row.amount), row.currency, profile.currency || "EUR"), 0);
-      return { ...entry, rawBalance: entry.balance, balance: Math.abs(entry.balance + netPaid) < 0.005 ? 0 : entry.balance + netPaid };
+      // Los pagos heredados de gastos que ya no aparecen permanecen en el historial,
+      // pero no deben invertir un saldo nuevo ni aplicarse a otra deuda.
+      const applied = netPaid * entry.balance < 0 && Math.abs(netPaid) <= Math.abs(entry.balance) + 0.01 ? netPaid : 0;
+      return { ...entry, rawBalance: entry.balance, balance: Math.abs(entry.balance + applied) < 0.005 ? 0 : entry.balance + applied };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sharedBalanceRows, paymentRows, transactions, user?.id, profile.currency, monthStart.getTime(), monthEnd.getTime()]);
