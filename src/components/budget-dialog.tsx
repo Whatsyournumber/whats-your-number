@@ -289,18 +289,16 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                           ariaLabel={t("Monto objetivo mensual", "Monthly target amount")}
                           className="h-9 w-24 text-sm sm:w-28"
                         />
-                        {editingId === l.id ? (
-                          <button
-                            type="button"
-                            onClick={() => setConfirmDelete(l.id)}
-                            // Evita que el mousedown dispare el blur del input y desmonte este botón.
-                            onMouseDown={(e) => e.preventDefault()}
-                            className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-card text-muted-foreground/70 shadow-sm transition hover:text-negative"
-                            aria-label={t("Eliminar gasto", "Delete expense")}
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        ) : null}
+                        <button
+                          type="button"
+                          onClick={() => setConfirmDelete(l.id)}
+                          // Evita que el mousedown dispare el blur del input y desmonte este botón.
+                          onMouseDown={(e) => e.preventDefault()}
+                          className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full border border-border/60 bg-card text-muted-foreground shadow-sm transition hover:text-negative"
+                          aria-label={t("Eliminar gasto", "Delete expense")}
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
                       </div>
                     </div>
                     {appSubs && isAppsLine(l) && appsOpen && (
