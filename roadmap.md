@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Ajustar el resumen de compartidos de septiembre a los movimientos visibles y sus importes exactos.
+
 - [x] Permitir registrar pagos parciales o completos en el balance compartido y mostrar saldo saldado al llegar a cero.
 
 - [x] Reordenar las cifras compartidas como la referencia y sincronizar total, parte y balance al editar gastos.
