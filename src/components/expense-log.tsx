@@ -1612,60 +1612,58 @@ export function ExpenseLog() {
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-positive/10 sm:h-11 sm:w-11">
                 <Wallet className="h-4 w-4 text-positive sm:h-5 sm:w-5" />
               </span>
-              <h3 data-tour-expense-target="plan-title" className="min-w-0 whitespace-nowrap text-lg font-semibold sm:text-xl lg:text-2xl">
-                {t("Tu plan de gasto mensual", "Your monthly spending plan")}
-              </h3>
+              <div className="min-w-0 flex-1">
+                <h3 data-tour-expense-target="plan-title" className="min-w-0 whitespace-nowrap text-lg font-semibold sm:text-xl lg:text-2xl">
+                  {t("Tu plan de gasto mensual", "Your monthly spending plan")}
+                </h3>
+                <p className="hidden max-md:block max-md:mt-0.5 max-md:truncate max-md:text-xs max-md:leading-snug max-md:text-muted-foreground">
+                  {t("Crea o agrega una categoría a tu plan", "Create or add a new category to your plan")}
+                </p>
+              </div>
               {period === "month" && (
-                <TooltipProvider delayDuration={150}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} data-tour-expense-target="plan-pencil" className="shrink-0 text-muted-foreground transition-colors hover:text-foreground">
-                        <Pencil className="h-4 w-4" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      {t("Agrega o edita una categoría", "Add or edit a category")}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setPlanOpen(true)}
+                    aria-label={t("Editar el plan", "Edit plan")}
+                    data-tour-expense-target="plan-pencil"
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-positive text-background transition-colors hover:bg-positive/85 md:hidden"
+                  >
+                    <Plus className="h-5 w-5" />
+                  </button>
+                  <TooltipProvider delayDuration={150}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} data-tour-expense-target="plan-pencil" className="hidden shrink-0 text-muted-foreground transition-colors hover:text-foreground md:block">
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        {t("Agrega o edita una categoría", "Add or edit a category")}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </>
               )}
             </div>
 
-            <div className="mt-4 flex items-center justify-between gap-4 md:hidden">
-              <div className="min-w-0">
-                <p className="numeric whitespace-nowrap text-4xl font-bold">{fmt(spent)}</p>
-                <p className="mt-1 text-sm text-muted-foreground">
+            <div className="mt-4 md:hidden">
+              <p className="numeric whitespace-nowrap text-4xl font-bold leading-none">
+                {fmt(spent)}{" "}
+                <span className="text-xl font-semibold text-muted-foreground">
                   {t("de", "of")} {fmt(periodTarget)}
-                </p>
-                <p className="mt-0.5 text-xs text-muted-foreground/80">
-                  {period === "week"
-                    ? t("Gasto objetivo semanal", "Weekly spending target")
-                    : period === "day"
-                      ? t("Gasto objetivo de hoy", "Today's spending target")
-                      : t("Gasto objetivo mensual", "Monthly spending target")}
-                </p>
-              </div>
-              <div className="relative h-28 w-28 shrink-0">
-                <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
-                  <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="50"
-                    fill="none"
-                    strokeWidth="9"
-                    strokeLinecap="round"
-                    strokeDasharray={2 * Math.PI * 50}
-                    strokeDashoffset={2 * Math.PI * 50 * (1 - Math.min(pct, 100) / 100)}
-                    className={pct > 100 ? "stroke-negative" : "stroke-positive"}
+                </span>
+              </p>
+              <div className="mt-3 flex items-center gap-3">
+                <div className="h-2.5 min-w-0 flex-1 overflow-hidden rounded-full bg-border/40">
+                  <div
+                    className={cn("h-full rounded-full transition-[width] duration-500", pct > 100 ? "bg-negative" : "bg-positive")}
+                    style={{ width: `${Math.min(pct, 100)}%` }}
                   />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <p className={cn("numeric text-2xl font-bold leading-none", pct > 100 ? "text-negative" : "text-positive")}>
-                    {pct.toFixed(0)}%
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">{t("del plan", "of plan")}</p>
                 </div>
+                <p className={cn("numeric shrink-0 text-base font-bold", pct > 100 ? "text-negative" : "text-positive")}>
+                  {pct.toFixed(0)}%
+                </p>
               </div>
             </div>
             <button
