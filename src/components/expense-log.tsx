@@ -621,7 +621,7 @@ export function ExpenseLog() {
       const matched = visibleShared.find((tx) =>
         !matchedTransactions.has(tx.id) &&
         tx.tx_date === exp.tx_date &&
-        tx.merchant.trim().toLowerCase() === exp.merchant.trim().toLowerCase() &&
+        (!exp.merchant.trim() || tx.merchant.trim().toLowerCase() === exp.merchant.trim().toLowerCase()) &&
         tx.original_currency === exp.currency &&
         Math.abs(Math.abs(tx.original_amount ?? tx.amount) - (Number(mine.share_amount) === 0 && exp.payer_id === user.id
           ? Number(exp.total) - Number(mine.share_amount)
@@ -1519,7 +1519,7 @@ export function ExpenseLog() {
           <span className="shrink-0 text-[11px] text-muted-foreground">
             {x.tx_date ? format(parseISO(x.tx_date), "d MMM", { locale }) : ""}
           </span>
-          <span className={cn("shrink-0 text-sm font-semibold", sharedDebt ? "text-positive" : "text-rose-300")}>{sharedDebt ? "+" : "-"}{fmt(sharedDebt ? theirDebt : Math.abs(x.amount))}</span>
+          <span className={cn("shrink-0 text-sm font-semibold", sharedDebt ? "text-positive" : "text-rose-300")}>{sharedDebt ? "+" : "-"}{shared ? fmtShared(sharedDebt ? theirDebt : Math.abs(x.amount)) : fmt(Math.abs(x.amount))}</span>
           <button
             type="button"
             onClick={() => openEditTx(x as Tx)}
