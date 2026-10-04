@@ -1513,13 +1513,13 @@ export function ExpenseLog() {
 
 
       <div className="space-y-3">
-          <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+          <div className="rounded-2xl border border-border bg-card px-5 py-6 sm:p-7">
             <div data-tour-expense-target="plan" className="flex min-w-0 items-center gap-3">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-positive/10 sm:h-11 sm:w-11">
                 <Wallet className="h-4 w-4 text-positive sm:h-5 sm:w-5" />
               </span>
               <div className="min-w-0 flex-1">
-                <h3 data-tour-expense-target="plan-title" className="min-w-0 whitespace-nowrap text-lg font-semibold sm:text-xl lg:text-2xl">
+                <h3 data-tour-expense-target="plan-title" className="min-w-0 text-lg font-semibold max-md:whitespace-normal max-md:leading-snug sm:text-xl lg:text-2xl lg:whitespace-nowrap">
                   {t("Tu plan de gasto mensual", "Your monthly spending plan")}
                 </h3>
                 <p className="hidden max-md:block max-md:mt-0.5 max-md:text-xs max-md:leading-snug max-md:text-muted-foreground">
@@ -1527,22 +1527,33 @@ export function ExpenseLog() {
                 </p>
               </div>
               {period === "month" && (
-                <TooltipProvider delayDuration={150}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} data-tour-expense-target="plan-pencil" className="hidden shrink-0 text-muted-foreground transition-colors hover:text-foreground md:block">
-                        <Pencil className="h-4 w-4" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      {t("Agrega o edita una categoría", "Add or edit a category")}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setPlanOpen(true)}
+                    aria-label={t("Editar el plan", "Edit plan")}
+                    data-tour-expense-target="plan-pencil"
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-positive text-background transition-colors hover:bg-positive/85 md:hidden"
+                  >
+                    <Plus className="h-5 w-5" />
+                  </button>
+                  <TooltipProvider delayDuration={150}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} data-tour-expense-target="plan-pencil" className="hidden shrink-0 text-muted-foreground transition-colors hover:text-foreground md:block">
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        {t("Agrega o edita una categoría", "Add or edit a category")}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </>
               )}
             </div>
 
-            <div className="mt-4 md:hidden">
+            <div className="mt-5 md:hidden">
               <p className="numeric whitespace-nowrap text-4xl font-bold leading-none">
                 {fmt(spent)}{" "}
                 <span className="text-xl font-semibold text-muted-foreground">
