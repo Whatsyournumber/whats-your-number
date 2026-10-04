@@ -1740,7 +1740,7 @@ function Gastos() {
                   </span>
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium">{m.name}</p>
-                    <p className="text-xs text-muted-foreground">{m.count} {t("transacciones", "transactions")}</p>
+                    <p className="text-xs text-muted-foreground">{m.lastDate ? format(parseISO(m.lastDate), "d MMM yyyy", { locale: isMobile ? es : enUS }) : `${m.count} ${t("transacciones", "transactions")}`}</p>
                   </div>
                   <span className="numeric ml-auto text-sm font-semibold">{fmt(m.amount)}</span>
                 </li>
