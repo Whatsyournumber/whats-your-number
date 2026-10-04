@@ -248,7 +248,14 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                             <ChevronDown className={`h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform ${appsOpen ? "rotate-180" : ""}`} />
                           </button>
                         ) : (
-                          <span className="min-w-0 flex-1 truncate text-sm">{label(l)}</span>
+                          <button
+                            type="button"
+                            onClick={() => startEdit(l)}
+                            className="min-w-0 flex-1 truncate text-left text-sm"
+                            title={t("Toca para editar", "Tap to edit")}
+                          >
+                            {label(l)}
+                          </button>
                         )
                       )}
                       {g === "essentials" ? (
