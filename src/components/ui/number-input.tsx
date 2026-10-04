@@ -48,7 +48,7 @@ export function NumberInput({
     }
   }, [value]);
 
-  return (
+  const input = (
     <Input
       ref={ref}
       aria-label={ariaLabel}
@@ -62,7 +62,7 @@ export function NumberInput({
       autoFocus={autoFocus}
       onKeyDown={onKeyDown}
       style={style}
-      className={cn("numeric", className)}
+      className={cn("numeric", suffix && "pr-8", className)}
       value={text}
       onFocus={() => {
         if (text === "0") setText("");
@@ -85,5 +85,14 @@ export function NumberInput({
         }
       }}
     />
+  );
+  if (!suffix) return input;
+  return (
+    <div className="relative">
+      {input}
+      <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+        {suffix}
+      </span>
+    </div>
   );
 }
