@@ -2667,7 +2667,12 @@ export function ExpenseLog() {
                                 {it.date && (
                                   <p className="text-[11px] text-muted-foreground">
                                     {format(parseISO(it.date), "d MMM", { locale })}
-                                     {parseShared(expenseTx.find((x) => x.id === it.key)?.description)?.name && ` · ${t("con", "with")} ${parseShared(expenseTx.find((x) => x.id === it.key)?.description)?.name}`}
+                                    {(() => {
+                                      const sharedTx = parseShared(expenseTx.find((x) => x.id === it.key)?.description);
+                                      if (!sharedTx) return "";
+                                      const iOweRow = sharedIOwe(expenseTx.find((x) => x.id === it.key)?.description);
+                                      return ` · ${iOweRow ? t(`Pagó ${sharedTx.name}`, `Paid by ${sharedTx.name}`) : t("Pagaste tú", "Paid by you")} · ${sharedTx.split.split("/").reverse().join("/")}`;
+                                    })()}
                                   </p>
                                 )}
                               </div>
