@@ -1395,6 +1395,7 @@ export function ExpenseLog() {
       setDraftEmail("");
       setDraftInvitePending(null);
       void queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      if (draft.partner) void queryClient.invalidateQueries({ queryKey: ["shared-balances"] });
       if (draft.partner) void queryClient.invalidateQueries({ queryKey: ["shared-partners"] });
       setPeriod("month");
       if (draft.source === "receipt" && draft.items.length > 0) setExpandedTx(savedId);
