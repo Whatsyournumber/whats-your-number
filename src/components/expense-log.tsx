@@ -142,6 +142,8 @@ export function ExpenseLog() {
   const [recOpen, setRecOpen] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
   const [sharedOpen, setSharedOpen] = useState(false);
+  const [latestTab, setLatestTab] = useState<"all" | "mine" | "shared">("all");
+  const [settlePartner, setSettlePartner] = useState<{ name: string; balance: number } | null>(null);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
   const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
   const router = useRouter();
@@ -181,6 +183,21 @@ export function ExpenseLog() {
       return [...seen.values()];
     },
   });
+
+  // Gastos compartidos: participaciones con el gasto al que pertenecen (para el balance por persona).
+  const { data: sharedBalanceRows = [] } = useQuery({
+    queryKey: ["shared-balances", user?.id],
+    enabled: Boolean(user?.id),
+    queryFn: async () => {
+      const { data: rows, error } = await supabase
+        .from("shared_expense_participants")
+        .select("id, user_id, display_name, share_amount, status, shared_expenses(id, total, currency, payer_id, tx_date)")
+        .neq("status", "declined");
+      if (error) throw error;
+      return rows;
+    },
+  });
+
   const { target: savedTarget, setTarget, hasTarget } = useSpendTarget();
 
   const openNewRecurring = () => {
