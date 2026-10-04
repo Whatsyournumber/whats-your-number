@@ -2232,7 +2232,7 @@ export function ExpenseLog() {
                   </p>
                 ) : (
                   <>
-                  <ul className="mt-4 space-y-3.5">
+                  <ul className={cn("mt-4 space-y-3.5", !fixedOpen && "max-md:hidden")}>
                     {upcoming.map((i, idx) => {
                       const emoji = i.name.match(/^\p{Extended_Pictographic}+/u)?.[0];
                       const colors = [
@@ -2309,7 +2309,7 @@ export function ExpenseLog() {
                     })}
                   </ul>
                   {/* Total de los gastos fijos listados (coincide con lo mostrado arriba). */}
-                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/60 pl-[3.25rem] pr-10 pt-3.5 sm:pl-14">
+                  <div className={cn("mt-4 flex items-center justify-between gap-3 border-t border-border/60 pl-[3.25rem] pr-10 pt-3.5 sm:pl-14", !fixedOpen && "max-md:hidden")}>
                     <p className="text-sm font-semibold sm:text-[0.9375rem]">{t("Total gastos fijos", "Total fixed expenses")}</p>
                     <p className="numeric text-sm font-semibold sm:text-[0.9375rem]">
                       {fmt(upcoming.reduce((s, i) => s + i.amount, 0))}
