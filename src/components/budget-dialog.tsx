@@ -22,8 +22,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
 import { useLanguage, useT } from "@/hooks/use-language";
+import { useProfile } from "@/hooks/use-profile";
 import type { BudgetLine } from "@/hooks/use-spend-budgets";
 import { DEFAULT_BUDGET_IDS, GROUP_LABELS, findBudgetCategory, type BudgetGroup } from "@/lib/budget-categories";
+import { CURRENCIES } from "@/lib/mfn-currencies";
 
 
 type Props = {
@@ -45,6 +47,9 @@ const isAppsLine = (l: BudgetLine) =>
 export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, onEditApps }: Props) {
   const t = useT();
   const { lang } = useLanguage();
+  const { profile } = useProfile();
+  const currencyCode = (profile?.currency as string | undefined) ?? "EUR";
+  const currencySymbol = CURRENCIES.find((c) => c.code === currencyCode)?.symbol ?? "";
   const [draft, setDraft] = useState<BudgetLine[]>([]);
   const [adding, setAdding] = useState(false);
   const [customName, setCustomName] = useState("");
