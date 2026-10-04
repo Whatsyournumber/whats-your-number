@@ -2685,7 +2685,7 @@ export function ExpenseLog() {
 
           {latestTab === "shared" && (
             <div className="mt-4">
-              <h3 className="text-lg font-semibold">{t("Gastos compartidos", "Shared expenses")}</h3>
+              <h3 className="text-lg font-semibold">{t("Últimos gastos", "Latest expenses")}</h3>
               <div className="mt-3 space-y-3">
                 {sharedBalances.map((b) => {
                   const isOwed = b.balance > 0.005;
