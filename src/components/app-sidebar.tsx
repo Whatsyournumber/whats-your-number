@@ -143,8 +143,8 @@ export function AppSidebar() {
             className="flex items-center gap-2"
             onClick={() => setOpenMobile(false)}
           >
-            <item.icon className={`${compact ? "h-4 w-4" : "h-[18px] w-[18px]"} shrink-0`} />
-            <span className={`min-w-0 flex-1 ${locked ? "whitespace-normal" : "whitespace-nowrap"} ${compact ? "text-[13px]" : locked ? "text-[13px]" : "text-[15px]"} leading-tight`}>{item.title}</span>
+            <item.icon className={`${compact ? "h-[18px] w-[18px]" : "h-5 w-5"} shrink-0`} />
+            <span className={`min-w-0 flex-1 ${locked ? "whitespace-normal" : "whitespace-nowrap"} ${compact ? "text-[14px]" : locked ? "text-[14px]" : "text-[16px]"} leading-tight`}>{item.title}</span>
             {locked && !collapsed && <span className={item.required === "patrimonio" ? "shrink-0 rounded-full bg-plan-family px-2 py-1 text-[10px] font-semibold leading-none text-plan-family-foreground" : item.required === "investor" ? "shrink-0 rounded-full bg-plan-investor px-2 py-1 text-[10px] font-semibold leading-none text-plan-investor-foreground" : "shrink-0 rounded-full bg-primary/15 px-2 py-1 text-[10px] font-semibold leading-none text-primary"}>{badge}</span>}
           </Link>
         </SidebarMenuButton>
