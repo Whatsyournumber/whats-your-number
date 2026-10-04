@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, FileSpreadsheet, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Trash2, TrendingUp, Upload, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, FileSpreadsheet, GripVertical, Link2, Loader2, MessageCircle, Mic, Pencil, PencilLine, Plus, Repeat, Square, Trash2, TrendingUp, Upload, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { FolderIcon, GooglePhotosIcon } from "@/components/expense-source-icons";
@@ -2666,84 +2666,109 @@ export function ExpenseLog() {
 
 
         <div ref={latestExpensesRef} id="latest-expenses" className="min-w-0 scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6">
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <h3 className="text-lg font-semibold">{t("Últimos gastos", "Latest expenses")}</h3>
-              <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                {t("Tus gastos del día a día", "Your day-to-day expenses")}
-              </p>
-            </div>
-            <DropdownMenu>
-              <TooltipProvider delayDuration={100}>
-                <Tooltip>
-                  <DropdownMenuTrigger asChild>
-                    <TooltipTrigger asChild>
-                      <button
-                        type="button"
-                        className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        aria-label={t("Agrega tus gastos diarios", "Add your daily expenses")}
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
-                    </TooltipTrigger>
-                  </DropdownMenuTrigger>
-                  <TooltipContent side="bottom">
-                    {t("Agrega tus gastos diarios", "Add your daily expenses")}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <DropdownMenuContent align="end" className="w-[21rem] p-2">
-                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setManualOpen(true)}>
-                  <PencilLine className="mr-2.5 h-6 w-6 text-positive" />
-                  {t("Manual", "Manual")}
-                </DropdownMenuItem>
-                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => (recording ? stopRecording() : startRecording(true))}>
-                  {recording ? <Square className="mr-2.5 h-6 w-6 text-negative" /> : <Mic className="mr-2.5 h-6 w-6 text-positive" />}
-                  {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
-                </DropdownMenuItem>
-                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => camRef.current?.click()}>
-                  <Camera className="mr-2.5 h-6 w-6 text-positive" />
-                  {t("Tomar foto (super, compras, etc)", "Take photo (groceries, shopping, etc)")}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="min-h-16 rounded-lg px-3.5 text-[17px]"
-                  onSelect={() => (isMobile ? setPhotoPickerOpen(true) : fileRef.current?.click())}
-                >
-                  <Upload className="mr-2.5 h-6 w-6 text-positive" />
-                  {t("Fotos o estados de cuentas", "Photos or bank statements")}
-                </DropdownMenuItem>
-                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={openNewRecurring}>
-                  <Repeat className="mr-2.5 h-6 w-6 text-positive" />
-                  {t("Recurrente", "Recurring")}
-                </DropdownMenuItem>
-                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setSharedOpen(true)}>
-                  <Users className="mr-2.5 h-6 w-6 text-positive" />
-                  {t("Gasto compartido", "Shared expense")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          {expenseTx.length === 0 ? (
-            <p className="mt-4 text-sm text-muted-foreground">
-              {t("Aún no registras gastos en este periodo.", "No expenses logged in this period yet.")}
-            </p>
-          ) : (
-            <>
-            {/* Mismo número de líneas que las categorías visibles; "Ver más" abre el popup con todo. */}
-            <ul className="mt-4 divide-y divide-border/60">
-              {expenseTx.slice(0, Math.max(visibleRows.length, 6)).map(renderLatestTx)}
-            </ul>
-            {expenseTx.length > Math.max(visibleRows.length, 6) && (
+          <div className="flex items-center gap-1 rounded-full border border-border bg-muted/40 p-1">
+            {([
+              { key: "all", label: t("Todos", "All") },
+              { key: "mine", label: t("Míos", "Mine") },
+              { key: "shared", label: t("Compartidos", "Shared") },
+            ] as const).map((tab) => (
               <button
+                key={tab.key}
                 type="button"
-                onClick={() => setLatestOpen(true)}
-                className="mt-3 w-full rounded-full border border-border py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                aria-pressed={latestTab === tab.key}
+                onClick={() => setLatestTab(tab.key)}
+                className={cn(
+                  "flex-1 rounded-full px-2 py-1.5 text-sm font-medium transition",
+                  latestTab === tab.key ? "bg-positive text-background" : "text-muted-foreground hover:text-foreground",
+                )}
               >
-                {t("Ver más", "Show more")}
+                {tab.label}
               </button>
-            )}
-            </>
+            ))}
+          </div>
+
+          {latestTab === "shared" && (
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold">{t("Gastos compartidos", "Shared expenses")}</h3>
+              <div className="mt-3 space-y-3">
+                {sharedBalances.map((b) => {
+                  const isOwed = b.balance > 0.005;
+                  const iOwe = b.balance < -0.005;
+                  return (
+                    <div key={b.id} className="rounded-2xl border border-border p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex min-w-0 items-center gap-3">
+                          <span className="flex shrink-0 -space-x-2.5">
+                            <span className="grid h-11 w-11 place-items-center rounded-full bg-positive/20 text-base font-semibold ring-2 ring-card">{initialsOf(myName)}</span>
+                            <span className="grid h-11 w-11 place-items-center rounded-full bg-muted text-base font-semibold ring-2 ring-card">{initialsOf(b.name)}</span>
+                          </span>
+                          <div className="min-w-0">
+                            <p className="truncate text-base font-semibold">{t(`Balance con ${b.name}`, `Balance with ${b.name}`)}</p>
+                            <p className="text-xs text-muted-foreground">{monthLabelCap} · {b.count} {t("gastos", "expenses")}</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setSettlePartner({ name: b.name, balance: b.balance })}
+                          className="flex shrink-0 items-center gap-1 rounded-full border border-border px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
+                        >
+                          {t("Saldar cuenta", "Settle up")}
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
+                      </div>
+                      <div className="mt-4 grid grid-cols-3 gap-2 border-t border-border/50 pt-3">
+                        <div className="min-w-0">
+                          <p className="text-[11px] leading-4 text-muted-foreground">
+                            {isOwed ? t(`${b.name} te debe`, `${b.name} owes you`) : iOwe ? t(`Le debes a ${b.name}`, `You owe ${b.name}`) : t("En paz", "Even")}
+                          </p>
+                          <p className={cn("numeric text-lg font-semibold", isOwed && "text-positive")}>{fmt(Math.abs(b.balance))}</p>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[11px] leading-4 text-muted-foreground">{t("Gastado juntos", "Spent together")}</p>
+                          <p className="numeric text-lg font-semibold">{fmt(b.together)}</p>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[11px] leading-4 text-muted-foreground">{t("Tu parte", "Your share")}</p>
+                          <p className="numeric text-lg font-semibold">{fmt(b.myShare)}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           )}
+
+          {(() => {
+            const shown = latestTab === "mine"
+              ? expenseTx.filter((x) => !parseShared(x.description))
+              : latestTab === "shared"
+                ? expenseTx.filter((x) => Boolean(parseShared(x.description)))
+                : expenseTx;
+            return shown.length === 0 ? (
+              <p className="mt-4 text-sm text-muted-foreground">
+                {latestTab === "shared"
+                  ? t("Aún no compartes gastos en este periodo.", "No shared expenses logged in this period yet.")
+                  : t("Aún no registras gastos en este periodo.", "No expenses logged in this period yet.")}
+              </p>
+            ) : (
+              <>
+                {/* Mismo número de líneas que las categorías visibles; "Ver más" abre el popup con todo. */}
+                <ul className="mt-4 divide-y divide-border/60">
+                  {shown.slice(0, Math.max(visibleRows.length, 6)).map(renderLatestTx)}
+                </ul>
+                {shown.length > Math.max(visibleRows.length, 6) && (
+                  <button
+                    type="button"
+                    onClick={() => setLatestOpen(true)}
+                    className="mt-3 w-full rounded-full border border-border py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    {t("Ver más", "Show more")}
+                  </button>
+                )}
+              </>
+            );
+          })()}
         </div>
           </div>
       </div>
