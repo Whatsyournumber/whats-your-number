@@ -217,8 +217,15 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                           onChange={(e) => setEditingName(e.target.value)}
                           onBlur={() => commitEdit(l.id)}
                           onKeyDown={(e) => {
-                            if (e.key === "Enter") commitEdit(l.id);
-                            if (e.key === "Escape") setEditingId(null);
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              commitEdit(l.id);
+                            }
+                            if (e.key === "Escape") {
+                              // Solo sale del modo editar, no cierra el diálogo.
+                              e.stopPropagation();
+                              setEditingId(null);
+                            }
                           }}
                           className="h-9 min-w-0 flex-1 text-sm"
                         />
