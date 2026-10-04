@@ -1857,7 +1857,7 @@ export function ExpenseLog() {
                </div>
              </div>
 
-            <div className="mt-3 grid grid-cols-2 gap-2 border-t border-border/60 pt-3 sm:gap-0 md:grid-cols-3">
+            <div className="mt-3 hidden grid-cols-3 gap-2 border-t border-border/60 pt-3 md:grid">
               <div className="hidden min-w-0 flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-2.5 sm:px-2 md:flex">
                 <span className={cn("hidden h-8 w-8 shrink-0 place-items-center rounded-full sm:grid", remaining < 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
                   <Wallet className="h-4 w-4" />
