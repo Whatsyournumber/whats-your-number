@@ -1316,13 +1316,13 @@ export function ExpenseLog() {
       <div className="sticky top-14 z-30 -mx-4 flex items-center justify-between gap-3 border-b border-border bg-background/95 px-4 py-4 shadow-sm backdrop-blur-xl sm:static sm:mx-0 sm:items-start sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none sm:backdrop-blur-none">
         <div className="min-w-0">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
-            {t("Registro de gastos", "Expense Tracker")}
+            {t("Mis gastos diarios", "My daily spending")}
           </h2>
           <p className="mt-1 text-sm text-muted-foreground sm:hidden">
-            {t("Controla tus gastos del día a día", "Track your daily expenses")}
+            {t("Controla tu dinero día a día", "Keep control of your money, day by day")}
           </p>
           <p className="mt-1 hidden text-sm text-muted-foreground sm:block">
-            {t("Controla tus gastos del día a día y mantente dentro de tu plan.", "Track your daily expenses and stay within your plan.")}
+            {t("Controla tu dinero día a día y mantente dentro de tu plan.", "Keep control of your money, day by day, and stay within your plan.")}
           </p>
         </div>
       </div>
