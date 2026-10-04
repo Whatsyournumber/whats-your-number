@@ -512,7 +512,7 @@ export function ExpenseLog() {
       if (!exp || !mine) continue;
       const partners = rows.filter((r) => r.user_id !== user.id && r.status === "accepted");
       if (!partners.length) continue;
-      const inPeriod = exp.tx_date ? (parseISO(exp.tx_date) >= periodStart && parseISO(exp.tx_date) <= monthEnd) : false;
+      const inPeriod = Boolean(exp.tx_date);
       for (const p of partners) {
         const entry = map.get(p.user_id) ?? { id: p.user_id, name: p.display_name || "?", count: 0, together: 0, myShare: 0, balance: 0 };
         if (inPeriod) {
@@ -2702,8 +2702,8 @@ export function ExpenseLog() {
                             <span className="grid h-11 w-11 place-items-center rounded-full bg-positive/20 text-base font-semibold ring-2 ring-card">{initialsOf(myName)}</span>
                             <span className="grid h-11 w-11 place-items-center rounded-full bg-muted text-base font-semibold ring-2 ring-card">{initialsOf(b.name)}</span>
                           </span>
-                          <div className="min-w-0">
-                            <p className="truncate text-base font-semibold">{t(`Balance con ${b.name}`, `Balance with ${b.name}`)}</p>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-base font-semibold leading-snug">{t(`Balance con ${b.name}`, `Balance with ${b.name}`)}</p>
                             <p className="text-xs text-muted-foreground">{monthLabelCap} · {b.count} {t("gastos", "expenses")}</p>
                           </div>
                         </div>
