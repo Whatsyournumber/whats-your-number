@@ -215,7 +215,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                   {t(GROUP_LABELS[g].es, GROUP_LABELS[g].en)}
                 </p>
                 {groupLines.map((l) => (
-                  <div key={l.id} className="min-w-0 rounded-xl border border-border/50 px-2 py-2 sm:px-3">
+                  <div key={l.id} className="group min-w-0 rounded-xl border border-border/50 px-2 py-2 sm:px-3">
                     <div className="flex min-w-0 items-center gap-1.5 sm:gap-3">
                       {editingId === l.id ? (
                         <Input
@@ -294,7 +294,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                           onClick={() => setConfirmDelete(l.id)}
                           // Evita que el mousedown dispare el blur del input y desmonte este botón.
                           onMouseDown={(e) => e.preventDefault()}
-                          className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full border border-border/60 bg-card text-muted-foreground shadow-sm transition hover:text-negative"
+                          className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full border border-border/60 bg-card text-muted-foreground shadow-sm opacity-100 transition hover:text-negative [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:focus-visible:opacity-100"
                           aria-label={t("Eliminar gasto", "Delete expense")}
                         >
                           <X className="h-3 w-3" />
