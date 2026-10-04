@@ -146,7 +146,8 @@ export function ExpenseLog() {
   const [sharedOpen, setSharedOpen] = useState(false);
   const [latestTab, setLatestTab] = useState<"all" | "mine" | "shared">("all");
   const [settlePartner, setSettlePartner] = useState<{ name: string; balance: number } | null>(null);
-  const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
+  const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean; month?: string }).add });
+  const monthParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean; month?: string }).month });
   const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
   const router = useRouter();
   useEffect(() => {
@@ -154,6 +155,16 @@ export function ExpenseLog() {
     setManualOpen(true);
     router.navigate({ to: "/registro-gastos", search: {}, replace: true });
   }, [addParam, router]);
+  // Al volver de un gasto compartido guardado: abre el mes donde quedó el gasto
+  // y baja a «Últimos gastos».
+  useEffect(() => {
+    if (!monthParam || !months.includes(monthParam)) return;
+    setPeriod("month");
+    setViewKey(monthParam);
+    window.setTimeout(() => latestExpensesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 400);
+    router.navigate({ to: "/registro-gastos", search: {}, replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [monthParam]);
   const [recName, setRecName] = useState("");
   const [recAmount, setRecAmount] = useState(0);
   const [recDay, setRecDay] = useState(1);
@@ -1513,8 +1524,10 @@ export function ExpenseLog() {
       <SharedExpenseDialog
         open={sharedOpen}
         onOpenChange={setSharedOpen}
-        onSaved={() => {
+        onSaved={(savedDate) => {
           setPeriod("month");
+          const ym = savedDate?.slice(0, 7);
+          if (ym && months.includes(ym)) setViewKey(ym);
           window.setTimeout(() => latestExpensesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
         }}
       />

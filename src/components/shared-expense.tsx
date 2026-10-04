@@ -1,12 +1,16 @@
 import { useMemo, useRef, useState } from "react";
 import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check, Loader2, Plus, ReceiptText, Users, X } from "lucide-react";
+import { CalendarIcon, Check, Loader2, Plus, ReceiptText, Users, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { NumberInput } from "@/components/ui/number-input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useAuth } from "@/hooks/use-auth";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
@@ -41,7 +45,7 @@ const modeLabel = (mode: Mode, myPct: number) =>
 
 const initials = (name: string) => name.trim().slice(0, 1).toUpperCase() || "?";
 
-export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boolean; onOpenChange: (v: boolean) => void; onSaved?: () => void }) {
+export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boolean; onOpenChange: (v: boolean) => void; onSaved?: (savedDate?: string) => void }) {
   const t = useT();
   const { lang } = useLanguage();
   const { user } = useAuth();
@@ -67,6 +71,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   );
 
   const [total, setTotal] = useState(0);
+  const [date, setDate] = useState<Date>(new Date());
   const [category, setCategory] = useState("");
   const [merchant, setMerchant] = useState("");
   const [partners, setPartners] = useState<Partner[]>([]);
@@ -113,6 +118,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
 
   const reset = () => {
     setTotal(0); setMerchant(""); setPartners([]); setMode("equal"); setMyPct(50); setMyAmount(0); setPayer("me");
+    setDate(new Date());
     setInvitePending(null); setReceiptItems([]); setReceiptName("");
   };
 
@@ -182,7 +188,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
     if (!partners.length) { toast.error(t("Elige con quién lo compartes", "Choose who you share it with")); return; }
     setSaving(true);
     try {
-      const date = format(new Date(), "yyyy-MM-dd");
+      const dateStr = format(date, "yyyy-MM-dd");
       const split = modeLabel(effectiveMode === "equal" ? "equal" : "percent", pct);
       const names = partners.map((p) => p.name).join(", ");
       // Un gasto compartido por persona; tu parte solo se guarda una vez.
@@ -195,7 +201,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
           _currency: currency,
           _category: cat,
           _merchant: merchant.trim(),
-          _tx_date: date,
+          _tx_date: dateStr,
           _split_mode: split,
           _creator_name: myName,
           _partner_name: p.name,
@@ -209,7 +215,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
       }
       // En tu presupuesto solo cuenta tu parte.
       await saveExpense({
-        userId: user.id, date, category: cat, currency, amount: mine,
+        userId: user.id, date: dateStr, category: cat, currency, amount: mine,
         merchant: merchant.trim() || translateCategory(cat, lang),
         description: sharedReceiptDescription(split, names, receiptItems),
       });
@@ -220,7 +226,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
       });
       reset();
       onOpenChange(false);
-      onSaved?.();
+      onSaved?.(dateStr);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : ((e as { message?: string })?.message ?? String(e)));
     } finally {
@@ -254,15 +260,41 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
             </select>
           </div>
           <Input value={merchant} onChange={(e) => setMerchant(e.target.value)} placeholder={t("Descripción (opcional)", "Description (optional)")} />
-          <div className="flex items-center gap-2">
-            <input ref={receiptRef} type="file" accept="image/*" className="hidden" aria-label={t("Ticket del gasto compartido", "Shared expense receipt")} onChange={(e) => { void onReceipt(e.target.files?.[0]); e.target.value = ""; }} />
-            <Button type="button" variant="outline" size="sm" disabled={reading || saving} onClick={() => receiptRef.current?.click()}>
-              {reading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <ReceiptText className="mr-2 size-4" />}
-              {t("Leer ticket", "Read receipt")}
-            </Button>
-            {receiptItems.length > 0 && <span className="min-w-0 truncate text-xs text-muted-foreground">{receiptName} · {receiptItems.length} {t("productos", "items")}</span>}
-            {receiptItems.length > 0 && <Button type="button" size="icon" variant="ghost" className="ml-auto size-7 shrink-0" aria-label={t("Quitar ticket", "Remove receipt")} onClick={() => { setReceiptItems([]); setReceiptName(""); }}><X className="size-4" /></Button>}
+          <div className="grid grid-cols-[1fr_auto] items-end gap-2">
+            <div className="grid gap-1.5">
+              <Label>{t("Fecha", "Date")}</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button type="button" variant="outline" className="justify-start gap-2 font-normal">
+                    <CalendarIcon className="h-4 w-4" />
+                    {format(date, "d MMM yyyy", (lang === "es" ? { locale: es } : undefined))}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(d) => d && setDate(d)}
+                    initialFocus
+                    className="pointer-events-auto p-3"
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div>
+              <input ref={receiptRef} type="file" accept="image/*" className="hidden" aria-label={t("Ticket del gasto compartido", "Shared expense receipt")} onChange={(e) => { void onReceipt(e.target.files?.[0]); e.target.value = ""; }} />
+              <Button type="button" variant="outline" disabled={reading || saving} className="h-10 whitespace-nowrap" onClick={() => receiptRef.current?.click()}>
+                {reading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <ReceiptText className="mr-2 size-4" />}
+                {t("Leer ticket", "Read receipt")}
+              </Button>
+            </div>
           </div>
+          {receiptItems.length > 0 && (
+            <div className="flex items-center gap-2">
+              <span className="min-w-0 truncate text-xs text-muted-foreground">{receiptName} · {receiptItems.length} {t("productos", "items")}</span>
+              <Button type="button" size="icon" variant="ghost" className="ml-auto size-7 shrink-0" aria-label={t("Quitar ticket", "Remove receipt")} onClick={() => { setReceiptItems([]); setReceiptName(""); }}><X className="size-4" /></Button>
+            </div>
+          )}
 
           <div className="grid gap-2">
             <p className="text-sm font-semibold">{t("¿Con quién?", "With whom?")}</p>
