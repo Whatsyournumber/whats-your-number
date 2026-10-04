@@ -60,6 +60,8 @@ import { Check, Users } from "lucide-react";
 import { normalizeValidEmail } from "@/lib/email-validation";
 import { receiptItemsFrom as parseReceiptItems, sharedReceiptDescription } from "@/lib/receipt-insights";
 
+const firstNameOf = (name: string) => name.trim().split(/\s+/)[0] || name;
+
 const editInitials = (name: string) => {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return "?";
@@ -2699,33 +2701,33 @@ export function ExpenseLog() {
                             <span className="grid h-11 w-11 place-items-center rounded-full bg-muted text-base font-semibold ring-2 ring-card">{initialsOf(b.name)}</span>
                           </span>
                           <div className="min-w-0">
-                            <p className="break-words text-base font-semibold leading-snug">{b.name}</p>
+                            <p className="truncate text-base font-semibold leading-snug">{firstNameOf(b.name)}</p>
                             <p className="mt-0.5 text-xs text-muted-foreground">{b.count} {t("gastos", "expenses")}</p>
                           </div>
                         </div>
                         <Button
                           type="button"
                           variant="outline"
-                          onClick={() => setSettlePartner({ name: b.name, balance: b.balance })}
+                          onClick={() => setSettlePartner({ name: firstNameOf(b.name), balance: b.balance })}
                           className="h-10 shrink-0 rounded-full bg-transparent px-2.5 text-xs shadow-none sm:px-4 sm:text-sm"
                         >
                           {t("Saldar cuenta", "Settle up")}
                           <ChevronRight aria-hidden="true" />
                         </Button>
                       </div>
-                      <div className="mt-5 grid grid-cols-3 gap-2 border-t border-border/60 pt-4 sm:gap-4">
+                      <div className="mt-5 grid grid-cols-3 items-end gap-2 border-t border-border/60 pt-4 sm:gap-4">
                         <div className="min-w-0">
-                          <p className="min-h-10 break-words text-xs leading-5 text-muted-foreground">
-                            {isOwed ? t(`${b.name} te debe`, `${b.name} owes you`) : iOwe ? t(`Le debes a ${b.name}`, `You owe ${b.name}`) : t("En paz", "Even")}
+                          <p className="text-xs leading-5 text-muted-foreground">
+                            {isOwed ? t(`${firstNameOf(b.name)} te debe`, `${firstNameOf(b.name)} owes you`) : iOwe ? t(`Le debes a ${firstNameOf(b.name)}`, `You owe ${firstNameOf(b.name)}`) : t("En paz", "Even")}
                           </p>
                           <p className={cn("numeric whitespace-nowrap text-lg font-semibold", isOwed && "text-positive")}>{fmt(Math.abs(b.balance))}</p>
                         </div>
                         <div className="min-w-0">
-                          <p className="min-h-10 text-xs leading-5 text-muted-foreground">{t("Gastado juntos", "Spent together")}</p>
+                          <p className="text-xs leading-5 text-muted-foreground">{t("Gastado juntos", "Spent together")}</p>
                           <p className="numeric whitespace-nowrap text-lg font-semibold">{fmt(b.together)}</p>
                         </div>
                         <div className="min-w-0">
-                          <p className="min-h-10 text-xs leading-5 text-muted-foreground">{t("Tu parte", "Your share")}</p>
+                          <p className="text-xs leading-5 text-muted-foreground">{t("Tu parte", "Your share")}</p>
                           <p className="numeric whitespace-nowrap text-lg font-semibold">{fmt(b.myShare)}</p>
                         </div>
                       </div>
