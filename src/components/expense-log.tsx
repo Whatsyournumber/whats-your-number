@@ -182,6 +182,10 @@ export function ExpenseLog() {
   const [draftDateOpen, setDraftDateOpen] = useState(false);
   const [editCategory, setEditCategory] = useState("");
   const [editSharedWith, setEditSharedWith] = useState<string | null>(null);
+  const [editMode, setEditMode] = useState<"equal" | "percent" | "amount">("equal");
+  const [editMyPct, setEditMyPct] = useState(50);
+  const [editMyAmount, setEditMyAmount] = useState(0);
+  const [editTotal, setEditTotal] = useState(0);
   const [editSharePartner, setEditSharePartner] = useState<{ id: string; name: string } | null>(null);
   const [editInviteEmail, setEditInviteEmail] = useState("");
   const [editLooking, setEditLooking] = useState(false);
