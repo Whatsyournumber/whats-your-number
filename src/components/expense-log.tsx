@@ -1513,7 +1513,7 @@ export function ExpenseLog() {
 
 
       <div className="space-y-3">
-          <div className="rounded-2xl border border-border bg-card px-5 py-6 sm:p-7">
+          <div className="rounded-2xl border border-border bg-card px-5 py-8 sm:p-8">
             <div data-tour-expense-target="plan" className="flex min-w-0 items-center gap-3">
               <div className="min-w-0 flex-1">
                 <h3 data-tour-expense-target="plan-title" className="min-w-0 text-lg font-semibold max-md:whitespace-normal max-md:leading-snug sm:text-xl lg:text-2xl lg:whitespace-nowrap">
