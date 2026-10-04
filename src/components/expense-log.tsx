@@ -3230,6 +3230,65 @@ export function ExpenseLog() {
                   </button>
                 </div>
               ) : (
+                null
+              )}
+              {editSharedWith && (
+                <div className="grid gap-2">
+                  <div className="flex gap-2">
+                    {(["equal", "percent", "amount"] as const).map((m) => (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => setEditMode(m)}
+                        className={cn(
+                          "flex-1 rounded-full border px-3 py-2 text-sm font-medium transition-colors",
+                          editMode === m ? "border-positive bg-positive/15 text-foreground" : "border-border text-muted-foreground",
+                        )}
+                      >
+                        {m === "equal" ? "50 / 50" : m === "percent" ? t("Porcentaje", "Percent") : t("Cantidad", "Amount")}
+                      </button>
+                    ))}
+                  </div>
+                  {editMode === "percent" && (
+                    <div className="flex items-center gap-2">
+                      <NumberInput value={editMyPct} onChange={(v) => setEditMyPct(Math.max(0, Math.min(100, v || 0)))} min={0} max={100} />
+                      <span className="shrink-0 text-sm text-muted-foreground">% {t("para ti", "for you")}</span>
+                    </div>
+                  )}
+                  {editMode === "amount" && (
+                    <div className="flex items-center gap-2">
+                      <NumberInput value={editMyAmount} onChange={(v) => setEditMyAmount(Math.max(0, v || 0))} min={0} format />
+                      <span className="shrink-0 text-sm text-muted-foreground">{t("pagas tú", "you pay")}</span>
+                    </div>
+                  )}
+                  {(() => {
+                    const total = Math.abs(editTotal);
+                    const mine =
+                      editMode === "equal" ? total / 2 : editMode === "percent" ? (total * editMyPct) / 100 : Math.min(editMyAmount, total);
+                    const theirs = Math.max(0, total - mine);
+                    return (
+                      <div className="rounded-lg border border-border">
+                        <div className="flex items-center justify-between gap-2 px-3 py-2.5">
+                          <span className="text-sm">{t("Tú pagas", "You pay")}</span>
+                          <span className="numeric text-sm font-semibold">{fmt(mine)}</span>
+                        </div>
+                        <div className="flex items-center justify-between gap-2 border-t border-border px-3 py-2.5">
+                          <span className="text-sm">{firstNameOf(editSharedWith)} {t("paga", "pays")}</span>
+                          <span className="numeric text-sm font-semibold">{fmt(theirs)}</span>
+                        </div>
+                        <div className="border-t border-border px-3 py-2.5 text-xs">
+                          {theirs > 0 ? (
+                            <span className="text-positive">{firstNameOf(editSharedWith)} {t("te debe", "owes you")} {fmt(theirs)}</span>
+                          ) : (
+                            <span className="text-negative">{t("Le debes", "You owe")} {firstNameOf(editSharedWith)} {fmt(mine)}</span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+              {!editSharedWith && (
                 <div className="grid gap-2">
                   <div className="flex flex-wrap items-start gap-4">
                     {[
