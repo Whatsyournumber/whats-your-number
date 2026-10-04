@@ -193,7 +193,7 @@ export function ExpenseLog() {
     queryFn: async () => {
       const { data: rows, error } = await supabase
         .from("shared_expense_participants")
-        .select("id, user_id, display_name, share_amount, status, shared_expenses(id, total, currency, payer_id, tx_date)")
+        .select("id, expense_id, user_id, display_name, share_amount, status, shared_expenses(id, total, currency, payer_id, tx_date)")
         .neq("status", "declined");
       if (error) throw error;
       return rows;
@@ -509,7 +509,8 @@ export function ExpenseLog() {
     }
     const map = new Map<string, SharedBalance>();
     for (const rows of byExpense.values()) {
-      const exp = rows[0]?.shared_expenses;
+      const rawExp = rows[0]?.shared_expenses;
+      const exp = Array.isArray(rawExp) ? rawExp[0] : rawExp;
       const mine = rows.find((r) => r.user_id === user.id);
       if (!exp || !mine) continue;
       const partners = rows.filter((r) => r.user_id !== user.id && r.status === "accepted");
