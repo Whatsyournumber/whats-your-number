@@ -1527,29 +1527,18 @@ export function ExpenseLog() {
                 </p>
               </div>
               {period === "month" && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => setPlanOpen(true)}
-                    aria-label={t("Editar el plan", "Edit plan")}
-                    data-tour-expense-target="plan-pencil"
-                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-positive text-background transition-colors hover:bg-positive/85 md:hidden"
-                  >
-                    <Plus className="h-5 w-5" />
-                  </button>
-                  <TooltipProvider delayDuration={150}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} data-tour-expense-target="plan-pencil" className="hidden shrink-0 text-muted-foreground transition-colors hover:text-foreground md:block">
-                          <Pencil className="h-4 w-4" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">
-                        {t("Agrega o edita una categoría", "Add or edit a category")}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </>
+                <TooltipProvider delayDuration={150}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button type="button" onClick={() => setPlanOpen(true)} aria-label={t("Editar el plan", "Edit plan")} data-tour-expense-target="plan-pencil" className="hidden shrink-0 text-muted-foreground transition-colors hover:text-foreground md:block">
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      {t("Agrega o edita una categoría", "Add or edit a category")}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
             </div>
 
