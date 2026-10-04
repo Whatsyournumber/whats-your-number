@@ -2958,7 +2958,7 @@ export function ExpenseLog() {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="settle-paid">{rawBalance < 0 ? t("Ya pagaste", "You've paid") : t(`${settlePartner.name} ya pagó`, `${settlePartner.name} has paid`)}</Label>
-                <NumberInput id="settle-paid" value={settlePaid} onChange={setSettlePaid} min={0} max={Math.abs(rawBalance)} currency={currency} />
+                <NumberInput value={settlePaid} onChange={setSettlePaid} min={0} max={Math.abs(rawBalance)} step="0.01" suffix={currencySymbol} ariaLabel={rawBalance < 0 ? t("Ya pagaste", "You've paid") : t(`${settlePartner.name} ya pagó`, `${settlePartner.name} has paid`)} />
                 <p className="text-xs text-muted-foreground">{t("Saldo original", "Original balance")}: {fmtShared(Math.abs(rawBalance))}</p>
                 <Button type="button" onClick={saveSettlement} disabled={settleSaving || settlePaid > Math.abs(rawBalance) + 0.01}>
                   {settleSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : t("Guardar pago", "Save payment")}
