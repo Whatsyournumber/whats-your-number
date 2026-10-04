@@ -1539,11 +1539,23 @@ export function ExpenseLog() {
             </button>
           )}
           <div className="min-w-0 flex-1">
-            <p className="flex min-w-0 items-center gap-1.5 break-words text-sm font-medium">{x.merchant}{shared && <Users className={cn("h-3.5 w-3.5 shrink-0", iOwe ? "text-rose-300" : "text-positive")} />}</p>
-            <p className="break-words text-[11px] text-muted-foreground">
-              {translateCategory(x.category || categorizeTx(x as Tx, categories.rules), lang)}
-              {receiptItems.length > 0 ? ` · ${receiptItems.length} ${t("productos", "items")}` : ""}
-              {shared ? ` · ${iOwe ? t(`Pagó ${shared.name}`, `Paid by ${shared.name}`) : t("Pagaste tú", "Paid by you")} · ${shared.split.split("/").reverse().join("/")}` : ""}
+            <p className="flex min-w-0 items-center gap-1.5 truncate text-sm font-medium">{clipText(x.merchant, 20)}{shared && <Users className={cn("h-3.5 w-3.5 shrink-0", iOwe ? "text-rose-300" : "text-positive")} />}</p>
+            <p className="truncate text-[11px] text-muted-foreground">
+              {(() => {
+                const cat = translateCategory(x.category || categorizeTx(x as Tx, categories.rules), lang);
+                const itemsTxt = receiptItems.length > 0 ? ` · ${receiptItems.length} ${t("productos", "items")}` : "";
+                const base = `${cat}${itemsTxt}`;
+                const paidBy = shared
+                  ? (iOwe
+                    ? t(`Pagó ${firstNameOf(shared.name)}`, `Paid by ${firstNameOf(shared.name)}`)
+                    : t("Pagaste tú", "Paid by you"))
+                  : "";
+                const splitTxt = shared ? shared.split.split("/").reverse().join("/") : "";
+                const full = shared ? `${base} · ${paidBy} · ${splitTxt}` : base;
+                const shorter = shared ? `${base} · ${paidBy}` : full;
+                const chosen = full.length > 34 ? (shorter.length <= 34 ? shorter : clipText(shorter, 34)) : full;
+                return chosen;
+              })()}
             </p>
           </div>
           <span className="shrink-0 text-[11px] text-muted-foreground">
