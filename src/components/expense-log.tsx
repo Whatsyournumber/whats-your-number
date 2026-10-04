@@ -639,6 +639,7 @@ export function ExpenseLog() {
   const [subsOpen, setSubsOpen] = useState(false);
   const [subsDraft, setSubsDraft] = useState<AppSub[]>([]);
   const [appsExpanded, setAppsExpanded] = useState(false);
+  const [fixedOpen, setFixedOpen] = useState(false);
   const appSubsTotal = appSubs.reduce((s, a) => s + (Number(a.amount) || 0), 0);
 
   // Solo se muestran como reales las apps guardadas; nunca marcadores a 0.
@@ -2191,24 +2192,39 @@ export function ExpenseLog() {
 
               <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
                 <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-base font-semibold">{t("Gastos fijos (Próximos pagos)", "Fixed expenses (Upcoming payments)")}</h3>
-                  <TooltipProvider delayDuration={100}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          onClick={openNewRecurring}
-                          className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                          aria-label={t("Agrega solo gastos recurrentes", "Add recurring expenses only")}
-                        >
-                          <Plus className="h-3.5 w-3.5" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">
-                        {t("Agrega solo gastos recurrentes", "Add recurring expenses only")}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <button
+                    type="button"
+                    onClick={() => setFixedOpen((v) => !v)}
+                    aria-expanded={fixedOpen}
+                    className="flex min-w-0 flex-1 items-center justify-between gap-2 text-left"
+                  >
+                    <h3 className="text-base font-semibold">{t("Gastos fijos (Próximos pagos)", "Fixed expenses (Upcoming payments)")}</h3>
+                    <span className="flex shrink-0 items-center gap-2">
+                      <p className="numeric hidden font-semibold text-muted-foreground max-md:block">
+                        {upcoming.length > 0 ? fmt(upcoming.reduce((s, i) => s + i.amount, 0)) : null}
+                      </p>
+                      <ChevronDown className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform max-md:block md:hidden", fixedOpen && "rotate-180")} />
+                    </span>
+                  </button>
+                  <div className="hidden md:block">
+                    <TooltipProvider delayDuration={100}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={openNewRecurring}
+                            className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                            aria-label={t("Agrega solo gastos recurrentes", "Add recurring expenses only")}
+                          >
+                            <Plus className="h-3.5 w-3.5" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">
+                          {t("Agrega solo gastos recurrentes", "Add recurring expenses only")}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
                 </div>
                 {upcoming.length === 0 ? (
                   <p className="mt-4 text-sm text-muted-foreground">
