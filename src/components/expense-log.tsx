@@ -1550,21 +1550,21 @@ export function ExpenseLog() {
               )}
             </div>
 
-            <div className="mt-5 md:hidden">
-              <p className="numeric whitespace-nowrap text-4xl font-bold leading-none">
+            <div className="mt-6 md:hidden">
+              <p className="numeric whitespace-nowrap text-5xl font-bold leading-none">
                 {fmt(spent)}{" "}
-                <span className="text-xl font-semibold text-muted-foreground">
+                <span className="text-2xl font-semibold text-muted-foreground">
                   {t("de", "of")} {fmt(periodTarget)}
                 </span>
               </p>
-              <div className="mt-3 flex items-center gap-3">
-                <div className="h-2.5 min-w-0 flex-1 overflow-hidden rounded-full bg-border/40">
+              <div className="mt-4 flex items-center gap-3">
+                <div className="h-3.5 min-w-0 flex-1 overflow-hidden rounded-full bg-border/40">
                   <div
                     className={cn("h-full rounded-full transition-[width] duration-500", pct > 100 ? "bg-negative" : "bg-positive")}
                     style={{ width: `${Math.min(pct, 100)}%` }}
                   />
                 </div>
-                <p className={cn("numeric shrink-0 text-base font-bold", pct > 100 ? "text-negative" : "text-positive")}>
+                <p className={cn("numeric shrink-0 text-lg font-bold", pct > 100 ? "text-negative" : "text-positive")}>
                   {pct.toFixed(0)}%
                 </p>
               </div>
@@ -1573,23 +1573,23 @@ export function ExpenseLog() {
               type="button"
               onClick={focusOverspent}
               aria-label={t("Ver categorías donde te excediste", "See categories where you overspent")}
-              className="mt-3 flex w-full cursor-pointer items-center gap-3 py-1 text-left md:hidden"
+              className="mt-4 flex w-full cursor-pointer items-center gap-3 py-1 text-left md:hidden"
             >
               <span
                 className={cn(
-                  "grid h-9 w-9 shrink-0 place-items-center rounded-lg",
+                  "grid h-10 w-10 shrink-0 place-items-center rounded-lg",
                   isOnPace ? "bg-positive/15 text-positive" : "bg-negative/15 text-negative",
                 )}
               >
-                {isOnPace ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
+                {isOnPace ? <ArrowUp className="h-5 w-5" /> : <ArrowDown className="h-5 w-5" />}
               </span>
               <div className="min-w-0">
-                <p className={cn("text-sm font-semibold leading-snug", isOnPace ? "text-positive" : "text-negative")}>
+                <p className={cn("text-base font-semibold leading-snug", isOnPace ? "text-positive" : "text-negative")}>
                   {!isOnPace
                     ? t(`Vas ${fmt(paceAmount)} por encima`, `You're ${fmt(paceAmount)} over`)
                     : t("Vas bien", "On track")}
                 </p>
-                <p className="mt-0.5 text-xs leading-snug text-muted-foreground">
+                <p className="mt-0.5 text-sm leading-snug text-muted-foreground">
                   {isOnPace
                     ? t("por debajo del ritmo esperado.", "below the expected pace.")
                     : t("del ritmo esperado.", "of the expected pace.")}
