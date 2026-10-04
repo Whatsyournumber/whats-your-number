@@ -250,7 +250,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
 
         <div className="grid gap-4">
           <div className="grid grid-cols-2 gap-2">
-            <NumberInput value={total} onChange={(v) => setTotal(v || 0)} min={0} format />
+            <NumberInput value={total} onChange={(v) => setTotal(v || 0)} min={0} format placeholder={t("Monto", "Amount")} />
             <select
               value={cat}
               onChange={(e) => setCategory(e.target.value)}
