@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, FileSpreadsheet, GripVertical, Link2, Loader2, MessageCircle, Mic, Pencil, PencilLine, Plus, Repeat, Square, Trash2, TrendingUp, Upload, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowUp, BarChart3, CalendarDays, CalendarIcon, Camera, ChevronDown, ChevronRight, FileSpreadsheet, GripVertical, Link2, Loader2, MessageCircle, Mic, Pencil, PencilLine, Plus, Repeat, Square, Trash2, TrendingUp, Upload, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { FolderIcon, GooglePhotosIcon } from "@/components/expense-source-icons";
@@ -31,6 +31,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NumberInput } from "@/components/ui/number-input";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
@@ -173,6 +175,8 @@ export function ExpenseLog() {
   const [editMerchant, setEditMerchant] = useState("");
   const [editAmount, setEditAmount] = useState(0);
   const [editDate, setEditDate] = useState("");
+  const [editDateOpen, setEditDateOpen] = useState(false);
+  const [draftDateOpen, setDraftDateOpen] = useState(false);
   const [editCategory, setEditCategory] = useState("");
   const [editSharedWith, setEditSharedWith] = useState<string | null>(null);
   const [editSharePartner, setEditSharePartner] = useState<{ id: string; name: string } | null>(null);
@@ -2735,7 +2739,7 @@ export function ExpenseLog() {
                           <p className="text-xs leading-5 text-muted-foreground">
                             {isOwed ? t(`${firstNameOf(b.name)} te debe`, `${firstNameOf(b.name)} owes you`) : iOwe ? t(`Le debes a ${firstNameOf(b.name)}`, `You owe ${firstNameOf(b.name)}`) : t("En paz", "Even")}
                           </p>
-                          <p className={cn("numeric whitespace-nowrap text-lg font-semibold", isOwed && "text-positive")}>{fmt(Math.abs(b.balance))}</p>
+                          <p className={cn("numeric whitespace-nowrap text-lg font-semibold", isOwed && "text-positive", iOwe && "text-negative")}>{fmt(Math.abs(b.balance))}</p>
                         </div>
                         <div className="min-w-0">
                           <p className="text-xs leading-5 text-muted-foreground">{t("Gastado juntos", "Spent together")}</p>
@@ -2819,7 +2823,7 @@ export function ExpenseLog() {
             <div className="grid gap-4">
               <div className={cn("rounded-2xl border border-border bg-muted/30 p-4 text-center", settlePartner.balance > 0.005 && "border-positive/40 bg-positive/5")}>
                 <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t("Balance", "Balance")}</p>
-                <p className={cn("numeric mt-1 text-3xl font-semibold", settlePartner.balance > 0.005 && "text-positive")}>{fmt(Math.abs(settlePartner.balance))}</p>
+                <p className={cn("numeric mt-1 text-3xl font-semibold", settlePartner.balance > 0.005 && "text-positive", settlePartner.balance < -0.005 && "text-negative")}>{fmt(Math.abs(settlePartner.balance))}</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <Button type="button" variant="outline" onClick={copySettleText}>
@@ -2879,7 +2883,23 @@ export function ExpenseLog() {
               </div>
               <div className="grid gap-1.5">
                 <Label>{t("Fecha", "Date")}</Label>
-                <Input type="date" value={draft.date} onChange={(e) => setDraft({ ...draft, date: e.target.value })} />
+                <Popover open={draftDateOpen} onOpenChange={setDraftDateOpen}>
+                  <PopoverTrigger asChild>
+                    <Button type="button" variant="outline" className="justify-start gap-2 font-normal">
+                      <CalendarIcon className="h-4 w-4" />
+                      {draft.date ? format(parseISO(draft.date), "d MMM yyyy", { locale: lang === "es" ? es : enUS }) : t("Elige una fecha", "Pick a date")}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={draft.date ? parseISO(draft.date) : undefined}
+                      onSelect={(d) => { if (d) { setDraft({ ...draft, date: format(d, "yyyy-MM-dd") }); setDraftDateOpen(false); } }}
+                      initialFocus
+                      className="pointer-events-auto p-3"
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className="grid gap-1.5">
                 <Label>{t("Categoría", "Category")}</Label>
@@ -3093,7 +3113,23 @@ export function ExpenseLog() {
             </div>
             <div className="grid gap-1.5">
               <Label>{t("Fecha", "Date")}</Label>
-              <Input type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} />
+              <Popover open={editDateOpen} onOpenChange={setEditDateOpen}>
+                <PopoverTrigger asChild>
+                  <Button type="button" variant="outline" className="justify-start gap-2 font-normal">
+                    <CalendarIcon className="h-4 w-4" />
+                    {editDate ? format(parseISO(editDate), "d MMM yyyy", { locale: lang === "es" ? es : enUS }) : t("Elige una fecha", "Pick a date")}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={editDate ? parseISO(editDate) : undefined}
+                    onSelect={(d) => { if (d) { setEditDate(format(d, "yyyy-MM-dd")); setEditDateOpen(false); } }}
+                    initialFocus
+                    className="pointer-events-auto p-3"
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="grid gap-1.5">
               <Label>{t("Categoría", "Category")}</Label>
