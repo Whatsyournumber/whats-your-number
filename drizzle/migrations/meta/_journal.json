@@ -22,6 +22,13 @@
       "when": 1791154572942,
       "tag": "0002_shared_settlement_payment_direction",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791155564731,
+      "tag": "0003_record_shared_balance_payments",
+      "breakpoints": true
     }
   ]
 }

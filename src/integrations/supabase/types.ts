@@ -1376,6 +1376,39 @@ export type Database = {
           },
         ]
       }
+      shared_balance_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          id: string
+          month_key: string
+          paid_by_user: boolean
+          partner_id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency: string
+          id?: string
+          month_key: string
+          paid_by_user: boolean
+          partner_id: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          month_key?: string
+          paid_by_user?: boolean
+          partner_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       shared_balance_settlements: {
         Row: {
           currency: string
