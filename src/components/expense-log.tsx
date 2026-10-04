@@ -1553,7 +1553,7 @@ export function ExpenseLog() {
               )}
             </div>
 
-            <div className="mt-4 md:hidden">
+            <div className="mt-5 md:hidden">
               <p className="numeric whitespace-nowrap text-4xl font-bold leading-none">
                 {fmt(spent)}{" "}
                 <span className="text-xl font-semibold text-muted-foreground">
