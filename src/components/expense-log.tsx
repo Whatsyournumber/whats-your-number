@@ -491,6 +491,64 @@ export function ExpenseLog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [periodTx],
   );
+
+  // Balance de gastos compartidos por persona, dentro del periodo visible.
+  type SharedBalance = { id: string; name: string; count: number; together: number; myShare: number; balance: number };
+  const myName = (profile?.full_name as string | undefined)?.split(" ")[0] || t("Yo", "Me");
+  const initialsOf = (name: string) => name.trim().slice(0, 1).toUpperCase() || "?";
+  const sharedBalances = useMemo<SharedBalance[]>(() => {
+    if (!user?.id) return [];
+    type Row = { expense_id: string; user_id: string; display_name: string | null; share_amount: number; status: string; shared_expenses: { total: number; payer_id: string; tx_date: string } | null };
+    const byExpense = new Map<string, Row[]>();
+    for (const row of sharedBalanceRows as unknown as Row[]) {
+      const list = byExpense.get(row.expense_id) ?? [];
+      list.push(row);
+      byExpense.set(row.expense_id, list);
+    }
+    const map = new Map<string, SharedBalance>();
+    for (const rows of byExpense.values()) {
+      const exp = rows[0]?.shared_expenses;
+      const mine = rows.find((r) => r.user_id === user.id);
+      if (!exp || !mine) continue;
+      const partners = rows.filter((r) => r.user_id !== user.id && r.status === "accepted");
+      if (!partners.length) continue;
+      const inPeriod = exp.tx_date ? (parseISO(exp.tx_date) >= periodStart && parseISO(exp.tx_date) <= monthEnd) : false;
+      for (const p of partners) {
+        const entry = map.get(p.user_id) ?? { id: p.user_id, name: p.display_name || "?", count: 0, together: 0, myShare: 0, balance: 0 };
+        if (inPeriod) {
+          entry.count += 1;
+          entry.together += Number(exp.total) || 0;
+          entry.myShare += Number(mine.share_amount) || 0;
+        }
+        if (exp.payer_id === user.id) entry.balance += Number(p.share_amount) || 0;
+        else if (exp.payer_id === p.user_id) entry.balance -= Number(mine.share_amount) || 0;
+        map.set(p.user_id, entry);
+      }
+    }
+    return [...map.values()];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sharedBalanceRows, user?.id, periodStart.getTime(), monthEnd.getTime()]);
+
+  const settleMsg = settlePartner
+    ? settlePartner.balance > 0.005
+      ? t(`Hola! Solo recordar que me debes ${fmt(settlePartner.balance)} 💸`, `Hi! Just a reminder that you owe me ${fmt(settlePartner.balance)} 💸`)
+      : settlePartner.balance < -0.005
+        ? t(`Hola! Te pago ${fmt(-settlePartner.balance)} de lo que compartimos 💸`, `Hi! I'll pay you ${fmt(-settlePartner.balance)} for our shared expenses 💸`)
+        : t("Hola! Todo en paz 😊", "Hi! We're all even 😊")
+    : "";
+  const settleWa = settlePartner ? `https://wa.me/?text=${encodeURIComponent(settleMsg)}` : "";
+  const copySettleText = async () => {
+    try {
+      await navigator.clipboard.writeText(settleMsg);
+      toast.success(t("Texto copiado", "Text copied"));
+    } catch {
+      toast.error(t("No se pudo copiar el texto", "Could not copy the text"));
+    }
+  };
+  const monthLabelCap = (() => {
+    const m = format(periodStart, "MMMM", { locale });
+    return m.charAt(0).toUpperCase() + m.slice(1);
+  })();
   const expenseFixedItems = useMemo(
     () => fixed.items.filter((i) => !isSavingsName(i.name)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
