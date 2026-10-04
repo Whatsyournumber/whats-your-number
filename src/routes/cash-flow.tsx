@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SavingsGoals, type SavingsGoal } from "@/components/savings-goals";
-import { parseShared } from "@/components/shared-expense";
 import { motion } from "motion/react";
 import { ArrowLeftRight, ArrowRight, Coins, Lightbulb, Pencil, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
@@ -115,23 +114,8 @@ function CashFlow() {
 
   const fmt = d.fmt;
 
-  // Ingresos reales: abonos de los EEFF del mes; si no hay, se usa el perfil.
-  const incomeFromStatements = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const tx of monthTx) {
-      if (tx.amount <= 0) continue;
-      // Las deudas de gastos compartidos ("me deben") no son ingresos.
-      if (parseShared(tx.description)) continue;
-      const key = tx.merchant?.trim() || t("Otros ingresos", "Other income");
-      map.set(key, (map.get(key) ?? 0) + tx.amount);
-    }
-    return [...map.entries()]
-      .map(([name, amount]) => ({ name, amount }))
-      .sort((a, b) => b.amount - a.amount);
-  }, [monthTx]);
-
-  const usingStatements = hasData && monthTx.length > 0 && incomeFromStatements.length > 0;
-  const incomeLines = usingStatements ? incomeFromStatements : d.cashFlow.income;
+  // Ingresos: los del perfil, igual que en el dashboard (no se suman abonos de EEFF).
+  const incomeLines = d.cashFlow.income;
   const totalIncome = incomeLines.reduce((s, i) => s + i.amount, 0) || d.income || 1;
 
   // Necesidades: Vivienda/Renta, Hipoteca, Condominio, Alimentos/Supermercado, Transporte, Servicios, Salud, Educación.
@@ -491,7 +475,7 @@ function CashFlow() {
         <KpiCard
           label={t("Ingresos", "Income")}
           value={fmt(totalIncome)}
-          hint={usingStatements ? t("Abonos de tus EEFF", "Credits from your statements") : t("Según tu perfil", "Based on your profile")}
+          hint={t("Según tu perfil", "Based on your profile")}
           tooltip={<BreakdownTooltip items={incomeLines.slice(0, 8).map((i) => ({ label: i.name, amount: i.amount }))} fmt={fmt} total={totalIncome} />}
           accent
           index={0}
