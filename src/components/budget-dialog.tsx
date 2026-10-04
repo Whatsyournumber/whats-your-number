@@ -57,6 +57,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
   const [appsOpen, setAppsOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -247,7 +248,14 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                             <ChevronDown className={`h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform ${appsOpen ? "rotate-180" : ""}`} />
                           </button>
                         ) : (
-                          <span className="min-w-0 flex-1 truncate text-sm">{label(l)}</span>
+                          <button
+                            type="button"
+                            onClick={() => startEdit(l)}
+                            className="min-w-0 flex-1 truncate text-left text-sm"
+                            title={t("Toca para editar", "Tap to edit")}
+                          >
+                            {label(l)}
+                          </button>
                         )
                       )}
                       {g === "essentials" ? (
@@ -283,14 +291,13 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                       {editingId === l.id ? (
                         <button
                           type="button"
-                          onClick={() => {
-                            setEditingId(null);
-                            removeLine(l.id);
-                          }}
-                          className="grid h-9 w-9 shrink-0 place-items-center text-muted-foreground transition hover:text-negative"
-                          aria-label={t("Quitar", "Remove")}
+                          onClick={() => setConfirmDelete(l.id)}
+                          // Evita que el mousedown dispare el blur del input y desmonte este botón.
+                          onMouseDown={(e) => e.preventDefault()}
+                          className="grid h-9 w-9 shrink-0 place-items-center text-muted-foreground/70 transition hover:text-negative"
+                          aria-label={t("Eliminar gasto", "Delete expense")}
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <X className="h-4 w-4" />
                         </button>
                       ) : (
                         <button
@@ -434,6 +441,37 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
               }}
             >
               {t("Descartar cambios", "Discard changes")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Confirmar antes de eliminar una categoría del plan. */}
+      <AlertDialog
+        open={confirmDelete !== null}
+        onOpenChange={(v) => {
+          if (!v) setConfirmDelete(null);
+        }}
+      >
+        <AlertDialogContent className="w-[calc(100vw-2rem)] max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("¿Eliminar este gasto?", "Delete this expense?")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t(
+                "Esta categoría saldrá de tu plan de gasto mensual.",
+                "This category will be removed from your monthly spending plan.",
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("Cancelar", "Cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (confirmDelete) removeLine(confirmDelete);
+                setConfirmDelete(null);
+              }}
+            >
+              {t("Eliminar", "Delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
