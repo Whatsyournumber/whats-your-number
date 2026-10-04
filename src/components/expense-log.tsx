@@ -2700,7 +2700,7 @@ export function ExpenseLog() {
                           </span>
                           <div className="min-w-0 flex-1">
                             <p className="text-base font-semibold leading-snug">{b.name}</p>
-                            <p className="text-xs text-muted-foreground">{t(`Balance con ${b.name}`, `Balance with ${b.name}`)} · {b.count} {t("gastos", "expenses")}</p>
+                            <p className="text-xs text-muted-foreground">{b.count} {t("gastos", "expenses")}</p>
                           </div>
                         </div>
                         <button
