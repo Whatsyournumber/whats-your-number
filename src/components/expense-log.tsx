@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, FileSpreadsheet, GripVertical, Link2, Loader2, MessageCircle, Mic, Pencil, PencilLine, Plus, Repeat, Square, Trash2, TrendingUp, Upload, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowUp, BarChart3, CalendarDays, CalendarIcon, Camera, ChevronDown, ChevronRight, FileSpreadsheet, GripVertical, Link2, Loader2, MessageCircle, Mic, Pencil, PencilLine, Plus, Repeat, Square, Trash2, TrendingUp, Upload, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { FolderIcon, GooglePhotosIcon } from "@/components/expense-source-icons";
@@ -31,6 +31,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NumberInput } from "@/components/ui/number-input";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
