@@ -173,6 +173,8 @@ export function ExpenseLog() {
   const [editMerchant, setEditMerchant] = useState("");
   const [editAmount, setEditAmount] = useState(0);
   const [editDate, setEditDate] = useState("");
+  const [editDateOpen, setEditDateOpen] = useState(false);
+  const [draftDateOpen, setDraftDateOpen] = useState(false);
   const [editCategory, setEditCategory] = useState("");
   const [editSharedWith, setEditSharedWith] = useState<string | null>(null);
   const [editSharePartner, setEditSharePartner] = useState<{ id: string; name: string } | null>(null);
@@ -2735,7 +2737,7 @@ export function ExpenseLog() {
                           <p className="text-xs leading-5 text-muted-foreground">
                             {isOwed ? t(`${firstNameOf(b.name)} te debe`, `${firstNameOf(b.name)} owes you`) : iOwe ? t(`Le debes a ${firstNameOf(b.name)}`, `You owe ${firstNameOf(b.name)}`) : t("En paz", "Even")}
                           </p>
-                          <p className={cn("numeric whitespace-nowrap text-lg font-semibold", isOwed && "text-positive")}>{fmt(Math.abs(b.balance))}</p>
+                          <p className={cn("numeric whitespace-nowrap text-lg font-semibold", isOwed && "text-positive", iOwe && "text-negative")}>{fmt(Math.abs(b.balance))}</p>
                         </div>
                         <div className="min-w-0">
                           <p className="text-xs leading-5 text-muted-foreground">{t("Gastado juntos", "Spent together")}</p>
@@ -2819,7 +2821,7 @@ export function ExpenseLog() {
             <div className="grid gap-4">
               <div className={cn("rounded-2xl border border-border bg-muted/30 p-4 text-center", settlePartner.balance > 0.005 && "border-positive/40 bg-positive/5")}>
                 <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t("Balance", "Balance")}</p>
-                <p className={cn("numeric mt-1 text-3xl font-semibold", settlePartner.balance > 0.005 && "text-positive")}>{fmt(Math.abs(settlePartner.balance))}</p>
+                <p className={cn("numeric mt-1 text-3xl font-semibold", settlePartner.balance > 0.005 && "text-positive", settlePartner.balance < -0.005 && "text-negative")}>{fmt(Math.abs(settlePartner.balance))}</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <Button type="button" variant="outline" onClick={copySettleText}>
