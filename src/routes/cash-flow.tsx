@@ -447,13 +447,13 @@ function CashFlow() {
 
       <div className="flex items-center gap-3">
         {months.length > 0 && (
-          <div className="no-scrollbar -mx-1 flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto px-1 py-0.5">
-            <span className="shrink-0 text-xs text-muted-foreground">{t("Mes:", "Month:")}</span>
+          <div className="no-scrollbar -mx-1 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto px-1 py-0.5">
+            <span className="hidden shrink-0 text-xs text-muted-foreground sm:inline">{t("Mes:", "Month:")}</span>
             {months.slice(0, 12).map((m) => (
               <button
                 key={m}
                 onClick={() => setMonth(m)}
-                className={`shrink-0 whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] leading-none transition ${
+                className={`min-w-[4.75rem] shrink-0 flex-1 basis-0 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs leading-none transition ${
                   m === activeMonth
                     ? "border-primary bg-primary/10 text-primary"
                     : "border-border text-muted-foreground hover:text-foreground"
@@ -468,22 +468,6 @@ function CashFlow() {
           <Pencil className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">{t("Editar categorías", "Edit categories")}</span>
           <span className="sm:hidden">{t("Editar", "Edit")}</span>
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          className="shrink-0 gap-2 sm:hidden"
-          data-tour-cashflow-target="alloc-m"
-          onClick={() => {
-            setAllocDraft({
-              invest: Math.round(savingsAlloc?.invest ?? destInvest),
-              goals: Math.round(savingsAlloc?.goals ?? destGoals),
-            });
-            setAllocOpen(true);
-          }}
-        >
-          <PiggyBank className="h-3.5 w-3.5" />
-          {t("Ahorro", "Savings")}
         </Button>
       </div>
 
@@ -508,6 +492,16 @@ function CashFlow() {
           value={fmt(saveAmount)}
           hint={`${((saveAmount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
           tooltip={<BreakdownTooltip items={saveBreakdown} fmt={fmt} total={saveAmount} showAmounts={hasReal} />}
+          icon={PiggyBank}
+          iconClassName="sm:hidden"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.matchMedia("(min-width: 640px)").matches) return;
+            setAllocDraft({
+              invest: Math.round(savingsAlloc?.invest ?? destInvest),
+              goals: Math.round(savingsAlloc?.goals ?? destGoals),
+            });
+            setAllocOpen(true);
+          }}
           index={2}
         />
         <KpiCard
