@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791154158294,
+      "tag": "0000_sync_shared_expense_edits",
+      "breakpoints": true
+    }
+  ]
+}
