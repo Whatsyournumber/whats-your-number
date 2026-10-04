@@ -623,9 +623,12 @@ export function ExpenseLog() {
         tx.tx_date === exp.tx_date &&
         (!exp.merchant.trim() || tx.merchant.trim().toLowerCase() === exp.merchant.trim().toLowerCase()) &&
         tx.original_currency === exp.currency &&
-        Math.abs(Math.abs(tx.original_amount ?? tx.amount) - (Number(mine.share_amount) === 0 && exp.payer_id === user.id
+        // La parte de movimientos antiguos se guardó redondeada o distinta de
+        // la participación original. Para comercios identificados, fecha,
+        // nombre y moneda bastan; solo los antiguos sin nombre requieren monto.
+        (Boolean(exp.merchant.trim()) || Math.abs(Math.abs(tx.original_amount ?? tx.amount) - (Number(mine.share_amount) === 0 && exp.payer_id === user.id
           ? Number(exp.total) - Number(mine.share_amount)
-          : Number(mine.share_amount))) < 0.02,
+          : Number(mine.share_amount))) < 0.02),
       );
       if (!matched) continue;
       matchedTransactions.add(matched.id);
