@@ -386,7 +386,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
           </Button>
         )}
 
-        <div className="flex flex-col gap-3 border-t border-border/60 pt-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 flex-col gap-3 border-t border-border/60 pt-3 sm:flex-row sm:items-center sm:justify-between">
           {!adding ? <div className="flex items-center gap-2">
             <span className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
               {t("Total", "Total")}
@@ -403,7 +403,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
           </div> : <span />}
           <Button
             type="button"
-            className="w-full sm:w-auto"
+            className="mx-1 min-w-0 w-auto self-stretch sm:mx-0 sm:w-auto sm:self-auto"
             onClick={() => {
               onSave(draft.filter((l) => Number.isFinite(l.amount)));
               onOpenChange(false);
