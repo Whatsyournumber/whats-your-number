@@ -1515,15 +1515,12 @@ export function ExpenseLog() {
       <div className="space-y-3">
           <div className="rounded-2xl border border-border bg-card px-5 py-6 sm:p-7">
             <div data-tour-expense-target="plan" className="flex min-w-0 items-center gap-3">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-positive/10 sm:h-11 sm:w-11">
-                <Wallet className="h-4 w-4 text-positive sm:h-5 sm:w-5" />
-              </span>
               <div className="min-w-0 flex-1">
                 <h3 data-tour-expense-target="plan-title" className="min-w-0 text-lg font-semibold max-md:whitespace-normal max-md:leading-snug sm:text-xl lg:text-2xl lg:whitespace-nowrap">
                   {t("Tu plan de gasto mensual", "Your monthly spending plan")}
                 </h3>
                 <p className="hidden max-md:block max-md:mt-0.5 max-md:text-xs max-md:leading-snug max-md:text-muted-foreground">
-                  {t("Agrega categorías a tu plan", "Add categories to your plan")}
+                  {t("Crea o edita una categoría a tu plan", "Create or edit a category in your plan")}
                 </p>
               </div>
               {period === "month" && (
