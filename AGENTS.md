@@ -31,4 +31,4 @@ Shared-expense edits use the authenticated public invoker RPC backed by a privat
 
 Monthly shared-balance settlements are private per-user records of paid amounts and payment direction, separate from expense shares, so recording payments changes only the outstanding balance, not historical spending.
 
-Monthly shared-balance summaries match accepted expense records one-to-one to visible user transactions by date, merchant when present, currency, and share amount; orphaned participant rows must not inflate counts or balances because their transactions cannot be inspected or edited.
+Monthly shared-balance summaries match accepted expense records one-to-one to visible user transactions by date, merchant when present, and currency; prefer exact share amount but allow named legacy transactions with rounded or altered amounts. Orphaned participant rows must not inflate counts or balances because their transactions cannot be inspected or edited.
