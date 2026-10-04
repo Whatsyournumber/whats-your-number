@@ -2703,8 +2703,8 @@ export function ExpenseLog() {
                             <span className="grid h-11 w-11 place-items-center rounded-full bg-muted text-base font-semibold ring-2 ring-card">{initialsOf(b.name)}</span>
                           </span>
                           <div className="min-w-0 flex-1">
-                            <p className="text-base font-semibold leading-snug">{t(`Balance con ${b.name}`, `Balance with ${b.name}`)}</p>
-                            <p className="text-xs text-muted-foreground">{monthLabelCap} · {b.count} {t("gastos", "expenses")}</p>
+                            <p className="text-base font-semibold leading-snug">{b.name}</p>
+                            <p className="text-xs text-muted-foreground">{t(`Balance con ${b.name}`, `Balance with ${b.name}`)} · {b.count} {t("gastos", "expenses")}</p>
                           </div>
                         </div>
                         <button
