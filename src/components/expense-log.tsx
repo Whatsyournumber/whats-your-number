@@ -88,6 +88,9 @@ const draftSplit = (d: Draft) => {
   const pct = d.amount > 0 ? Math.round((draftShare(d) / d.amount) * 100) : 50;
   return `${pct}/${100 - pct}`;
 };
+/** Una fila compartida en positivo significa que la otra persona te debe su parte. */
+const sharedDebtOf = (tx: { description?: string | null; amount: number | string }) =>
+  Boolean(parseShared(tx.description)) && Number(tx.amount) > 0;
 
 const normName = (v: string) => v.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 /** Busca en lo dictado el nombre (o primer nombre) de alguien con quien ya compartiste gastos. */
@@ -571,7 +574,8 @@ export function ExpenseLog() {
   );
   const expenseFixedTotal = expenseFixedItems.reduce((s, i) => s + (Number(i.amount) || 0), 0);
 
-  const variableSpend = expenseTx.reduce((s, x) => s + Math.abs(x.amount), 0);
+  // La parte que te deben no es gasto tuyo: no cuenta en el total del plan.
+  const variableSpend = expenseTx.reduce((s, x) => s + (sharedDebtOf(x) ? 0 : Math.abs(x.amount)), 0);
   const spent = variableSpend + expenseFixedTotal * periodFactor;
   const onboardingTotal = SPEND_PLAN_FIELDS.reduce((s, f) => s + (Number(profile[f.key]) || 0), 0);
   const plan = budgets.hasBudget ? budgets.total : onboardingTotal;
@@ -856,6 +860,7 @@ export function ExpenseLog() {
       detail.set(id, arr);
     };
     for (const x of expenseTx) {
+      if (sharedDebtOf(x)) continue; // La parte que te deben no entra en las categorías.
       // Los gastos compartidos ya traen la categoría elegida por la persona:
       // se respeta aunque el comercio coincida con otra regla automática.
       const name = x.description?.startsWith(SHARED_PREFIX) && x.category ? x.category : categorizeTx(x as Tx, categories.rules);
@@ -1283,9 +1288,11 @@ export function ExpenseLog() {
     setSaving(true);
     try {
       let ownAmount = draft.amount;
+      let theirs = 0;
       let sharedDescription: string | null = null;
       if (draft.partner) {
         ownAmount = Math.round(draftShare(draft) * 100) / 100;
+        theirs = Math.round((draft.amount - ownAmount) * 100) / 100;
         const { data: expenseId, error: shareError } = await supabase.rpc("create_shared_expense", {
           _partner_id: draft.partner.id,
           _payer_id: user.id,
@@ -1298,7 +1305,7 @@ export function ExpenseLog() {
           _creator_name: (profile?.full_name as string | undefined)?.split(" ")[0] || t("Yo", "Me"),
           _partner_name: draft.partner.name,
           _creator_share: ownAmount,
-          _partner_share: draft.amount - ownAmount,
+          _partner_share: theirs,
           _receipt_items: draft.source === "receipt" ? draft.items.slice(0, 150).map((i) => ({ name: String(i.name).slice(0, 120), amount: Number(i.amount) || 0 })) : [],
         });
         if (shareError) throw new Error(shareError.message);
@@ -1313,7 +1320,9 @@ export function ExpenseLog() {
         date: draft.date,
         merchant: draft.merchant,
         category: draft.category,
-        amount: ownAmount,
+        // Si tu parte es 0 y tú pagaste, la otra persona te debe el total: se guarda en positivo (verde).
+        amount: ownAmount > 0 ? ownAmount : theirs,
+        debtToMe: ownAmount === 0,
         currency,
         description:
           sharedDescription ??
@@ -1343,9 +1352,12 @@ export function ExpenseLog() {
 
   /** Fila de "Últimos gastos", reutilizada en la tarjeta y en el popup con todo el historial. */
   const renderLatestTx = (x: (typeof expenseTx)[number]) => {
+    const shared = parseShared(x.description);
+    // La otra persona te debe su parte: el registro se guarda en positivo y se muestra en verde.
+    const sharedDebt = Boolean(shared) && Number(x.amount) > 0;
     const receiptItems = receiptItemsFrom(x.description);
     const receiptTotal = receiptItems.reduce((sum, item) => sum + item.amount, 0);
-    const receiptShare = parseShared(x.description) && receiptTotal > 0
+    const receiptShare = shared && receiptTotal > 0
       ? Math.abs(x.original_amount ?? x.amount) / receiptTotal
       : 1;
     const expanded = expandedTx === x.id;
@@ -1368,13 +1380,13 @@ export function ExpenseLog() {
             <p className="break-words text-[11px] text-muted-foreground">
               {translateCategory(x.category || categorizeTx(x as Tx, categories.rules), lang)}
               {receiptItems.length > 0 ? ` · ${receiptItems.length} ${t("productos", "items")}` : ""}
-              {parseShared(x.description) ? ` · ${parseShared(x.description)!.split} · ${t("con", "with")} ${parseShared(x.description)!.name}` : ""}
+              {shared ? ` · ${shared.split.split("/").reverse().join("/")} · ${t("con", "with")} ${shared.name}` : ""}
             </p>
           </div>
           <span className="shrink-0 text-[11px] text-muted-foreground">
             {x.tx_date ? format(parseISO(x.tx_date), "d MMM", { locale }) : ""}
           </span>
-          <span className="shrink-0 text-sm font-semibold text-rose-300">-{fmt(Math.abs(x.amount))}</span>
+          <span className={cn("shrink-0 text-sm font-semibold", sharedDebt ? "text-positive" : "text-rose-300")}>{sharedDebt ? "+" : "-"}{fmt(Math.abs(x.amount))}</span>
           <button
             type="button"
             onClick={() => openEditTx(x as Tx)}

@@ -215,16 +215,21 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
         if (!expenseId) throw new Error(t("No se pudo crear el gasto compartido", "The shared expense could not be created"));
         await notify({ data: { expenseId } });
       }
-      // En tu presupuesto solo cuenta tu parte.
+      // Cuando tu parte es 0 y tú pagaste, la otra persona te debe el total: se guarda en positivo (verde).
+      const debtToMe = mine === 0 && payer === "me";
       await saveExpense({
-        userId: user.id, date: dateStr, category: cat, currency, amount: mine,
+        userId: user.id, date: dateStr, category: cat, currency,
+        amount: debtToMe ? theirsTotal : mine, debtToMe,
         merchant: merchant.trim() || translateCategory(cat, lang),
         description: sharedReceiptDescription(split, names, receiptItems),
       });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
       void queryClient.invalidateQueries({ queryKey: ["shared-partners"] });
       toast.success(t("Gasto compartido guardado", "Shared expense saved"), {
-        description: t(`Tu parte: ${fmt(mine)} · ${names} ya lo ven en su app`, `Your share: ${fmt(mine)} · ${names} already see it in the app`),
+        description: t(
+          debtToMe ? `${names} te debe ${fmt(theirsTotal)}` : `Tu parte: ${fmt(mine)} · ${names} ya lo ven en su app`,
+          debtToMe ? `${names} owes you ${fmt(theirsTotal)}` : `Your share: ${fmt(mine)} · ${names} already see it in the app`,
+        ),
       });
       reset();
       onOpenChange(false);
@@ -404,7 +409,7 @@ export function SharedExpenseInbox() {
     queryFn: async () => {
       const { data: rows, error } = await supabase
         .from("shared_expense_participants")
-        .select("id, share_amount, expense_id, shared_expenses(created_by, total, currency, category, merchant, tx_date, split_mode, receipt_items)")
+        .select("id, share_amount, expense_id, shared_expenses(created_by, payer_id, total, currency, category, merchant, tx_date, split_mode, receipt_items)")
         .eq("user_id", user!.id)
         .eq("status", "pending");
       if (error) throw error;
@@ -430,12 +435,15 @@ export function SharedExpenseInbox() {
     if (!user?.id) return;
     setBusy(row.id);
     try {
-      const exp = row.shared_expenses as unknown as { total: number; currency: string; category: string; merchant: string; tx_date: string; split_mode: string; receipt_items: ReceiptItem[] };
+      const exp = row.shared_expenses as unknown as { payer_id: string; total: number; currency: string; category: string; merchant: string; tx_date: string; split_mode: string; receipt_items: ReceiptItem[] };
       if (accept) {
         const split = exp.split_mode.split("/").reverse().join("/");
+        const share = Number(row.share_amount);
         await saveExpense({
           userId: user.id, date: exp.tx_date, category: exp.category, currency: exp.currency,
-          amount: Number(row.share_amount), merchant: exp.merchant || translateCategory(exp.category, lang),
+          // Cuando tu parte es 0 y tú pagaste, la otra persona te debe el total: se guarda en positivo (verde).
+          amount: share > 0 ? share : exp.total, debtToMe: share === 0 && exp.payer_id === user.id,
+          merchant: exp.merchant || translateCategory(exp.category, lang),
           description: sharedReceiptDescription(split, row.from, Array.isArray(exp.receipt_items) ? exp.receipt_items : []),
         });
       }

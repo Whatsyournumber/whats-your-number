@@ -33,6 +33,8 @@ export async function saveExpense(input: {
   merchant: string;
   category: string;
   amount: number;
+  /** Cuando es true, el monto es una deuda a tu favor (la otra persona te debe) y se guarda en positivo. */
+  debtToMe?: boolean;
   currency: string;
   description: string;
 }) {
@@ -45,7 +47,7 @@ export async function saveExpense(input: {
       tx_date: input.date,
       merchant: input.merchant,
       description: input.description,
-      amount: -Math.abs(input.amount),
+      amount: input.debtToMe ? Math.abs(input.amount) : -Math.abs(input.amount),
       currency: input.currency,
       category: input.category,
     })
