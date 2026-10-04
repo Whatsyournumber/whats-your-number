@@ -367,7 +367,35 @@ export function ExpenseLog() {
       const wasShared = Boolean(parseShared(editTx.description));
       let amount = -Math.abs(editAmount);
       let description: string | null | undefined = undefined;
-      if (wasShared && !editSharedWith) {
+      if (wasShared && editSharedWith) {
+        // Sigue compartido: se recalcula el reparto con el total y el modo elegidos.
+        const total = Math.abs(editTotal);
+        const mine =
+          editMode === "equal" ? total / 2 : editMode === "percent" ? (total * editMyPct) / 100 : Math.min(editMyAmount, total);
+        const theirs = Math.max(0, total - mine);
+        const myPct = total > 0 ? (mine / total) * 100 : 50;
+        amount = mine > 0 ? -mine : Math.abs(theirs);
+        description = `${SHARED_PREFIX}${Math.round(myPct)}/${Math.round(100 - myPct)}|${editSharedWith}`;
+        // Sincroniza el gasto compartido original si lo creé yo (mismo comercio y fecha).
+        if (user?.id) {
+          const { data: expRows } = await supabase
+            .from("shared_expenses")
+            .select("id")
+            .eq("created_by", user.id)
+            .eq("merchant", editTx.merchant ?? "")
+            .eq("tx_date", editTx.tx_date ?? editDate)
+            .limit(1);
+          const expId = expRows?.[0]?.id as string | undefined;
+          if (expId) {
+            await supabase
+              .from("shared_expenses")
+              .update({ total, split_mode: `${Math.round(myPct)}/${Math.round(100 - myPct)}`, tx_date: editDate, category: editCategory, merchant: editMerchant.trim() })
+              .eq("id", expId);
+            await supabase.from("shared_expense_participants").update({ share_amount: mine }).eq("expense_id", expId).eq("user_id", user.id);
+            await supabase.from("shared_expense_participants").update({ share_amount: theirs }).eq("expense_id", expId).neq("user_id", user.id);
+          }
+        }
+      } else if (wasShared && !editSharedWith) {
         // Quitar a la otra persona: el gasto pasa a ser solo tuyo.
         description = null;
       } else if (!wasShared && editSharePartner && user?.id) {
