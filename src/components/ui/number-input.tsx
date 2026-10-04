@@ -35,7 +35,7 @@ export function NumberInput({
   style?: React.CSSProperties;
   ariaLabel?: string;
   disabled?: boolean;
-  suffix?: string;
+  suffix?: string | undefined;
 }) {
   const pretty = (v: number) =>
     v === 0 ? "" : format ? v.toLocaleString(getWynMoneyLocale(), { useGrouping: "always" as unknown as boolean }) : String(v);
