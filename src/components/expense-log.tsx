@@ -64,6 +64,11 @@ import { normalizeValidEmail } from "@/lib/email-validation";
 import { receiptItemsFrom as parseReceiptItems, sharedReceiptDescription } from "@/lib/receipt-insights";
 
 const firstNameOf = (name: string) => name.trim().split(/\s+/)[0] || name;
+// Corta el texto de forma limpia (sin puntos suspensivos) para que no pase a dos líneas.
+const clipText = (text: string, max: number) => {
+  const trimmed = text.trim();
+  return trimmed.length > max ? trimmed.slice(0, max).trimEnd() : trimmed;
+};
 
 const editInitials = (name: string) => {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -1534,11 +1539,23 @@ export function ExpenseLog() {
             </button>
           )}
           <div className="min-w-0 flex-1">
-            <p className="flex min-w-0 items-center gap-1.5 break-words text-sm font-medium">{x.merchant}{shared && <Users className={cn("h-3.5 w-3.5 shrink-0", iOwe ? "text-rose-300" : "text-positive")} />}</p>
-            <p className="break-words text-[11px] text-muted-foreground">
-              {translateCategory(x.category || categorizeTx(x as Tx, categories.rules), lang)}
-              {receiptItems.length > 0 ? ` · ${receiptItems.length} ${t("productos", "items")}` : ""}
-              {shared ? ` · ${iOwe ? t(`Pagó ${shared.name}`, `Paid by ${shared.name}`) : t("Pagaste tú", "Paid by you")} · ${shared.split.split("/").reverse().join("/")}` : ""}
+            <p className="flex min-w-0 items-center gap-1.5 truncate text-sm font-medium">{clipText(x.merchant, 20)}{shared && <Users className={cn("h-3.5 w-3.5 shrink-0", iOwe ? "text-rose-300" : "text-positive")} />}</p>
+            <p className="truncate text-[11px] text-muted-foreground">
+              {(() => {
+                const cat = translateCategory(x.category || categorizeTx(x as Tx, categories.rules), lang);
+                const itemsTxt = receiptItems.length > 0 ? ` · ${receiptItems.length} ${t("productos", "items")}` : "";
+                const base = `${cat}${itemsTxt}`;
+                const paidBy = shared
+                  ? (iOwe
+                    ? t(`Pagó ${firstNameOf(shared.name)}`, `Paid by ${firstNameOf(shared.name)}`)
+                    : t("Pagaste tú", "Paid by you"))
+                  : "";
+                const splitTxt = shared ? shared.split.split("/").reverse().join("/") : "";
+                const full = shared ? `${base} · ${paidBy} · ${splitTxt}` : base;
+                const shorter = shared ? `${base} · ${paidBy}` : full;
+                const chosen = full.length > 34 ? (shorter.length <= 34 ? shorter : clipText(shorter, 34)) : full;
+                return chosen;
+              })()}
             </p>
           </div>
           <span className="shrink-0 text-[11px] text-muted-foreground">
@@ -2766,17 +2783,23 @@ export function ExpenseLog() {
                               />
                                <div className="min-w-0 flex-1">
                                  <p className="flex min-w-0 items-center gap-1.5 text-sm">
-                                   <span className="truncate">{it.label}</span>
-                                   {parseShared(expenseTx.find((x) => x.id === it.key)?.description) && <Users className={cn("h-3.5 w-3.5 shrink-0", sharedIOwe(expenseTx.find((x) => x.id === it.key)?.description) ? "text-rose-300" : "text-positive")} aria-label={t("Compartido", "Shared")} />}
+                                   <span className="truncate">{clipText(it.label, 22)}</span>
+                                    {parseShared(expenseTx.find((x) => x.id === it.key)?.description) && <Users className={cn("h-3.5 w-3.5 shrink-0", sharedIOwe(expenseTx.find((x) => x.id === it.key)?.description) ? "text-rose-300" : "text-positive")} aria-label={t("Compartido", "Shared")} />}
                                  </p>
                                 {it.date && (
-                                  <p className="text-[11px] text-muted-foreground">
-                                    {format(parseISO(it.date), "d MMM", { locale })}
+                                  <p className="truncate text-[11px] text-muted-foreground">
                                     {(() => {
+                                      const dateTxt = format(parseISO(it.date), "d MMM", { locale });
                                       const sharedTx = parseShared(expenseTx.find((x) => x.id === it.key)?.description);
-                                      if (!sharedTx) return "";
+                                      if (!sharedTx) return dateTxt;
                                       const iOweRow = sharedIOwe(expenseTx.find((x) => x.id === it.key)?.description);
-                                      return ` · ${iOweRow ? t(`Pagó ${sharedTx.name}`, `Paid by ${sharedTx.name}`) : t("Pagaste tú", "Paid by you")} · ${sharedTx.split.split("/").reverse().join("/")}`;
+                                      const paidBy = iOweRow
+                                        ? t(`Pagó ${firstNameOf(sharedTx.name)}`, `Paid by ${firstNameOf(sharedTx.name)}`)
+                                        : t("Pagaste tú", "Paid by you");
+                                      const splitTxt = sharedTx.split.split("/").reverse().join("/");
+                                      const full = `${dateTxt} · ${paidBy} · ${splitTxt}`;
+                                      const shorter = `${dateTxt} · ${paidBy}`;
+                                      return full.length > 34 ? (shorter.length <= 34 ? shorter : clipText(shorter, 34)) : full;
                                     })()}
                                   </p>
                                 )}
