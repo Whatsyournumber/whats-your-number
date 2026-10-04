@@ -215,7 +215,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                   {t(GROUP_LABELS[g].es, GROUP_LABELS[g].en)}
                 </p>
                 {groupLines.map((l) => (
-                  <div key={l.id} className="min-w-0 rounded-xl border border-border/50 px-2 py-2 sm:px-3">
+                  <div key={l.id} className="group min-w-0 rounded-xl border border-border/50 px-2 py-2 sm:px-3">
                     <div className="flex min-w-0 items-center gap-1.5 sm:gap-3">
                       {editingId === l.id ? (
                         <Input
