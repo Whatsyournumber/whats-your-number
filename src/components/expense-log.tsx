@@ -182,6 +182,10 @@ export function ExpenseLog() {
   const [draftDateOpen, setDraftDateOpen] = useState(false);
   const [editCategory, setEditCategory] = useState("");
   const [editSharedWith, setEditSharedWith] = useState<string | null>(null);
+  const [editMode, setEditMode] = useState<"equal" | "percent" | "amount">("equal");
+  const [editMyPct, setEditMyPct] = useState(50);
+  const [editMyAmount, setEditMyAmount] = useState(0);
+  const [editTotal, setEditTotal] = useState(0);
   const [editSharePartner, setEditSharePartner] = useState<{ id: string; name: string } | null>(null);
   const [editInviteEmail, setEditInviteEmail] = useState("");
   const [editLooking, setEditLooking] = useState(false);
@@ -310,7 +314,22 @@ export function ExpenseLog() {
     setEditAmount(Math.abs(x.amount));
     setEditDate(x.tx_date ?? format(new Date(), "yyyy-MM-dd"));
     setEditCategory(x.category || categorizeTx(x, categories.rules));
-    setEditSharedWith(parseShared(x.description)?.name ?? null);
+    const shared = parseShared(x.description);
+    setEditSharedWith(shared?.name ?? null);
+    if (shared) {
+      const myShare = Math.abs(x.amount);
+      const a = Number(shared.split.split("/")[0]);
+      const pct = Number.isFinite(a) && a >= 0 && a <= 100 ? a : 50;
+      setEditMyPct(pct);
+      setEditMode(pct === 50 ? "equal" : "percent");
+      setEditMyAmount(myShare);
+      setEditTotal(pct > 0 ? myShare / (pct / 100) : myShare);
+    } else {
+      setEditMode("equal");
+      setEditMyPct(50);
+      setEditMyAmount(0);
+      setEditTotal(0);
+    }
     setEditSharePartner(null);
     setEditInviteEmail("");
     setEditInviting(false);
@@ -348,7 +367,35 @@ export function ExpenseLog() {
       const wasShared = Boolean(parseShared(editTx.description));
       let amount = -Math.abs(editAmount);
       let description: string | null | undefined = undefined;
-      if (wasShared && !editSharedWith) {
+      if (wasShared && editSharedWith) {
+        // Sigue compartido: se recalcula el reparto con el total y el modo elegidos.
+        const total = Math.abs(editTotal);
+        const mine =
+          editMode === "equal" ? total / 2 : editMode === "percent" ? (total * editMyPct) / 100 : Math.min(editMyAmount, total);
+        const theirs = Math.max(0, total - mine);
+        const myPct = total > 0 ? (mine / total) * 100 : 50;
+        amount = mine > 0 ? -mine : Math.abs(theirs);
+        description = `${SHARED_PREFIX}${Math.round(myPct)}/${Math.round(100 - myPct)}|${editSharedWith}`;
+        // Sincroniza el gasto compartido original si lo creé yo (mismo comercio y fecha).
+        if (user?.id) {
+          const { data: expRows } = await supabase
+            .from("shared_expenses")
+            .select("id")
+            .eq("created_by", user.id)
+            .eq("merchant", editTx.merchant ?? "")
+            .eq("tx_date", editTx.tx_date ?? editDate)
+            .limit(1);
+          const expId = expRows?.[0]?.id as string | undefined;
+          if (expId) {
+            await supabase
+              .from("shared_expenses")
+              .update({ total, split_mode: `${Math.round(myPct)}/${Math.round(100 - myPct)}`, tx_date: editDate, category: editCategory, merchant: editMerchant.trim() })
+              .eq("id", expId);
+            await supabase.from("shared_expense_participants").update({ share_amount: mine }).eq("expense_id", expId).eq("user_id", user.id);
+            await supabase.from("shared_expense_participants").update({ share_amount: theirs }).eq("expense_id", expId).neq("user_id", user.id);
+          }
+        }
+      } else if (wasShared && !editSharedWith) {
         // Quitar a la otra persona: el gasto pasa a ser solo tuyo.
         description = null;
       } else if (!wasShared && editSharePartner && user?.id) {
@@ -3120,8 +3167,12 @@ export function ExpenseLog() {
               <Input value={editMerchant} onChange={(e) => setEditMerchant(e.target.value)} />
             </div>
             <div className="grid gap-1.5">
-              <Label>{`${t("Monto", "Amount")} (${currency})`}</Label>
-              <NumberInput value={editAmount} onChange={(v) => setEditAmount(v || 0)} min={0} format />
+              <Label>{editSharedWith ? `${t("Monto total", "Total amount")} (${currency})` : `${t("Monto", "Amount")} (${currency})`}</Label>
+              {editSharedWith ? (
+                <NumberInput value={editTotal} onChange={(v) => setEditTotal(v || 0)} min={0} format />
+              ) : (
+                <NumberInput value={editAmount} onChange={(v) => setEditAmount(v || 0)} min={0} format />
+              )}
             </div>
             <div className="grid gap-1.5">
               <Label>{t("Fecha", "Date")}</Label>
@@ -3179,6 +3230,65 @@ export function ExpenseLog() {
                   </button>
                 </div>
               ) : (
+                null
+              )}
+              {editSharedWith && (
+                <div className="grid gap-2">
+                  <div className="flex gap-2">
+                    {(["equal", "percent", "amount"] as const).map((m) => (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => setEditMode(m)}
+                        className={cn(
+                          "flex-1 rounded-full border px-3 py-2 text-sm font-medium transition-colors",
+                          editMode === m ? "border-positive bg-positive/15 text-foreground" : "border-border text-muted-foreground",
+                        )}
+                      >
+                        {m === "equal" ? "50 / 50" : m === "percent" ? t("Porcentaje", "Percent") : t("Cantidad", "Amount")}
+                      </button>
+                    ))}
+                  </div>
+                  {editMode === "percent" && (
+                    <div className="flex items-center gap-2">
+                      <NumberInput value={editMyPct} onChange={(v) => setEditMyPct(Math.max(0, Math.min(100, v || 0)))} min={0} max={100} />
+                      <span className="shrink-0 text-sm text-muted-foreground">% {t("para ti", "for you")}</span>
+                    </div>
+                  )}
+                  {editMode === "amount" && (
+                    <div className="flex items-center gap-2">
+                      <NumberInput value={editMyAmount} onChange={(v) => setEditMyAmount(Math.max(0, v || 0))} min={0} format />
+                      <span className="shrink-0 text-sm text-muted-foreground">{t("pagas tú", "you pay")}</span>
+                    </div>
+                  )}
+                  {(() => {
+                    const total = Math.abs(editTotal);
+                    const mine =
+                      editMode === "equal" ? total / 2 : editMode === "percent" ? (total * editMyPct) / 100 : Math.min(editMyAmount, total);
+                    const theirs = Math.max(0, total - mine);
+                    return (
+                      <div className="rounded-lg border border-border">
+                        <div className="flex items-center justify-between gap-2 px-3 py-2.5">
+                          <span className="text-sm">{t("Tú pagas", "You pay")}</span>
+                          <span className="numeric text-sm font-semibold">{fmt(mine)}</span>
+                        </div>
+                        <div className="flex items-center justify-between gap-2 border-t border-border px-3 py-2.5">
+                          <span className="text-sm">{firstNameOf(editSharedWith)} {t("paga", "pays")}</span>
+                          <span className="numeric text-sm font-semibold">{fmt(theirs)}</span>
+                        </div>
+                        <div className="border-t border-border px-3 py-2.5 text-xs">
+                          {theirs > 0 ? (
+                            <span className="text-positive">{firstNameOf(editSharedWith)} {t("te debe", "owes you")} {fmt(theirs)}</span>
+                          ) : (
+                            <span className="text-negative">{t("Le debes", "You owe")} {firstNameOf(editSharedWith)} {fmt(mine)}</span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+              {!editSharedWith && (
                 <div className="grid gap-2">
                   <div className="flex flex-wrap items-start gap-4">
                     {[
