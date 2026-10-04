@@ -170,7 +170,13 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
 
   return (
     <Dialog open={open} onOpenChange={requestOpenChange}>
-      <DialogContent className="w-[calc(100vw-1rem)] max-w-2xl max-h-[calc(100dvh-1rem)] min-w-0 overflow-x-hidden overflow-y-auto px-3 pb-[max(1rem,env(safe-area-inset-bottom))] pt-0 sm:max-h-[88vh] sm:px-6 sm:pb-6">
+      <DialogContent
+        onEscapeKeyDown={(e) => {
+          // Esc mientras se edita el nombre solo sale del modo editar.
+          if (editingId) e.preventDefault();
+        }}
+        className="w-[calc(100vw-1rem)] max-w-2xl max-h-[calc(100dvh-1rem)] min-w-0 overflow-x-hidden overflow-y-auto px-3 pb-[max(1rem,env(safe-area-inset-bottom))] pt-0 sm:max-h-[88vh] sm:px-6 sm:pb-6"
+      >
         {/* Cabecera con el total mensual (no editable; se edita en el pie). */}
         <DialogHeader className="sticky top-0 z-10 -mx-3 min-w-0 space-y-1.5 bg-background/95 px-3 pb-4 pt-6 text-left backdrop-blur-sm sm:-mx-6 sm:px-6">
           <DialogTitle className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
