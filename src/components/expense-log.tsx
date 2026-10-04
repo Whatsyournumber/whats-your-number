@@ -2976,7 +2976,7 @@ export function ExpenseLog() {
       </Dialog>
 
       <Dialog open={Boolean(settlePartner)} onOpenChange={(v) => !v && setSettlePartner(null)}>
-        <DialogContent className="max-w-sm">
+        <DialogContent className="max-h-[85vh] max-w-sm overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-center">{settlePartner ? t(`Saldar con ${settlePartner.name}`, `Settle with ${settlePartner.name}`) : ""}</DialogTitle>
             <DialogDescription className="text-center">
@@ -2995,14 +2995,34 @@ export function ExpenseLog() {
                 <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t("Balance", "Balance")}</p>
                 <p className={cn("numeric mt-1 text-3xl font-semibold", settleBalance > 0.005 && "text-positive", settleBalance < -0.005 && "text-negative")}>{fmtShared(Math.abs(settleBalance))}</p>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="settle-paid">{rawBalance < 0 ? t("Ya pagaste", "You've paid") : t(`${settlePartner.name} ya pagó`, `${settlePartner.name} has paid`)}</Label>
-                <NumberInput value={settlePaid} onChange={setSettlePaid} min={0} max={Math.abs(rawBalance)} step="0.01" suffix={currencySymbol} ariaLabel={rawBalance < 0 ? t("Ya pagaste", "You've paid") : t(`${settlePartner.name} ya pagó`, `${settlePartner.name} has paid`)} />
-                <p className="text-xs text-muted-foreground">{t("Saldo original", "Original balance")}: {fmtShared(Math.abs(rawBalance))}</p>
-                <Button type="button" onClick={saveSettlement} disabled={settleSaving || settlePaid > Math.abs(rawBalance) + 0.01}>
+              <div className="grid gap-3">
+                <p className="text-xs text-muted-foreground">{t("Saldo original", "Original balance")}: {fmtShared(Math.abs(rawBalance))} · {t("Pendiente", "Remaining")}: {fmtShared(Math.abs(settleBalance))}</p>
+                <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("Quién pagó", "Who paid")}>
+                  <Button type="button" variant={settlePaidByUser ? "default" : "outline"} onClick={() => setSettlePaidByUser(true)}>{t("Pagué yo", "I paid")}</Button>
+                  <Button type="button" variant={!settlePaidByUser ? "default" : "outline"} onClick={() => setSettlePaidByUser(false)}>{t(`Pagó ${settlePartner.name}`, `${settlePartner.name} paid`)}</Button>
+                </div>
+                <Label htmlFor="settle-paid">{t("Monto del pago", "Payment amount")}</Label>
+                <NumberInput value={settlePaid} onChange={setSettlePaid} min={0} max={Math.abs(settleBalance)} step="0.01" suffix={currencySymbol} ariaLabel={t("Monto del pago", "Payment amount")} />
+                <Button type="button" onClick={saveSettlement} disabled={settleSaving || settlePaid <= 0 || settlePaid > Math.abs(settleBalance) + 0.01 || settlePaidByUser !== (settleBalance < 0)}>
                   {settleSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : t("Guardar pago", "Save payment")}
                 </Button>
               </div>
+              {selectedPayments.length > 0 && (
+                <div className="border-t border-border pt-3">
+                  <p className="mb-2 text-sm font-medium">{t("Pagos registrados", "Recorded payments")}</p>
+                  <ul className="max-h-40 space-y-2 overflow-y-auto">
+                    {selectedPayments.map((payment) => (
+                      <li key={payment.id} className="flex items-center justify-between gap-2 text-sm">
+                        <div className="min-w-0">
+                          <p>{payment.paid_by_user ? t("Pagué yo", "I paid") : t(`Pagó ${settlePartner.name}`, `${settlePartner.name} paid`)} · {convertAmount(Number(payment.amount), payment.currency, currency).toLocaleString(lang === "es" ? "es-ES" : "en-US", { style: "currency", currency, maximumFractionDigits: 2 })}</p>
+                          <p className="text-xs text-muted-foreground">{format(new Date(payment.created_at), "d MMM yyyy", { locale })}</p>
+                        </div>
+                        <Button type="button" variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label={t("Eliminar pago", "Remove payment")} title={t("Eliminar pago", "Remove payment")} disabled={settleSaving} onClick={() => deleteSettlementPayment(payment.id)}><Trash2 className="h-4 w-4" /></Button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <div className="grid grid-cols-2 gap-2">
                 <Button type="button" variant="outline" onClick={copySettleText}>
                   <Link2 className="mr-2 h-4 w-4" />
