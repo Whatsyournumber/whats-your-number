@@ -395,8 +395,6 @@ export function ExpenseLog() {
   }, [currency]);
 
   const now = new Date();
-  const monthStart = startOfMonth(now);
-  const monthEnd = endOfMonth(now);
 
   // Periodo de la vista: hoy, última semana o mes completo. El objetivo y los
   // gastos fijos se prorratean para que la comparación siga siendo justa.
@@ -405,6 +403,30 @@ export function ExpenseLog() {
   const [hoverDay, setHoverDay] = useState<number | null>(null);
   // Categoría cuyo análisis detallado (gráfica + movimientos) está abierto.
   const [analysisCat, setAnalysisCat] = useState<string | null>(null);
+
+  // Mes que se está mirando (key "yyyy-mm"): permite revisar los meses pasados.
+  const monthKeyOf = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+  const currentMonthKey = monthKeyOf(now);
+  const [viewKey, setViewKey] = useState<string | null>(null);
+  const activeKey = viewKey ?? currentMonthKey;
+  const isCurrentMonth = activeKey === currentMonthKey;
+  const viewParts = activeKey.split("-").map(Number);
+  const viewDate = new Date(viewParts[0] ?? now.getFullYear(), (viewParts[1] ?? now.getMonth() + 1) - 1, 1);
+  const monthStart = startOfMonth(viewDate);
+  const monthEnd = endOfMonth(viewDate);
+
+  // Meses del selector: el actual, los 12 anteriores y cualquier mes más atrás
+  // con movimientos registrados.
+  const months = useMemo(() => {
+    const set = new Set<string>([currentMonthKey]);
+    for (const x of transactions) if (x.tx_date) set.add(monthKeyOf(parseISO(x.tx_date)));
+    for (let i = 0; i < 12; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      set.add(monthKeyOf(d));
+    }
+    return [...set].sort().reverse().slice(0, 24);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transactions]);
 
   const daysInMonth = monthEnd.getDate();
   const periodDays = period === "day" ? 1 : period === "week" ? 7 : daysInMonth;
@@ -491,13 +513,15 @@ export function ExpenseLog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactions, daysInMonth, monthStart.getTime(), monthEnd.getTime()]);
 
-  const todayDay = now.getDate();
+  const todayDay = isCurrentMonth ? now.getDate() : 0;
   const monthVariable = daily.reduce((s, v) => s + v, 0);
 
   /** Fecha del próximo cobro a partir del día del mes. */
   const nextChargeDate = (dayOfMonth?: number) => {
     const base = startOfDay(now);
     const day = Math.min(Math.max(1, dayOfMonth ?? 1), daysInMonth);
+    // Meses pasados: cada cobro se muestra en el día que tocó ese mes.
+    if (!isCurrentMonth) return new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
     let next = new Date(now.getFullYear(), now.getMonth(), day);
     if (next < base) next = new Date(now.getFullYear(), now.getMonth() + 1, Math.min(day, 28));
     return next;
@@ -509,7 +533,7 @@ export function ExpenseLog() {
       .filter((i) => i.amount > 0)
       .map((i) => ({ ...i, next: nextChargeDate(i.dayOfMonth) }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [expenseFixedItems, daysInMonth]);
+  }, [expenseFixedItems, daysInMonth, activeKey]);
 
   /** Plan del onboarding: las categorías y montos que la persona declaró al registrarse. */
   const onboardingLines = useMemo<BudgetLine[]>(() => {
