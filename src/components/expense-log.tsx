@@ -115,11 +115,21 @@ const blobToBase64 = (blob: Blob) =>
     reader.readAsDataURL(blob);
   });
 
+const MONTH_LABELS_ES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+const MONTH_LABELS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const buildMonthLabel =
+  (labels: string[]) =>
+  (key: string) => {
+    const [y, m] = key.split("-");
+    return `${labels[Number(m) - 1] ?? m} ${y}`;
+  };
+
 /** Registro de gastos: captura rápida (manual, voz, recibo) y control contra tu plan. */
 export function ExpenseLog() {
   const t = useT();
   const { lang } = useLanguage();
   const locale = lang === "es" ? es : enUS;
+  const monthLabel = useMemo(() => buildMonthLabel(lang === "en" ? MONTH_LABELS_EN : MONTH_LABELS_ES), [lang]);
   const { user } = useAuth();
   const { profile } = useProfile();
   const queryClient = useQueryClient();
