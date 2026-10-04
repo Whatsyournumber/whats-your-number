@@ -443,6 +443,37 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Confirmar antes de eliminar una categoría del plan. */}
+      <AlertDialog
+        open={confirmDelete !== null}
+        onOpenChange={(v) => {
+          if (!v) setConfirmDelete(null);
+        }}
+      >
+        <AlertDialogContent className="w-[calc(100vw-2rem)] max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("¿Eliminar este gasto?", "Delete this expense?")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t(
+                "Esta categoría saldrá de tu plan de gasto mensual.",
+                "This category will be removed from your monthly spending plan.",
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("Cancelar", "Cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (confirmDelete) removeLine(confirmDelete);
+                setConfirmDelete(null);
+              }}
+            >
+              {t("Eliminar", "Delete")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
