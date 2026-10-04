@@ -2691,41 +2691,42 @@ export function ExpenseLog() {
                   const isOwed = b.balance > 0.005;
                   const iOwe = b.balance < -0.005;
                   return (
-                    <div key={b.id} className="rounded-2xl border border-border p-4">
-                      <div className="flex items-center justify-between gap-3">
+                    <div key={b.id} className="min-w-0 rounded-lg border border-border p-4 sm:p-5">
+                      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 sm:gap-4">
                         <div className="flex min-w-0 items-center gap-3">
-                          <span className="flex shrink-0 -space-x-2.5">
+                          <span className="flex shrink-0 -space-x-2.5" aria-hidden="true">
                             <span className="grid h-11 w-11 place-items-center rounded-full bg-positive/20 text-base font-semibold ring-2 ring-card">{initialsOf(myName)}</span>
                             <span className="grid h-11 w-11 place-items-center rounded-full bg-muted text-base font-semibold ring-2 ring-card">{initialsOf(b.name)}</span>
                           </span>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-base font-semibold leading-snug">{b.name}</p>
-                            <p className="text-xs text-muted-foreground">{b.count} {t("gastos", "expenses")}</p>
+                          <div className="min-w-0">
+                            <p className="break-words text-base font-semibold leading-snug">{b.name}</p>
+                            <p className="mt-0.5 text-xs text-muted-foreground">{b.count} {t("gastos", "expenses")}</p>
                           </div>
                         </div>
-                        <button
+                        <Button
                           type="button"
+                          variant="outline"
                           onClick={() => setSettlePartner({ name: b.name, balance: b.balance })}
-                          className="flex shrink-0 items-center gap-1 rounded-full border border-border px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
+                          className="h-10 shrink-0 rounded-full bg-transparent px-2.5 text-xs shadow-none sm:px-4 sm:text-sm"
                         >
                           {t("Saldar cuenta", "Settle up")}
-                          <ChevronRight className="h-4 w-4" />
-                        </button>
+                          <ChevronRight aria-hidden="true" />
+                        </Button>
                       </div>
-                      <div className="mt-4 grid grid-cols-3 gap-2 border-t border-border/50 pt-3">
+                      <div className="mt-5 grid grid-cols-3 gap-2 border-t border-border/60 pt-4 sm:gap-4">
                         <div className="min-w-0">
-                          <p className="text-[11px] leading-4 text-muted-foreground">
+                          <p className="min-h-10 break-words text-xs leading-5 text-muted-foreground">
                             {isOwed ? t(`${b.name} te debe`, `${b.name} owes you`) : iOwe ? t(`Le debes a ${b.name}`, `You owe ${b.name}`) : t("En paz", "Even")}
                           </p>
-                          <p className={cn("numeric text-lg font-semibold", isOwed && "text-positive")}>{fmt(Math.abs(b.balance))}</p>
+                          <p className={cn("numeric whitespace-nowrap text-lg font-semibold", isOwed && "text-positive")}>{fmt(Math.abs(b.balance))}</p>
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[11px] leading-4 text-muted-foreground">{t("Gastado juntos", "Spent together")}</p>
-                          <p className="numeric text-lg font-semibold">{fmt(b.together)}</p>
+                          <p className="min-h-10 text-xs leading-5 text-muted-foreground">{t("Gastado juntos", "Spent together")}</p>
+                          <p className="numeric whitespace-nowrap text-lg font-semibold">{fmt(b.together)}</p>
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[11px] leading-4 text-muted-foreground">{t("Tu parte", "Your share")}</p>
-                          <p className="numeric text-lg font-semibold">{fmt(b.myShare)}</p>
+                          <p className="min-h-10 text-xs leading-5 text-muted-foreground">{t("Tu parte", "Your share")}</p>
+                          <p className="numeric whitespace-nowrap text-lg font-semibold">{fmt(b.myShare)}</p>
                         </div>
                       </div>
                     </div>
