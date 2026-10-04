@@ -325,6 +325,16 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                     )}
                   </div>
                 ))}
+                {/* Total de la sección (fijos / variables) */}
+                <div className="flex items-center justify-between border-t border-border/40 pt-1.5">
+                  <span className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                    {t("Total", "Total")}
+                  </span>
+                  <span className="numeric text-sm font-semibold">
+                    {fmt(groupLines.reduce((s, l) => s + (Number.isFinite(l.amount) ? l.amount : 0), 0))}
+                    <span className="ml-1 text-xs font-normal text-muted-foreground">{t("/mes", "/mo")}</span>
+                  </span>
+                </div>
               </div>
             );
           })}
