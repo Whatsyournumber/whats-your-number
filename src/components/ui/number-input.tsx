@@ -55,7 +55,7 @@ export function NumberInput({
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!ref.current || document.activeElement !== ref.current) {
+    if (!ref.current || document.activeElement !== ref.current || (decimal && parseDecimal(text) !== value)) {
       setText(pretty(value));
     }
   }, [value]);
