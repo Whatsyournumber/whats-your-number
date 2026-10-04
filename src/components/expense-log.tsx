@@ -597,6 +597,15 @@ export function ExpenseLog() {
       list.push(row);
       byExpense.set(row.expense_id, list);
     }
+    // El resumen debe representar exactamente los gastos compartidos que aún
+    // figuran en el registro. Hay participaciones antiguas cuyo movimiento fue
+    // borrado o nunca se registró: no son gastos visibles ni deudas actuales.
+    const visibleShared = transactions.filter((tx) => {
+      if (!tx.tx_date || !parseShared(tx.description) || isSavingsName(`${tx.merchant} ${tx.description ?? ""}`)) return false;
+      const date = parseISO(tx.tx_date);
+      return date >= monthStart && date <= monthEnd && (tx.amount < 0 || sharedDebtOf(tx));
+    });
+    const matchedTransactions = new Set<string>();
     const map = new Map<string, SharedBalance>();
     for (const rows of byExpense.values()) {
       const rawExp = rows[0]?.shared_expenses;
@@ -609,6 +618,17 @@ export function ExpenseLog() {
       if (!exp.tx_date) continue;
       const d = parseISO(exp.tx_date);
       if (d < monthStart || d > monthEnd) continue;
+      const matched = visibleShared.find((tx) =>
+        !matchedTransactions.has(tx.id) &&
+        tx.tx_date === exp.tx_date &&
+        tx.merchant.trim().toLowerCase() === exp.merchant.trim().toLowerCase() &&
+        tx.original_currency === exp.currency &&
+        Math.abs(Math.abs(tx.original_amount ?? tx.amount) - (Number(mine.share_amount) === 0 && exp.payer_id === user.id
+          ? Number(exp.total) - Number(mine.share_amount)
+          : Number(mine.share_amount))) < 0.02,
+      );
+      if (!matched) continue;
+      matchedTransactions.add(matched.id);
       for (const p of partners) {
         const entry = map.get(p.user_id) ?? { id: p.user_id, name: p.display_name || "?", count: 0, together: 0, myShare: 0, balance: 0, rawBalance: 0 };
         entry.count += 1;
@@ -626,7 +646,7 @@ export function ExpenseLog() {
       return { ...entry, rawBalance: entry.balance, balance: entry.balance + (paid?.paid_by_user ? applied : -applied) };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sharedBalanceRows, settlementRows, user?.id, profile.currency, monthStart.getTime(), monthEnd.getTime()]);
+  }, [sharedBalanceRows, settlementRows, transactions, user?.id, profile.currency, monthStart.getTime(), monthEnd.getTime()]);
 
   const selectedBalance = sharedBalances.find((entry) => entry.id === settlePartner?.id);
   const settleBalance = selectedBalance?.balance ?? 0;
