@@ -280,25 +280,30 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                           />
                         </div>
                       ) : null}
-                      <NumberInput
-                        value={l.amount}
-                        onChange={(v) => setAmount(l.id, v)}
-                        format
-                        suffix={currencySymbol || undefined}
-                        ariaLabel={t("Monto objetivo mensual", "Monthly target amount")}
-                        className="h-9 w-24 text-sm sm:w-28"
-                      />
+                      <div className="relative shrink-0">
+                        <NumberInput
+                          value={l.amount}
+                          onChange={(v) => setAmount(l.id, v)}
+                          format
+                          suffix={currencySymbol || undefined}
+                          ariaLabel={t("Monto objetivo mensual", "Monthly target amount")}
+                          className="h-9 w-24 text-sm sm:w-28"
+                        />
+                        {editingId === l.id ? (
+                          <button
+                            type="button"
+                            onClick={() => setConfirmDelete(l.id)}
+                            // Evita que el mousedown dispare el blur del input y desmonte este botón.
+                            onMouseDown={(e) => e.preventDefault()}
+                            className="absolute -right-1.5 -top-2.5 grid h-5 w-5 place-items-center rounded-full bg-card text-muted-foreground/70 shadow-sm transition hover:text-negative"
+                            aria-label={t("Eliminar gasto", "Delete expense")}
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        ) : null}
+                      </div>
                       {editingId === l.id ? (
-                        <button
-                          type="button"
-                          onClick={() => setConfirmDelete(l.id)}
-                          // Evita que el mousedown dispare el blur del input y desmonte este botón.
-                          onMouseDown={(e) => e.preventDefault()}
-                          className="grid h-9 w-9 shrink-0 place-items-center text-muted-foreground/70 transition hover:text-negative"
-                          aria-label={t("Eliminar gasto", "Delete expense")}
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
+                        <span className="h-9 w-9 shrink-0" aria-hidden />
                       ) : (
                         <button
                           type="button"
