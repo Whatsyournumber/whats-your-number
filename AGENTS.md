@@ -29,6 +29,6 @@ Grocery rules are synced per user; show only saved corrections/additions as rule
 
 Shared-expense edits use the authenticated public invoker RPC backed by a private checked function to update the expense, both shares, and the editor's transaction together; balances convert each expense currency to the profile currency and refresh after writes so totals stay consistent.
 
-Monthly shared-balance settlements are private per-user records of paid amounts and payment direction, separate from expense shares, so recording payments changes only the outstanding balance, not historical spending.
+Monthly shared-balance payments are private per-user append-only entries with amount, currency, direction, and date, separate from expense shares, so partial payments retain history and change only the outstanding balance, not historical spending.
 
 Monthly shared-balance summaries match accepted expense records one-to-one to visible user transactions by date, merchant when present, and currency; prefer exact share amount but allow named legacy transactions with rounded or altered amounts. Orphaned participant rows must not inflate counts or balances because their transactions cannot be inspected or edited.
