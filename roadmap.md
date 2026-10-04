@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Registrar cada pago compartido con quién pagó, importe, fecha e historial; mostrar saldo remanente y separar el símbolo de moneda del monto.
+
 - [x] Ajustar el resumen de compartidos de septiembre a los movimientos visibles y sus importes exactos.
 
 - [x] Permitir registrar pagos parciales o completos en el balance compartido y mostrar saldo saldado al llegar a cero.

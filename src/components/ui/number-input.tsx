@@ -62,7 +62,7 @@ export function NumberInput({
       autoFocus={autoFocus}
       onKeyDown={onKeyDown}
       style={style}
-      className={cn("numeric", suffix && "pl-8", className)}
+      className={cn("numeric", suffix && (suffix.length >= 3 ? "pl-16" : "pl-10"), className)}
       value={text}
       onFocus={() => {
         if (text === "0") setText("");
