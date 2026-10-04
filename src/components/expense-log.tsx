@@ -358,7 +358,7 @@ export function ExpenseLog() {
 
   const onSaveEditTx = async () => {
     if (!editTx) return;
-    if (!editAmount || editAmount <= 0) {
+    if ((editSharedWith ? editTotal : editAmount) <= 0) {
       toast.error(t("Escribe un monto mayor que cero", "Enter an amount greater than zero"));
       return;
     }
@@ -375,27 +375,24 @@ export function ExpenseLog() {
           editMode === "equal" ? total / 2 : editMode === "percent" ? (total * editMyPct) / 100 : Math.min(editMyAmount, total);
         const theirs = Math.max(0, total - mine);
         const myPct = total > 0 ? (mine / total) * 100 : 50;
-        amount = mine > 0 ? -mine : Math.abs(theirs);
-        description = `${SHARED_PREFIX}${Math.round(myPct)}/${Math.round(100 - myPct)}|${editSharedWith}${wasOwed ? SHARED_OWE_MARKER : ""}`;
-        // Sincroniza el gasto compartido original si lo creé yo (mismo comercio y fecha).
-        if (user?.id) {
-          const { data: expRows } = await supabase
-            .from("shared_expenses")
-            .select("id")
-            .eq("created_by", user.id)
-            .eq("merchant", editTx.merchant ?? "")
-            .eq("tx_date", editTx.tx_date ?? editDate)
-            .limit(1);
-          const expId = expRows?.[0]?.id as string | undefined;
-          if (expId) {
-            await supabase
-              .from("shared_expenses")
-              .update({ total, split_mode: `${Math.round(myPct)}/${Math.round(100 - myPct)}`, tx_date: editDate, category: editCategory, merchant: editMerchant.trim() })
-              .eq("id", expId);
-            await supabase.from("shared_expense_participants").update({ share_amount: mine }).eq("expense_id", expId).eq("user_id", user.id);
-            await supabase.from("shared_expense_participants").update({ share_amount: theirs }).eq("expense_id", expId).neq("user_id", user.id);
-          }
-        }
+        const { error } = await supabase.rpc("update_shared_expense", {
+          _transaction_id: editTx.id,
+          _total: total,
+          _my_share: mine,
+          _merchant: editMerchant.trim() || translateCategory(editCategory, lang),
+          _category: editCategory,
+          _tx_date: editDate,
+        });
+        if (error) throw new Error(error.message);
+        const selectedCategoryId = match(editCategory) ?? "others";
+        saveCatOverrides({ ...catOverrides, [editTx.id]: selectedCategoryId });
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["imported-transactions"] }),
+          queryClient.invalidateQueries({ queryKey: ["shared-balances"] }),
+        ]);
+        toast.success(t("Gasto actualizado", "Expense updated"));
+        setEditTx(null);
+        return;
       } else if (wasShared && !editSharedWith) {
         // Quitar a la otra persona: el gasto pasa a ser solo tuyo.
         description = null;
@@ -435,7 +432,10 @@ export function ExpenseLog() {
       if (error) throw new Error(error.message);
       const selectedCategoryId = match(editCategory) ?? "others";
       saveCatOverrides({ ...catOverrides, [editTx.id]: selectedCategoryId });
-      await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["imported-transactions"] }),
+        queryClient.invalidateQueries({ queryKey: ["shared-balances"] }),
+      ]);
       toast.success(t("Gasto actualizado", "Expense updated"));
       setEditTx(null);
     } catch (error) {
@@ -597,7 +597,7 @@ export function ExpenseLog() {
     }
     return [...map.values()];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sharedBalanceRows, user?.id, periodStart.getTime(), monthEnd.getTime()]);
+  }, [sharedBalanceRows, user?.id, monthStart.getTime(), monthEnd.getTime()]);
 
   const settleMsg = settlePartner
     ? settlePartner.balance > 0.005
@@ -2804,20 +2804,20 @@ export function ExpenseLog() {
                           <ChevronRight aria-hidden="true" />
                         </Button>
                       </div>
-                      <div className="mt-5 flex items-end justify-between gap-3 border-t border-border/60 pt-4">
-                        <div className="min-w-0">
-                          <p className="text-xs leading-5 text-muted-foreground">
-                            {isOwed ? t(`${firstNameOf(b.name)} te debe`, `${firstNameOf(b.name)} owes you`) : iOwe ? t(`Le debes a ${firstNameOf(b.name)}`, `You owe ${firstNameOf(b.name)}`) : t("En paz", "Even")}
+                      <div className="mt-5 grid grid-cols-3 border-t border-border/60 pt-4">
+                        <div className="min-w-0 pr-2">
+                          <p className="text-[11px] leading-5 text-muted-foreground sm:text-xs">{t("Total compartido", "Total shared")}</p>
+                          <p className="numeric whitespace-nowrap text-base font-semibold sm:text-lg">{fmt(b.together)}</p>
+                        </div>
+                        <div className="min-w-0 border-l border-border pl-2 sm:pl-4">
+                          <p className="text-[11px] leading-5 text-muted-foreground sm:text-xs">{t("Tu parte", "Your share")}</p>
+                          <p className="numeric whitespace-nowrap text-base font-semibold sm:text-lg">{fmt(b.myShare)}</p>
+                        </div>
+                        <div className="min-w-0 border-l border-border pl-2 sm:pl-4">
+                          <p className="whitespace-nowrap text-[11px] leading-5 text-muted-foreground sm:text-xs">
+                            {isOwed ? t(`${firstNameOf(b.name)} te debe`, `${firstNameOf(b.name)} owes you`) : iOwe ? t(`Debes a ${firstNameOf(b.name)}`, `You owe ${firstNameOf(b.name)}`) : t("En paz", "Even")}
                           </p>
-                          <p className={cn("numeric whitespace-nowrap text-lg font-semibold", isOwed && "text-positive", iOwe && "text-negative")}>{fmt(Math.abs(b.balance))}</p>
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-xs leading-5 text-muted-foreground">{t("Gastado juntos", "Spent together")}</p>
-                          <p className="numeric whitespace-nowrap text-lg font-semibold">{fmt(b.together)}</p>
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-xs leading-5 text-muted-foreground">{t("Tu parte", "Your share")}</p>
-                          <p className="numeric whitespace-nowrap text-lg font-semibold">{fmt(b.myShare)}</p>
+                          <p className={cn("numeric whitespace-nowrap text-base font-semibold sm:text-lg", isOwed && "text-positive", iOwe && "text-negative")}>{fmt(Math.abs(b.balance))}</p>
                         </div>
                       </div>
                     </div>
