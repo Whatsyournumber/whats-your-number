@@ -302,18 +302,6 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                           </button>
                         ) : null}
                       </div>
-                      {editingId === l.id ? (
-                        <span className="h-9 w-9 shrink-0" aria-hidden />
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => startEdit(l)}
-                          className="grid h-9 w-9 shrink-0 place-items-center text-muted-foreground transition hover:text-primary"
-                          aria-label={t("Editar", "Edit")}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </button>
-                      )}
                     </div>
                     {appSubs && isAppsLine(l) && appsOpen && (
                       <div className="mt-2 space-y-1.5 border-t border-border/40 pt-2">
