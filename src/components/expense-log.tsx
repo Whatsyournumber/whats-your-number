@@ -2883,7 +2883,23 @@ export function ExpenseLog() {
               </div>
               <div className="grid gap-1.5">
                 <Label>{t("Fecha", "Date")}</Label>
-                <Input type="date" value={draft.date} onChange={(e) => setDraft({ ...draft, date: e.target.value })} />
+                <Popover open={draftDateOpen} onOpenChange={setDraftDateOpen}>
+                  <PopoverTrigger asChild>
+                    <Button type="button" variant="outline" className="justify-start gap-2 font-normal">
+                      <CalendarIcon className="h-4 w-4" />
+                      {draft.date ? format(parseISO(draft.date), "d MMM yyyy", { locale: lang === "es" ? es : enUS }) : t("Elige una fecha", "Pick a date")}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={draft.date ? parseISO(draft.date) : undefined}
+                      onSelect={(d) => { if (d) { setDraft({ ...draft, date: format(d, "yyyy-MM-dd") }); setDraftDateOpen(false); } }}
+                      initialFocus
+                      className="pointer-events-auto p-3"
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className="grid gap-1.5">
                 <Label>{t("Categoría", "Category")}</Label>
@@ -3097,7 +3113,23 @@ export function ExpenseLog() {
             </div>
             <div className="grid gap-1.5">
               <Label>{t("Fecha", "Date")}</Label>
-              <Input type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} />
+              <Popover open={editDateOpen} onOpenChange={setEditDateOpen}>
+                <PopoverTrigger asChild>
+                  <Button type="button" variant="outline" className="justify-start gap-2 font-normal">
+                    <CalendarIcon className="h-4 w-4" />
+                    {editDate ? format(parseISO(editDate), "d MMM yyyy", { locale: lang === "es" ? es : enUS }) : t("Elige una fecha", "Pick a date")}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={editDate ? parseISO(editDate) : undefined}
+                    onSelect={(d) => { if (d) { setEditDate(format(d, "yyyy-MM-dd")); setEditDateOpen(false); } }}
+                    initialFocus
+                    className="pointer-events-auto p-3"
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="grid gap-1.5">
               <Label>{t("Categoría", "Category")}</Label>
