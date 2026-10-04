@@ -18,6 +18,8 @@ export function NumberInput({
   style,
   ariaLabel,
   disabled,
+  /** Texto dentro del campo, a la derecha (p. ej. el símbolo de la moneda). */
+  suffix,
 }: {
   value: number;
   onChange: (v: number) => void;
@@ -33,6 +35,7 @@ export function NumberInput({
   style?: React.CSSProperties;
   ariaLabel?: string;
   disabled?: boolean;
+  suffix?: string;
 }) {
   const pretty = (v: number) =>
     v === 0 ? "" : format ? v.toLocaleString(getWynMoneyLocale(), { useGrouping: "always" as unknown as boolean }) : String(v);

@@ -204,8 +204,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                 </p>
                 {groupLines.map((l) => (
                   <div key={l.id} className="min-w-0 rounded-xl border border-border/50 px-2 py-2 sm:px-3">
-                    <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-2 sm:flex sm:gap-3">
-                      <div className="flex min-w-0 items-center gap-2 sm:flex-1">
+                    <div className="flex min-w-0 items-center gap-1.5 sm:gap-3">
                       {editingId === l.id ? (
                         <Input
                           autoFocus
@@ -230,61 +229,61 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                             <ChevronDown className={`h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform ${appsOpen ? "rotate-180" : ""}`} />
                           </button>
                         ) : (
-                          <span className="min-w-0 flex-1 break-words text-sm">{label(l)}</span>
+                          <span className="min-w-0 flex-1 truncate text-sm">{label(l)}</span>
                         )
                       )}
-                      {editingId !== l.id ? (
+                      {g === "essentials" ? (
+                        <div
+                          className="flex h-9 shrink-0 items-center gap-1 rounded-md border border-border/60 bg-card/40 px-1.5 sm:gap-1.5 sm:px-2"
+                          title={t("Día del mes en que se cobra", "Day of month it is charged")}
+                        >
+                          <CalendarDays className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                          <span className="hidden text-[10px] uppercase tracking-wide text-muted-foreground sm:inline">
+                            {t("día", "day")}
+                          </span>
+                          <Input
+                            type="number"
+                            min={1}
+                            max={31}
+                            inputMode="numeric"
+                            value={l.dueDay ?? ""}
+                            placeholder="—"
+                            onChange={(e) => setDueDay(l.id, e.target.value)}
+                            aria-label={t("Día del mes en que se cobra", "Day of month it is charged")}
+                            className="h-7 w-8 border-0 bg-transparent p-0 text-center text-sm sm:w-9"
+                          />
+                        </div>
+                      ) : null}
+                      <NumberInput
+                        value={l.amount}
+                        onChange={(v) => setAmount(l.id, v)}
+                        format
+                        suffix={currencySymbol || undefined}
+                        ariaLabel={t("Monto objetivo mensual", "Monthly target amount")}
+                        className="h-9 w-24 text-sm sm:w-28"
+                      />
+                      {editingId === l.id ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingId(null);
+                            removeLine(l.id);
+                          }}
+                          className="grid h-9 w-9 shrink-0 place-items-center text-muted-foreground transition hover:text-negative"
+                          aria-label={t("Quitar", "Remove")}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      ) : (
                         <button
                           type="button"
                           onClick={() => startEdit(l)}
-                          className="shrink-0 text-muted-foreground transition hover:text-primary"
+                          className="grid h-9 w-9 shrink-0 place-items-center text-muted-foreground transition hover:text-primary"
                           aria-label={t("Editar", "Edit")}
                         >
                           <Pencil className="h-4 w-4" />
                         </button>
-                      ) : null}
-                      </div>
-                       <div className="col-span-2 flex min-w-0 items-center gap-1 sm:col-span-1 sm:gap-2">
-                         {g === "essentials" ? (
-                           <div
-                             className="flex h-9 shrink-0 items-center gap-1 rounded-md border border-border/60 bg-card/40 px-1.5 sm:gap-1.5 sm:px-2"
-                             title={t("Día del mes en que se cobra", "Day of month it is charged")}
-                           >
-                             <CalendarDays className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                             <span className="hidden text-[10px] uppercase tracking-wide text-muted-foreground sm:inline">
-                               {t("día", "day")}
-                             </span>
-                             <Input
-                               type="number"
-                               min={1}
-                               max={31}
-                               inputMode="numeric"
-                               value={l.dueDay ?? ""}
-                               placeholder="—"
-                               onChange={(e) => setDueDay(l.id, e.target.value)}
-                               aria-label={t("Día del mes en que se cobra", "Day of month it is charged")}
-                               className="h-7 w-8 border-0 bg-transparent p-0 text-center text-sm sm:w-9"
-                             />
-                           </div>
-                         ) : null}
-                        <div className="ml-auto flex min-w-0 items-center gap-1 sm:gap-2">
-                          <NumberInput
-                            value={l.amount}
-                            onChange={(v) => setAmount(l.id, v)}
-                            format
-                            ariaLabel={t("Monto objetivo mensual", "Monthly target amount")}
-                            className="h-9 w-24 text-sm sm:w-28"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeLine(l.id)}
-                            className="grid h-9 w-9 shrink-0 place-items-center text-muted-foreground transition hover:text-negative"
-                            aria-label={t("Quitar", "Remove")}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                       </div>
+                      )}
                     </div>
                     {appSubs && isAppsLine(l) && appsOpen && (
                       <div className="mt-2 space-y-1.5 border-t border-border/40 pt-2">
