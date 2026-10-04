@@ -314,7 +314,22 @@ export function ExpenseLog() {
     setEditAmount(Math.abs(x.amount));
     setEditDate(x.tx_date ?? format(new Date(), "yyyy-MM-dd"));
     setEditCategory(x.category || categorizeTx(x, categories.rules));
-    setEditSharedWith(parseShared(x.description)?.name ?? null);
+    const shared = parseShared(x.description);
+    setEditSharedWith(shared?.name ?? null);
+    if (shared) {
+      const myShare = Math.abs(x.amount);
+      const [a] = shared.split.split("/").map(Number);
+      const pct = Number.isFinite(a) && a >= 0 && a <= 100 ? a : 50;
+      setEditMyPct(pct);
+      setEditMode(pct === 50 ? "equal" : "percent");
+      setEditMyAmount(myShare);
+      setEditTotal(pct > 0 ? myShare / (pct / 100) : myShare);
+    } else {
+      setEditMode("equal");
+      setEditMyPct(50);
+      setEditMyAmount(0);
+      setEditTotal(0);
+    }
     setEditSharePartner(null);
     setEditInviteEmail("");
     setEditInviting(false);
