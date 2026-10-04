@@ -153,6 +153,7 @@ export function ExpenseLog() {
   const [latestTab, setLatestTab] = useState<"all" | "mine" | "shared">("all");
   const [settlePartner, setSettlePartner] = useState<{ id: string; name: string } | null>(null);
   const [settlePaid, setSettlePaid] = useState(0);
+  const [settlePaidByUser, setSettlePaidByUser] = useState(false);
   const [settleSaving, setSettleSaving] = useState(false);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean; month?: string }).add });
   const monthParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean; month?: string }).month });
@@ -509,13 +510,14 @@ export function ExpenseLog() {
   const viewDate = new Date(viewParts[0] ?? now.getFullYear(), (viewParts[1] ?? now.getMonth() + 1) - 1, 1);
   const monthStart = startOfMonth(viewDate);
   const monthEnd = endOfMonth(viewDate);
-  const { data: settlementRows = [] } = useQuery({
-    queryKey: ["shared-settlements", user?.id, activeKey],
+  const { data: paymentRows = [] } = useQuery({
+    queryKey: ["shared-payments", user?.id, activeKey],
     enabled: Boolean(user?.id),
     queryFn: async () => {
-      const { data, error } = await supabase.from("shared_balance_settlements")
-        .select("partner_id, paid_amount, paid_by_user, currency")
-        .eq("month_key", activeKey).eq("user_id", user?.id ?? "");
+      const { data, error } = await supabase.from("shared_balance_payments")
+        .select("id, partner_id, amount, paid_by_user, currency, created_at")
+        .eq("month_key", activeKey).eq("user_id", user?.id ?? "")
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },
@@ -643,41 +645,36 @@ export function ExpenseLog() {
       }
     }
     return [...map.values()].map((entry) => {
-      const paid = settlementRows.find((row) => row.partner_id === entry.id);
-      const amount = paid ? convertAmount(Number(paid.paid_amount), paid.currency, profile.currency || "EUR") : 0;
-      // Un pago anterior puede corresponder a gastos que ya no figuran en el
-      // registro. No lo apliques a otro conjunto de gastos ni marques saldado
-      // un balance nuevo por un pago que supera su deuda original.
-      const applied = paid?.paid_by_user === (entry.balance < 0) && amount <= Math.abs(entry.balance) + 0.01
-        ? Math.min(amount, Math.abs(entry.balance)) : 0;
-      return { ...entry, rawBalance: entry.balance, balance: entry.balance + (paid?.paid_by_user ? applied : -applied) };
+      const payments = paymentRows.filter((row) => row.partner_id === entry.id);
+      const netPaid = payments.reduce((sum, row) => sum + (row.paid_by_user ? 1 : -1) * convertAmount(Number(row.amount), row.currency, profile.currency || "EUR"), 0);
+      return { ...entry, rawBalance: entry.balance, balance: Math.abs(entry.balance + netPaid) < 0.005 ? 0 : entry.balance + netPaid };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sharedBalanceRows, settlementRows, transactions, user?.id, profile.currency, monthStart.getTime(), monthEnd.getTime()]);
+  }, [sharedBalanceRows, paymentRows, transactions, user?.id, profile.currency, monthStart.getTime(), monthEnd.getTime()]);
 
   const selectedBalance = sharedBalances.find((entry) => entry.id === settlePartner?.id);
   const settleBalance = selectedBalance?.balance ?? 0;
   const rawBalance = selectedBalance?.rawBalance ?? 0;
   const openSettlement = (entry: SharedBalance) => {
     setSettlePartner({ id: entry.id, name: firstNameOf(entry.name) });
-    const previous = settlementRows.find((row) => row.partner_id === entry.id);
-    const previousAmount = previous ? convertAmount(Number(previous.paid_amount), previous.currency, currency) : 0;
-    setSettlePaid(previous && previous.paid_by_user === (entry.rawBalance < 0) && previousAmount <= Math.abs(entry.rawBalance) + 0.01 ? previousAmount : 0);
+    setSettlePaidByUser(entry.balance < 0);
+    setSettlePaid(0);
   };
   const saveSettlement = async () => {
-    if (!settlePartner || !user?.id || !Number.isFinite(settlePaid) || settlePaid < 0 || settlePaid > Math.abs(rawBalance) + 0.01) {
-      toast.error(t("El pago debe estar entre cero y el saldo original", "Payment must be between zero and the original balance"));
+    if (!settlePartner || !user?.id || !Number.isFinite(settlePaid) || settlePaid <= 0 || settlePaid > Math.abs(settleBalance) + 0.01 || settlePaidByUser !== (settleBalance < 0)) {
+      toast.error(t("Elige quién debe pagar y un monto menor o igual al saldo pendiente", "Choose who owes and an amount no greater than the remaining balance"));
       return;
     }
     setSettleSaving(true);
     try {
-      const { error } = await supabase.from("shared_balance_settlements").upsert({
+      const { error } = await supabase.from("shared_balance_payments").insert({
         user_id: user.id, partner_id: settlePartner.id, month_key: activeKey,
-        paid_amount: Math.min(settlePaid, Math.abs(rawBalance)), paid_by_user: rawBalance < 0,
-        currency, updated_at: new Date().toISOString(),
-      }, { onConflict: "user_id,partner_id,month_key" });
+        amount: Math.min(settlePaid, Math.abs(settleBalance)), paid_by_user: settlePaidByUser,
+        currency,
+      });
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["shared-settlements", user.id, activeKey] });
+      await queryClient.invalidateQueries({ queryKey: ["shared-payments", user.id, activeKey] });
+      setSettlePaid(0);
       toast.success(t("Pago registrado", "Payment recorded"));
     } catch (error) {
       toast.error(error instanceof Error ? error.message : String(error));
@@ -685,6 +682,21 @@ export function ExpenseLog() {
       setSettleSaving(false);
     }
   };
+  const deleteSettlementPayment = async (id: string) => {
+    if (!user?.id) return;
+    setSettleSaving(true);
+    try {
+      const { error } = await supabase.from("shared_balance_payments").delete().eq("id", id).eq("user_id", user.id);
+      if (error) throw error;
+      await queryClient.invalidateQueries({ queryKey: ["shared-payments", user.id, activeKey] });
+      toast.success(t("Pago eliminado", "Payment removed"));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error));
+    } finally {
+      setSettleSaving(false);
+    }
+  };
+  const selectedPayments = paymentRows.filter((row) => row.partner_id === settlePartner?.id);
 
   const settleMsg = settlePartner
     ? settleBalance > 0.005
