@@ -72,6 +72,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   );
 
   const [total, setTotal] = useState(0);
+  const [dateOpen, setDateOpen] = useState(false);
   const [date, setDate] = useState<Date>(new Date());
   const [category, setCategory] = useState("");
   const [merchant, setMerchant] = useState("");
@@ -264,7 +265,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
           <div className="grid grid-cols-[1fr_auto] items-end gap-2">
             <div className="grid gap-1.5">
               <Label>{t("Fecha", "Date")}</Label>
-              <Popover>
+              <Popover open={dateOpen} onOpenChange={setDateOpen}>
                 <PopoverTrigger asChild>
                   <Button type="button" variant="outline" className="justify-start gap-2 font-normal">
                     <CalendarIcon className="h-4 w-4" />
@@ -275,7 +276,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
                   <Calendar
                     mode="single"
                     selected={date}
-                    onSelect={(d) => d && setDate(d)}
+                    onSelect={(d) => { if (d) { setDate(d); setDateOpen(false); } }}
                     initialFocus
                     className="pointer-events-auto p-3"
                   />
