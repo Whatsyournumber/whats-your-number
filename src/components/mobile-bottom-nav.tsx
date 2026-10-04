@@ -92,8 +92,8 @@ export function MobileBottomNav() {
       <SharedExpenseDialog
         open={sharedOpen}
         onOpenChange={setSharedOpen}
-        onSaved={() => {
-          void navigate({ to: "/registro-gastos" });
+        onSaved={(savedDate) => {
+          void navigate({ to: "/registro-gastos", search: savedDate ? { month: savedDate.slice(0, 7) } : {} });
           window.setTimeout(() => document.getElementById("latest-expenses")?.scrollIntoView({ behavior: "smooth", block: "start" }), 400);
         }}
       />

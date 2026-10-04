@@ -4,12 +4,14 @@ import { ExpenseLog } from "@/components/expense-log";
 import { PageShell } from "@/components/page";
 
 export const Route = createFileRoute("/registro-gastos")({
-  validateSearch: (search: Record<string, unknown>): { add?: boolean; action?: string } => {
+  validateSearch: (search: Record<string, unknown>): { add?: boolean; action?: string; month?: string } => {
     const action = typeof search["action"] === "string" ? search["action"] : undefined;
     const valid = ["voice", "photo", "upload", "recurring", "statement"];
-    const out: { add?: boolean; action?: string } = {};
+    const out: { add?: boolean; action?: string; month?: string } = {};
     if (search["add"] === true || search["add"] === "1") out.add = true;
     if (action && valid.includes(action)) out.action = action;
+    const month = typeof search["month"] === "string" ? search["month"] : undefined;
+    if (month && /^\d{4}-\d{2}$/.test(month)) out.month = month;
     return out;
   },
   head: () => ({
