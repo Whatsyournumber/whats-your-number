@@ -1433,7 +1433,7 @@ export function ExpenseLog() {
             <p className="break-words text-[11px] text-muted-foreground">
               {translateCategory(x.category || categorizeTx(x as Tx, categories.rules), lang)}
               {receiptItems.length > 0 ? ` · ${receiptItems.length} ${t("productos", "items")}` : ""}
-              {shared ? ` · ${shared.split.split("/").reverse().join("/")} · ${t("con", "with")} ${shared.name}` : ""}
+              {shared ? ` · ${iOwe ? t(`Pagó ${shared.name}`, `Paid by ${shared.name}`) : t("Pagaste tú", "Paid by you")} · ${shared.split.split("/").reverse().join("/")}` : ""}
             </p>
           </div>
           <span className="shrink-0 text-[11px] text-muted-foreground">
@@ -2667,7 +2667,12 @@ export function ExpenseLog() {
                                 {it.date && (
                                   <p className="text-[11px] text-muted-foreground">
                                     {format(parseISO(it.date), "d MMM", { locale })}
-                                     {parseShared(expenseTx.find((x) => x.id === it.key)?.description)?.name && ` · ${t("con", "with")} ${parseShared(expenseTx.find((x) => x.id === it.key)?.description)?.name}`}
+                                    {(() => {
+                                      const sharedTx = parseShared(expenseTx.find((x) => x.id === it.key)?.description);
+                                      if (!sharedTx) return "";
+                                      const iOweRow = sharedIOwe(expenseTx.find((x) => x.id === it.key)?.description);
+                                      return ` · ${iOweRow ? t(`Pagó ${sharedTx.name}`, `Paid by ${sharedTx.name}`) : t("Pagaste tú", "Paid by you")} · ${sharedTx.split.split("/").reverse().join("/")}`;
+                                    })()}
                                   </p>
                                 )}
                               </div>
