@@ -494,6 +494,8 @@ export function ExpenseLog() {
   const expectedPacePct = periodDays > 0 ? (elapsedDays / periodDays) * 100 : 0;
   const paceDifference = Math.abs(pct - expectedPacePct);
   const isOnPace = pct <= expectedPacePct;
+  const expectedSpend = periodTarget * (elapsedDays / Math.max(periodDays, 1));
+  const paceAmount = Math.abs(spent - expectedSpend);
   const remaining = periodTarget - spent;
   // Gasto diario del plan: objetivo del periodo repartido entre sus días (mes: objetivo / 30).
   const perDay = periodDays > 0 ? periodTarget / periodDays : 0;
