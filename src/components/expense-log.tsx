@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, FileSpreadsheet, GripVertical, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Trash2, TrendingUp, Upload, Wallet, X } from "lucide-react";
+import { ArrowDown, ArrowUp, BarChart3, CalendarDays, Camera, ChevronDown, ChevronRight, FileSpreadsheet, GripVertical, Link2, Loader2, MessageCircle, Mic, Pencil, PencilLine, Plus, Repeat, Square, Trash2, TrendingUp, Upload, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { FolderIcon, GooglePhotosIcon } from "@/components/expense-source-icons";
@@ -142,6 +142,8 @@ export function ExpenseLog() {
   const [recOpen, setRecOpen] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
   const [sharedOpen, setSharedOpen] = useState(false);
+  const [latestTab, setLatestTab] = useState<"all" | "mine" | "shared">("all");
+  const [settlePartner, setSettlePartner] = useState<{ name: string; balance: number } | null>(null);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
   const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
   const router = useRouter();
@@ -181,6 +183,21 @@ export function ExpenseLog() {
       return [...seen.values()];
     },
   });
+
+  // Gastos compartidos: participaciones con el gasto al que pertenecen (para el balance por persona).
+  const { data: sharedBalanceRows = [] } = useQuery({
+    queryKey: ["shared-balances", user?.id],
+    enabled: Boolean(user?.id),
+    queryFn: async () => {
+      const { data: rows, error } = await supabase
+        .from("shared_expense_participants")
+        .select("id, user_id, display_name, share_amount, status, shared_expenses(id, total, currency, payer_id, tx_date)")
+        .neq("status", "declined");
+      if (error) throw error;
+      return rows;
+    },
+  });
+
   const { target: savedTarget, setTarget, hasTarget } = useSpendTarget();
 
   const openNewRecurring = () => {
@@ -474,6 +491,60 @@ export function ExpenseLog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [periodTx],
   );
+
+  // Balance de gastos compartidos por persona, dentro del periodo visible.
+  type SharedBalance = { id: string; name: string; count: number; together: number; myShare: number; balance: number };
+  const myName = (profile?.full_name as string | undefined)?.split(" ")[0] || t("Yo", "Me");
+  const initialsOf = (name: string) => name.trim().slice(0, 1).toUpperCase() || "?";
+  const sharedBalances = useMemo<SharedBalance[]>(() => {
+    if (!user?.id) return [];
+    type Row = { expense_id: string; user_id: string; display_name: string | null; share_amount: number; status: string; shared_expenses: { total: number; payer_id: string; tx_date: string } | null };
+    const byExpense = new Map<string, Row[]>();
+    for (const row of sharedBalanceRows as unknown as Row[]) {
+      const list = byExpense.get(row.expense_id) ?? [];
+      list.push(row);
+      byExpense.set(row.expense_id, list);
+    }
+    const map = new Map<string, SharedBalance>();
+    for (const rows of byExpense.values()) {
+      const exp = rows[0]?.shared_expenses;
+      const mine = rows.find((r) => r.user_id === user.id);
+      if (!exp || !mine) continue;
+      const partners = rows.filter((r) => r.user_id !== user.id && r.status === "accepted");
+      if (!partners.length) continue;
+      const inPeriod = Boolean(exp.tx_date);
+      for (const p of partners) {
+        const entry = map.get(p.user_id) ?? { id: p.user_id, name: p.display_name || "?", count: 0, together: 0, myShare: 0, balance: 0 };
+        if (inPeriod) {
+          entry.count += 1;
+          entry.together += Number(exp.total) || 0;
+          entry.myShare += Number(mine.share_amount) || 0;
+        }
+        if (exp.payer_id === user.id) entry.balance += Number(p.share_amount) || 0;
+        else if (exp.payer_id === p.user_id) entry.balance -= Number(mine.share_amount) || 0;
+        map.set(p.user_id, entry);
+      }
+    }
+    return [...map.values()];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sharedBalanceRows, user?.id, periodStart.getTime(), monthEnd.getTime()]);
+
+  const settleMsg = settlePartner
+    ? settlePartner.balance > 0.005
+      ? t(`Hola! Solo recordar que me debes ${fmt(settlePartner.balance)} 💸`, `Hi! Just a reminder that you owe me ${fmt(settlePartner.balance)} 💸`)
+      : settlePartner.balance < -0.005
+        ? t(`Hola! Te pago ${fmt(-settlePartner.balance)} de lo que compartimos 💸`, `Hi! I'll pay you ${fmt(-settlePartner.balance)} for our shared expenses 💸`)
+        : t("Hola! Todo en paz 😊", "Hi! We're all even 😊")
+    : "";
+  const settleWa = settlePartner ? `https://wa.me/?text=${encodeURIComponent(settleMsg)}` : "";
+  const copySettleText = async () => {
+    try {
+      await navigator.clipboard.writeText(settleMsg);
+      toast.success(t("Texto copiado", "Text copied"));
+    } catch {
+      toast.error(t("No se pudo copiar el texto", "Could not copy the text"));
+    }
+  };
   const expenseFixedItems = useMemo(
     () => fixed.items.filter((i) => !isSavingsName(i.name)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -2591,84 +2662,109 @@ export function ExpenseLog() {
 
 
         <div ref={latestExpensesRef} id="latest-expenses" className="min-w-0 scroll-mt-4 rounded-2xl border border-border bg-card p-4 sm:p-6">
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <h3 className="text-lg font-semibold">{t("Últimos gastos", "Latest expenses")}</h3>
-              <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                {t("Tus gastos del día a día", "Your day-to-day expenses")}
-              </p>
-            </div>
-            <DropdownMenu>
-              <TooltipProvider delayDuration={100}>
-                <Tooltip>
-                  <DropdownMenuTrigger asChild>
-                    <TooltipTrigger asChild>
-                      <button
-                        type="button"
-                        className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        aria-label={t("Agrega tus gastos diarios", "Add your daily expenses")}
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
-                    </TooltipTrigger>
-                  </DropdownMenuTrigger>
-                  <TooltipContent side="bottom">
-                    {t("Agrega tus gastos diarios", "Add your daily expenses")}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <DropdownMenuContent align="end" className="w-[21rem] p-2">
-                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setManualOpen(true)}>
-                  <PencilLine className="mr-2.5 h-6 w-6 text-positive" />
-                  {t("Manual", "Manual")}
-                </DropdownMenuItem>
-                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => (recording ? stopRecording() : startRecording(true))}>
-                  {recording ? <Square className="mr-2.5 h-6 w-6 text-negative" /> : <Mic className="mr-2.5 h-6 w-6 text-positive" />}
-                  {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
-                </DropdownMenuItem>
-                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => camRef.current?.click()}>
-                  <Camera className="mr-2.5 h-6 w-6 text-positive" />
-                  {t("Tomar foto (super, compras, etc)", "Take photo (groceries, shopping, etc)")}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="min-h-16 rounded-lg px-3.5 text-[17px]"
-                  onSelect={() => (isMobile ? setPhotoPickerOpen(true) : fileRef.current?.click())}
-                >
-                  <Upload className="mr-2.5 h-6 w-6 text-positive" />
-                  {t("Fotos o estados de cuentas", "Photos or bank statements")}
-                </DropdownMenuItem>
-                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={openNewRecurring}>
-                  <Repeat className="mr-2.5 h-6 w-6 text-positive" />
-                  {t("Recurrente", "Recurring")}
-                </DropdownMenuItem>
-                <DropdownMenuItem className="min-h-16 rounded-lg px-3.5 text-[17px]" onSelect={() => setSharedOpen(true)}>
-                  <Users className="mr-2.5 h-6 w-6 text-positive" />
-                  {t("Gasto compartido", "Shared expense")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          {expenseTx.length === 0 ? (
-            <p className="mt-4 text-sm text-muted-foreground">
-              {t("Aún no registras gastos en este periodo.", "No expenses logged in this period yet.")}
-            </p>
-          ) : (
-            <>
-            {/* Mismo número de líneas que las categorías visibles; "Ver más" abre el popup con todo. */}
-            <ul className="mt-4 divide-y divide-border/60">
-              {expenseTx.slice(0, Math.max(visibleRows.length, 6)).map(renderLatestTx)}
-            </ul>
-            {expenseTx.length > Math.max(visibleRows.length, 6) && (
+          <div className="flex items-center gap-1 rounded-full border border-border bg-muted/40 p-1">
+            {([
+              { key: "all", label: t("Todos", "All") },
+              { key: "mine", label: t("Míos", "Mine") },
+              { key: "shared", label: t("Compartidos", "Shared") },
+            ] as const).map((tab) => (
               <button
+                key={tab.key}
                 type="button"
-                onClick={() => setLatestOpen(true)}
-                className="mt-3 w-full rounded-full border border-border py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                aria-pressed={latestTab === tab.key}
+                onClick={() => setLatestTab(tab.key)}
+                className={cn(
+                  "flex-1 rounded-full px-2 py-1.5 text-sm font-medium transition",
+                  latestTab === tab.key ? "bg-positive text-background" : "text-muted-foreground hover:text-foreground",
+                )}
               >
-                {t("Ver más", "Show more")}
+                {tab.label}
               </button>
-            )}
-            </>
+            ))}
+          </div>
+
+          {latestTab === "shared" && (
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold">{t("Gastos compartidos", "Shared expenses")}</h3>
+              <div className="mt-3 space-y-3">
+                {sharedBalances.map((b) => {
+                  const isOwed = b.balance > 0.005;
+                  const iOwe = b.balance < -0.005;
+                  return (
+                    <div key={b.id} className="rounded-2xl border border-border p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex min-w-0 items-center gap-3">
+                          <span className="flex shrink-0 -space-x-2.5">
+                            <span className="grid h-11 w-11 place-items-center rounded-full bg-positive/20 text-base font-semibold ring-2 ring-card">{initialsOf(myName)}</span>
+                            <span className="grid h-11 w-11 place-items-center rounded-full bg-muted text-base font-semibold ring-2 ring-card">{initialsOf(b.name)}</span>
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-base font-semibold leading-snug">{b.name}</p>
+                            <p className="text-xs text-muted-foreground">{b.count} {t("gastos", "expenses")}</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setSettlePartner({ name: b.name, balance: b.balance })}
+                          className="flex shrink-0 items-center gap-1 rounded-full border border-border px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
+                        >
+                          {t("Saldar cuenta", "Settle up")}
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
+                      </div>
+                      <div className="mt-4 grid grid-cols-3 gap-2 border-t border-border/50 pt-3">
+                        <div className="min-w-0">
+                          <p className="text-[11px] leading-4 text-muted-foreground">
+                            {isOwed ? t(`${b.name} te debe`, `${b.name} owes you`) : iOwe ? t(`Le debes a ${b.name}`, `You owe ${b.name}`) : t("En paz", "Even")}
+                          </p>
+                          <p className={cn("numeric text-lg font-semibold", isOwed && "text-positive")}>{fmt(Math.abs(b.balance))}</p>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[11px] leading-4 text-muted-foreground">{t("Gastado juntos", "Spent together")}</p>
+                          <p className="numeric text-lg font-semibold">{fmt(b.together)}</p>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[11px] leading-4 text-muted-foreground">{t("Tu parte", "Your share")}</p>
+                          <p className="numeric text-lg font-semibold">{fmt(b.myShare)}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           )}
+
+          {(() => {
+            const shown = latestTab === "mine"
+              ? expenseTx.filter((x) => !parseShared(x.description))
+              : latestTab === "shared"
+                ? expenseTx.filter((x) => Boolean(parseShared(x.description)))
+                : expenseTx;
+            return shown.length === 0 ? (
+              <p className="mt-4 text-sm text-muted-foreground">
+                {latestTab === "shared"
+                  ? t("Aún no compartes gastos en este periodo.", "No shared expenses logged in this period yet.")
+                  : t("Aún no registras gastos en este periodo.", "No expenses logged in this period yet.")}
+              </p>
+            ) : (
+              <>
+                {/* Mismo número de líneas que las categorías visibles; "Ver más" abre el popup con todo. */}
+                <ul className="mt-4 divide-y divide-border/60">
+                  {shown.slice(0, Math.max(visibleRows.length, 6)).map(renderLatestTx)}
+                </ul>
+                {shown.length > Math.max(visibleRows.length, 6) && (
+                  <button
+                    type="button"
+                    onClick={() => setLatestOpen(true)}
+                    className="mt-3 w-full rounded-full border border-border py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    {t("Ver más", "Show more")}
+                  </button>
+                )}
+              </>
+            );
+          })()}
         </div>
           </div>
       </div>
@@ -2684,6 +2780,41 @@ export function ExpenseLog() {
           <ul className="divide-y divide-border/60">
             {expenseTx.map(renderLatestTx)}
           </ul>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={Boolean(settlePartner)} onOpenChange={(v) => !v && setSettlePartner(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-center">{settlePartner ? t(`Saldar con ${settlePartner.name}`, `Settle with ${settlePartner.name}`) : ""}</DialogTitle>
+            <DialogDescription className="text-center">
+              {settlePartner
+                ? settlePartner.balance > 0.005
+                  ? t(`${settlePartner.name} te debe`, `${settlePartner.name} owes you`)
+                  : settlePartner.balance < -0.005
+                    ? t(`Le debes a ${settlePartner.name}`, `You owe ${settlePartner.name}`)
+                    : t("Están en paz", "You're all even")
+                : ""}
+            </DialogDescription>
+          </DialogHeader>
+          {settlePartner && (
+            <div className="grid gap-4">
+              <div className={cn("rounded-2xl border border-border bg-muted/30 p-4 text-center", settlePartner.balance > 0.005 && "border-positive/40 bg-positive/5")}>
+                <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t("Balance", "Balance")}</p>
+                <p className={cn("numeric mt-1 text-3xl font-semibold", settlePartner.balance > 0.005 && "text-positive")}>{fmt(Math.abs(settlePartner.balance))}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Button type="button" variant="outline" onClick={copySettleText}>
+                  <Link2 className="mr-2 h-4 w-4" />
+                  {t("Copiar", "Copy")}
+                </Button>
+                <Button type="button" className="bg-positive text-background hover:bg-positive/90" onClick={() => { if (settleWa) window.open(settleWa, "_blank", "noopener"); }}>
+                  <MessageCircle className="mr-2 h-4 w-4" />
+                  {t("WhatsApp", "WhatsApp")}
+                </Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
