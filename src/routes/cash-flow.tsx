@@ -492,6 +492,16 @@ function CashFlow() {
           value={fmt(saveAmount)}
           hint={`${((saveAmount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
           tooltip={<BreakdownTooltip items={saveBreakdown} fmt={fmt} total={saveAmount} showAmounts={hasReal} />}
+          icon={PiggyBank}
+          iconClassName="sm:hidden"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.matchMedia("(min-width: 640px)").matches) return;
+            setAllocDraft({
+              invest: Math.round(savingsAlloc?.invest ?? destInvest),
+              goals: Math.round(savingsAlloc?.goals ?? destGoals),
+            });
+            setAllocOpen(true);
+          }}
           index={2}
         />
         <KpiCard
