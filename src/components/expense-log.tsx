@@ -2787,6 +2787,41 @@ export function ExpenseLog() {
         </DialogContent>
       </Dialog>
 
+      <Dialog open={Boolean(settlePartner)} onOpenChange={(v) => !v && setSettlePartner(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-center">{settlePartner ? t(`Saldar con ${settlePartner.name}`, `Settle with ${settlePartner.name}`) : ""}</DialogTitle>
+            <DialogDescription className="text-center">
+              {settlePartner
+                ? settlePartner.balance > 0.005
+                  ? t(`${settlePartner.name} te debe`, `${settlePartner.name} owes you`)
+                  : settlePartner.balance < -0.005
+                    ? t(`Le debes a ${settlePartner.name}`, `You owe ${settlePartner.name}`)
+                    : t("Están en paz", "You're all even")
+                : ""}
+            </DialogDescription>
+          </DialogHeader>
+          {settlePartner && (
+            <div className="grid gap-4">
+              <div className={cn("rounded-2xl border border-border bg-muted/30 p-4 text-center", settlePartner.balance > 0.005 && "border-positive/40 bg-positive/5")}>
+                <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t("Balance", "Balance")}</p>
+                <p className={cn("numeric mt-1 text-3xl font-semibold", settlePartner.balance > 0.005 && "text-positive")}>{fmt(Math.abs(settlePartner.balance))}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Button type="button" variant="outline" onClick={copySettleText}>
+                  <Link2 className="mr-2 h-4 w-4" />
+                  {t("Copiar", "Copy")}
+                </Button>
+                <Button type="button" className="bg-positive text-background hover:bg-positive/90" onClick={() => { if (settleWa) window.open(settleWa, "_blank", "noopener"); }}>
+                  <MessageCircle className="mr-2 h-4 w-4" />
+                  {t("WhatsApp", "WhatsApp")}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={statementOpen} onOpenChange={setStatementOpen}>
         <DialogContent className="max-h-[85vh] w-[calc(100vw-2rem)] max-w-2xl overflow-y-auto">
           <DialogHeader>
