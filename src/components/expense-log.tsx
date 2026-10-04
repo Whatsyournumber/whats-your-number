@@ -54,7 +54,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SPEND_PLAN_FIELDS, compact, getWynMoneyLocale, money } from "@/lib/onboarding";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { cn } from "@/lib/utils";
-import { SharedExpenseDialog, SharedExpenseInbox, parseShared, SHARED_PREFIX } from "@/components/shared-expense";
+import { SharedExpenseDialog, SharedExpenseInbox, parseShared, sharedIOwe, SHARED_OWE_MARKER, SHARED_PREFIX } from "@/components/shared-expense";
 import { notifySharedExpense } from "@/lib/shared-expense.functions";
 import { InviteShareActions } from "@/components/invite-share-actions";
 import { useServerFn } from "@tanstack/react-start";
@@ -365,6 +365,7 @@ export function ExpenseLog() {
     setSaving(true);
     try {
       const wasShared = Boolean(parseShared(editTx.description));
+      const wasOwed = sharedIOwe(editTx.description);
       let amount = -Math.abs(editAmount);
       let description: string | null | undefined = undefined;
       if (wasShared && editSharedWith) {
@@ -375,7 +376,7 @@ export function ExpenseLog() {
         const theirs = Math.max(0, total - mine);
         const myPct = total > 0 ? (mine / total) * 100 : 50;
         amount = mine > 0 ? -mine : Math.abs(theirs);
-        description = `${SHARED_PREFIX}${Math.round(myPct)}/${Math.round(100 - myPct)}|${editSharedWith}`;
+        description = `${SHARED_PREFIX}${Math.round(myPct)}/${Math.round(100 - myPct)}|${editSharedWith}${wasOwed ? SHARED_OWE_MARKER : ""}`;
         // Sincroniza el gasto compartido original si lo creé yo (mismo comercio y fecha).
         if (user?.id) {
           const { data: expRows } = await supabase
@@ -1400,10 +1401,13 @@ export function ExpenseLog() {
   /** Fila de "Últimos gastos", reutilizada en la tarjeta y en el popup con todo el historial. */
   const renderLatestTx = (x: (typeof expenseTx)[number]) => {
     const shared = parseShared(x.description);
-    // Verde si la otra persona te debe su parte (su % del reparto > 0), aunque
-    // el registro guarde tu parte en negativo. Rojo solo si no te debe nada.
+    // Verde si la otra persona te debe su parte (su % del reparto > 0). Rojo si
+    // el gasto lo puso ella y yo debo mi parte, o si no me debe nada.
+    const iOwe = sharedIOwe(x.description);
+    const myPct = shared ? Number(shared.split.split("/")[0] ?? 0) : 0;
     const theirPct = shared ? Number(shared.split.split("/")[1] ?? 0) : 0;
-    const sharedDebt = Boolean(shared) && theirPct > 0;
+    const sharedDebt = Boolean(shared) && !iOwe && theirPct > 0;
+    const theirDebt = sharedDebt && myPct > 0 ? (Math.abs(Number(x.amount)) * theirPct) / myPct : Math.abs(Number(x.amount));
     const receiptItems = receiptItemsFrom(x.description);
     const receiptTotal = receiptItems.reduce((sum, item) => sum + item.amount, 0);
     const receiptShare = shared && receiptTotal > 0
@@ -1425,7 +1429,7 @@ export function ExpenseLog() {
             </button>
           )}
           <div className="min-w-0 flex-1">
-            <p className="flex min-w-0 items-center gap-1.5 break-words text-sm font-medium">{x.merchant}{parseShared(x.description) && <Users className="h-3.5 w-3.5 shrink-0 text-positive" />}</p>
+            <p className="flex min-w-0 items-center gap-1.5 break-words text-sm font-medium">{x.merchant}{shared && <Users className={cn("h-3.5 w-3.5 shrink-0", iOwe ? "text-rose-300" : "text-positive")} />}</p>
             <p className="break-words text-[11px] text-muted-foreground">
               {translateCategory(x.category || categorizeTx(x as Tx, categories.rules), lang)}
               {receiptItems.length > 0 ? ` · ${receiptItems.length} ${t("productos", "items")}` : ""}
@@ -1435,7 +1439,7 @@ export function ExpenseLog() {
           <span className="shrink-0 text-[11px] text-muted-foreground">
             {x.tx_date ? format(parseISO(x.tx_date), "d MMM", { locale }) : ""}
           </span>
-          <span className={cn("shrink-0 text-sm font-semibold", sharedDebt ? "text-positive" : "text-rose-300")}>{sharedDebt ? "+" : "-"}{fmt(Math.abs(x.amount))}</span>
+          <span className={cn("shrink-0 text-sm font-semibold", sharedDebt ? "text-positive" : "text-rose-300")}>{sharedDebt ? "+" : "-"}{fmt(sharedDebt ? theirDebt : Math.abs(x.amount))}</span>
           <button
             type="button"
             onClick={() => openEditTx(x as Tx)}
@@ -2658,7 +2662,7 @@ export function ExpenseLog() {
                                <div className="min-w-0 flex-1">
                                  <p className="flex min-w-0 items-center gap-1.5 text-sm">
                                    <span className="truncate">{it.label}</span>
-                                   {parseShared(expenseTx.find((x) => x.id === it.key)?.description) && <Users className="h-3.5 w-3.5 shrink-0 text-positive" aria-label={t("Compartido", "Shared")} />}
+                                   {parseShared(expenseTx.find((x) => x.id === it.key)?.description) && <Users className={cn("h-3.5 w-3.5 shrink-0", sharedIOwe(expenseTx.find((x) => x.id === it.key)?.description) ? "text-rose-300" : "text-positive")} aria-label={t("Compartido", "Shared")} />}
                                  </p>
                                 {it.date && (
                                   <p className="text-[11px] text-muted-foreground">

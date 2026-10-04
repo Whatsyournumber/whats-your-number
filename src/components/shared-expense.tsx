@@ -34,6 +34,12 @@ type Partner = { id: string; name: string };
 
 /** Marca en la descripción del gasto para mostrarlo como compartido en el historial. */
 export const SHARED_PREFIX = "shared:";
+export const SHARED_OWE_MARKER = "|owed";
+/** true si la fila es un gasto compartido que puso la otra persona y yo debo mi parte. */
+export function sharedIOwe(description?: string | null) {
+  if (!description?.startsWith(SHARED_PREFIX)) return false;
+  return description.slice(SHARED_PREFIX.length).split("|")[2] === "owed";
+}
 export function parseShared(description?: string | null) {
   if (!description?.startsWith(SHARED_PREFIX)) return null;
   const [split, name] = description.slice(SHARED_PREFIX.length).split("|");
@@ -439,12 +445,16 @@ export function SharedExpenseInbox() {
       if (accept) {
         const split = exp.split_mode.split("/").reverse().join("/");
         const share = Number(row.share_amount);
+        const base = sharedReceiptDescription(split, row.from, Array.isArray(exp.receipt_items) ? exp.receipt_items : []);
         await saveExpense({
           userId: user.id, date: exp.tx_date, category: exp.category, currency: exp.currency,
           // Cuando tu parte es 0 y tú pagaste, la otra persona te debe el total: se guarda en positivo (verde).
           amount: share > 0 ? share : exp.total, debtToMe: share === 0 && exp.payer_id === user.id,
           merchant: exp.merchant || translateCategory(exp.category, lang),
-          description: sharedReceiptDescription(split, row.from, Array.isArray(exp.receipt_items) ? exp.receipt_items : []),
+          // Si el gasto lo puso (y pagó) la otra persona, marco la fila: mi parte se muestra en rojo.
+          description: exp.payer_id !== user.id && share > 0
+            ? base.replace(/(\|wyn-receipt:|$)/, `${SHARED_OWE_MARKER}$1`)
+            : base,
         });
       }
       const { error } = await supabase.from("shared_expense_participants").update({ status: accept ? "accepted" : "declined" }).eq("id", row.id);
