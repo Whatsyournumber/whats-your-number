@@ -244,10 +244,10 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                         </button>
                       ) : null}
                       </div>
-                       <div className="col-span-2 flex min-w-0 items-center justify-end gap-1 sm:col-span-1 sm:gap-2">
+                       <div className="col-span-2 flex min-w-0 items-center gap-1 sm:col-span-1 sm:gap-2">
                          {g === "essentials" ? (
                            <div
-                             className="flex h-9 items-center gap-1 rounded-md border border-border/60 bg-card/40 px-1.5 sm:gap-1.5 sm:px-2"
+                             className="flex h-9 shrink-0 items-center gap-1 rounded-md border border-border/60 bg-card/40 px-1.5 sm:gap-1.5 sm:px-2"
                              title={t("Día del mes en que se cobra", "Day of month it is charged")}
                            >
                              <CalendarDays className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
@@ -267,21 +267,23 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                              />
                            </div>
                          ) : null}
+                        <div className="ml-auto flex min-w-0 items-center gap-1 sm:gap-2">
                           <NumberInput
-                           value={l.amount}
-                           onChange={(v) => setAmount(l.id, v)}
-                           format
-                           ariaLabel={t("Monto objetivo mensual", "Monthly target amount")}
-                           className="h-9 w-24 text-sm sm:w-28"
-                         />
-                      <button
-                        type="button"
-                        onClick={() => removeLine(l.id)}
-                        className="grid h-9 w-9 shrink-0 place-items-center text-muted-foreground transition hover:text-negative"
-                        aria-label={t("Quitar", "Remove")}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                            value={l.amount}
+                            onChange={(v) => setAmount(l.id, v)}
+                            format
+                            ariaLabel={t("Monto objetivo mensual", "Monthly target amount")}
+                            className="h-9 w-24 text-sm sm:w-28"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeLine(l.id)}
+                            className="grid h-9 w-9 shrink-0 place-items-center text-muted-foreground transition hover:text-negative"
+                            aria-label={t("Quitar", "Remove")}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
                        </div>
                     </div>
                     {appSubs && isAppsLine(l) && appsOpen && (
