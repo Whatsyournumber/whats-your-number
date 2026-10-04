@@ -2796,7 +2796,7 @@ export function ExpenseLog() {
                                       const paidBy = iOweRow
                                         ? t(`Pagó ${firstNameOf(sharedTx.name)}`, `Paid by ${firstNameOf(sharedTx.name)}`)
                                         : t("Pagaste tú", "Paid by you");
-                                      const splitTxt = sharedTx.split.split("/").reverse().join("/");
+                                      const splitTxt = `${iOweRow ? Number(sharedTx.split.split("/")[0]) : Number(sharedTx.split.split("/")[1])}%`;
                                       const full = `${dateTxt} · ${paidBy} · ${splitTxt}`;
                                       const shorter = `${dateTxt} · ${paidBy}`;
                                       return full.length > 34 ? (shorter.length <= 34 ? shorter : clipText(shorter, 34)) : full;
