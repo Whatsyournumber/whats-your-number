@@ -471,6 +471,9 @@ export function ExpenseLog() {
 
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
+  const fmtShared = (n: number) => new Intl.NumberFormat(lang === "es" ? "es-ES" : "en-US", {
+    style: "currency", currency, minimumFractionDigits: 0, maximumFractionDigits: 2,
+  }).format(Math.round(n * 100) / 100);
   const fmtCompact = (n: number) => compact(n, currency);
   const currencySymbol = useMemo(() => {
     try {
@@ -2815,17 +2818,17 @@ export function ExpenseLog() {
                       <div className="mt-5 grid grid-cols-3 border-t border-border/60 pt-4">
                         <div className="min-w-0 pr-2">
                           <p className="text-[11px] leading-5 text-muted-foreground sm:text-xs">{t("Total compartido", "Total shared")}</p>
-                          <p className="numeric whitespace-nowrap text-base font-semibold sm:text-lg">{fmt(b.together)}</p>
+                          <p className="numeric whitespace-nowrap text-base font-semibold sm:text-lg">{fmtShared(b.together)}</p>
                         </div>
                         <div className="min-w-0 border-l border-border pl-2 sm:pl-4">
                           <p className="text-[11px] leading-5 text-muted-foreground sm:text-xs">{t("Tu parte", "Your share")}</p>
-                          <p className="numeric whitespace-nowrap text-base font-semibold sm:text-lg">{fmt(b.myShare)}</p>
+                          <p className="numeric whitespace-nowrap text-base font-semibold sm:text-lg">{fmtShared(b.myShare)}</p>
                         </div>
                         <div className="min-w-0 border-l border-border pl-2 sm:pl-4">
                           <p className="whitespace-nowrap text-[11px] leading-5 text-muted-foreground sm:text-xs">
                             {isOwed ? t(`${firstNameOf(b.name)} te debe`, `${firstNameOf(b.name)} owes you`) : iOwe ? t(`Debes a ${firstNameOf(b.name)}`, `You owe ${firstNameOf(b.name)}`) : t("En paz", "Even")}
                           </p>
-                          <p className={cn("numeric whitespace-nowrap text-base font-semibold sm:text-lg", isOwed && "text-positive", iOwe && "text-negative")}>{fmt(Math.abs(b.balance))}</p>
+                          <p className={cn("numeric whitespace-nowrap text-base font-semibold sm:text-lg", isOwed && "text-positive", iOwe && "text-negative")}>{fmtShared(Math.abs(b.balance))}</p>
                         </div>
                       </div>
                     </div>
@@ -3285,21 +3288,23 @@ export function ExpenseLog() {
                     const mine =
                       editMode === "equal" ? total / 2 : editMode === "percent" ? (total * editMyPct) / 100 : Math.min(editMyAmount, total);
                     const theirs = Math.max(0, total - mine);
+                    const editExpense = sharedBalanceRows.find((row) => row.user_id === user?.id && row.shared_expenses?.merchant === editTx?.merchant && row.shared_expenses?.tx_date === editTx?.tx_date)?.shared_expenses;
+                    const partnerPaid = editExpense ? editExpense.payer_id !== user?.id : sharedIOwe(editTx?.description);
                     return (
                       <div className="rounded-lg border border-border">
                         <div className="flex items-center justify-between gap-2 px-3 py-2.5">
                           <span className="text-sm">{t("Tú pagas", "You pay")}</span>
-                          <span className="numeric text-sm font-semibold">{fmt(mine)}</span>
+                          <span className="numeric text-sm font-semibold">{fmtShared(mine)}</span>
                         </div>
                         <div className="flex items-center justify-between gap-2 border-t border-border px-3 py-2.5">
                           <span className="text-sm">{firstNameOf(editSharedWith)} {t("paga", "pays")}</span>
-                          <span className="numeric text-sm font-semibold">{fmt(theirs)}</span>
+                          <span className="numeric text-sm font-semibold">{fmtShared(theirs)}</span>
                         </div>
                         <div className="border-t border-border px-3 py-2.5 text-xs">
-                          {theirs > 0 ? (
-                            <span className="text-positive">{firstNameOf(editSharedWith)} {t("te debe", "owes you")} {fmt(theirs)}</span>
+                          {partnerPaid ? (
+                            <span className="text-negative">{t("Le debes", "You owe")} {firstNameOf(editSharedWith)} {fmtShared(mine)}</span>
                           ) : (
-                            <span className="text-negative">{t("Le debes", "You owe")} {firstNameOf(editSharedWith)} {fmt(mine)}</span>
+                            <span className="text-positive">{firstNameOf(editSharedWith)} {t("te debe", "owes you")} {fmtShared(theirs)}</span>
                           )}
                         </div>
                       </div>
