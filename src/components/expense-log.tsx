@@ -1874,15 +1874,33 @@ export function ExpenseLog() {
               <div className="flex min-w-0 flex-col items-start gap-1 max-sm:items-center max-sm:text-center sm:flex-row sm:items-center sm:gap-2.5 md:border-l md:border-border/60 md:px-4">
                 <span className="hidden h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10 text-positive sm:grid"><CalendarDays className="h-4 w-4" /></span>
                 <div>
-                  <p className="numeric text-base font-bold leading-tight text-positive sm:text-xl">{daysLeft}</p>
-                  <p className="text-xs text-muted-foreground">{t("días quedan", "days left")}</p>
+                  {isCurrentMonth || period !== "month" ? (
+                    <>
+                      <p className="numeric text-base font-bold leading-tight text-positive sm:text-xl">{daysLeft}</p>
+                      <p className="text-xs text-muted-foreground">{t("días quedan", "days left")}</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="numeric text-base font-bold leading-tight text-positive sm:text-xl">{periodDays}</p>
+                      <p className="text-xs text-muted-foreground">{t("días del mes", "days of the month")}</p>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="flex min-w-0 flex-col items-start gap-1 max-sm:items-center max-sm:border-l max-sm:border-border/60 max-sm:pl-3 max-sm:text-center sm:flex-row sm:items-center sm:gap-2.5 md:border-l md:border-border/60 md:px-4">
                 <span className="hidden h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10 text-positive sm:grid"><TrendingUp className="h-4 w-4" /></span>
                 <div className="min-w-0">
-                  <p className="numeric whitespace-nowrap text-base font-bold leading-tight text-positive sm:text-xl">{fmt(perDay)}/{t("día", "day")}</p>
-                  <p className="text-xs text-muted-foreground">{t("para el plan", "to stay on plan")}</p>
+                  {isCurrentMonth || period !== "month" ? (
+                    <>
+                      <p className="numeric whitespace-nowrap text-base font-bold leading-tight text-positive sm:text-xl">{fmt(perDay)}/{t("día", "day")}</p>
+                      <p className="text-xs text-muted-foreground">{t("para el plan", "to stay on plan")}</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="numeric whitespace-nowrap text-base font-bold leading-tight text-positive sm:text-xl">{fmt(periodDays > 0 ? variableSpend / periodDays : 0)}/{t("día", "day")}</p>
+                      <p className="text-xs text-muted-foreground">{t("de media gastada", "spent on average")}</p>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
