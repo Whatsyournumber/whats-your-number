@@ -2168,7 +2168,7 @@ export function ExpenseLog() {
                             const x = left + (i + 0.17) * step;
                             // Altura mínima para que gastos pequeños también se vean.
                             const y = Math.min(yOf(v), top + plotH - 7);
-                            const isToday = i + 1 === todayDay;
+                            const isToday = isCurrentMonth && i + 1 === todayDay;
                             const isActive = i === active;
                             return (
                               <rect
@@ -2183,13 +2183,16 @@ export function ExpenseLog() {
                                     ? "fill-emerald-300"
                                     : isToday
                                       ? "fill-emerald-300"
-                                      : i + 1 <= todayDay
+                                      : todayDay === 0
                                         ? "fill-emerald-500/80"
-                                        : "fill-muted-foreground/25",
+                                        : i + 1 <= todayDay
+                                          ? "fill-emerald-500/80"
+                                          : "fill-muted-foreground/25",
                                 )}
                               />
                             );
                           })}
+                          {todayDay > 0 && (
                           <line
                             x1={left + (todayDay - 0.5) * step}
                             x2={left + (todayDay - 0.5) * step}
@@ -2198,6 +2201,8 @@ export function ExpenseLog() {
                             className="stroke-emerald-400"
                             strokeWidth="1.5"
                           />
+                          )}
+                          {todayDay > 0 && (
                           <text
                             x={left + (todayDay - 0.5) * step}
                             y={top - 6}
@@ -2206,6 +2211,7 @@ export function ExpenseLog() {
                           >
                             {t("Hoy", "Today")}
                           </text>
+                          )}
                           {xTicks.map((d) => (
                             <text
                               key={d}
@@ -2243,7 +2249,7 @@ export function ExpenseLog() {
                             }}
                           >
                             <span className="numeric font-medium text-muted-foreground">
-                              {format(new Date(now.getFullYear(), now.getMonth(), active + 1), "d MMM", { locale })}
+                              {format(new Date(viewDate.getFullYear(), viewDate.getMonth(), active + 1), "d MMM", { locale })}
                             </span>
                             <span
                               className={cn(
