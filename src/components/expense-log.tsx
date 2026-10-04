@@ -545,10 +545,6 @@ export function ExpenseLog() {
       toast.error(t("No se pudo copiar el texto", "Could not copy the text"));
     }
   };
-  const monthLabelCap = (() => {
-    const m = format(periodStart, "MMMM", { locale });
-    return m.charAt(0).toUpperCase() + m.slice(1);
-  })();
   const expenseFixedItems = useMemo(
     () => fixed.items.filter((i) => !isSavingsName(i.name)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
