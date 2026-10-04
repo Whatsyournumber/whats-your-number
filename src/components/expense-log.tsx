@@ -585,7 +585,7 @@ export function ExpenseLog() {
   );
 
   // Balance de gastos compartidos por persona, dentro del periodo visible.
-  type SharedBalance = { id: string; name: string; count: number; together: number; myShare: number; balance: number };
+  type SharedBalance = { id: string; name: string; count: number; together: number; myShare: number; balance: number; rawBalance: number };
   const myName = (profile?.full_name as string | undefined)?.split(" ")[0] || t("Yo", "Me");
   const initialsOf = (name: string) => name.trim().slice(0, 1).toUpperCase() || "?";
   const sharedBalances = useMemo<SharedBalance[]>(() => {
@@ -610,7 +610,7 @@ export function ExpenseLog() {
       const d = parseISO(exp.tx_date);
       if (d < monthStart || d > monthEnd) continue;
       for (const p of partners) {
-        const entry = map.get(p.user_id) ?? { id: p.user_id, name: p.display_name || "?", count: 0, together: 0, myShare: 0, balance: 0 };
+        const entry = map.get(p.user_id) ?? { id: p.user_id, name: p.display_name || "?", count: 0, together: 0, myShare: 0, balance: 0, rawBalance: 0 };
         entry.count += 1;
         entry.together += convertAmount(Number(exp.total) || 0, exp.currency, profile.currency || "EUR");
         entry.myShare += convertAmount(Number(mine.share_amount) || 0, exp.currency, profile.currency || "EUR");
@@ -622,8 +622,8 @@ export function ExpenseLog() {
     return [...map.values()].map((entry) => {
       const paid = settlementRows.find((row) => row.partner_id === entry.id);
       const amount = paid ? convertAmount(Number(paid.paid_amount), paid.currency, profile.currency || "EUR") : 0;
-      const applied = Math.min(amount, Math.abs(entry.balance));
-      return { ...entry, balance: entry.balance + (paid?.paid_by_user ? applied : -applied) };
+      const applied = paid?.paid_by_user === (entry.balance < 0) ? Math.min(amount, Math.abs(entry.balance)) : 0;
+      return { ...entry, rawBalance: entry.balance, balance: entry.balance + (paid?.paid_by_user ? applied : -applied) };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sharedBalanceRows, settlementRows, user?.id, profile.currency, monthStart.getTime(), monthEnd.getTime()]);
@@ -632,11 +632,11 @@ export function ExpenseLog() {
   const settleBalance = selectedBalance?.balance ?? 0;
   const savedSettlement = settlementRows.find((row) => row.partner_id === settlePartner?.id);
   const previousPaid = savedSettlement ? convertAmount(Number(savedSettlement.paid_amount), savedSettlement.currency, currency) : 0;
-  const rawBalance = settleBalance - (savedSettlement?.paid_by_user ? Math.min(previousPaid, Math.abs(settleBalance) + previousPaid) : -Math.min(previousPaid, Math.abs(settleBalance) + previousPaid));
+  const rawBalance = selectedBalance?.rawBalance ?? 0;
   const openSettlement = (entry: SharedBalance) => {
     setSettlePartner({ id: entry.id, name: firstNameOf(entry.name) });
     const previous = settlementRows.find((row) => row.partner_id === entry.id);
-    setSettlePaid(previous ? Math.min(convertAmount(Number(previous.paid_amount), previous.currency, currency), Math.abs(entry.balance) + convertAmount(Number(previous.paid_amount), previous.currency, currency)) : 0);
+    setSettlePaid(previous && previous.paid_by_user === (entry.rawBalance < 0) ? Math.min(convertAmount(Number(previous.paid_amount), previous.currency, currency), Math.abs(entry.rawBalance)) : 0);
   };
   const saveSettlement = async () => {
     if (!settlePartner || !user?.id || !Number.isFinite(settlePaid) || settlePaid < 0 || settlePaid > Math.abs(rawBalance) + 0.01) {
