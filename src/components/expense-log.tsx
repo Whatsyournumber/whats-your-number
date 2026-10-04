@@ -142,9 +142,6 @@ export function ExpenseLog() {
   const [recOpen, setRecOpen] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
   const [sharedOpen, setSharedOpen] = useState(false);
-  const [addMenuOpen, setAddMenuOpen] = useState(false);
-  const addMobileRef = useRef<HTMLButtonElement | null>(null);
-  const [addBlurHole, setAddBlurHole] = useState<{ x1: number; y1: number; x2: number; y2: number } | null>(null);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean }).add });
   const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
   const router = useRouter();
@@ -1328,97 +1325,6 @@ export function ExpenseLog() {
             {t("Controla tus gastos del día a día y mantente dentro de tu plan.", "Track your daily expenses and stay within your plan.")}
           </p>
         </div>
-        <DropdownMenu
-          open={addMenuOpen}
-          onOpenChange={(open) => {
-            setAddMenuOpen(open);
-            if (open && addMobileRef.current) {
-              const r = addMobileRef.current.getBoundingClientRect();
-              const p = 2;
-              setAddBlurHole({ x1: r.left - p, y1: r.top - p, x2: r.right + p, y2: r.bottom + p });
-            } else if (!open) {
-              setAddBlurHole(null);
-            }
-          }}
-        >
-
-          <TooltipProvider delayDuration={150}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <DropdownMenuTrigger asChild>
-                <button
-                  type="button"
-                  ref={addMobileRef}
-                  data-tour-expense-target="add-mobile"
-                  aria-label={t("Añadir gasto", "Add expense")}
-                  className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-positive text-background shadow-lg shadow-positive/20 sm:hidden"
-                >
-                  <Plus className="h-6 w-6" />
-                </button>
-              </DropdownMenuTrigger>
-            </TooltipTrigger>
-            <TooltipContent side="bottom" align="end" sideOffset={8} className="text-sm font-medium">
-              {t("Agrega tus gastos diarios", "Add your daily expenses")}
-            </TooltipContent>
-          </Tooltip>
-          </TooltipProvider>
-          {addMenuOpen &&
-            createPortal(
-              (() => {
-                const cls = "fixed z-[45] bg-background/60 backdrop-blur-sm sm:hidden";
-                const h = addBlurHole;
-                if (!h) return null;
-                const nav = document.querySelector("nav.fixed.bottom-0") as HTMLElement | null;
-                const footerTop = nav ? nav.getBoundingClientRect().top : window.innerHeight;
-                return (
-                  <>
-                    <div aria-hidden="true" className={cls} style={{ left: 0, right: 0, top: 56, height: Math.max(0, h.y1 - 56) }} />
-                    <div aria-hidden="true" className={cls} style={{ left: 0, top: h.y1, width: h.x1, height: Math.max(0, footerTop - h.y1) }} />
-                    <div aria-hidden="true" className={cls} style={{ left: h.x2, right: 0, top: h.y1, height: Math.max(0, footerTop - h.y1) }} />
-                  </>
-                );
-              })(),
-              document.body,
-            )}
-
-
-
-          <DropdownMenuContent align="end" className="z-50 w-[21rem] p-2">
-
-            <div className="px-4 pb-2 pt-3 text-center">
-              <p className="text-[22px] font-bold tracking-tight text-foreground">
-                {t("Trackea tus gastos diarios", "Track your spending")}
-              </p>
-              <p className="mt-0.5 text-[15px] font-medium text-muted-foreground">
-                {t("Elige cómo quieres agregarlos", "Choose how you want to add them")}
-              </p>
-            </div>
-            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => setManualOpen(true)}>
-              <PencilLine className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
-              {t("Manual", "Manual")}
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => (recording ? stopRecording() : startRecording(true))}>
-              {recording ? <Square className="h-6 w-6 shrink-0 text-negative" strokeWidth={1.9} /> : <Mic className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />}
-              {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => camRef.current?.click()}>
-              <Camera className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
-              {t("Tomar foto (super, compras, etc)", "Take photo (groceries, shopping, etc)")}
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => setPhotoPickerOpen(true)}>
-              <Upload className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
-              {t("Fotos o estados de cuentas", "Photos or bank statements")}
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={openNewRecurring}>
-              <Repeat className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
-              {t("Recurrente", "Recurring")}
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex min-h-12 items-center gap-4 rounded-xl px-4 py-2 text-[15px] font-medium" onSelect={() => setSharedOpen(true)}>
-              <Users className="h-6 w-6 shrink-0 text-positive" strokeWidth={1.9} />
-              {t("Gasto compartido", "Shared expense")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -1607,7 +1513,7 @@ export function ExpenseLog() {
 
 
       <div className="space-y-3">
-          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
+          <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
             <div data-tour-expense-target="plan" className="flex min-w-0 items-center gap-3">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-positive/10 sm:h-11 sm:w-11">
                 <Wallet className="h-4 w-4 text-positive sm:h-5 sm:w-5" />
