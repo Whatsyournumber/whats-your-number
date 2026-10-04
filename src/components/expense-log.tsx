@@ -1519,7 +1519,7 @@ export function ExpenseLog() {
                 <Wallet className="h-4 w-4 text-positive sm:h-5 sm:w-5" />
               </span>
               <div className="min-w-0 flex-1">
-                <h3 data-tour-expense-target="plan-title" className="min-w-0 whitespace-nowrap text-lg font-semibold sm:text-xl lg:text-2xl">
+                <h3 data-tour-expense-target="plan-title" className="min-w-0 text-lg font-semibold max-md:whitespace-normal max-md:leading-snug sm:text-xl lg:text-2xl lg:whitespace-nowrap">
                   {t("Tu plan de gasto mensual", "Your monthly spending plan")}
                 </h3>
                 <p className="hidden max-md:block max-md:mt-0.5 max-md:text-xs max-md:leading-snug max-md:text-muted-foreground">
