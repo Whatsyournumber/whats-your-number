@@ -2200,7 +2200,7 @@ export function ExpenseLog() {
                   >
                     <h3 className="text-base font-semibold">{t("Gastos fijos (Próximos pagos)", "Fixed expenses (Upcoming payments)")}</h3>
                     <span className="flex shrink-0 items-center gap-2">
-                      <p className="numeric hidden font-semibold text-muted-foreground max-md:block">
+                      <p className={cn("numeric hidden font-semibold text-muted-foreground max-md:block", fixedOpen && "max-md:hidden")}>
                         {upcoming.length > 0 ? fmt(upcoming.reduce((s, i) => s + i.amount, 0)) : null}
                       </p>
                       <ChevronDown className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform max-md:block md:hidden", fixedOpen && "rotate-180")} />
