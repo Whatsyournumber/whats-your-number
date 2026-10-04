@@ -1616,8 +1616,8 @@ export function ExpenseLog() {
                 <h3 data-tour-expense-target="plan-title" className="min-w-0 whitespace-nowrap text-lg font-semibold sm:text-xl lg:text-2xl">
                   {t("Tu plan de gasto mensual", "Your monthly spending plan")}
                 </h3>
-                <p className="hidden max-md:block max-md:mt-0.5 max-md:truncate max-md:text-xs max-md:leading-snug max-md:text-muted-foreground">
-                  {t("Crea o agrega una categoría a tu plan", "Create or add a new category to your plan")}
+                <p className="hidden max-md:block max-md:mt-0.5 max-md:text-xs max-md:leading-snug max-md:text-muted-foreground">
+                  {t("Agrega categorías a tu plan", "Add categories to your plan")}
                 </p>
               </div>
               {period === "month" && (
