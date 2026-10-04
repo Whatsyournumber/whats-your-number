@@ -262,6 +262,7 @@ export function ManualExpenseDialog({
       });
       if (error) throw new Error(error.message);
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      void queryClient.invalidateQueries({ queryKey: ["shared-balances"] });
       if (partner) void queryClient.invalidateQueries({ queryKey: ["shared-partners"] });
       const fmtStr = precision === "month" ? "MMM yyyy" : "d MMM yyyy";
       toast.success(t("Gasto guardado", "Expense saved"), {

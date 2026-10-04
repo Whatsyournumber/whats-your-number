@@ -1758,6 +1758,17 @@ export type Database = {
         Args: { _code: string; _environment: string; _user_id: string }
         Returns: Json
       }
+      update_shared_expense: {
+        Args: {
+          _category: string
+          _merchant: string
+          _my_share: number
+          _total: number
+          _transaction_id: string
+          _tx_date: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "super_admin" | "admin" | "user"

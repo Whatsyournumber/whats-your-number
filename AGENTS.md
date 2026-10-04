@@ -26,3 +26,5 @@ Onboarding stores one primary and one optional secondary financial goal; only an
 Supermarket receipt insights parse itemized lines from transaction descriptions into twelve bilingual, product-name-based rubros and show only rubros with current spend; when a bank charge duplicates an uploaded receipt, keep the bank charge and carry its receipt details in the read model so spending is counted once without losing products.
 
 Grocery rules are synced per user; show only saved corrections/additions as rules, not every detected receipt product, and apply them to past and future receipts without rewriting bank data.
+
+Shared-expense edits use the authenticated public invoker RPC backed by a private checked function to update the expense, both shares, and the editor's transaction together; balances convert each expense currency to the profile currency and refresh after writes so totals stay consistent.

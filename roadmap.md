@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Reordenar las cifras compartidas como la referencia y sincronizar total, parte y balance al editar gastos.
+
 - [x] Mostrar el icono compartido y el nombre de Carlos dentro de la categoría; conservar los productos del recibo compartido.
 
 - [x] Gasto manual: ofrecer todas las categorías del plan y permitir añadir a una persona desde la parte inferior del formulario.

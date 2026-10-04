@@ -230,6 +230,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
         description: sharedReceiptDescription(split, names, receiptItems),
       });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      void queryClient.invalidateQueries({ queryKey: ["shared-balances"] });
       void queryClient.invalidateQueries({ queryKey: ["shared-partners"] });
       toast.success(t("Gasto compartido guardado", "Shared expense saved"), {
         description: t(
@@ -461,6 +462,7 @@ export function SharedExpenseInbox() {
       if (error) throw error;
       await queryClient.invalidateQueries({ queryKey: ["shared-inbox"] });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      void queryClient.invalidateQueries({ queryKey: ["shared-balances"] });
       toast.success(accept ? t("Añadido a tus gastos", "Added to your spending") : t("Gasto rechazado", "Expense declined"));
     } catch (e) {
       toast.error(e instanceof Error ? e.message : ((e as { message?: string })?.message ?? String(e)));
