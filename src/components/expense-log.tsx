@@ -486,7 +486,7 @@ export function ExpenseLog() {
   const periodTx = useMemo(
     () =>
       transactions
-        .filter((x) => x.amount < 0 && x.tx_date)
+        .filter((x) => x.tx_date && (x.amount < 0 || sharedDebtOf(x)))
         .filter((x) => {
           const d = parseISO(x.tx_date!);
           return d >= periodStart && d <= monthEnd;
