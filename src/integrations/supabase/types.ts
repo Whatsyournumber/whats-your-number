@@ -1381,6 +1381,7 @@ export type Database = {
           currency: string
           month_key: string
           paid_amount: number
+          paid_by_user: boolean
           partner_id: string
           updated_at: string
           user_id: string
@@ -1389,6 +1390,7 @@ export type Database = {
           currency: string
           month_key: string
           paid_amount?: number
+          paid_by_user?: boolean
           partner_id: string
           updated_at?: string
           user_id: string
@@ -1397,6 +1399,7 @@ export type Database = {
           currency?: string
           month_key?: string
           paid_amount?: number
+          paid_by_user?: boolean
           partner_id?: string
           updated_at?: string
           user_id?: string
