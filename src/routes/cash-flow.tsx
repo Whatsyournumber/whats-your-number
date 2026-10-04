@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SavingsGoals, type SavingsGoal } from "@/components/savings-goals";
+import { parseShared } from "@/components/shared-expense";
 import { motion } from "motion/react";
 import { ArrowLeftRight, ArrowRight, Coins, Lightbulb, Pencil, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
@@ -119,6 +120,8 @@ function CashFlow() {
     const map = new Map<string, number>();
     for (const tx of monthTx) {
       if (tx.amount <= 0) continue;
+      // Las deudas de gastos compartidos ("me deben") no son ingresos.
+      if (parseShared(tx.description)) continue;
       const key = tx.merchant?.trim() || t("Otros ingresos", "Other income");
       map.set(key, (map.get(key) ?? 0) + tx.amount);
     }
