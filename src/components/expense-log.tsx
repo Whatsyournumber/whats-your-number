@@ -115,11 +115,21 @@ const blobToBase64 = (blob: Blob) =>
     reader.readAsDataURL(blob);
   });
 
+const MONTH_LABELS_ES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+const MONTH_LABELS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const buildMonthLabel =
+  (labels: string[]) =>
+  (key: string) => {
+    const [y, m] = key.split("-");
+    return `${labels[Number(m) - 1] ?? m} ${y}`;
+  };
+
 /** Registro de gastos: captura rápida (manual, voz, recibo) y control contra tu plan. */
 export function ExpenseLog() {
   const t = useT();
   const { lang } = useLanguage();
   const locale = lang === "es" ? es : enUS;
+  const monthLabel = useMemo(() => buildMonthLabel(lang === "en" ? MONTH_LABELS_EN : MONTH_LABELS_ES), [lang]);
   const { user } = useAuth();
   const { profile } = useProfile();
   const queryClient = useQueryClient();
@@ -385,8 +395,6 @@ export function ExpenseLog() {
   }, [currency]);
 
   const now = new Date();
-  const monthStart = startOfMonth(now);
-  const monthEnd = endOfMonth(now);
 
   // Periodo de la vista: hoy, última semana o mes completo. El objetivo y los
   // gastos fijos se prorratean para que la comparación siga siendo justa.
@@ -395,6 +403,30 @@ export function ExpenseLog() {
   const [hoverDay, setHoverDay] = useState<number | null>(null);
   // Categoría cuyo análisis detallado (gráfica + movimientos) está abierto.
   const [analysisCat, setAnalysisCat] = useState<string | null>(null);
+
+  // Mes que se está mirando (key "yyyy-mm"): permite revisar los meses pasados.
+  const monthKeyOf = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+  const currentMonthKey = monthKeyOf(now);
+  const [viewKey, setViewKey] = useState<string | null>(null);
+  const activeKey = viewKey ?? currentMonthKey;
+  const isCurrentMonth = activeKey === currentMonthKey;
+  const viewParts = activeKey.split("-").map(Number);
+  const viewDate = new Date(viewParts[0] ?? now.getFullYear(), (viewParts[1] ?? now.getMonth() + 1) - 1, 1);
+  const monthStart = startOfMonth(viewDate);
+  const monthEnd = endOfMonth(viewDate);
+
+  // Meses del selector: el actual, los 12 anteriores y cualquier mes más atrás
+  // con movimientos registrados.
+  const months = useMemo(() => {
+    const set = new Set<string>([currentMonthKey]);
+    for (const x of transactions) if (x.tx_date) set.add(monthKeyOf(parseISO(x.tx_date)));
+    for (let i = 0; i < 12; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      set.add(monthKeyOf(d));
+    }
+    return [...set].sort().reverse().slice(0, 24);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transactions]);
 
   const daysInMonth = monthEnd.getDate();
   const periodDays = period === "day" ? 1 : period === "week" ? 7 : daysInMonth;
@@ -481,13 +513,15 @@ export function ExpenseLog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactions, daysInMonth, monthStart.getTime(), monthEnd.getTime()]);
 
-  const todayDay = now.getDate();
+  const todayDay = isCurrentMonth ? now.getDate() : 0;
   const monthVariable = daily.reduce((s, v) => s + v, 0);
 
   /** Fecha del próximo cobro a partir del día del mes. */
   const nextChargeDate = (dayOfMonth?: number) => {
     const base = startOfDay(now);
     const day = Math.min(Math.max(1, dayOfMonth ?? 1), daysInMonth);
+    // Meses pasados: cada cobro se muestra en el día que tocó ese mes.
+    if (!isCurrentMonth) return new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
     let next = new Date(now.getFullYear(), now.getMonth(), day);
     if (next < base) next = new Date(now.getFullYear(), now.getMonth() + 1, Math.min(day, 28));
     return next;
@@ -499,7 +533,7 @@ export function ExpenseLog() {
       .filter((i) => i.amount > 0)
       .map((i) => ({ ...i, next: nextChargeDate(i.dayOfMonth) }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [expenseFixedItems, daysInMonth]);
+  }, [expenseFixedItems, daysInMonth, activeKey]);
 
   /** Plan del onboarding: las categorías y montos que la persona declaró al registrarse. */
   const onboardingLines = useMemo<BudgetLine[]>(() => {
@@ -1386,26 +1420,56 @@ export function ExpenseLog() {
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex w-full rounded-lg border border-border bg-card p-1 sm:w-80">
-          {(
-            [
-              { id: "month", es: "Mes", en: "Month" },
-              { id: "week", es: "Semana", en: "Week" },
-              { id: "day", es: "Hoy", en: "Today" },
-            ] as const
-          ).map((p) => (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => setPeriod(p.id)}
-              className={cn(
-                "flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                period === p.id ? "bg-positive text-background" : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {t(p.es, p.en)}
-            </button>
-          ))}
+        <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:flex sm:w-auto">
+          <div className="flex min-w-0 rounded-lg border border-border bg-card p-1 sm:w-80">
+            {(
+              [
+                { id: "month", es: "Mes", en: "Month" },
+                { id: "week", es: "Semana", en: "Week" },
+                { id: "day", es: "Hoy", en: "Today" },
+              ] as const
+            ).map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => {
+                  setPeriod(p.id);
+                  // Semana y Hoy son del mes en curso: si había un mes pasado abierto, volvemos a él.
+                  if (p.id !== "month" && !isCurrentMonth) {
+                    setViewKey(null);
+                    setHoverDay(null);
+                  }
+                }}
+                className={cn(
+                  "flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  period === p.id ? "bg-positive text-background" : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {t(p.es, p.en)}
+              </button>
+            ))}
+          </div>
+
+          {/* Selector de mes: revisa los meses pasados; elegir uno abre la vista Mensual. */}
+          <Select
+            value={activeKey}
+            onValueChange={(v) => {
+              setViewKey(v);
+              setPeriod("month");
+              setHoverDay(null);
+            }}
+          >
+            <SelectTrigger className="h-10 w-auto shrink-0 gap-1.5 rounded-full border-border bg-card/60 px-4 text-sm font-medium">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="max-h-72">
+              {months.map((m) => (
+                <SelectItem key={m} value={m}>
+                  {monthLabel(m)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <DropdownMenu>
@@ -1810,15 +1874,33 @@ export function ExpenseLog() {
               <div className="flex min-w-0 flex-col items-start gap-1 max-sm:items-center max-sm:text-center sm:flex-row sm:items-center sm:gap-2.5 md:border-l md:border-border/60 md:px-4">
                 <span className="hidden h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10 text-positive sm:grid"><CalendarDays className="h-4 w-4" /></span>
                 <div>
-                  <p className="numeric text-base font-bold leading-tight text-positive sm:text-xl">{daysLeft}</p>
-                  <p className="text-xs text-muted-foreground">{t("días quedan", "days left")}</p>
+                  {isCurrentMonth || period !== "month" ? (
+                    <>
+                      <p className="numeric text-base font-bold leading-tight text-positive sm:text-xl">{daysLeft}</p>
+                      <p className="text-xs text-muted-foreground">{t("días quedan", "days left")}</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="numeric text-base font-bold leading-tight text-positive sm:text-xl">{periodDays}</p>
+                      <p className="text-xs text-muted-foreground">{t("días del mes", "days of the month")}</p>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="flex min-w-0 flex-col items-start gap-1 max-sm:items-center max-sm:border-l max-sm:border-border/60 max-sm:pl-3 max-sm:text-center sm:flex-row sm:items-center sm:gap-2.5 md:border-l md:border-border/60 md:px-4">
                 <span className="hidden h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10 text-positive sm:grid"><TrendingUp className="h-4 w-4" /></span>
                 <div className="min-w-0">
-                  <p className="numeric whitespace-nowrap text-base font-bold leading-tight text-positive sm:text-xl">{fmt(perDay)}/{t("día", "day")}</p>
-                  <p className="text-xs text-muted-foreground">{t("para el plan", "to stay on plan")}</p>
+                  {isCurrentMonth || period !== "month" ? (
+                    <>
+                      <p className="numeric whitespace-nowrap text-base font-bold leading-tight text-positive sm:text-xl">{fmt(perDay)}/{t("día", "day")}</p>
+                      <p className="text-xs text-muted-foreground">{t("para el plan", "to stay on plan")}</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="numeric whitespace-nowrap text-base font-bold leading-tight text-positive sm:text-xl">{fmt(periodDays > 0 ? variableSpend / periodDays : 0)}/{t("día", "day")}</p>
+                      <p className="text-xs text-muted-foreground">{t("de media gastada", "spent on average")}</p>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -2104,7 +2186,7 @@ export function ExpenseLog() {
                             const x = left + (i + 0.17) * step;
                             // Altura mínima para que gastos pequeños también se vean.
                             const y = Math.min(yOf(v), top + plotH - 7);
-                            const isToday = i + 1 === todayDay;
+                            const isToday = isCurrentMonth && i + 1 === todayDay;
                             const isActive = i === active;
                             return (
                               <rect
@@ -2119,13 +2201,16 @@ export function ExpenseLog() {
                                     ? "fill-emerald-300"
                                     : isToday
                                       ? "fill-emerald-300"
-                                      : i + 1 <= todayDay
+                                      : todayDay === 0
                                         ? "fill-emerald-500/80"
-                                        : "fill-muted-foreground/25",
+                                        : i + 1 <= todayDay
+                                          ? "fill-emerald-500/80"
+                                          : "fill-muted-foreground/25",
                                 )}
                               />
                             );
                           })}
+                          {todayDay > 0 && (
                           <line
                             x1={left + (todayDay - 0.5) * step}
                             x2={left + (todayDay - 0.5) * step}
@@ -2134,6 +2219,8 @@ export function ExpenseLog() {
                             className="stroke-emerald-400"
                             strokeWidth="1.5"
                           />
+                          )}
+                          {todayDay > 0 && (
                           <text
                             x={left + (todayDay - 0.5) * step}
                             y={top - 6}
@@ -2142,6 +2229,7 @@ export function ExpenseLog() {
                           >
                             {t("Hoy", "Today")}
                           </text>
+                          )}
                           {xTicks.map((d) => (
                             <text
                               key={d}
@@ -2179,7 +2267,7 @@ export function ExpenseLog() {
                             }}
                           >
                             <span className="numeric font-medium text-muted-foreground">
-                              {format(new Date(now.getFullYear(), now.getMonth(), active + 1), "d MMM", { locale })}
+                              {format(new Date(viewDate.getFullYear(), viewDate.getMonth(), active + 1), "d MMM", { locale })}
                             </span>
                             <span
                               className={cn(
