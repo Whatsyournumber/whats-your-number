@@ -318,7 +318,7 @@ export function ExpenseLog() {
     setEditSharedWith(shared?.name ?? null);
     if (shared) {
       const myShare = Math.abs(x.amount);
-      const [a] = shared.split.split("/").map(Number);
+      const a = Number(shared.split.split("/")[0]);
       const pct = Number.isFinite(a) && a >= 0 && a <= 100 ? a : 50;
       setEditMyPct(pct);
       setEditMode(pct === 50 ? "equal" : "percent");
