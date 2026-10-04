@@ -115,23 +115,8 @@ function CashFlow() {
 
   const fmt = d.fmt;
 
-  // Ingresos reales: abonos de los EEFF del mes; si no hay, se usa el perfil.
-  const incomeFromStatements = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const tx of monthTx) {
-      if (tx.amount <= 0) continue;
-      // Las deudas de gastos compartidos ("me deben") no son ingresos.
-      if (parseShared(tx.description)) continue;
-      const key = tx.merchant?.trim() || t("Otros ingresos", "Other income");
-      map.set(key, (map.get(key) ?? 0) + tx.amount);
-    }
-    return [...map.entries()]
-      .map(([name, amount]) => ({ name, amount }))
-      .sort((a, b) => b.amount - a.amount);
-  }, [monthTx]);
-
-  const usingStatements = hasData && monthTx.length > 0 && incomeFromStatements.length > 0;
-  const incomeLines = usingStatements ? incomeFromStatements : d.cashFlow.income;
+  // Ingresos: los del perfil, igual que en el dashboard (no se suman abonos de EEFF).
+  const incomeLines = d.cashFlow.income;
   const totalIncome = incomeLines.reduce((s, i) => s + i.amount, 0) || d.income || 1;
 
   // Necesidades: Vivienda/Renta, Hipoteca, Condominio, Alimentos/Supermercado, Transporte, Servicios, Salud, Educación.
