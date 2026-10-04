@@ -1550,10 +1550,10 @@ export function ExpenseLog() {
               )}
             </div>
 
-            <div className="mt-6 md:hidden">
-              <p className="numeric whitespace-nowrap text-5xl font-bold leading-none">
+            <div className="mt-4 md:hidden">
+              <p className="numeric whitespace-nowrap text-4xl font-bold leading-none">
                 {fmt(spent)}{" "}
-                <span className="text-2xl font-semibold text-muted-foreground">
+                <span className="text-xl font-semibold text-muted-foreground">
                   {t("de", "of")} {fmt(periodTarget)}
                 </span>
               </p>
