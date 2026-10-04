@@ -447,21 +447,34 @@ function CashFlow() {
 
       <div className="flex items-center gap-3">
         {months.length > 0 && (
-          <div className="no-scrollbar -mx-1 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto px-1 py-0.5">
-            <span className="hidden shrink-0 text-xs text-muted-foreground sm:inline">{t("Mes:", "Month:")}</span>
-            {months.slice(0, 12).map((m) => (
-              <button
-                key={m}
-                onClick={() => setMonth(m)}
-                className={`min-w-[4.75rem] shrink-0 flex-1 basis-0 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs leading-none transition ${
-                  m === activeMonth
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-border text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {monthLabel(m)}
-              </button>
-            ))}
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <div className="no-scrollbar hidden -mx-1 min-w-0 flex-1 items-center gap-1.5 overflow-x-auto px-1 py-0.5 sm:flex">
+              {months.slice(0, 12).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setMonth(m)}
+                  className={`shrink-0 whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] leading-none transition ${
+                    m === activeMonth
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {monthLabel(m)}
+                </button>
+              ))}
+            </div>
+            <Select value={activeMonth ?? undefined} onValueChange={(v) => setMonth(v)}>
+              <SelectTrigger className="h-9 w-auto shrink-0 gap-1.5 rounded-full border-border bg-card/60 px-4 text-sm font-medium sm:hidden">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="max-h-72">
+                {months.slice(0, 24).map((m) => (
+                  <SelectItem key={m} value={m}>
+                    {monthLabel(m)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         )}
         <Button variant="outline" size="sm" className="shrink-0 gap-2" data-tour-cashflow-target="edit" onClick={() => setRuleOpen(true)}>
