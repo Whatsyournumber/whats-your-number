@@ -463,7 +463,7 @@ function CashFlow() {
                 </button>
               ))}
             </div>
-            <Select value={activeMonth ?? undefined} onValueChange={(v) => setMonth(v)}>
+            <Select value={activeMonth ?? ""} onValueChange={(v) => setMonth(v)}>
               <SelectTrigger className="h-9 w-auto shrink-0 gap-1.5 rounded-full border-border bg-card/60 px-4 text-sm font-medium sm:hidden">
                 <SelectValue />
               </SelectTrigger>
