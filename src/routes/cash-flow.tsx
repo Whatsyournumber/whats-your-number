@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SavingsGoals, type SavingsGoal } from "@/components/savings-goals";
-import { parseShared } from "@/components/shared-expense";
 import { motion } from "motion/react";
 import { ArrowLeftRight, ArrowRight, Coins, Lightbulb, Pencil, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
@@ -476,7 +475,7 @@ function CashFlow() {
         <KpiCard
           label={t("Ingresos", "Income")}
           value={fmt(totalIncome)}
-          hint={usingStatements ? t("Abonos de tus EEFF", "Credits from your statements") : t("Según tu perfil", "Based on your profile")}
+          hint={t("Según tu perfil", "Based on your profile")}
           tooltip={<BreakdownTooltip items={incomeLines.slice(0, 8).map((i) => ({ label: i.name, amount: i.amount }))} fmt={fmt} total={totalIncome} />}
           accent
           index={0}
