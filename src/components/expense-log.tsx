@@ -2227,7 +2227,7 @@ export function ExpenseLog() {
                   </div>
                 </div>
                 {upcoming.length === 0 ? (
-                  <p className="mt-4 text-sm text-muted-foreground">
+                  <p className={cn("mt-4 text-sm text-muted-foreground", !fixedOpen && "max-md:hidden")}>
                     {t("Añade gastos recurrentes para verlos aquí.", "Add recurring expenses to see them here.")}
                   </p>
                 ) : (
