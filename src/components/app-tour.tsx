@@ -308,8 +308,8 @@ export function AppTour() {
     const EXTRA_SELECTORS: Record<string, { sel: string; badge: number; caption?: [string, string] }[]> = {
       "/registro-gastos": [
         { sel: "[data-tour-expense-target='plan']", badge: 1 },
-        { sel: "[data-tour-expense-target='add-mobile']", badge: 2 },
       ],
+
       "/cash-flow": [
         { sel: "[data-tour-cashflow-target='alloc-m']", badge: 2 },
         { sel: "[data-tour-savings-target='new']", badge: 3 },
