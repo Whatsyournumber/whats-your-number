@@ -193,7 +193,7 @@ export function ExpenseLog() {
     queryFn: async () => {
       const { data: rows, error } = await supabase
         .from("shared_expense_participants")
-        .select("id, user_id, display_name, share_amount, status, shared_expenses(id, total, currency, payer_id, tx_date)")
+        .select("id, expense_id, user_id, display_name, share_amount, status, shared_expenses(id, total, currency, payer_id, tx_date)")
         .neq("status", "declined");
       if (error) throw error;
       return rows;
@@ -509,19 +509,21 @@ export function ExpenseLog() {
     }
     const map = new Map<string, SharedBalance>();
     for (const rows of byExpense.values()) {
-      const exp = rows[0]?.shared_expenses;
+      const rawExp = rows[0]?.shared_expenses;
+      const exp = Array.isArray(rawExp) ? rawExp[0] : rawExp;
       const mine = rows.find((r) => r.user_id === user.id);
       if (!exp || !mine) continue;
       const partners = rows.filter((r) => r.user_id !== user.id && r.status === "accepted");
       if (!partners.length) continue;
-      const inPeriod = Boolean(exp.tx_date);
+      // Solo cuenta los gastos del mes seleccionado.
+      if (!exp.tx_date) continue;
+      const d = parseISO(exp.tx_date);
+      if (d < monthStart || d > monthEnd) continue;
       for (const p of partners) {
         const entry = map.get(p.user_id) ?? { id: p.user_id, name: p.display_name || "?", count: 0, together: 0, myShare: 0, balance: 0 };
-        if (inPeriod) {
-          entry.count += 1;
-          entry.together += Number(exp.total) || 0;
-          entry.myShare += Number(mine.share_amount) || 0;
-        }
+        entry.count += 1;
+        entry.together += Number(exp.total) || 0;
+        entry.myShare += Number(mine.share_amount) || 0;
         if (exp.payer_id === user.id) entry.balance += Number(p.share_amount) || 0;
         else if (exp.payer_id === p.user_id) entry.balance -= Number(mine.share_amount) || 0;
         map.set(p.user_id, entry);
@@ -2715,7 +2717,7 @@ export function ExpenseLog() {
                           <ChevronRight aria-hidden="true" />
                         </Button>
                       </div>
-                      <div className="mt-5 grid grid-cols-3 items-end gap-2 border-t border-border/60 pt-4 sm:gap-4">
+                      <div className="mt-5 flex items-end justify-between gap-3 border-t border-border/60 pt-4">
                         <div className="min-w-0">
                           <p className="text-xs leading-5 text-muted-foreground">
                             {isOwed ? t(`${firstNameOf(b.name)} te debe`, `${firstNameOf(b.name)} owes you`) : iOwe ? t(`Le debes a ${firstNameOf(b.name)}`, `You owe ${firstNameOf(b.name)}`) : t("En paz", "Even")}
