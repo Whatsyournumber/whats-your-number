@@ -1681,19 +1681,15 @@ export function ExpenseLog() {
                 {isOnPace ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
               </span>
               <div className="min-w-0">
-                <p className={cn("text-sm font-semibold", isOnPace ? "text-positive" : "text-negative")}>
-                  {isOnPace ? t("Vas bien", "On track") : t("Vas por encima", "Above pace")}
+                <p className={cn("text-sm font-semibold leading-snug", isOnPace ? "text-positive" : "text-negative")}>
+                  {!isOnPace
+                    ? t(`Vas ${fmt(paceAmount)} por encima`, `You're ${fmt(paceAmount)} over`)
+                    : t("Vas bien", "On track")}
                 </p>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                <p className="mt-0.5 text-xs leading-snug text-muted-foreground">
                   {isOnPace
-                    ? t(
-                        `Estás ${Math.round(paceDifference)}% por debajo del ritmo esperado`,
-                        `You're ${Math.round(paceDifference)}% below the expected pace`,
-                      )
-                    : t(
-                        `Estás ${Math.round(paceDifference)}% por encima del ritmo esperado`,
-                        `You're ${Math.round(paceDifference)}% above the expected pace`,
-                      )}
+                    ? t("por debajo del ritmo esperado.", "below the expected pace.")
+                    : t("del ritmo esperado.", "of the expected pace.")}
                 </p>
               </div>
             </button>
