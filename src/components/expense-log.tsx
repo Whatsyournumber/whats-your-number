@@ -151,7 +151,9 @@ export function ExpenseLog() {
   const [manualOpen, setManualOpen] = useState(false);
   const [sharedOpen, setSharedOpen] = useState(false);
   const [latestTab, setLatestTab] = useState<"all" | "mine" | "shared">("all");
-  const [settlePartner, setSettlePartner] = useState<{ name: string; balance: number } | null>(null);
+  const [settlePartner, setSettlePartner] = useState<{ id: string; name: string } | null>(null);
+  const [settlePaid, setSettlePaid] = useState(0);
+  const [settleSaving, setSettleSaving] = useState(false);
   const addParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean; month?: string }).add });
   const monthParam = useRouterState({ select: (s) => (s.location.search as { add?: boolean; month?: string }).month });
   const actionParam = useRouterState({ select: (s) => (s.location.search as { action?: string }).action });
@@ -507,6 +509,17 @@ export function ExpenseLog() {
   const viewDate = new Date(viewParts[0] ?? now.getFullYear(), (viewParts[1] ?? now.getMonth() + 1) - 1, 1);
   const monthStart = startOfMonth(viewDate);
   const monthEnd = endOfMonth(viewDate);
+  const { data: settlementRows = [] } = useQuery({
+    queryKey: ["shared-settlements", user?.id, activeKey],
+    enabled: Boolean(user?.id),
+    queryFn: async () => {
+      const { data, error } = await supabase.from("shared_balance_settlements")
+        .select("partner_id, paid_amount, paid_by_user, currency")
+        .eq("month_key", activeKey).eq("user_id", user?.id ?? "");
+      if (error) throw error;
+      return data;
+    },
+  });
 
   // Meses del selector: el actual, los 12 anteriores y cualquier mes más atrás
   // con movimientos registrados.
@@ -572,7 +585,7 @@ export function ExpenseLog() {
   );
 
   // Balance de gastos compartidos por persona, dentro del periodo visible.
-  type SharedBalance = { id: string; name: string; count: number; together: number; myShare: number; balance: number };
+  type SharedBalance = { id: string; name: string; count: number; together: number; myShare: number; balance: number; rawBalance: number };
   const myName = (profile?.full_name as string | undefined)?.split(" ")[0] || t("Yo", "Me");
   const initialsOf = (name: string) => name.trim().slice(0, 1).toUpperCase() || "?";
   const sharedBalances = useMemo<SharedBalance[]>(() => {
@@ -597,7 +610,7 @@ export function ExpenseLog() {
       const d = parseISO(exp.tx_date);
       if (d < monthStart || d > monthEnd) continue;
       for (const p of partners) {
-        const entry = map.get(p.user_id) ?? { id: p.user_id, name: p.display_name || "?", count: 0, together: 0, myShare: 0, balance: 0 };
+        const entry = map.get(p.user_id) ?? { id: p.user_id, name: p.display_name || "?", count: 0, together: 0, myShare: 0, balance: 0, rawBalance: 0 };
         entry.count += 1;
         entry.together += convertAmount(Number(exp.total) || 0, exp.currency, profile.currency || "EUR");
         entry.myShare += convertAmount(Number(mine.share_amount) || 0, exp.currency, profile.currency || "EUR");
@@ -606,15 +619,50 @@ export function ExpenseLog() {
         map.set(p.user_id, entry);
       }
     }
-    return [...map.values()];
+    return [...map.values()].map((entry) => {
+      const paid = settlementRows.find((row) => row.partner_id === entry.id);
+      const amount = paid ? convertAmount(Number(paid.paid_amount), paid.currency, profile.currency || "EUR") : 0;
+      const applied = paid?.paid_by_user === (entry.balance < 0) ? Math.min(amount, Math.abs(entry.balance)) : 0;
+      return { ...entry, rawBalance: entry.balance, balance: entry.balance + (paid?.paid_by_user ? applied : -applied) };
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sharedBalanceRows, user?.id, profile.currency, monthStart.getTime(), monthEnd.getTime()]);
+  }, [sharedBalanceRows, settlementRows, user?.id, profile.currency, monthStart.getTime(), monthEnd.getTime()]);
+
+  const selectedBalance = sharedBalances.find((entry) => entry.id === settlePartner?.id);
+  const settleBalance = selectedBalance?.balance ?? 0;
+  const rawBalance = selectedBalance?.rawBalance ?? 0;
+  const openSettlement = (entry: SharedBalance) => {
+    setSettlePartner({ id: entry.id, name: firstNameOf(entry.name) });
+    const previous = settlementRows.find((row) => row.partner_id === entry.id);
+    setSettlePaid(previous && previous.paid_by_user === (entry.rawBalance < 0) ? Math.min(convertAmount(Number(previous.paid_amount), previous.currency, currency), Math.abs(entry.rawBalance)) : 0);
+  };
+  const saveSettlement = async () => {
+    if (!settlePartner || !user?.id || !Number.isFinite(settlePaid) || settlePaid < 0 || settlePaid > Math.abs(rawBalance) + 0.01) {
+      toast.error(t("El pago debe estar entre cero y el saldo original", "Payment must be between zero and the original balance"));
+      return;
+    }
+    setSettleSaving(true);
+    try {
+      const { error } = await supabase.from("shared_balance_settlements").upsert({
+        user_id: user.id, partner_id: settlePartner.id, month_key: activeKey,
+        paid_amount: Math.min(settlePaid, Math.abs(rawBalance)), paid_by_user: rawBalance < 0,
+        currency, updated_at: new Date().toISOString(),
+      }, { onConflict: "user_id,partner_id,month_key" });
+      if (error) throw error;
+      await queryClient.invalidateQueries({ queryKey: ["shared-settlements", user.id, activeKey] });
+      toast.success(t("Pago registrado", "Payment recorded"));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error));
+    } finally {
+      setSettleSaving(false);
+    }
+  };
 
   const settleMsg = settlePartner
-    ? settlePartner.balance > 0.005
-      ? t(`Hola! Solo recordar que me debes ${fmt(settlePartner.balance)} 💸`, `Hi! Just a reminder that you owe me ${fmt(settlePartner.balance)} 💸`)
-      : settlePartner.balance < -0.005
-        ? t(`Hola! Te pago ${fmt(-settlePartner.balance)} de lo que compartimos 💸`, `Hi! I'll pay you ${fmt(-settlePartner.balance)} for our shared expenses 💸`)
+    ? settleBalance > 0.005
+      ? t(`Hola! Solo recordar que me debes ${fmtShared(settleBalance)} 💸`, `Hi! Just a reminder that you owe me ${fmtShared(settleBalance)} 💸`)
+      : settleBalance < -0.005
+        ? t(`Hola! Te pago ${fmtShared(-settleBalance)} de lo que compartimos 💸`, `Hi! I'll pay you ${fmtShared(-settleBalance)} for our shared expenses 💸`)
         : t("Hola! Todo en paz 😊", "Hi! We're all even 😊")
     : "";
   const settleWa = settlePartner ? `https://wa.me/?text=${encodeURIComponent(settleMsg)}` : "";
@@ -2809,7 +2857,7 @@ export function ExpenseLog() {
                         <Button
                           type="button"
                           variant="outline"
-                          onClick={() => setSettlePartner({ name: firstNameOf(b.name), balance: b.balance })}
+                          onClick={() => openSettlement(b)}
                           className="h-10 shrink-0 rounded-full bg-transparent px-2.5 text-xs shadow-none sm:px-4 sm:text-sm"
                         >
                           {t("Saldar cuenta", "Settle up")}
@@ -2827,7 +2875,7 @@ export function ExpenseLog() {
                         </div>
                         <div className="min-w-0 border-l border-border pl-2 sm:pl-4">
                           <p className="whitespace-nowrap text-[11px] leading-5 text-muted-foreground sm:text-xs">
-                            {isOwed ? t(`${firstNameOf(b.name)} te debe`, `${firstNameOf(b.name)} owes you`) : iOwe ? t(`Debes a ${firstNameOf(b.name)}`, `You owe ${firstNameOf(b.name)}`) : t("En paz", "Even")}
+                            {isOwed ? t(`${firstNameOf(b.name)} te debe`, `${firstNameOf(b.name)} owes you`) : iOwe ? t(`Debes a ${firstNameOf(b.name)}`, `You owe ${firstNameOf(b.name)}`) : t("Saldo saldado", "Settled")}
                           </p>
                           <p className={cn("numeric whitespace-nowrap text-base font-semibold sm:text-lg", isOwed && "text-positive", iOwe && "text-negative")}>{fmtShared(Math.abs(b.balance))}</p>
                         </div>
@@ -2893,19 +2941,27 @@ export function ExpenseLog() {
             <DialogTitle className="text-center">{settlePartner ? t(`Saldar con ${settlePartner.name}`, `Settle with ${settlePartner.name}`) : ""}</DialogTitle>
             <DialogDescription className="text-center">
               {settlePartner
-                ? settlePartner.balance > 0.005
+                ? settleBalance > 0.005
                   ? t(`${settlePartner.name} te debe`, `${settlePartner.name} owes you`)
-                  : settlePartner.balance < -0.005
+                  : settleBalance < -0.005
                     ? t(`Le debes a ${settlePartner.name}`, `You owe ${settlePartner.name}`)
-                    : t("Están en paz", "You're all even")
+                    : t("Saldo saldado", "Settled balance")
                 : ""}
             </DialogDescription>
           </DialogHeader>
           {settlePartner && (
             <div className="grid gap-4">
-              <div className={cn("rounded-2xl border border-border bg-muted/30 p-4 text-center", settlePartner.balance > 0.005 && "border-positive/40 bg-positive/5")}>
+              <div className={cn("rounded-lg border border-border bg-muted/30 p-4 text-center", settleBalance > 0.005 && "border-positive/40 bg-positive/5")}>
                 <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t("Balance", "Balance")}</p>
-                <p className={cn("numeric mt-1 text-3xl font-semibold", settlePartner.balance > 0.005 && "text-positive", settlePartner.balance < -0.005 && "text-negative")}>{fmt(Math.abs(settlePartner.balance))}</p>
+                <p className={cn("numeric mt-1 text-3xl font-semibold", settleBalance > 0.005 && "text-positive", settleBalance < -0.005 && "text-negative")}>{fmtShared(Math.abs(settleBalance))}</p>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="settle-paid">{rawBalance < 0 ? t("Ya pagaste", "You've paid") : t(`${settlePartner.name} ya pagó`, `${settlePartner.name} has paid`)}</Label>
+                <NumberInput value={settlePaid} onChange={setSettlePaid} min={0} max={Math.abs(rawBalance)} step="0.01" suffix={currencySymbol} ariaLabel={rawBalance < 0 ? t("Ya pagaste", "You've paid") : t(`${settlePartner.name} ya pagó`, `${settlePartner.name} has paid`)} />
+                <p className="text-xs text-muted-foreground">{t("Saldo original", "Original balance")}: {fmtShared(Math.abs(rawBalance))}</p>
+                <Button type="button" onClick={saveSettlement} disabled={settleSaving || settlePaid > Math.abs(rawBalance) + 0.01}>
+                  {settleSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : t("Guardar pago", "Save payment")}
+                </Button>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <Button type="button" variant="outline" onClick={copySettleText}>

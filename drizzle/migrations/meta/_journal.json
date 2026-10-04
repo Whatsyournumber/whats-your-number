@@ -8,6 +8,20 @@
       "when": 1791154158294,
       "tag": "0000_sync_shared_expense_edits",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791154554308,
+      "tag": "0001_shared_balance_settlements",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791154572942,
+      "tag": "0002_shared_settlement_payment_direction",
+      "breakpoints": true
     }
   ]
 }

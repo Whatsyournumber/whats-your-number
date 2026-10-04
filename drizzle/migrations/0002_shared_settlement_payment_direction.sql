@@ -1,0 +1,1 @@
+ALTER TABLE public.shared_balance_settlements ADD COLUMN paid_by_user boolean NOT NULL DEFAULT false;
