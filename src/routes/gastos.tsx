@@ -567,11 +567,12 @@ function Gastos() {
 
 
   const merchants = useMemo(() => {
-    const map = new Map<string, { name: string; amount: number; count: number; category: string }>();
+    const map = new Map<string, { name: string; amount: number; count: number; category: string; lastDate: string | null }>();
     for (const t of current) {
-      const prev = map.get(t.merchant) ?? { name: t.merchant, amount: 0, count: 0, category: categoryOf(t) };
+      const prev = map.get(t.merchant) ?? { name: t.merchant, amount: 0, count: 0, category: categoryOf(t), lastDate: null as string | null };
       prev.amount += Math.abs(t.amount);
       prev.count += 1;
+      if (t.tx_date && (!prev.lastDate || t.tx_date > prev.lastDate)) prev.lastDate = t.tx_date;
       map.set(t.merchant, prev);
     }
     return [...map.values()].sort((a, b) => b.amount - a.amount);
@@ -1739,7 +1740,7 @@ function Gastos() {
                   </span>
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium">{m.name}</p>
-                    <p className="text-xs text-muted-foreground">{m.count} {t("transacciones", "transactions")}</p>
+                    <p className="text-xs text-muted-foreground">{m.lastDate ? format(parseISO(m.lastDate), "d MMM yyyy", { locale: isMobile ? es : enUS }) : `${m.count} ${t("transacciones", "transactions")}`}</p>
                   </div>
                   <span className="numeric ml-auto text-sm font-semibold">{fmt(m.amount)}</span>
                 </li>
