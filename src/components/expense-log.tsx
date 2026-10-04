@@ -3007,9 +3007,9 @@ export function ExpenseLog() {
                   <Button type="button" variant={!settlePaidByUser ? "default" : "outline"} onClick={() => setSettlePaidByUser(false)}>{t(`Pagó ${settlePartner.name}`, `${settlePartner.name} paid`)}</Button>
                 </div>
                 <Label htmlFor="settle-paid">{t("Monto del pago", "Payment amount")}</Label>
-                <div className="relative">
-                  <NumberInput value={settlePaid} onChange={setSettlePaid} min={0} max={Math.abs(settleBalance)} step="0.01" decimal suffix={currencySymbol} ariaLabel={t("Monto del pago", "Payment amount")} className="pr-16" />
-                  <Button type="button" variant="ghost" size="sm" className="absolute right-1 top-1/2 h-7 -translate-y-1/2 px-2 text-xs font-semibold text-positive" onClick={() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); setSettlePaid(Math.round(Math.abs(settleBalance) * 100) / 100); }} disabled={settleSaving || Math.abs(settleBalance) < 0.005} aria-label={t("Usar saldo completo", "Use full balance")}>MAX</Button>
+                <div className="flex w-full items-center rounded-md border border-input focus-within:ring-1 focus-within:ring-ring">
+                  <NumberInput value={settlePaid} onChange={setSettlePaid} min={0} max={Math.abs(settleBalance)} step="0.01" decimal suffix={currencySymbol} ariaLabel={t("Monto del pago", "Payment amount")} className="min-w-0 flex-1 border-0 shadow-none focus-visible:ring-0" />
+                  <Button type="button" variant="ghost" size="sm" className="mr-1 shrink-0 border border-positive/40 bg-positive/10 px-2.5 text-xs font-semibold text-positive hover:bg-positive/20 hover:text-positive" onClick={() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); setSettlePaid(Math.round(Math.abs(settleBalance) * 100) / 100); }} disabled={settleSaving || Math.abs(settleBalance) < 0.005} aria-label={t("Usar saldo completo", "Use full balance")}>MAX</Button>
                 </div>
                 <Button type="button" onClick={saveSettlement} disabled={settleSaving || settlePaid <= 0 || settlePaid > Math.abs(settleBalance) + 0.01}>
                   {settleSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : t("Guardar pago", "Save payment")}
