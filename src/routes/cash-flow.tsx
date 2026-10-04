@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SavingsGoals, type SavingsGoal } from "@/components/savings-goals";
+import { parseShared } from "@/components/shared-expense";
 import { motion } from "motion/react";
 import { ArrowLeftRight, ArrowRight, Coins, Lightbulb, Pencil, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
