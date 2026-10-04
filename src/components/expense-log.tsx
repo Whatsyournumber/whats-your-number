@@ -622,7 +622,8 @@ export function ExpenseLog() {
     return [...map.values()].map((entry) => {
       const paid = settlementRows.find((row) => row.partner_id === entry.id);
       const amount = paid ? convertAmount(Number(paid.paid_amount), paid.currency, profile.currency || "EUR") : 0;
-      return { ...entry, balance: entry.balance + (paid?.paid_by_user ? amount : -amount) };
+      const applied = Math.min(amount, Math.abs(entry.balance));
+      return { ...entry, balance: entry.balance + (paid?.paid_by_user ? applied : -applied) };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sharedBalanceRows, settlementRows, user?.id, profile.currency, monthStart.getTime(), monthEnd.getTime()]);
@@ -631,11 +632,11 @@ export function ExpenseLog() {
   const settleBalance = selectedBalance?.balance ?? 0;
   const savedSettlement = settlementRows.find((row) => row.partner_id === settlePartner?.id);
   const previousPaid = savedSettlement ? convertAmount(Number(savedSettlement.paid_amount), savedSettlement.currency, currency) : 0;
-  const rawBalance = settleBalance - (savedSettlement?.paid_by_user ? previousPaid : -previousPaid);
+  const rawBalance = settleBalance - (savedSettlement?.paid_by_user ? Math.min(previousPaid, Math.abs(settleBalance) + previousPaid) : -Math.min(previousPaid, Math.abs(settleBalance) + previousPaid));
   const openSettlement = (entry: SharedBalance) => {
     setSettlePartner({ id: entry.id, name: firstNameOf(entry.name) });
     const previous = settlementRows.find((row) => row.partner_id === entry.id);
-    setSettlePaid(previous ? convertAmount(Number(previous.paid_amount), previous.currency, currency) : 0);
+    setSettlePaid(previous ? Math.min(convertAmount(Number(previous.paid_amount), previous.currency, currency), Math.abs(entry.balance) + convertAmount(Number(previous.paid_amount), previous.currency, currency)) : 0);
   };
   const saveSettlement = async () => {
     if (!settlePartner || !user?.id || !Number.isFinite(settlePaid) || settlePaid < 0 || settlePaid > Math.abs(rawBalance) + 0.01) {
