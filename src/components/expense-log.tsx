@@ -50,11 +50,12 @@ import { captureExpense } from "@/lib/expense-capture.functions";
 import { StatementImporter } from "@/components/statement-importer";
 import { translateCategory } from "@/lib/i18n-data";
 import { saveExpense } from "@/lib/manual-expense";
+import { convertAmount } from "@/lib/fx";
 import { supabase } from "@/integrations/supabase/client";
 import { SPEND_PLAN_FIELDS, compact, getWynMoneyLocale, money } from "@/lib/onboarding";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { cn } from "@/lib/utils";
-import { SharedExpenseDialog, SharedExpenseInbox, parseShared, sharedIOwe, SHARED_OWE_MARKER, SHARED_PREFIX } from "@/components/shared-expense";
+import { SharedExpenseDialog, SharedExpenseInbox, parseShared, sharedIOwe, SHARED_PREFIX } from "@/components/shared-expense";
 import { notifySharedExpense } from "@/lib/shared-expense.functions";
 import { InviteShareActions } from "@/components/invite-share-actions";
 import { useServerFn } from "@tanstack/react-start";
@@ -317,13 +318,20 @@ export function ExpenseLog() {
     const shared = parseShared(x.description);
     setEditSharedWith(shared?.name ?? null);
     if (shared) {
-      const myShare = Math.abs(x.amount);
-      const a = Number(shared.split.split("/")[0]);
+      const matching = sharedBalanceRows.filter((row) => {
+        const expense = row.shared_expenses;
+        return expense?.merchant === x.merchant && expense?.tx_date === x.tx_date;
+      });
+      const expense = matching.length === 2 ? matching[0]?.shared_expenses : null;
+      const myRow = matching.find((row) => row.user_id === user?.id);
+      const total = expense ? convertAmount(Number(expense.total), expense.currency, x.currency) : 0;
+      const myShare = expense && myRow ? convertAmount(Number(myRow.share_amount), expense.currency, x.currency) : Math.abs(x.amount);
+      const a = expense && total > 0 ? myShare / total * 100 : Number(shared.split.split("/")[0]);
       const pct = Number.isFinite(a) && a >= 0 && a <= 100 ? a : 50;
       setEditMyPct(pct);
       setEditMode(pct === 50 ? "equal" : "percent");
       setEditMyAmount(myShare);
-      setEditTotal(pct > 0 ? myShare / (pct / 100) : myShare);
+      setEditTotal(total || (pct > 0 ? myShare / (pct / 100) : Math.abs(x.amount)));
     } else {
       setEditMode("equal");
       setEditMyPct(50);
@@ -365,7 +373,6 @@ export function ExpenseLog() {
     setSaving(true);
     try {
       const wasShared = Boolean(parseShared(editTx.description));
-      const wasOwed = sharedIOwe(editTx.description);
       let amount = -Math.abs(editAmount);
       let description: string | null | undefined = undefined;
       if (wasShared && editSharedWith) {
@@ -373,12 +380,13 @@ export function ExpenseLog() {
         const total = Math.abs(editTotal);
         const mine =
           editMode === "equal" ? total / 2 : editMode === "percent" ? (total * editMyPct) / 100 : Math.min(editMyAmount, total);
-        const theirs = Math.max(0, total - mine);
-        const myPct = total > 0 ? (mine / total) * 100 : 50;
+        const expenseRow = sharedBalanceRows.find((row) => row.user_id === user?.id && row.shared_expenses?.merchant === editTx.merchant && row.shared_expenses?.tx_date === editTx.tx_date);
+        if (!expenseRow?.shared_expenses) throw new Error(t("No se encontró el gasto compartido", "Shared expense not found"));
+        const sourceCurrency = expenseRow.shared_expenses.currency;
         const { error } = await supabase.rpc("update_shared_expense", {
           _transaction_id: editTx.id,
-          _total: total,
-          _my_share: mine,
+          _total: convertAmount(total, currency, sourceCurrency),
+          _my_share: convertAmount(mine, currency, sourceCurrency),
           _merchant: editMerchant.trim() || translateCategory(editCategory, lang),
           _category: editCategory,
           _tx_date: editDate,
@@ -566,7 +574,7 @@ export function ExpenseLog() {
   const initialsOf = (name: string) => name.trim().slice(0, 1).toUpperCase() || "?";
   const sharedBalances = useMemo<SharedBalance[]>(() => {
     if (!user?.id) return [];
-    type Row = { expense_id: string; user_id: string; display_name: string | null; share_amount: number; status: string; shared_expenses: { total: number; payer_id: string; tx_date: string } | null };
+    type Row = { expense_id: string; user_id: string; display_name: string | null; share_amount: number; status: string; shared_expenses: { total: number; payer_id: string; tx_date: string; currency: string; merchant: string } | null };
     const byExpense = new Map<string, Row[]>();
     for (const row of sharedBalanceRows as unknown as Row[]) {
       const list = byExpense.get(row.expense_id) ?? [];
@@ -588,16 +596,16 @@ export function ExpenseLog() {
       for (const p of partners) {
         const entry = map.get(p.user_id) ?? { id: p.user_id, name: p.display_name || "?", count: 0, together: 0, myShare: 0, balance: 0 };
         entry.count += 1;
-        entry.together += Number(exp.total) || 0;
-        entry.myShare += Number(mine.share_amount) || 0;
-        if (exp.payer_id === user.id) entry.balance += Number(p.share_amount) || 0;
-        else if (exp.payer_id === p.user_id) entry.balance -= Number(mine.share_amount) || 0;
+        entry.together += convertAmount(Number(exp.total) || 0, exp.currency, profile.currency || "EUR");
+        entry.myShare += convertAmount(Number(mine.share_amount) || 0, exp.currency, profile.currency || "EUR");
+        if (exp.payer_id === user.id) entry.balance += convertAmount(Number(p.share_amount) || 0, exp.currency, profile.currency || "EUR");
+        else if (exp.payer_id === p.user_id) entry.balance -= convertAmount(Number(mine.share_amount) || 0, exp.currency, profile.currency || "EUR");
         map.set(p.user_id, entry);
       }
     }
     return [...map.values()];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sharedBalanceRows, user?.id, monthStart.getTime(), monthEnd.getTime()]);
+  }, [sharedBalanceRows, user?.id, profile.currency, monthStart.getTime(), monthEnd.getTime()]);
 
   const settleMsg = settlePartner
     ? settlePartner.balance > 0.005
