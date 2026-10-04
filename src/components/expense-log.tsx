@@ -649,7 +649,7 @@ export function ExpenseLog() {
       const netPaid = payments.reduce((sum, row) => sum + (row.paid_by_user ? 1 : -1) * convertAmount(Number(row.amount), row.currency, profile.currency || "EUR"), 0);
       // Los pagos heredados de gastos que ya no aparecen permanecen en el historial,
       // pero no deben invertir un saldo nuevo ni aplicarse a otra deuda.
-      const applied = netPaid * entry.balance < 0 && Math.abs(netPaid) <= Math.abs(entry.balance) + 0.01 ? netPaid : 0;
+      const applied = netPaid * entry.balance >= 0 || Math.abs(netPaid) <= Math.abs(entry.balance) + 0.01 ? netPaid : 0;
       return { ...entry, rawBalance: entry.balance, balance: Math.abs(entry.balance + applied) < 0.005 ? 0 : entry.balance + applied };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -664,8 +664,8 @@ export function ExpenseLog() {
     setSettlePaid(0);
   };
   const saveSettlement = async () => {
-    if (!settlePartner || !user?.id || !Number.isFinite(settlePaid) || settlePaid <= 0 || settlePaid > Math.abs(settleBalance) + 0.01 || settlePaidByUser !== (settleBalance < 0)) {
-      toast.error(t("Elige quién debe pagar y un monto menor o igual al saldo pendiente", "Choose who owes and an amount no greater than the remaining balance"));
+    if (!settlePartner || !user?.id || !Number.isFinite(settlePaid) || settlePaid <= 0 || settlePaid > Math.abs(settleBalance) + 0.01) {
+      toast.error(t("Introduce un monto menor o igual al saldo pendiente", "Enter an amount no greater than the remaining balance"));
       return;
     }
     setSettleSaving(true);
@@ -678,7 +678,9 @@ export function ExpenseLog() {
       if (error) throw error;
       await queryClient.invalidateQueries({ queryKey: ["shared-payments", user.id, activeKey] });
       setSettlePaid(0);
-      toast.success(t("Pago registrado", "Payment recorded"));
+      setSettlePartner(null);
+      const remaining = settleBalance + (settlePaidByUser ? settlePaid : -settlePaid);
+      toast.success(Math.abs(remaining) < 0.005 ? t("Saldo saldado", "Balance settled") : t(`Pago registrado · Pendiente: ${fmtShared(Math.abs(remaining))}`, `Payment recorded · Remaining: ${fmtShared(Math.abs(remaining))}`));
     } catch (error) {
       toast.error(error instanceof Error ? error.message : String(error));
     } finally {
@@ -3005,8 +3007,11 @@ export function ExpenseLog() {
                   <Button type="button" variant={!settlePaidByUser ? "default" : "outline"} onClick={() => setSettlePaidByUser(false)}>{t(`Pagó ${settlePartner.name}`, `${settlePartner.name} paid`)}</Button>
                 </div>
                 <Label htmlFor="settle-paid">{t("Monto del pago", "Payment amount")}</Label>
-                <NumberInput value={settlePaid} onChange={setSettlePaid} min={0} max={Math.abs(settleBalance)} step="0.01" decimal suffix={currencySymbol} ariaLabel={t("Monto del pago", "Payment amount")} />
-                <Button type="button" onClick={saveSettlement} disabled={settleSaving || settlePaid <= 0 || settlePaid > Math.abs(settleBalance) + 0.01 || settlePaidByUser !== (settleBalance < 0)}>
+                <div className="relative">
+                  <NumberInput value={settlePaid} onChange={setSettlePaid} min={0} max={Math.abs(settleBalance)} step="0.01" decimal suffix={currencySymbol} ariaLabel={t("Monto del pago", "Payment amount")} className="pr-16" />
+                  <Button type="button" variant="ghost" size="sm" className="absolute right-1 top-1/2 h-7 -translate-y-1/2 px-2 text-xs font-semibold text-positive" onClick={() => setSettlePaid(Math.round(Math.abs(settleBalance) * 100) / 100)} disabled={settleSaving || Math.abs(settleBalance) < 0.005} aria-label={t("Usar saldo completo", "Use full balance")}>MAX</Button>
+                </div>
+                <Button type="button" onClick={saveSettlement} disabled={settleSaving || settlePaid <= 0 || settlePaid > Math.abs(settleBalance) + 0.01}>
                   {settleSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : t("Guardar pago", "Save payment")}
                 </Button>
               </div>
