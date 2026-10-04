@@ -630,8 +630,6 @@ export function ExpenseLog() {
 
   const selectedBalance = sharedBalances.find((entry) => entry.id === settlePartner?.id);
   const settleBalance = selectedBalance?.balance ?? 0;
-  const savedSettlement = settlementRows.find((row) => row.partner_id === settlePartner?.id);
-  const previousPaid = savedSettlement ? convertAmount(Number(savedSettlement.paid_amount), savedSettlement.currency, currency) : 0;
   const rawBalance = selectedBalance?.rawBalance ?? 0;
   const openSettlement = (entry: SharedBalance) => {
     setSettlePartner({ id: entry.id, name: firstNameOf(entry.name) });
