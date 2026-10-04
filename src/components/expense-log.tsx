@@ -1420,26 +1420,56 @@ export function ExpenseLog() {
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex w-full rounded-lg border border-border bg-card p-1 sm:w-80">
-          {(
-            [
-              { id: "month", es: "Mes", en: "Month" },
-              { id: "week", es: "Semana", en: "Week" },
-              { id: "day", es: "Hoy", en: "Today" },
-            ] as const
-          ).map((p) => (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => setPeriod(p.id)}
-              className={cn(
-                "flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                period === p.id ? "bg-positive text-background" : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {t(p.es, p.en)}
-            </button>
-          ))}
+        <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:flex sm:w-auto">
+          <div className="flex min-w-0 rounded-lg border border-border bg-card p-1 sm:w-80">
+            {(
+              [
+                { id: "month", es: "Mes", en: "Month" },
+                { id: "week", es: "Semana", en: "Week" },
+                { id: "day", es: "Hoy", en: "Today" },
+              ] as const
+            ).map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => {
+                  setPeriod(p.id);
+                  // Semana y Hoy son del mes en curso: si había un mes pasado abierto, volvemos a él.
+                  if (p.id !== "month" && !isCurrentMonth) {
+                    setViewKey(null);
+                    setHoverDay(null);
+                  }
+                }}
+                className={cn(
+                  "flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  period === p.id ? "bg-positive text-background" : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {t(p.es, p.en)}
+              </button>
+            ))}
+          </div>
+
+          {/* Selector de mes: revisa los meses pasados; elegir uno abre la vista Mensual. */}
+          <Select
+            value={activeKey}
+            onValueChange={(v) => {
+              setViewKey(v);
+              setPeriod("month");
+              setHoverDay(null);
+            }}
+          >
+            <SelectTrigger className="h-10 w-auto shrink-0 gap-1.5 rounded-full border-border bg-card/60 px-4 text-sm font-medium">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="max-h-72">
+              {months.map((m) => (
+                <SelectItem key={m} value={m}>
+                  {monthLabel(m)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <DropdownMenu>
