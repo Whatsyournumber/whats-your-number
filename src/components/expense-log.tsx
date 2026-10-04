@@ -1550,7 +1550,7 @@ export function ExpenseLog() {
                     ? t(`Pagó ${firstNameOf(shared.name)}`, `Paid by ${firstNameOf(shared.name)}`)
                     : t("Pagaste tú", "Paid by you"))
                   : "";
-                const splitTxt = shared ? shared.split.split("/").reverse().join("/") : "";
+                const splitTxt = shared ? `${iOwe ? Number(myPct) : Number(theirPct)}%` : "";
                 const full = shared ? `${base} · ${paidBy} · ${splitTxt}` : base;
                 const shorter = shared ? `${base} · ${paidBy}` : full;
                 const chosen = full.length > 34 ? (shorter.length <= 34 ? shorter : clipText(shorter, 34)) : full;
