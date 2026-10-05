@@ -109,7 +109,12 @@ function currencySymbol(currency: string): string {
 }
 
 function money(amount: number, currency: string): string {
-  return `${currencySymbol(currency)}${Math.round(amount).toLocaleString("es-ES")}`;
+  // Agrupamos los miles a mano: el entorno del servidor no siempre trae los datos de locale.
+  const n = Math.round(amount);
+  const grouped = Math.abs(n)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `${currencySymbol(currency)}${n < 0 ? "-" : ""}${grouped}`;
 }
 
 /** Consejo propio de cada rubro: cada caja tiene su lógica de ayuda. */
