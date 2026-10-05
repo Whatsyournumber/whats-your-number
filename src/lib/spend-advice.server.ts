@@ -356,13 +356,17 @@ Nightlife en TODO tu historial (${ns.months} ${ns.months === 1 ? "mes" : "meses"
             : "sin definir"
         }
 - Periodo analizado: ${ns.periodNights} salidas, ${money(ns.periodAmount, input.currency)} gastados (${money(ns.periodAvg, input.currency)} por salida)${
-          ns.planned > 0 ? ` · ${ns.overPlan ? "TE PASASTE" : "dentro del plan"} del plan de ${money(ns.planned, input.currency)}` : ""
+          ns.periodPlanned > 0
+            ? ` · ${ns.overPlan ? "TE PASASTE" : "dentro del plan"} del plan de ${money(ns.periodPlanned, input.currency)} de este periodo`
+            : ""
         }
 - Cálculos para entrar en el plan (solo si te pasaste): máximo ${
-          ns.planned > 0 ? Math.min(Math.max(1, ns.periodNights), Math.floor(ns.planned / Math.max(1, ns.avg))) : 0
-        } salidas al mes manteniendo tu ticket medio, o no más de ${
-          ns.planned > 0 ? money(ns.planned / Math.max(1, ns.nightsPerMonth), input.currency) : "—"
-        } por salida manteniendo tus ${ns.nightsPerMonth.toFixed(1)} salidas. El número de salidas objetivo NUNCA puede ser mayor que las salidas actuales.`
+          ns.periodPlanned > 0
+            ? Math.min(Math.max(1, ns.periodNights), Math.floor(ns.periodPlanned / Math.max(1, ns.periodAvg || ns.avg)))
+            : 0
+        } salidas en el periodo manteniendo tu ticket medio, o no más de ${
+          ns.periodPlanned > 0 ? money(ns.periodPlanned / Math.max(1, ns.periodNights), input.currency) : "—"
+        } por salida manteniendo tus ${ns.periodNights} salidas. El número de salidas objetivo NUNCA puede ser mayor que las salidas actuales.`
       : "";
 
   const groceryStores = input.groceryStores ?? [];
@@ -480,20 +484,26 @@ ${
 
   // Nightlife: el veredicto lo decide el plan, no la subida frente al mes anterior.
   const ns2 = input.nightlifeStats;
-  if (ns2 && ns2.nights > 0 && ns2.planned > 0) {
+  if (ns2 && ns2.nights > 0 && ns2.periodPlanned > 0) {
     for (const a of actions) {
       if (!/nightlife|nocturn|ocio/i.test(a.label)) continue;
       if (!ns2.overPlan) {
         a.overspent = false;
         a.monthlySaving = 0;
-        a.diagnosis = `${input.periodLabel}: ${ns2.periodNights} salidas y ${money(ns2.periodAmount, input.currency)} gastados, dentro de tu plan de ${money(ns2.planned, input.currency)}.`;
+        a.diagnosis = `${input.periodLabel}: ${ns2.periodNights} salidas y ${money(ns2.periodAmount, input.currency)} gastados, dentro de tu plan de ${money(
+          ns2.periodPlanned,
+          input.currency,
+        )}.`;
         a.action = `Sales ${ns2.nightsPerMonth.toFixed(1)} noches al mes con ${money(ns2.avg, input.currency)} de media (${money(
           ns2.amountPerMonth,
           input.currency,
-        )} al mes): te sobran ${money(Math.max(0, ns2.planned - ns2.amountPerMonth), input.currency)} sobre el plan de ${money(ns2.planned, input.currency)}.`;
+        )} al mes): te sobran ${money(Math.max(0, ns2.periodPlanned - ns2.periodAmount), input.currency)} sobre el plan de ${money(
+          ns2.periodPlanned,
+          input.currency,
+        )}.`;
       } else {
         // El ahorro nunca puede superar lo que te pasaste del plan.
-        a.monthlySaving = Math.max(0, Math.min(a.monthlySaving, Math.round(ns2.periodAmount - ns2.planned)));
+        a.monthlySaving = Math.max(0, Math.min(a.monthlySaving, Math.round(ns2.periodAmount - ns2.periodPlanned)));
       }
     }
   }
