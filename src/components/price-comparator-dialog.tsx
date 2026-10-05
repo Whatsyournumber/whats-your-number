@@ -48,6 +48,11 @@ const STORE_ALIASES: [RegExp, string][] = [
   [/^m?p?dia$|mpdia|^dia/, "dia"],
 ];
 
+/** En supermercado solo se comparan estas tiendas; el resto no sale en la tabla. */
+const GROCERY_ALLOWED_KEYS = new Set(["ponzano", "dia", "ahorramas"]);
+/** Máximo de comercios en la comparativa. */
+const MAX_STORES = 5;
+
 export const storeKey = (s: string) => {
   const tokens = storeTokens(s);
   // Sin espacios para unir "Ahorramas" y "AHORRA MAS" en la misma tienda
