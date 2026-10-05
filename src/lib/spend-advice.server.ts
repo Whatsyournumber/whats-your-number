@@ -407,7 +407,8 @@ ${
   });
 
   // Forzamos siempre 4 boxes, completando con datos reales si la IA devolviera menos.
-  const actions = result.output.actions ?? [];
+  const FIXED_RE = /vivienda|housing|alquil|hipotec|mortgage|rent\b|servicios|utilities|seguro|insurance|educaci|education|deuda|debt|pr[eé]stamo|suscrip|subscription|gimnas|gym/i;
+  const actions = (result.output.actions ?? []).filter((a) => !FIXED_RE.test(a.label));
   const padded = buildFallbackActions(input, actions, 4);
   return { actions: padded };
 }
