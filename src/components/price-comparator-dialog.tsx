@@ -210,6 +210,10 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
 
   const sortedStores = [...data.storeRows].sort((a, b) => a.avg - b.avg);
   const winnerKey = sortedStores[0]?.key;
+  // Solo comparan tiendas que tienen precios de productos; sin datos, la columna no sale.
+  const productStores = sortedStores.filter((s) =>
+    data.productRows.some((p) => p.entries.some((e) => e.store === s.key)),
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
