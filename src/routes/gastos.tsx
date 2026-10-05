@@ -38,6 +38,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { planCategories } from "@/lib/category-ai.functions";
+import { receiptItemsFrom } from "@/lib/receipt-insights";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { useCategories } from "@/hooks/use-categories";

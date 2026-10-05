@@ -23,6 +23,10 @@ export type AdviceInput = {
   budgets?: { name: string; planned: number; actual: number }[];
   /** Histórico de nightlife por sitio (todos los meses): gasto total y noches distintas. */
   nightlifeVenues?: { name: string; amount: number; nights: number }[];
+  /** Histórico de supermercados (todos los meses): gasto total y compras. */
+  groceryStores?: { name: string; amount: number; trips: number }[];
+  /** Precios históricos de productos de la cesta básica por tienda (de tickets con foto). */
+  groceryBasics?: { product: string; prices: { store: string; price: number }[] }[];
   /** Análisis anteriores guardados de este usuario (más reciente primero). */
   history?: {
     periodLabel: string;
