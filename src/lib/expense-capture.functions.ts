@@ -61,5 +61,28 @@ export const captureExpense = createServerFn({ method: "POST" })
       data.lang,
       groceryRules.map((rule) => ({ match: rule.match, group: data.lang === "en" ? GROCERY_LABELS[rule.group].en : GROCERY_LABELS[rule.group].es })),
     );
-    return { ...expense, items: expense.items ?? [], transcript: "", myShare: null as number | null };
+    // Convierte el ticket a la moneda seleccionada por el usuario con la tasa del día.
+    const from = (expense.currency || data.currency).toUpperCase().trim();
+    const to = data.currency.toUpperCase();
+    let rate = 1;
+    if (/^[A-Z]{3}$/.test(from) && from !== to) {
+      try {
+        const res = await fetch(`https://open.er-api.com/v6/latest/${from}`);
+        const json = (await res.json()) as { rates?: Record<string, number> };
+        rate = json.rates?.[to] ?? 1;
+      } catch {
+        rate = 1;
+      }
+    }
+    const conv = (n: number) => Math.round(n * rate * 100) / 100;
+    return {
+      ...expense,
+      amount: conv(expense.amount),
+      items: (expense.items ?? []).map((i) => ({ ...i, amount: conv(i.amount) })),
+      currency: rate === 1 ? from : to,
+      originalCurrency: from,
+      originalAmount: expense.amount,
+      transcript: "",
+      myShare: null as number | null,
+    };
   });
