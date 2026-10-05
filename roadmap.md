@@ -48,3 +48,5 @@
 - [ ] Verificar el menú del plan Familiar en navegador: bloqueado porque la sesión firmando no pasa la autenticación del preview; el cambio es solo la etiqueta "Mi dinero" y el layout Familiar ya se verificó antes
 
 - [ ] /retiro: "Aporte mensual" debe sugerir por defecto el monto mensual necesario para llegar a la meta; editable; si cambia el ahorro (inversión) se recalcula; subtítulo debajo del box explicando el cálculo.
+- [x] Análisis de nightlife: salidas al mes, ticket promedio por salida y cómo bajarlo para entrar en el budget (tarjeta forzosa + veredicto por plan).
+- [ ] Revisar que el análisis con IA se relance al cambiar de periodo (con "Last month" seguía mostrando el texto del periodo anterior).
