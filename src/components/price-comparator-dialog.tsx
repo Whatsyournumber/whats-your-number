@@ -41,10 +41,47 @@ const storeTokens = (s: string) =>
     .split(" ")
     .filter((w) => w && !GENERIC_STORE_TOKENS.has(w) && !/^\d+$/.test(w));
 
+/** Tiendas que el usuario confirmó que son la misma. */
+const STORE_ALIASES: [RegExp, string][] = [
+  [/ponzano|supercor/, "ponzano"],
+  [/^m?p?dia$|mpdia|^dia/, "dia"],
+];
+
 export const storeKey = (s: string) => {
   const tokens = storeTokens(s);
   // Sin espacios para unir "Ahorramas" y "AHORRA MAS" en la misma tienda
-  return (tokens.length ? tokens : storeTokens(cleanStore(s))).slice(0, 2).join("");
+  const key = (tokens.length ? tokens : storeTokens(cleanStore(s))).slice(0, 2).join("");
+  const all = storeTokens(s).join("");
+  for (const [re, alias] of STORE_ALIASES) if (re.test(key) || re.test(all)) return alias;
+  return key;
+};
+
+/** Cesta básica: se comparan estos productos aunque el nombre del ticket varíe. */
+const BASICS: { id: string; label: string; re: RegExp }[] = [
+  { id: "leche", label: "🥛 Leche", re: /\bleche\b(?!.*(avena|almendra|coco|soja|condensada))/ },
+  { id: "huevos", label: "🥚 Huevos", re: /\bhuevo/ },
+  { id: "pollo", label: "🍗 Pollo", re: /pollo|pechuga|contramuslo|muslo/ },
+  { id: "vacuno", label: "🥩 Carne de vacuno / picada", re: /vacuno|ternera|picada|burger|hamburguesa|filete(?!.*pollo)/ },
+  { id: "atun", label: "🐟 Atún en conserva", re: /\batun/ },
+  { id: "pescado", label: "🐟 Pescado", re: /salmon|merluza|bacalao|dorada|lubina|pescado|sardin|boqueron|gamba|langostino|calamar|poton/ },
+  { id: "arroz", label: "🍚 Arroz", re: /\barroz/ },
+  { id: "pasta", label: "🍝 Pasta", re: /pasta|espagueti|spaghetti|macarron|tallarin|fideo|penne|lasana/ },
+  { id: "pan", label: "🍞 Pan", re: /\bpan\b|baguette|barra|hogaza|pan de molde|tortilla de trigo|tortillas/ },
+  { id: "patatas", label: "🥔 Patatas", re: /patata/ },
+  { id: "legumbres", label: "🫘 Lentejas / legumbres", re: /lenteja|garbanzo|alubia|judia|legumbre/ },
+  { id: "aceite", label: "🫒 Aceite de oliva", re: /aceite/ },
+  { id: "tomate", label: "🍅 Tomate", re: /tomate(?!.*(frito|salsa|ketchup))/ },
+  { id: "lechuga", label: "🥬 Lechuga / hoja", re: /lechuga|espinaca|rucula|canonigo|ensalada|brote/ },
+  { id: "cebolla", label: "🧅 Cebolla", re: /cebolla/ },
+  { id: "zanahoria", label: "🥕 Zanahoria", re: /zanahoria/ },
+  { id: "platano", label: "🍌 Plátano", re: /platano|banana/ },
+  { id: "manzana", label: "🍎 Manzana", re: /manzana/ },
+  { id: "yogur", label: "🥣 Yogur", re: /yogur|yogourt|skyr|kefir/ },
+  { id: "cafe", label: "☕ Café", re: /\bcafe\b|capsula|nespresso|dolce gusto/ },
+];
+const basicOf = (name: string) => {
+  const n = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return BASICS.find((b) => b.re.test(n));
 };
 
 export const cleanStoreName = cleanStore;
