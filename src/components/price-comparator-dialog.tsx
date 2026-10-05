@@ -52,6 +52,13 @@ const STORE_ALIASES: [RegExp, string][] = [
 export const GROCERY_ALLOWED_KEYS = new Set(["ponzano", "dia", "ahorramas"]);
 /** Máximo de comercios en la comparativa. */
 export const MAX_STORES = 5;
+/** Nombre corto y legible para las tiendas unidas por alias. */
+const STORE_DISPLAY: Record<string, string> = {
+  ponzano: "Super Ponzano",
+  dia: "MPDIA",
+  ahorramas: "AhorraMas",
+};
+export const storeDisplayName = (key: string, fallback: string) => STORE_DISPLAY[key] ?? fallback;
 
 export const storeKey = (s: string) => {
   const tokens = storeTokens(s);
@@ -85,7 +92,7 @@ const BASICS: { id: string; label: string; re: RegExp }[] = [
   { id: "yogur", label: "🥣 Yogur", re: /yogur|yogourt|skyr|kefir/ },
   { id: "cafe", label: "☕ Café", re: /\bcafe\b|capsula|nespresso|dolce gusto/ },
 ];
-const basicOf = (name: string) => {
+export const basicOf = (name: string) => {
   const n = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   return BASICS.find((b) => b.re.test(n));
 };
@@ -153,7 +160,7 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
     const avg = (a: number[]) => a.reduce((x, y) => x + y, 0) / Math.max(1, a.length);
     let rows = [...stores.entries()].map(([key, s]) => {
       const visits = kind === "nightlife" ? Math.max(1, s.visits.size) : s.count;
-      return { key, name: s.name, total: s.total, visits, avg: s.total / Math.max(1, visits), last: s.last };
+      return { key, name: storeDisplayName(key, s.name), total: s.total, visits, avg: s.total / Math.max(1, visits), last: s.last };
     });
     if (kind === "groceries") rows = rows.filter((r) => GROCERY_ALLOWED_KEYS.has(r.key));
     const storeRows = rows
@@ -162,14 +169,14 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
     const storeKeys = new Set(storeRows.map((r) => r.key));
     const nameOf = (k: string) => (k === "otros" ? "Otros tickets" : storeRows.find((r) => r.key === k)?.name ?? k);
 
+    // Solo la cesta básica: lo que no está en la lista no sale en la tabla.
     const productRows = [...products.entries()]
       .map(([pk, p]) => {
         const entries = [...p.prices.entries()].filter(([k]) => k === "otros" || storeKeys.has(k)).map(([k, v]) => ({ store: k, price: avg(v), n: v.length }));
         return { name: p.name, basic: pk.startsWith("basic:"), entries, buys: entries.reduce((s, e) => s + e.n, 0) };
       })
-      .filter((p) => p.entries.length > 0)
-      // Primero la cesta básica, luego lo comparable entre tiendas y lo más comprado
-      .sort((a, b) => Number(b.basic) - Number(a.basic) || b.entries.length - a.entries.length || b.buys - a.buys)
+      .filter((p) => p.basic && p.entries.length > 0)
+      .sort((a, b) => b.entries.length - a.entries.length || b.buys - a.buys)
       .slice(0, 20);
 
     const nightRows = (["entry", "drink"] as const).map((k) => ({

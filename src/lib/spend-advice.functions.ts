@@ -38,6 +38,22 @@ const schema = z.object({
     .array(z.object({ name: z.string(), amount: z.number(), nights: z.number() }))
     .optional()
     .default([]),
+  /** Nightlife en todo el historial: salidas al mes, ticket medio y plan mensual. */
+  nightlifeStats: z
+    .object({
+      months: z.number(),
+      nights: z.number(),
+      amount: z.number(),
+      avg: z.number(),
+      nightsPerMonth: z.number(),
+      amountPerMonth: z.number(),
+      planned: z.number(),
+      periodNights: z.number(),
+      periodAmount: z.number(),
+      periodAvg: z.number(),
+      overPlan: z.boolean(),
+    })
+    .optional(),
   /** Histórico de supermercados (todos los meses) y precios de la cesta básica por tienda. */
   groceryStores: z
     .array(z.object({ name: z.string(), amount: z.number(), trips: z.number() }))

@@ -23,6 +23,8 @@ export type AdviceInput = {
   budgets?: { name: string; planned: number; actual: number }[];
   /** Histórico de nightlife por sitio (todos los meses): gasto total y noches distintas. */
   nightlifeVenues?: { name: string; amount: number; nights: number }[];
+  /** Nightlife en todo el historial: salidas al mes, ticket medio y plan mensual. */
+  nightlifeStats?: { months: number; nights: number; amount: number; avg: number; nightsPerMonth: number; amountPerMonth: number; planned: number; periodNights: number; periodAmount: number; periodAvg: number; overPlan: boolean } | undefined;
   /** Histórico de supermercados (todos los meses): gasto total y compras. */
   groceryStores?: { name: string; amount: number; trips: number }[];
   /** Precios históricos de productos de la cesta básica por tienda (de tickets con foto). */
@@ -63,7 +65,7 @@ export const adviceSchema = z.object({
 export type SpendAdvice = z.infer<typeof adviceSchema>;
 
 const SYSTEM = `Eres un asesor financiero personal directo y práctico. Respondes SIEMPRE en español.
-SOLO GASTOS VARIABLES: nunca analices ni recomiendes sobre gastos fijos (vivienda, alquiler, hipoteca, servicios, seguros, educación, deudas, suscripciones, gimnasio). Si hay gasto en Supermercado, una de las 4 acciones DEBE ser Supermercado.
+SOLO GASTOS VARIABLES: nunca analices ni recomiendes sobre gastos fijos (vivienda, alquiler, hipoteca, servicios, seguros, educación, deudas, suscripciones, gimnasio). Si hay gasto en Supermercado, una de las 4 acciones DEBE ser Supermercado. Si hay gasto en Nightlife, otra de las 4 acciones DEBE ser Nightlife (con salidas al mes, ticket medio por salida y su plan mensual, aunque estés dentro del plan).
 Devuelve SIEMPRE exactamente 4 acciones: UNA por categoría, sin repetir categoría.
 CON PLAN: las 4 categorías donde MÁS se excedió el plan (mayor exceso primero); si hay menos de 4 excedidas, completa con las categorías de mayor gasto real restantes.
 SIN PLAN: las 4 categorías de mayor gasto del contexto.
@@ -87,7 +89,7 @@ Reglas:
   · Supermercado → COMPARA LOS SUPERMERCADOS con el "Histórico de supermercados" del contexto (TODOS los meses, no solo el periodo): calcula el ticket medio de cada uno (gasto ÷ compras), di cuál es el más barato y cuánto ahorraría al mes moviendo la compra del más caro al más barato. Si el contexto trae "Precios de la cesta básica por tienda", úsalos como prueba concreta: nombra 1-2 productos de primera necesidad (leche, huevos, pan, arroz, aceite, pollo...) con su precio en cada tienda y di dónde son más baratos. Ej.: "La leche cuesta $1.10 en Mercadona y $1.45 en Carrefour; compra la cesta básica en Mercadona ($28 media) en vez de Carrefour ($41) y ahorras $52". Si solo hay un supermercado, sugiere marca blanca y lista semanal.
   · Apps y suscripciones → cancela las que no usas, pasa a plan anual o familiar.
   · Transporte diario (Uber, taxi) → abono de transporte o combinar con transporte público en las horas caras.
-  · Nightlife (bares, discotecas, copas) → el "count" de esta categoría son DÍAS distintos (salidas reales), no movimientos: úsalo tal cual y habla de la CATEGORÍA completa, no de un solo club. Si el contexto trae "Histórico de nightlife por sitio", COMPARA LOS SITIOS con ese histórico (todos los meses, no solo el periodo): calcula el coste medio por noche de cada sitio (gasto total ÷ noches), di cuál es el más barato y cuánto ahorraría al mes saliendo en el barato en vez del caro (diferencia de media × salidas del caro en el periodo). Ej.: "En Fabrik gastas $95 por noche y en BarCo $38; saliendo más en BarCo ahorras $114 al mes". Si hay histórico, la acción DEBE nombrar el sitio barato y el caro con sus medias; si no hay histórico, usa el formato: "Has salido N veces este mes ($X de media); reduce a M salidas o gasta menos por salida y ahorras $Y", donde M = plan ÷ media (redondeado hacia abajo) e Y = exceso sobre el plan.
+  · Nightlife (bares, discotecas, copas) → el "count" de esta categoría son DÍAS distintos (salidas reales), no movimientos: úsalo tal cual y habla de la CATEGORÍA completa, no de un solo club. Si el contexto trae "Nightlife en TODO tu historial", la tarjeta DEBE decir las tres cifras y su plan: salidas al mes ("Sales 6,2 noches al mes"), ticket medio por salida ("$54 de media por noche") y el plan mensual ("tu plan es $200"). Si el contexto marca "TE PASASTE", da la ruta concreta para entrar en el plan eligiendo la opción más fácil de las dos: (a) menos salidas = plan ÷ ticket medio (redondeado hacia abajo), o (b) menos gasto por salida = plan ÷ salidas. Escribe siempre la dos en formato "baja a X salidas al mes" o "gasta menos de $Y por salida", y cierra con el ahorro mensual (gasto medio del mes − plan). Ej.: "Sales 6,2 noches al mes ($54 de media = $335); tu plan es $200: baja a 3 salidas o gasta menos de $32 por noche y ahorras $135 al mes". Si el contexto marca "dentro del plan", NO propongas recortar: confirma que cumples ("Sales 4,1 noches al mes ($48 de media = $197), dentro de tu plan de $200") y, como mucho, sugiere ahorrar un poco más. Reglas duras: el número de salidas objetivo NUNCA puede superar las salidas actuales; "overspent" solo true si el periodo analizado supera el plan; "monthlySaving" 0 si ya cumples el plan. Si el contexto trae "Histórico de nightlife por sitio", ADEMÁS puedes comparar sitios (medio por noche de cada uno, el más barato y el ahorro), pero sin sustituir las cifras de frecuencia y ticket medio. Si no hay histórico de sitios, usa el formato: "Has salido N veces este mes ($X de media); reduce a M salidas o gasta menos por salida y ahorras $Y", donde M = plan ÷ media (redondeado hacia abajo) e Y = exceso sobre el plan.
   · Ocio y compras → regla de 48 horas, cupones y segunda mano.
   · Salud, educación, hijos → compara proveedores y aprovecha deducciones o pagos anuales, no recortes lo esencial.
   · Gasolina y coche → estaciones low-cost, mantenimiento preventivo y revisar seguros del vehículo.
@@ -332,6 +334,32 @@ ${(input.nightlifeVenues ?? [])
   .join("\n")}`
     : "";
 
+  const ns = input.nightlifeStats;
+  const nightlifeStatsBlock =
+    ns && ns.nights > 0
+      ? `
+
+Nightlife en TODO tu historial (${ns.months} ${ns.months === 1 ? "mes" : "meses"} con salidas):
+- Salidas al mes: ${ns.nightsPerMonth.toFixed(1)} noches (${ns.nights} noches en ${ns.months} ${ns.months === 1 ? "mes" : "meses"})
+- Gasto medio al mes: ${money(ns.amountPerMonth, input.currency)}
+- Ticket medio por salida: ${money(ns.avg, input.currency)}
+- Plan mensual de nightlife: ${
+          ns.planned > 0
+            ? `${money(ns.planned, input.currency)} → tu media mensual está ${Math.abs(Math.round((ns.amountPerMonth / ns.planned - 1) * 100))}% ${
+                ns.amountPerMonth > ns.planned ? "POR ENCIMA" : "por debajo"
+              } del plan`
+            : "sin definir"
+        }
+- Periodo analizado: ${ns.periodNights} salidas, ${money(ns.periodAmount, input.currency)} gastados (${money(ns.periodAvg, input.currency)} por salida)${
+          ns.planned > 0 ? ` · ${ns.overPlan ? "TE PASASTE" : "dentro del plan"} del plan de ${money(ns.planned, input.currency)}` : ""
+        }
+- Cálculos para entrar en el plan (solo si te pasaste): máximo ${
+          ns.planned > 0 ? Math.min(Math.max(1, ns.periodNights), Math.floor(ns.planned / Math.max(1, ns.avg))) : 0
+        } salidas al mes manteniendo tu ticket medio, o no más de ${
+          ns.planned > 0 ? money(ns.planned / Math.max(1, ns.nightsPerMonth), input.currency) : "—"
+        } por salida manteniendo tus ${ns.nightsPerMonth.toFixed(1)} salidas. El número de salidas objetivo NUNCA puede ser mayor que las salidas actuales.`
+      : "";
+
   const groceryStores = input.groceryStores ?? [];
   const groceryBasics = input.groceryBasics ?? [];
   const groceryBlock = groceryStores.length
@@ -432,7 +460,7 @@ ${
     overBudget
       ? `\n\nCategoría donde MÁS se excedió el plan: ${overBudget.name} (real ${overBudget.actual.toFixed(0)} vs. plan ${overBudget.planned.toFixed(0)}). Debe ser la primera acción.`
       : ""
-  }${nightlifeBlock}${groceryBlock}${memoryBlock}`;
+  }${nightlifeBlock}${nightlifeStatsBlock}${groceryBlock}${memoryBlock}`;
 
   const result = await generateText({
     model: gateway("google/gemini-3.6-flash"),
@@ -444,6 +472,27 @@ ${
   // Forzamos siempre 4 boxes, completando con datos reales si la IA devolviera menos.
   const FIXED_RE = /vivienda|housing|alquil|hipotec|mortgage|rent\b|servicios|utilities|seguro|insurance|educaci|education|deuda|debt|pr[eé]stamo|suscrip|subscription|gimnas|gym/i;
   const actions = (result.output.actions ?? []).filter((a) => !FIXED_RE.test(a.label));
+
+  // Nightlife: el veredicto lo decide el plan, no la subida frente al mes anterior.
+  const ns2 = input.nightlifeStats;
+  if (ns2 && ns2.nights > 0 && ns2.planned > 0) {
+    for (const a of actions) {
+      if (!/nightlife|nocturn|ocio/i.test(a.label)) continue;
+      if (!ns2.overPlan) {
+        a.overspent = false;
+        a.monthlySaving = 0;
+        a.diagnosis = `${input.periodLabel}: ${ns2.periodNights} salidas y ${money(ns2.periodAmount, input.currency)} gastados, dentro de tu plan de ${money(ns2.planned, input.currency)}.`;
+        a.action = `Sales ${ns2.nightsPerMonth.toFixed(1)} noches al mes con ${money(ns2.avg, input.currency)} de media (${money(
+          ns2.amountPerMonth,
+          input.currency,
+        )} al mes): te sobran ${money(Math.max(0, ns2.planned - ns2.amountPerMonth), input.currency)} sobre el plan de ${money(ns2.planned, input.currency)}.`;
+      } else {
+        // El ahorro nunca puede superar lo que te pasaste del plan.
+        a.monthlySaving = Math.max(0, Math.min(a.monthlySaving, Math.round(ns2.periodAmount - ns2.planned)));
+      }
+    }
+  }
+
   const padded = buildFallbackActions(input, actions, 4);
   return { actions: padded };
 }

@@ -47,7 +47,7 @@ import { useCategoryRules } from "@/hooks/use-category-rules";
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { BudgetDialog } from "@/components/budget-dialog";
-import { PriceComparatorDialog, storeKey, GROCERY_ALLOWED_KEYS, MAX_STORES, type ComparatorKind } from "@/components/price-comparator-dialog";
+import { PriceComparatorDialog, storeKey, GROCERY_ALLOWED_KEYS, MAX_STORES, basicOf, storeDisplayName, type ComparatorKind } from "@/components/price-comparator-dialog";
 import { BUDGET_CATEGORIES, findBudgetCategory } from "@/lib/budget-categories";
 import targetIcon from "@/assets/target-icon-v2.png.asset.json";
 import { useProfile } from "@/hooks/use-profile";
@@ -606,12 +606,54 @@ function Gastos() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expenses, categories.rules, txCat, learned.rules]);
 
+  /** Nightlife en TODO el historial: salidas al mes, ticket medio y plan mensual. */
+  const nightlifeStats = useMemo(() => {
+    const days = new Set<string>();
+    const months = new Set<string>();
+    let amount = 0;
+    for (const tx of expenses) {
+      if (!/nightlife|nocturn/i.test(categoryOf(tx))) continue;
+      amount += Math.abs(tx.amount);
+      const d = String(tx.tx_date ?? "").slice(0, 10);
+      if (d) {
+        days.add(d);
+        months.add(d.slice(0, 7));
+      }
+    }
+    const nights = days.size;
+    const monthCount = Math.max(1, months.size);
+    const planned = budgets.lines.find((l) => l.id === "nightlife")?.amount ?? 0;
+    // Periodo seleccionado
+    const pDays = new Set<string>();
+    let pAmount = 0;
+    for (const tx of current) {
+      if (!/nightlife|nocturn/i.test(categoryOf(tx))) continue;
+      pAmount += Math.abs(tx.amount);
+      const d = String(tx.tx_date ?? "").slice(0, 10);
+      if (d) pDays.add(d);
+    }
+    const pNights = pDays.size;
+    return {
+      months: monthCount,
+      nights,
+      amount,
+      avg: nights ? amount / nights : 0,
+      nightsPerMonth: nights / monthCount,
+      amountPerMonth: amount / monthCount,
+      planned,
+      periodNights: pNights,
+      periodAmount: pAmount,
+      periodAvg: pNights ? pAmount / pNights : 0,
+      overPlan: planned > 0 && pAmount > planned,
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [expenses, current, categories.rules, txCat, learned.rules, budgets.lines]);
+
   /** Histórico de supermercados (todos los meses): gasto, compras y precios de la cesta básica por tienda. */
   const groceryHistory = useMemo(() => {
     const stores = new Map<string, { name: string; amount: number; trips: Set<string> }>();
     // producto normalizado -> tienda -> mejor precio visto
     const prices = new Map<string, { product: string; byStore: Map<string, number>; seen: number }>();
-    const BASIC_GROUPS = new Set(["dairy", "produce", "protein", "bakery", "pantry"]);
     for (const tx of expenses) {
       if (!/super|grocer|mercado/i.test(categoryOf(tx))) continue;
       // Une variantes del mismo supermercado ("SUP.EX. PONZANO" = "Super Express Ponzano")
@@ -621,10 +663,10 @@ function Gastos() {
       if (tx.tx_date) s.trips.add(`${sk}|${String(tx.tx_date).slice(0, 10)}`);
       stores.set(sk, s);
       for (const item of receiptItemsFrom(tx.description)) {
-        if (!BASIC_GROUPS.has(item.category)) continue;
-        const key = item.name.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(" ").slice(0, 3).join(" ");
-        if (!key) continue;
-        const p = prices.get(key) ?? { product: item.name, byStore: new Map<string, number>(), seen: 0 };
+        const basic = basicOf(item.name);
+        if (!basic) continue;
+        const key = `basic:${basic.id}`;
+        const p = prices.get(key) ?? { product: basic.label, byStore: new Map<string, number>(), seen: 0 };
         p.seen += 1;
         const prev = p.byStore.get(sk);
         if (prev === undefined || item.amount < prev) p.byStore.set(sk, item.amount);
@@ -634,14 +676,14 @@ function Gastos() {
     return {
       stores: [...stores.entries()]
         .filter(([sk]) => GROCERY_ALLOWED_KEYS.has(sk))
-        .map(([sk, s]) => ({ name: s.name, amount: s.amount, trips: s.trips.size }))
+        .map(([sk, s]) => ({ name: storeDisplayName(sk, s.name), amount: s.amount, trips: s.trips.size }))
         .sort((a, b) => b.amount - a.amount)
         .slice(0, MAX_STORES),
       basics: [...prices.values()]
         .filter((p) => p.byStore.size > 0)
         .map((p) => ({
           product: p.product,
-          prices: [...p.byStore.entries()].filter(([sk]) => GROCERY_ALLOWED_KEYS.has(sk)).map(([sk, price]) => ({ store: stores.get(sk)?.name ?? sk, price })),
+          prices: [...p.byStore.entries()].filter(([sk]) => GROCERY_ALLOWED_KEYS.has(sk)).map(([sk, price]) => ({ store: storeDisplayName(sk, stores.get(sk)?.name ?? sk), price })),
         }))
         .filter((p) => p.prices.length > 0)
         .sort((a, b) => b.prices.length - a.prices.length)
@@ -819,6 +861,7 @@ function Gastos() {
           })),
           budgets: budgetRows.filter((b) => !FIXED_ADVICE_IDS.has(b.id)).map((b) => ({ name: b.name, planned: b.planned, actual: b.actual })),
           nightlifeVenues,
+          nightlifeStats,
           groceryStores: groceryHistory.stores,
           groceryBasics: groceryHistory.basics,
         },
@@ -1956,10 +1999,14 @@ function Gastos() {
                       </button>
                     )}
                     <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 pt-1 text-xs">
-                      <span className="shrink-0 whitespace-nowrap inline-flex items-center rounded-full bg-positive/15 px-2 py-1 text-xs font-semibold text-positive sm:bg-transparent sm:px-0 sm:py-0 sm:font-medium">
-                        +{fmt(a.monthlySaving)}{t("/mes de ahorro", "/mo saved")}
-                      </span>
-                      <span className="min-w-0 flex-1 basis-48 truncate text-muted-foreground">→ {fmtCompact(fv)} {t("en", "in")} {horizonYears.toFixed(0)} {t("años al 10% (S&P 500)", "yrs at 10% (S&P 500)")}</span>
+                      {a.monthlySaving > 0 && (
+                        <>
+                          <span className="shrink-0 whitespace-nowrap inline-flex items-center rounded-full bg-positive/15 px-2 py-1 text-xs font-semibold text-positive sm:bg-transparent sm:px-0 sm:py-0 sm:font-medium">
+                            +{fmt(a.monthlySaving)}{t("/mes de ahorro", "/mo saved")}
+                          </span>
+                          <span className="min-w-0 flex-1 basis-48 truncate text-muted-foreground">→ {fmtCompact(fv)} {t("en", "in")} {horizonYears.toFixed(0)} {t("años al 10% (S&P 500)", "yrs at 10% (S&P 500)")}</span>
+                        </>
+                      )}
                       <span className="ml-auto shrink-0 inline-flex items-center gap-1">
                         <button
                           type="button"

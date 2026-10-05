@@ -1,5 +1,6 @@
 # Roadmap
 
+- [ ] Análisis de nightlife: salidas al mes, ticket promedio por salida y cómo bajarlo para entrar en el budget.
 - [ ] Ajustar editor de gasto y resumen compartido para iPhone 14; notificar al otro participante cuando se crea o elimina un gasto y sincronizar la eliminación.
 
 - [x] Registrar cada pago compartido con quién pagó, importe, fecha e historial; mostrar saldo remanente y separar el símbolo de moneda del monto.
