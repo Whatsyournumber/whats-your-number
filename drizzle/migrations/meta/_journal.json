@@ -29,6 +29,13 @@
       "when": 1791155564731,
       "tag": "0003_record_shared_balance_payments",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791184612581,
+      "tag": "0004_delete_shared_expense_atomically",
+      "breakpoints": true
     }
   ]
 }
