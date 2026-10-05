@@ -703,6 +703,14 @@ function Gastos() {
     };
   }, [range]);
 
+  // El análisis IA solo mira gastos variables: los fijos (vivienda, servicios, seguros...) no se recortan día a día.
+  const FIXED_ADVICE_IDS = new Set(BUDGET_CATEGORIES.filter((c) => c.group === "essentials" || c.id === "second-home").map((c) => c.id));
+  const isFixedAdviceName = (name: string) => {
+    const n = name.toLowerCase().trim();
+    if (!n) return false;
+    return BUDGET_CATEGORIES.some((c) => FIXED_ADVICE_IDS.has(c.id) && c.aliases.some((a) => n === a || n.includes(a)));
+  };
+
   const adviceKey = `${rangeLabel}|${variableTotal.toFixed(0)}|${fixed.total}|${target}|${budgetPlanTotal}`;
   const lastAdviceKey = useRef<string | null>(null);
   const adviceBlocked = useRef(false);
@@ -721,7 +729,7 @@ function Gastos() {
           target,
           monthlyRun,
           environment: getPaddleEnvironment(),
-          categories: byCategory.slice(0, 12).map((c) => ({
+          categories: byCategory.filter((c) => !isFixedAdviceName(c.name)).slice(0, 12).map((c) => ({
             name: c.name,
             amount: c.amount,
             prevAmount: prevByCategory.get(c.name) ?? 0,
@@ -730,14 +738,14 @@ function Gastos() {
               ? new Set(c.items.map((i) => String(i.tx_date ?? "").slice(0, 10)).filter(Boolean)).size
               : c.items.length,
           })),
-          merchants: merchants.slice(0, 14).map((m) => ({
+          merchants: merchants.filter((m) => !isFixedAdviceName(m.category ?? "")).slice(0, 20).map((m) => ({
             name: m.name,
             amount: m.amount,
             count: m.count,
             category: m.category,
             prevAmount: prevByMerchant.get(m.name) ?? 0,
           })),
-          budgets: budgetRows.map((b) => ({ name: b.name, planned: b.planned, actual: b.actual })),
+          budgets: budgetRows.filter((b) => !FIXED_ADVICE_IDS.has(b.id)).map((b) => ({ name: b.name, planned: b.planned, actual: b.actual })),
         },
       });
       if ((res as { upgradeRequired?: string }).upgradeRequired) {
