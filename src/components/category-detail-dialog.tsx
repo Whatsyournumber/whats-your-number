@@ -108,10 +108,10 @@ export function CategoryDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92dvh] w-[calc(100vw-16px)] max-w-2xl min-w-0 gap-3 overflow-x-hidden overflow-y-auto p-4 sm:w-full sm:gap-4 sm:p-6">
-        <DialogHeader className="min-w-0 pr-8">
-          <DialogTitle className="text-lg">{name === "Nightlife" ? t("Nightlife / Ocio", "Nightlife / Leisure") : name}</DialogTitle>
-          <DialogDescription className="text-balance">
+      <DialogContent className="max-h-[calc(100dvh-16px)] w-[calc(100vw-16px)] max-w-2xl min-w-0 gap-4 overflow-x-hidden overflow-y-auto rounded-2xl p-4 sm:max-h-[92dvh] sm:w-full sm:p-6">
+        <DialogHeader className="min-w-0 px-7 text-center sm:px-0 sm:pr-8 sm:text-left">
+          <DialogTitle className="truncate text-lg">{name === "Nightlife" ? t("Nightlife / Ocio", "Nightlife / Leisure") : name}</DialogTitle>
+          <DialogDescription className="text-pretty text-xs leading-relaxed sm:text-sm">
             {t("Análisis del rubro en el periodo seleccionado.", "Category analysis for the selected period.")}
           </DialogDescription>
         </DialogHeader>
@@ -132,10 +132,11 @@ export function CategoryDetailDialog({
         </div>
 
         {trend.length > 1 && (
-          <div className="mt-1 min-w-0 overflow-hidden rounded-2xl border border-border bg-elevated/40 p-2.5 sm:p-3">
-            <p className="mb-2 text-xs text-muted-foreground">{t("Evolución del rubro", "Category trend")}</p>
-            <ResponsiveContainer width="100%" height={140}>
-              <AreaChart data={trend} margin={{ left: -12, right: 8, top: 4 }}>
+          <div className="mt-1 min-w-0 overflow-hidden rounded-2xl border border-border bg-elevated/40 p-3 sm:p-4">
+            <p className="mb-3 text-xs font-medium uppercase text-muted-foreground">{t("Evolución del rubro", "Category trend")}</p>
+            <div className="h-36 min-w-0 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={trend} margin={{ left: -18, right: 4, top: 4, bottom: 0 }}>
                 <defs>
                   <linearGradient id="catGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.5} />
@@ -143,7 +144,7 @@ export function CategoryDetailDialog({
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="label" {...axisProps} minTickGap={24} />
-                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={56} />
+                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={52} />
                 <Tooltip content={<ChartTooltip formatter={fmt} />} />
                 <Area
                   type="monotone"
@@ -155,13 +156,14 @@ export function CategoryDetailDialog({
                 />
               </AreaChart>
             </ResponsiveContainer>
+            </div>
           </div>
         )}
 
         {grocery && grocery.receiptCount > 0 && (
-          <section className="border-t border-border pt-3">
-            <Button type="button" variant="ghost" className="h-auto w-full min-w-0 justify-between gap-2 whitespace-normal px-1 py-1.5 text-left" aria-expanded={groceryOpen} aria-controls="grocery-receipt-insights" onClick={() => setGroceryOpen((v) => !v)}>
-              <span className="flex min-w-0 items-center gap-2"><span className="grid size-7 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground"><Sparkles className="size-3.5" /></span><span className="min-w-0 text-sm font-semibold leading-snug">{t(`Análisis de ${grocery.receiptCount} tickets del súper del mes`, `Analysis of ${grocery.receiptCount} grocery receipts this month`)}</span></span>
+          <section className="min-w-0 border-t border-border pt-4">
+            <Button type="button" variant="ghost" className="grid h-auto w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-2 whitespace-normal px-1 py-1.5 text-left" aria-expanded={groceryOpen} aria-controls="grocery-receipt-insights" onClick={() => setGroceryOpen((v) => !v)}>
+              <span className="grid size-8 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground"><Sparkles className="size-4" /></span><span className="min-w-0 text-sm font-semibold leading-snug">{t(`Análisis de ${grocery.receiptCount} ${grocery.receiptCount === 1 ? "ticket" : "tickets"} del súper del mes`, `Analysis of ${grocery.receiptCount} grocery ${grocery.receiptCount === 1 ? "receipt" : "receipts"} this month`)}</span>
               <ChevronDown className={cn("size-4 shrink-0 text-muted-foreground transition-transform", groceryOpen && "rotate-180")} />
             </Button>
             {groceryOpen && <div id="grocery-receipt-insights"><GroceryInsights summary={grocery} fmt={fmt} onCorrect={groceryRules.learn} addedByGroup={addedByGroup} /></div>}
