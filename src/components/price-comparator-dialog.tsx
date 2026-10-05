@@ -41,10 +41,47 @@ const storeTokens = (s: string) =>
     .split(" ")
     .filter((w) => w && !GENERIC_STORE_TOKENS.has(w) && !/^\d+$/.test(w));
 
+/** Tiendas que el usuario confirmó que son la misma. */
+const STORE_ALIASES: [RegExp, string][] = [
+  [/ponzano|supercor/, "ponzano"],
+  [/^m?p?dia$|mpdia|^dia/, "dia"],
+];
+
 export const storeKey = (s: string) => {
   const tokens = storeTokens(s);
   // Sin espacios para unir "Ahorramas" y "AHORRA MAS" en la misma tienda
-  return (tokens.length ? tokens : storeTokens(cleanStore(s))).slice(0, 2).join("");
+  const key = (tokens.length ? tokens : storeTokens(cleanStore(s))).slice(0, 2).join("");
+  const all = storeTokens(s).join("");
+  for (const [re, alias] of STORE_ALIASES) if (re.test(key) || re.test(all)) return alias;
+  return key;
+};
+
+/** Cesta básica: se comparan estos productos aunque el nombre del ticket varíe. */
+const BASICS: { id: string; label: string; re: RegExp }[] = [
+  { id: "leche", label: "🥛 Leche", re: /\bleche\b(?!.*(avena|almendra|coco|soja|condensada))/ },
+  { id: "huevos", label: "🥚 Huevos", re: /\bhuevo/ },
+  { id: "pollo", label: "🍗 Pollo", re: /pollo|pechuga|contramuslo|muslo/ },
+  { id: "vacuno", label: "🥩 Carne de vacuno / picada", re: /vacuno|ternera|picada|burger|hamburguesa|filete(?!.*pollo)/ },
+  { id: "atun", label: "🐟 Atún en conserva", re: /\batun/ },
+  { id: "pescado", label: "🐟 Pescado", re: /salmon|merluza|bacalao|dorada|lubina|pescado|sardin|boqueron|gamba|langostino|calamar|poton/ },
+  { id: "arroz", label: "🍚 Arroz", re: /\barroz/ },
+  { id: "pasta", label: "🍝 Pasta", re: /pasta|espagueti|spaghetti|macarron|tallarin|fideo|penne|lasana/ },
+  { id: "pan", label: "🍞 Pan", re: /\bpan\b|baguette|barra|hogaza|pan de molde|tortilla de trigo|tortillas/ },
+  { id: "patatas", label: "🥔 Patatas", re: /patata/ },
+  { id: "legumbres", label: "🫘 Lentejas / legumbres", re: /lenteja|garbanzo|alubia|judia|legumbre/ },
+  { id: "aceite", label: "🫒 Aceite de oliva", re: /aceite/ },
+  { id: "tomate", label: "🍅 Tomate", re: /tomate(?!.*(frito|salsa|ketchup))/ },
+  { id: "lechuga", label: "🥬 Lechuga / hoja", re: /lechuga|espinaca|rucula|canonigo|ensalada|brote/ },
+  { id: "cebolla", label: "🧅 Cebolla", re: /cebolla/ },
+  { id: "zanahoria", label: "🥕 Zanahoria", re: /zanahoria/ },
+  { id: "platano", label: "🍌 Plátano", re: /platano|banana/ },
+  { id: "manzana", label: "🍎 Manzana", re: /manzana/ },
+  { id: "yogur", label: "🥣 Yogur", re: /yogur|yogourt|skyr|kefir/ },
+  { id: "cafe", label: "☕ Café", re: /\bcafe\b|capsula|nespresso|dolce gusto/ },
+];
+const basicOf = (name: string) => {
+  const n = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return BASICS.find((b) => b.re.test(n));
 };
 
 export const cleanStoreName = cleanStore;
@@ -94,9 +131,10 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
           if (bucket) bucket.set(key, [...(bucket.get(key) ?? []), item.amount]);
           continue;
         }
-        const pk = productKey(item.name);
+        const basic = basicOf(item.name);
+        const pk = basic ? `basic:${basic.id}` : productKey(item.name);
         if (pk.length < 3) continue;
-        const p = products.get(pk) ?? { name: item.name, prices: new Map() };
+        const p = products.get(pk) ?? { name: basic ? basic.label : item.name, prices: new Map() };
         p.prices.set(key, [...(p.prices.get(key) ?? []), item.amount]);
         products.set(pk, p);
       }
@@ -113,14 +151,15 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
     const storeKeys = new Set(storeRows.map((r) => r.key));
     const nameOf = (k: string) => storeRows.find((r) => r.key === k)?.name ?? k;
 
-    const productRows = [...products.values()]
-      .map((p) => {
+    const productRows = [...products.entries()]
+      .map(([pk, p]) => {
         const entries = [...p.prices.entries()].filter(([k]) => storeKeys.has(k)).map(([k, v]) => ({ store: k, price: avg(v), n: v.length }));
-        return { name: p.name, entries, buys: entries.reduce((s, e) => s + e.n, 0) };
+        return { name: p.name, basic: pk.startsWith("basic:"), entries, buys: entries.reduce((s, e) => s + e.n, 0) };
       })
       .filter((p) => p.entries.length > 0)
-      .sort((a, b) => b.entries.length - a.entries.length || b.buys - a.buys)
-      .slice(0, 10);
+      // Primero la cesta básica, luego lo comparable entre tiendas y lo más comprado
+      .sort((a, b) => Number(b.basic) - Number(a.basic) || b.entries.length - a.entries.length || b.buys - a.buys)
+      .slice(0, 20);
 
     const nightRows = (["entry", "drink"] as const).map((k) => ({
       kind: k,
