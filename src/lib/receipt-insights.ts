@@ -55,24 +55,97 @@ export const GROCERY_LABELS: Record<GroceryGroup, { es: string; en: string; icon
 const normalize = (text: string) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 const match = (text: string, words: string[]) => words.some((word) => ` ${text} `.includes(` ${word} `));
 
+/**
+ * Built-in receipt vocabulary. Keep specific groups first in groceryGroup:
+ * receipt labels are often abbreviated, brand-heavy and omit accents.
+ */
+const GROCERY_VOCABULARY: Record<GroceryGroup, string[]> = {
+  prepared: [
+    "congelado", "congelados", "ultracongelado", "frozen", "pizza", "plato preparado", "platos preparados", "comida preparada", "ready meal", "ready meals",
+    "precocinado", "precocinados", "lasana", "croquetas", "nuggets", "empanada", "sopa preparada", "gazpacho", "salmorejo", "canelones", "ravioli fresco",
+    "patatas congeladas", "verduras congeladas", "helado salado", "masa pizza", "comida lista", "calentar y servir", "microondas", "sushi", "tortilla preparada",
+  ],
+  babyPets: [
+    "bebe", "infantil", "papilla", "potito", "panal", "panales", "toallitas bebe", "diaper", "diapers", "baby", "formula infantil", "leche infantil",
+    "mascota", "mascotas", "perro", "gato", "pienso", "pet", "dog food", "cat food", "comida perro", "comida gato", "arena gato", "cat litter",
+    "snack perro", "snack gato", "champu mascota", "collar antiparasitario", "hueso perro", "whiskas", "pedigree", "ultima", "purina",
+  ],
+  home: [
+    "detergente", "lejia", "jabon lavadora", "limpiador", "limpieza", "limpiahogar", "limpia hogar", "desengrasante", "desatascador", "suavizante",
+    "papel higienico", "papel cocina", "rollo cocina", "bolsa basura", "bolsas basura", "bolsa plastico", "bolsa de plastico", "bolsa reciclada", "bolsas",
+    "lavavajillas", "lavaplatos", "esponja", "estropajo", "bayeta", "servilleta", "panuelos", "tissue", "dish soap", "cleaner", "laundry", "toilet paper", "trash bag",
+    "fairy", "higienico", "quitagrasas", "limpiacristales", "limpia cristales", "limpiador bano", "limpiador wc", "limpia wc", "ambientador", "insecticida",
+    "film transparente", "papel aluminio", "papel de horno", "guantes limpieza", "pastillas lavavajillas", "capsulas lavadora", "desinfectante", "fregasuelos",
+    "escoba", "fregona", "recogedor", "cepillo limpieza", "vela", "cerillas", "pilas", "bombilla", "lanta",
+  ],
+  personal: [
+    "champu", "shampoo", "acondicionador", "mascarilla cabello", "gel ducha", "gel corporal", "jabon manos", "desodorante", "dentifrico", "pasta dental",
+    "cepillo dental", "hilo dental", "enjuague bucal", "crema facial", "crema corporal", "compresa", "compresas", "tampon", "tampones", "razor", "maquinilla",
+    "toothpaste", "deodorant", "serum", "protector solar", "spf50", "skincare", "vitamina", "vitaminas", "multivitaminico", "suplemento", "suplementos",
+    "omega 3", "omega3", "dove", "olay", "desmaquillante", "agua micelar", "algodon", "bastoncillos", "papel facial", "preservativo", "lubricante",
+    "tinte cabello", "laca", "espuma pelo", "cuchilla afeitar", "espuma afeitar", "colonia", "perfume", "balsamo labial", "protector labial",
+  ],
+  snacks: [
+    "chocolate", "galleta", "galletas", "dulce", "dulces", "caramelo", "caramelos", "refreshers", "helado", "patatas fritas", "snack", "snacks", "golosina",
+    "chuche", "chuches", "cookie", "cookies", "candy", "chips", "ice cream", "biscuit", "crisp", "gominola", "gominolas", "nacho", "nachos", "popcorn",
+    "palomitas", "barrita", "barritas", "almendras", "almendra", "almond", "almonds", "nuts", "frutos secos", "pistacho", "pistachos", "cacahuete", "cacahuetes",
+    "anacardo", "anacardos", "nuez", "nueces", "avellana", "avellanas", "turron", "bombones", "donut", "donuts", "magdalena", "magdalenas", "bizcocho",
+    "tacos de poton", "poton al ajillo", "aperitivo poton", "barquillo", "regaliz", "oreo", "kitkat", "kinder", "nutella",
+  ],
+  drinks: [
+    "agua", "agua mineral", "agua con gas", "zumo", "jugo", "refresco", "cafe", "te", "infusion", "cerveza", "vino", "cola", "soda", "juice", "coffee",
+    "tea", "beer", "wine", "water", "bebida", "bebidas", "leche de avena", "leche almendras", "leche de almendras", "leche soja", "bebida vegetal",
+    "oat milk", "almond milk", "soy milk", "tonica", "limonada", "batido", "smoothie", "sidra", "cava", "champan", "ron", "ginebra", "vodka", "whisky",
+    "isotonica", "energetica", "energy drink", "coca cola", "cocacola", "pepsi", "fanta", "sprite", "aquarius", "nestea",
+  ],
+  dairy: [
+    "leche", "queso", "yogur", "yogures", "yogurt", "mantequilla", "nata", "milk", "cheese", "butter", "cream", "lacteo", "lacteos", "kefir",
+    "requeson", "ricotta", "mozzarella", "parmesano", "manchego", "cheddar", "emmental", "gouda", "queso fresco", "queso crema", "crema de queso",
+    "postre lacteo", "cuajada", "flan", "natillas", "petit suisse", "actimel", "danone",
+  ],
+  pantry: [
+    "aceite", "azucar", "sal", "lenteja", "lentejas", "garbanzo", "garbanzos", "alubia", "alubias", "conserva", "conservas", "tomate frito",
+    "salsa de tomate", "tomato sauce", "oil", "sugar", "bean", "beans", "lentil", "lentils", "sauce", "salsa", "salsas", "condimento", "condimentos",
+    "especias", "atun en lata", "canned tuna", "canned", "aceituna", "aceitunas", "oliva", "olivas", "olives", "gordal", "encurtido", "encurtidos", "vinagre",
+    "mayonesa", "ketchup", "mostaza", "caldo", "sardinilla", "sardinillas", "sardina lata", "mejillones lata", "berberechos", "caballa lata", "anchoas",
+    "maiz lata", "guisantes lata", "esparragos lata", "alcachofa lata", "mermelada", "miel", "cacao soluble", "levadura", "bicarbonato", "pan rallado",
+    "pure patata", "sopa sobre", "crema cacao", "paté", "pate", "hummus", "tabasco", "soja salsa", "salsa soja", "pesto", "alioli",
+  ],
+  protein: [
+    "carne", "pollo", "ternera", "res", "cerdo", "pavo", "cordero", "conejo", "jamon", "salmon", "pescado", "atun", "gamba", "gambas", "langostino",
+    "marisco", "calamar", "sepia", "pulpo", "poton", "sardina", "sardinillas", "merluza", "bacalao", "dorada", "lubina", "huevo", "huevos", "tofu",
+    "beef", "chicken", "pork", "fish", "egg", "eggs", "meat", "protein", "proteina", "proteinas", "sausage", "salchicha", "salchichas", "bacon",
+    "solomillo", "albondigas", "filete", "filetes", "pechuga", "pechugas", "finissimas", "finisimas", "hamburguesa", "hamburguesas", "carne picada",
+    "chuleta", "chuletas", "costilla", "costillas", "lomo", "chorizo", "salami", "fuet", "mortadela", "embutido", "embutidos", "fiambre", "surimi",
+    "mejillon", "mejillones", "almeja", "almejas", "navajas", "bocaditos mar", "tempeh", "seitan",
+  ],
+  produce: [
+    "fruta", "frutas", "verdura", "verduras", "vegetal", "vegetales", "ensalada", "lechuga", "tomate", "cebolla", "zanahoria", "platano", "banana",
+    "manzana", "naranja", "aguacate", "brocoli", "patata", "papa", "fresa", "uva", "limon", "pepino", "espinaca", "fruit", "vegetable", "lettuce",
+    "apple", "orange", "potato", "avocado", "onion", "berry", "pepper", "pimiento", "calabacin", "pera", "melon", "sandia", "mandarina", "champiñon",
+    "champinon", "champiñones", "champinones", "seta", "setas", "ajo", "puerro", "apio", "col", "repollo", "coliflor", "berenjena", "calabaza", "judias verdes",
+    "guisante", "guisantes", "esparrago", "esparragos", "alcachofa", "alcachofas", "remolacha", "rabano", "maiz fresco", "kiwi", "mango", "pina",
+    "melocoton", "nectarina", "ciruela", "cereza", "cerezas", "frambuesa", "arandano", "arandanos", "mora", "granada", "pomelo", "coco", "datil", "datiles",
+  ],
+  bakery: [
+    "pan", "baguette", "barra pan", "tostada", "tostadas", "croissant", "bolleria", "tortilla trigo", "tortillas trigo", "tortilla maiz", "tortillas maiz",
+    "tortillas mexicanas", "wrap", "wraps", "bread", "bagel", "toast", "muffin", "bun", "arroz", "pasta", "cereal", "cereales", "avena", "rice", "oat", "oats",
+    "spaghetti", "espagueti", "espaguetis", "macarrones", "harina", "flour", "fideos", "noodles", "cuscus", "quinoa", "trigo", "cebada", "centeno",
+    "pan molde", "pan integral", "pan pita", "pan hamburguesa", "pan perrito", "tortita", "tortitas", "granola", "muesli", "galletas saladas",
+  ],
+  other: [],
+};
+
 /** Receipt lines can use abbreviated shop labels as well as ordinary product names. */
 export function groceryGroup(name: string, rules: GroceryRule[] = []): GroceryGroup {
   const text = normalize(name);
   const saved = rules.find((rule) => GROCERY_GROUPS.includes(rule.group) && normalize(rule.match) && match(text, [normalize(rule.match)]));
   if (saved) return saved.group;
-  // Specific prepared food, baby and household products take precedence over shared food words.
-  if (match(text, ["congelado", "congelados", "frozen", "pizza", "plato preparado", "platos preparados", "comida preparada", "ready meal", "ready meals", "precocinado", "precocinados", "lasana", "lasaña", "croquetas", "nuggets", "empanada", "sopa preparada"])) return "prepared";
-  if (match(text, ["bebe", "infantil", "papilla", "potito", "panal", "panales", "diaper", "diapers", "baby", "mascota", "mascotas", "perro", "gato", "pienso", "pet", "dog food", "cat food", "formula infantil"])) return "babyPets";
-  if (match(text, ["detergente", "lejia", "jabon lavadora", "limpiador", "limpieza", "suavizante", "papel higienico", "papel cocina", "bolsa basura", "bolsas basura", "bolsas", "lavavajillas", "esponja", "servilleta", "dish soap", "cleaner", "laundry", "toilet paper", "trash bag", "tissue", "fairy", "higienico"])) return "home";
-  if (match(text, ["champu", "shampoo", "gel ducha", "gel corporal", "desodorante", "dentifrico", "pasta dental", "cepillo dental", "crema facial", "crema corporal", "compresa", "tampon", "razor", "toothpaste", "deodorant", "serum", "protector solar", "spf50", "skincare", "vitamina", "vitaminas", "multivitaminico", "multivitaminicos", "suplemento", "suplementos", "omega 3", "omega3", "dove", "olay"])) return "personal";
-  if (match(text, ["chocolate", "galleta", "galletas", "dulce", "dulces", "caramelo", "caramelos", "refreshers", "helado", "patatas fritas", "snack", "snacks", "golosina", "chuche", "cookie", "cookies", "candy", "chips", "ice cream", "biscuit", "crisp", "gominola", "nacho", "popcorn", "palomitas", "barrita", "barritas", "almendras", "almond", "almonds", "nuts", "frutos secos"])) return "snacks";
-  if (match(text, ["agua", "zumo", "jugo", "refresco", "cafe", "te", "cerveza", "vino", "cola", "soda", "juice", "coffee", "tea", "beer", "wine", "water", "bebida", "bebidas", "leche de avena", "oat milk"])) return "drinks";
-  if (match(text, ["leche", "queso", "yogur", "yogures", "yogurt", "mantequilla", "nata", "milk", "cheese", "butter", "cream", "lacteo", "lacteos", "kefir"])) return "dairy";
-  if (match(text, ["salsa de tomate", "tomate frito", "tomato sauce", "atun en lata", "canned tuna"])) return "pantry";
-  if (match(text, ["carne", "pollo", "ternera", "res", "cerdo", "pavo", "jamon", "salmon", "pescado", "atun", "gamba", "huevo", "huevos", "tofu", "beef", "chicken", "pork", "fish", "egg", "eggs", "meat", "protein", "proteina", "proteinas", "sausage", "salchicha", "bacon", "solomillo", "albondigas", "filete", "filetes", "pechuga", "pechugas", "finissimas", "finisimas"])) return "protein";
-  if (match(text, ["fruta", "frutas", "verdura", "verduras", "vegetal", "vegetales", "ensalada", "lechuga", "tomate", "cebolla", "zanahoria", "platano", "banana", "manzana", "naranja", "aguacate", "brocoli", "patata", "papa", "fresa", "uva", "limon", "pepino", "espinaca", "fruit", "vegetable", "lettuce", "apple", "orange", "potato", "avocado", "onion", "berry", "pepper", "pimiento", "calabacin", "pera", "melon", "sandia", "mandarina"])) return "produce";
-  if (match(text, ["pan", "baguette", "barra pan", "tostada", "croissant", "bolleria", "tortilla", "bread", "bagel", "toast", "muffin", "bun", "arroz", "pasta", "cereal", "cereales", "avena", "rice", "oat", "oats", "spaghetti", "macarrones", "harina", "flour"])) return "bakery";
-  if (match(text, ["aceite", "azucar", "sal", "lenteja", "lentejas", "garbanzo", "garbanzos", "alubia", "conserva", "conservas", "tomate frito", "oil", "sugar", "bean", "beans", "lentil", "lentils", "sauce", "salsa", "salsas", "condimento", "condimentos", "especias", "atun en lata", "canned", "aceituna", "aceitunas", "oliva", "olivas", "olives", "gordal", "encurtido", "encurtidos", "vinagre", "mayonesa", "ketchup", "mostaza", "caldo"])) return "pantry";
+  // Specific groups precede broad food words so composite labels remain accurate.
+  const precedence: GroceryGroup[] = ["prepared", "babyPets", "home", "personal", "snacks", "drinks", "dairy", "pantry", "protein", "produce", "bakery"];
+  for (const group of precedence) {
+    if (match(text, GROCERY_VOCABULARY[group].map(normalize))) return group;
+  }
   return "other";
 }
 
