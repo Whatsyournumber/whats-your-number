@@ -154,11 +154,11 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
       .sort((a, b) => b.total - a.total)
       .slice(0, 6);
     const storeKeys = new Set(storeRows.map((r) => r.key));
-    const nameOf = (k: string) => storeRows.find((r) => r.key === k)?.name ?? k;
+    const nameOf = (k: string) => (k === "otros" ? "Otros tickets" : storeRows.find((r) => r.key === k)?.name ?? k);
 
     const productRows = [...products.entries()]
       .map(([pk, p]) => {
-        const entries = [...p.prices.entries()].filter(([k]) => storeKeys.has(k)).map(([k, v]) => ({ store: k, price: avg(v), n: v.length }));
+        const entries = [...p.prices.entries()].filter(([k]) => k === "otros" || storeKeys.has(k)).map(([k, v]) => ({ store: k, price: avg(v), n: v.length }));
         return { name: p.name, basic: pk.startsWith("basic:"), entries, buys: entries.reduce((s, e) => s + e.n, 0) };
       })
       .filter((p) => p.entries.length > 0)
