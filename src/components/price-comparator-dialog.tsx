@@ -48,6 +48,11 @@ const STORE_ALIASES: [RegExp, string][] = [
   [/^m?p?dia$|mpdia|^dia/, "dia"],
 ];
 
+/** En supermercado solo se comparan estas tiendas; el resto no sale en la tabla. */
+export const GROCERY_ALLOWED_KEYS = new Set(["ponzano", "dia", "ahorramas"]);
+/** Máximo de comercios en la comparativa. */
+export const MAX_STORES = 5;
+
 export const storeKey = (s: string) => {
   const tokens = storeTokens(s);
   // Sin espacios para unir "Ahorramas" y "AHORRA MAS" en la misma tienda
@@ -146,13 +151,14 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
     }
 
     const avg = (a: number[]) => a.reduce((x, y) => x + y, 0) / Math.max(1, a.length);
-    const storeRows = [...stores.entries()]
-      .map(([key, s]) => {
-        const visits = kind === "nightlife" ? Math.max(1, s.visits.size) : s.count;
-        return { key, name: s.name, total: s.total, visits, avg: s.total / Math.max(1, visits), last: s.last };
-      })
+    let rows = [...stores.entries()].map(([key, s]) => {
+      const visits = kind === "nightlife" ? Math.max(1, s.visits.size) : s.count;
+      return { key, name: s.name, total: s.total, visits, avg: s.total / Math.max(1, visits), last: s.last };
+    });
+    if (kind === "groceries") rows = rows.filter((r) => GROCERY_ALLOWED_KEYS.has(r.key));
+    const storeRows = rows
       .sort((a, b) => b.total - a.total)
-      .slice(0, 6);
+      .slice(0, MAX_STORES);
     const storeKeys = new Set(storeRows.map((r) => r.key));
     const nameOf = (k: string) => (k === "otros" ? "Otros tickets" : storeRows.find((r) => r.key === k)?.name ?? k);
 

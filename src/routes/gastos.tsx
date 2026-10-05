@@ -47,7 +47,7 @@ import { useCategoryRules } from "@/hooks/use-category-rules";
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { BudgetDialog } from "@/components/budget-dialog";
-import { PriceComparatorDialog, storeKey, type ComparatorKind } from "@/components/price-comparator-dialog";
+import { PriceComparatorDialog, storeKey, GROCERY_ALLOWED_KEYS, MAX_STORES, type ComparatorKind } from "@/components/price-comparator-dialog";
 import { BUDGET_CATEGORIES, findBudgetCategory } from "@/lib/budget-categories";
 import targetIcon from "@/assets/target-icon-v2.png.asset.json";
 import { useProfile } from "@/hooks/use-profile";
@@ -632,18 +632,20 @@ function Gastos() {
       }
     }
     return {
-      stores: [...stores.values()]
-        .map((s) => ({ name: s.name, amount: s.amount, trips: s.trips.size }))
+      stores: [...stores.entries()]
+        .filter(([sk]) => GROCERY_ALLOWED_KEYS.has(sk))
+        .map(([sk, s]) => ({ name: s.name, amount: s.amount, trips: s.trips.size }))
         .sort((a, b) => b.amount - a.amount)
-        .slice(0, 10),
+        .slice(0, MAX_STORES),
       basics: [...prices.values()]
         .filter((p) => p.byStore.size > 0)
-        .sort((a, b) => b.seen - a.seen)
-        .slice(0, 15)
         .map((p) => ({
           product: p.product,
-          prices: [...p.byStore.entries()].map(([sk, price]) => ({ store: stores.get(sk)?.name ?? sk, price })),
-        })),
+          prices: [...p.byStore.entries()].filter(([sk]) => GROCERY_ALLOWED_KEYS.has(sk)).map(([sk, price]) => ({ store: stores.get(sk)?.name ?? sk, price })),
+        }))
+        .filter((p) => p.prices.length > 0)
+        .sort((a, b) => b.prices.length - a.prices.length)
+        .slice(0, 15),
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expenses, categories.rules, txCat, learned.rules]);
