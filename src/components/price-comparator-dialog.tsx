@@ -25,7 +25,26 @@ const cleanStore = (s: string) =>
     .replace(/\s+/g, " ")
     .trim();
 
-const storeKey = (s: string) => cleanStore(s).toLowerCase().split(" ").slice(0, 2).join(" ");
+/** Palabras genéricas que no distinguen una tienda: "SUP.EX. PONZANO" y "Super Express Ponzano" son la misma. */
+const GENERIC_STORE_TOKENS = new Set([
+  "super", "supermercado", "sup", "ex", "exp", "expreso", "expres", "express", "market", "mercado",
+  "tienda", "sucursal", "hiper", "hipermercado", "minimarket", "shop", "store", "sl", "sa",
+  "de", "la", "el", "los", "las", "del", "y",
+]);
+
+const storeTokens = (s: string) =>
+  s
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .split(" ")
+    .filter((w) => w && !GENERIC_STORE_TOKENS.has(w) && !/^\d+$/.test(w));
+
+const storeKey = (s: string) => {
+  const tokens = storeTokens(s);
+  return (tokens.length ? tokens : storeTokens(cleanStore(s))).slice(0, 2).join(" ");
+};
 
 const productKey = (s: string) =>
   s
