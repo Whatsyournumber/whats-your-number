@@ -228,7 +228,6 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
   const t = useT();
   const [expanded, setExpanded] = useState<GroceryGroup | null>(null);
   const comparable = summary.previousReceiptCount > 0;
-  const delta = summary.total - summary.previousTotal;
   const max = Math.max(...summary.groups.map((group) => group.amount), 1);
   return (
     <section className="pt-0" aria-label={t(`Análisis de ${summary.receiptCount} tickets del súper del mes`, `Analysis of ${summary.receiptCount} grocery receipts this month`)}>
