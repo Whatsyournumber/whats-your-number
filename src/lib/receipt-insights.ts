@@ -90,7 +90,7 @@ const GROCERY_VOCABULARY: Record<GroceryGroup, string[]> = {
     "chuche", "chuches", "cookie", "cookies", "candy", "chips", "ice cream", "biscuit", "crisp", "gominola", "gominolas", "nacho", "nachos", "popcorn",
     "palomitas", "barrita", "barritas", "almendras", "almendra", "almond", "almonds", "nuts", "frutos secos", "pistacho", "pistachos", "cacahuete", "cacahuetes",
     "anacardo", "anacardos", "nuez", "nueces", "avellana", "avellanas", "turron", "bombones", "donut", "donuts", "magdalena", "magdalenas", "bizcocho",
-    "tacos de poton", "poton al ajillo", "aperitivo poton", "barquillo", "regaliz", "oreo", "kitkat", "kinder", "nutella",
+    "barquillo", "regaliz", "oreo", "kitkat", "kinder", "nutella",
   ],
   drinks: [
     "agua", "agua mineral", "agua con gas", "zumo", "jugo", "refresco", "cafe", "te", "infusion", "cerveza", "vino", "cola", "soda", "juice", "coffee",
@@ -107,8 +107,8 @@ const GROCERY_VOCABULARY: Record<GroceryGroup, string[]> = {
     "aceite", "azucar", "sal", "lenteja", "lentejas", "garbanzo", "garbanzos", "alubia", "alubias", "conserva", "conservas", "tomate frito",
     "salsa de tomate", "tomato sauce", "oil", "sugar", "bean", "beans", "lentil", "lentils", "sauce", "salsa", "salsas", "condimento", "condimentos",
     "especias", "atun en lata", "canned tuna", "canned", "aceituna", "aceitunas", "oliva", "olivas", "olives", "gordal", "encurtido", "encurtidos", "vinagre",
-    "mayonesa", "ketchup", "mostaza", "caldo", "sardinilla", "sardinillas", "sardina lata", "mejillones lata", "berberechos", "caballa lata", "anchoas",
-    "maiz lata", "guisantes lata", "esparragos lata", "alcachofa lata", "mermelada", "miel", "cacao soluble", "levadura", "bicarbonato", "pan rallado",
+    "mayonesa", "ketchup", "mostaza", "caldo", "maiz lata", "guisantes lata", "esparragos lata", "alcachofa lata", "mermelada", "miel", "cacao soluble",
+    "levadura", "bicarbonato", "pan rallado",
     "pure patata", "sopa sobre", "crema cacao", "paté", "pate", "hummus", "tabasco", "soja salsa", "salsa soja", "pesto", "alioli",
   ],
   protein: [
