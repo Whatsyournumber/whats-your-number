@@ -642,7 +642,7 @@ function Gastos() {
         .slice(0, 15)
         .map((p) => ({
           product: p.product,
-          prices: [...p.byStore.entries()].map(([store, price]) => ({ store, price })),
+          prices: [...p.byStore.entries()].map(([sk, price]) => ({ store: stores.get(sk)?.name ?? sk, price })),
         })),
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
