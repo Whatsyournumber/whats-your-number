@@ -21,6 +21,8 @@ export type AdviceInput = {
   }[];
   /** Plan de gasto por categoría definido por el usuario. */
   budgets?: { name: string; planned: number; actual: number }[];
+  /** Histórico de nightlife por sitio (todos los meses): gasto total y noches distintas. */
+  nightlifeVenues?: { name: string; amount: number; nights: number }[];
   /** Análisis anteriores guardados de este usuario (más reciente primero). */
   history?: {
     periodLabel: string;
@@ -81,7 +83,7 @@ Reglas:
   · Supermercado → COMPARA LOS SUPERMERCADOS del contexto (comercios con categoría supermercado): calcula el ticket medio de cada uno (monto ÷ compras), di cuál es el más barato y cuánto ahorraría al mes moviendo la compra del más caro al más barato (diferencia de ticket medio × compras del caro). Ej.: "Compra en Mercadona ($28 media) en vez de Carrefour ($41 media) y ahorras $52". Si solo hay un supermercado, sugiere marca blanca y lista semanal.
   · Apps y suscripciones → cancela las que no usas, pasa a plan anual o familiar.
   · Transporte diario (Uber, taxi) → abono de transporte o combinar con transporte público en las horas caras.
-  · Nightlife (bares, discotecas, copas) → el "count" de esta categoría son DÍAS distintos (salidas reales), no movimientos: úsalo tal cual y habla de la CATEGORÍA completa, no de un solo club. Formato OBLIGATORIO de la acción: "Has salido N veces este mes ($X de media); reduce a M salidas o gasta menos por salida y ahorras $Y", donde M = plan ÷ media (redondeado hacia abajo) e Y = exceso sobre el plan. Ejemplo: "Has salido 14 veces este mes ($61 de media); reduce a 12 salidas o toma menos por noche y ahorras $141".
+  · Nightlife (bares, discotecas, copas) → el "count" de esta categoría son DÍAS distintos (salidas reales), no movimientos: úsalo tal cual y habla de la CATEGORÍA completa, no de un solo club. Si el contexto trae "Histórico de nightlife por sitio", COMPARA LOS SITIOS con ese histórico (todos los meses, no solo el periodo): calcula el coste medio por noche de cada sitio (gasto total ÷ noches), di cuál es el más barato y cuánto ahorraría al mes saliendo en el barato en vez del caro (diferencia de media × salidas del caro en el periodo). Ej.: "En Fabrik gastas $95 por noche y en BarCo $38; saliendo más en BarCo ahorras $114 al mes". Si hay histórico, la acción DEBE nombrar el sitio barato y el caro con sus medias; si no hay histórico, usa el formato: "Has salido N veces este mes ($X de media); reduce a M salidas o gasta menos por salida y ahorras $Y", donde M = plan ÷ media (redondeado hacia abajo) e Y = exceso sobre el plan.
   · Ocio y compras → regla de 48 horas, cupones y segunda mano.
   · Salud, educación, hijos → compara proveedores y aprovecha deducciones o pagos anuales, no recortes lo esencial.
   · Gasolina y coche → estaciones low-cost, mantenimiento preventivo y revisar seguros del vehículo.
@@ -317,6 +319,15 @@ export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvi
     })
     .join("\n");
 
+  const nightlifeBlock = (input.nightlifeVenues ?? []).length
+    ? `
+
+Histórico de nightlife por sitio (TODOS los meses, no solo el periodo; media por noche = gasto ÷ noches):
+${(input.nightlifeVenues ?? [])
+  .map((v) => `- ${v.name}: ${v.amount.toFixed(0)} ${input.currency} en ${v.nights} noches · media ${money(v.nights > 0 ? v.amount / v.nights : v.amount, input.currency)} por noche`)
+  .join("\n")}`
+    : "";
+
   const overBudget = (input.budgets ?? [])
     .filter((b) => b.planned > 0 && b.actual > b.planned)
     .sort((a, b) => (b.actual - b.planned) - (a.actual - a.planned))[0];
@@ -397,7 +408,7 @@ ${
     overBudget
       ? `\n\nCategoría donde MÁS se excedió el plan: ${overBudget.name} (real ${overBudget.actual.toFixed(0)} vs. plan ${overBudget.planned.toFixed(0)}). Debe ser la primera acción.`
       : ""
-  }${memoryBlock}`;
+  }${nightlifeBlock}${memoryBlock}`;
 
   const result = await generateText({
     model: gateway("google/gemini-3.6-flash"),

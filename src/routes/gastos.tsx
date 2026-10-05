@@ -588,6 +588,23 @@ function Gastos() {
     return [...map.values()].sort((a, b) => b.amount - a.amount);
   }, [current, categories.rules, txCat, learned.rules]);
 
+  /** Histórico de nightlife por sitio (todos los meses): gasto total y noches distintas. */
+  const nightlifeVenues = useMemo(() => {
+    const map = new Map<string, { name: string; amount: number; nights: Set<string> }>();
+    for (const tx of expenses) {
+      if (!/nightlife|nocturn/i.test(categoryOf(tx))) continue;
+      const v = map.get(tx.merchant) ?? { name: tx.merchant, amount: 0, nights: new Set<string>() };
+      v.amount += Math.abs(tx.amount);
+      if (tx.tx_date) v.nights.add(String(tx.tx_date).slice(0, 10));
+      map.set(tx.merchant, v);
+    }
+    return [...map.values()]
+      .map((v) => ({ name: v.name, amount: v.amount, nights: v.nights.size }))
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 12);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [expenses, categories.rules, txCat, learned.rules]);
+
   /** Gasto por comercio del periodo anterior, para detectar subidas concretas. */
   const prevByMerchant = useMemo(() => {
     const map = new Map<string, number>();
@@ -756,6 +773,7 @@ function Gastos() {
             prevAmount: prevByMerchant.get(m.name) ?? 0,
           })),
           budgets: budgetRows.filter((b) => !FIXED_ADVICE_IDS.has(b.id)).map((b) => ({ name: b.name, planned: b.planned, actual: b.actual })),
+          nightlifeVenues,
         },
       });
       if ((res as { upgradeRequired?: string }).upgradeRequired) {
