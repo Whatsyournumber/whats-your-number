@@ -1925,6 +1925,22 @@ function Gastos() {
                 t={t}
               />
             )}
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setComparator("groceries")}
+                className="rounded-full border border-primary/40 px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+              >
+                {t("Comparar supermercados y productos", "Compare supermarkets & products")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setComparator("nightlife")}
+                className="rounded-full border border-primary/40 px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+              >
+                {t("Comparar tragos y entradas", "Compare drinks & entries")}
+              </button>
+            </div>
             <ul className="grid gap-2 md:grid-cols-2">
               {advice.map((a, i) => {
                 const fv = futureValue(a.monthlySaving);
