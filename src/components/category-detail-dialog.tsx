@@ -108,10 +108,10 @@ export function CategoryDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92dvh] w-[calc(100vw-16px)] max-w-2xl min-w-0 gap-3 overflow-x-hidden overflow-y-auto p-4 sm:w-full sm:gap-4 sm:p-6">
-        <DialogHeader className="min-w-0 pr-8">
-          <DialogTitle className="text-lg">{name === "Nightlife" ? t("Nightlife / Ocio", "Nightlife / Leisure") : name}</DialogTitle>
-          <DialogDescription className="text-balance">
+      <DialogContent className="max-h-[calc(100dvh-16px)] w-[calc(100vw-16px)] max-w-2xl min-w-0 gap-4 overflow-x-hidden overflow-y-auto rounded-2xl p-4 sm:max-h-[92dvh] sm:w-full sm:p-6">
+        <DialogHeader className="min-w-0 px-7 text-center sm:px-0 sm:pr-8 sm:text-left">
+          <DialogTitle className="truncate text-lg">{name === "Nightlife" ? t("Nightlife / Ocio", "Nightlife / Leisure") : name}</DialogTitle>
+          <DialogDescription className="text-pretty text-xs leading-relaxed sm:text-sm">
             {t("Análisis del rubro en el periodo seleccionado.", "Category analysis for the selected period.")}
           </DialogDescription>
         </DialogHeader>
@@ -132,10 +132,11 @@ export function CategoryDetailDialog({
         </div>
 
         {trend.length > 1 && (
-          <div className="mt-1 min-w-0 overflow-hidden rounded-2xl border border-border bg-elevated/40 p-2.5 sm:p-3">
-            <p className="mb-2 text-xs text-muted-foreground">{t("Evolución del rubro", "Category trend")}</p>
-            <ResponsiveContainer width="100%" height={140}>
-              <AreaChart data={trend} margin={{ left: -12, right: 8, top: 4 }}>
+          <div className="mt-1 min-w-0 overflow-hidden rounded-2xl border border-border bg-elevated/40 p-3 sm:p-4">
+            <p className="mb-3 text-xs font-medium uppercase text-muted-foreground">{t("Evolución del rubro", "Category trend")}</p>
+            <div className="h-36 min-w-0 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={trend} margin={{ left: -18, right: 4, top: 4, bottom: 0 }}>
                 <defs>
                   <linearGradient id="catGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.5} />
@@ -143,7 +144,7 @@ export function CategoryDetailDialog({
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="label" {...axisProps} minTickGap={24} />
-                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={56} />
+                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={52} />
                 <Tooltip content={<ChartTooltip formatter={fmt} />} />
                 <Area
                   type="monotone"
@@ -155,13 +156,14 @@ export function CategoryDetailDialog({
                 />
               </AreaChart>
             </ResponsiveContainer>
+            </div>
           </div>
         )}
 
         {grocery && grocery.receiptCount > 0 && (
-          <section className="border-t border-border pt-3">
-            <Button type="button" variant="ghost" className="h-auto w-full min-w-0 justify-between gap-2 whitespace-normal px-1 py-1.5 text-left" aria-expanded={groceryOpen} aria-controls="grocery-receipt-insights" onClick={() => setGroceryOpen((v) => !v)}>
-              <span className="flex min-w-0 items-center gap-2"><span className="grid size-7 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground"><Sparkles className="size-3.5" /></span><span className="min-w-0 text-sm font-semibold leading-snug">{t(`Análisis de ${grocery.receiptCount} tickets del súper del mes`, `Analysis of ${grocery.receiptCount} grocery receipts this month`)}</span></span>
+          <section className="min-w-0 border-t border-border pt-4">
+            <Button type="button" variant="ghost" className="grid h-auto w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-2 whitespace-normal px-1 py-1.5 text-left" aria-expanded={groceryOpen} aria-controls="grocery-receipt-insights" onClick={() => setGroceryOpen((v) => !v)}>
+              <span className="grid size-8 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground"><Sparkles className="size-4" /></span><span className="min-w-0 text-sm font-semibold leading-snug">{t(`Análisis de ${grocery.receiptCount} ${grocery.receiptCount === 1 ? "ticket" : "tickets"} del súper del mes`, `Analysis of ${grocery.receiptCount} grocery ${grocery.receiptCount === 1 ? "receipt" : "receipts"} this month`)}</span>
               <ChevronDown className={cn("size-4 shrink-0 text-muted-foreground transition-transform", groceryOpen && "rotate-180")} />
             </Button>
             {groceryOpen && <div id="grocery-receipt-insights"><GroceryInsights summary={grocery} fmt={fmt} onCorrect={groceryRules.learn} addedByGroup={addedByGroup} /></div>}
@@ -230,12 +232,12 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
   const max = Math.max(...summary.groups.map((group) => group.amount), 1);
   return (
     <section className="pt-0" aria-label={t(`Análisis de ${summary.receiptCount} tickets del súper del mes`, `Analysis of ${summary.receiptCount} grocery receipts this month`)}>
-      <div className="-mt-1 grid min-w-0 gap-2 pl-9 sm:flex sm:flex-wrap sm:items-start sm:justify-between sm:gap-x-3 sm:gap-y-1">
-        <p className="min-w-0 break-words text-xs leading-snug text-muted-foreground">
+      <div className="mt-1 grid min-w-0 gap-2 pl-11 pr-1 sm:flex sm:flex-wrap sm:items-start sm:justify-between sm:gap-x-3 sm:gap-y-1">
+        <p className="min-w-0 text-xs leading-relaxed text-muted-foreground">
           {t("Podrás cambiar de categoría si no se registra correctamente.", "You can change the category if it wasn't captured correctly.")}
         </p>
         {comparable && (
-          <div className={cn("numeric w-fit max-w-full rounded-md px-2 py-1 text-xs font-semibold", delta > 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
+          <div className={cn("numeric w-fit max-w-full rounded-full px-3 py-1 text-xs font-semibold", delta > 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
             {delta > 0 ? "+" : delta < 0 ? "−" : ""}{fmt(Math.abs(delta))}
             <span className="ml-1 text-xs font-normal">{t("vs. tickets anteriores", "vs. prior receipts")}</span>
           </div>
@@ -251,13 +253,13 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
           const open = expanded === group.id;
           return (
             <div key={group.id}>
-              <div className="flex items-center gap-1"><Button variant="ghost" className="h-auto min-w-0 flex-1 justify-start rounded-md px-1 py-2 text-left hover:bg-elevated/50" onClick={() => setExpanded(open ? null : group.id)} aria-expanded={open} aria-label={`${t(label.es, label.en)}: ${fmt(group.amount)}`}>
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-1"><Button variant="ghost" className="h-auto min-w-0 justify-start rounded-md px-1 py-2 text-left hover:bg-elevated/50" onClick={() => setExpanded(open ? null : group.id)} aria-expanded={open} aria-label={`${t(label.es, label.en)}: ${fmt(group.amount)}`}>
                 <span className="grid size-7 shrink-0 place-items-center rounded-md bg-elevated text-sm" aria-hidden="true">{label.icon}</span>
                 <span className="ml-2 grid min-w-0 flex-1 gap-1 sm:grid-cols-[minmax(0,1fr)_minmax(70px,0.7fr)] sm:items-center sm:gap-3">
                   <span className="min-w-0">
-                    <span className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                      <span className="text-xs font-medium text-foreground">{t(label.es, label.en)}</span>
-                      <span className="numeric text-xs font-semibold text-foreground">{fmt(group.amount)}</span>
+                    <span className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-baseline gap-x-2">
+                      <span className="truncate text-xs font-medium text-foreground" title={t(label.es, label.en)}>{t(label.es, label.en)}</span>
+                      <span className="numeric shrink-0 text-xs font-semibold text-foreground">{fmt(group.amount)}</span>
                       {comparable && <span className={cn("numeric text-xs", difference > 0 ? "text-negative" : "text-positive")}>{difference > 0 ? "+" : difference < 0 ? "−" : ""}{fmt(Math.abs(difference))}</span>}
                     </span>
                     <span className="block text-[11px] font-normal text-muted-foreground">
@@ -268,15 +270,15 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
                   </span>
                   <span className="h-1 overflow-hidden rounded-full bg-muted"><span className={cn("block h-full rounded-full", label.color)} style={{ width: `${Math.max(3, (group.amount / max) * 100)}%` }} /></span>
                 </span>
-                <ChevronDown className={cn("ml-2 size-3.5 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")} />
+                <ChevronDown className={cn("ml-1 size-3.5 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")} />
               </Button><Hint><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="size-7 shrink-0 text-muted-foreground" aria-label={t(`Qué incluye ${label.es}`, `What ${label.en} includes`)}><Info className="size-3.5" /></Button></TooltipTrigger><TooltipContent side="top" className="max-w-60">{(() => { const detail = t(label.detailEs, label.detailEn); const extras = (addedByGroup.get(group.id) ?? []).join(", "); return extras ? `${detail}, ${extras}` : detail; })()}</TooltipContent></Hint></div>
               {open && (
                 <ul className="mb-2 ml-9 space-y-1 border-l border-border pl-3">
                   {group.products.map((product) => (
-                    <li key={product.name} className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <li key={product.name} className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 text-xs sm:grid-cols-[minmax(0,1fr)_auto_auto]">
                       <span className="min-w-0 break-words text-muted-foreground">{product.name}{product.count > 1 ? ` · ${product.count}×` : ""}</span>
                       <span className="numeric ml-auto shrink-0 text-foreground">{fmt(product.amount)}</span>
-                      <select aria-label={t(`Clasificar ${product.name}`, `Classify ${product.name}`)} value={group.id} onChange={(event) => onCorrect(product.name, event.target.value as GroceryGroup)} className="max-w-full rounded border border-border bg-background px-1 py-0.5 text-xs text-foreground">
+                      <select aria-label={t(`Clasificar ${product.name}`, `Classify ${product.name}`)} value={group.id} onChange={(event) => onCorrect(product.name, event.target.value as GroceryGroup)} className="col-span-2 w-full min-w-0 rounded border border-border bg-background px-2 py-1.5 text-xs text-foreground sm:col-span-1 sm:w-auto sm:max-w-40">
                         {GROCERY_GROUPS.map((id) => <option key={id} value={id}>{t(GROCERY_LABELS[id].es, GROCERY_LABELS[id].en)}</option>)}
                       </select>
                     </li>
@@ -307,11 +309,11 @@ function Stat({
   tone?: "positive" | "negative" | undefined;
 }) {
   return (
-    <div className="min-w-0 rounded-2xl border border-border bg-elevated/40 p-3">
-      <p className="truncate text-[11px] uppercase tracking-wide text-muted-foreground" title={label}>{label}</p>
+    <div className="flex h-[94px] min-w-0 flex-col justify-between overflow-hidden rounded-2xl border border-border bg-elevated/40 p-3 sm:h-auto">
+      <p className="line-clamp-2 text-[10px] font-semibold uppercase leading-tight text-muted-foreground" title={label}>{label}</p>
       <p
         className={cn(
-          "numeric mt-1 text-lg font-semibold",
+          "numeric text-xl font-semibold",
           tone === "positive" && "text-positive",
           tone === "negative" && "text-negative",
         )}
