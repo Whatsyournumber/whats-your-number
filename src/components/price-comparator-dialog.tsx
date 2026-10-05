@@ -29,6 +29,7 @@ const cleanStore = (s: string) =>
 const GENERIC_STORE_TOKENS = new Set([
   "super", "supermercado", "sup", "ex", "exp", "expreso", "expres", "express", "market", "mercado",
   "tienda", "sucursal", "hiper", "hipermercado", "minimarket", "shop", "store", "sl", "sa",
+  "groceries", "grocery", "alimentacion", "comestibles", "food", "foods",
   "de", "la", "el", "los", "las", "del", "y",
 ]);
 
