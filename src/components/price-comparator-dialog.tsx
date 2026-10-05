@@ -131,9 +131,10 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
           if (bucket) bucket.set(key, [...(bucket.get(key) ?? []), item.amount]);
           continue;
         }
-        const pk = productKey(item.name);
+        const basic = basicOf(item.name);
+        const pk = basic ? `basic:${basic.id}` : productKey(item.name);
         if (pk.length < 3) continue;
-        const p = products.get(pk) ?? { name: item.name, prices: new Map() };
+        const p = products.get(pk) ?? { name: basic ? basic.label : item.name, prices: new Map() };
         p.prices.set(key, [...(p.prices.get(key) ?? []), item.amount]);
         products.set(pk, p);
       }
@@ -150,14 +151,15 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
     const storeKeys = new Set(storeRows.map((r) => r.key));
     const nameOf = (k: string) => storeRows.find((r) => r.key === k)?.name ?? k;
 
-    const productRows = [...products.values()]
-      .map((p) => {
+    const productRows = [...products.entries()]
+      .map(([pk, p]) => {
         const entries = [...p.prices.entries()].filter(([k]) => storeKeys.has(k)).map(([k, v]) => ({ store: k, price: avg(v), n: v.length }));
-        return { name: p.name, entries, buys: entries.reduce((s, e) => s + e.n, 0) };
+        return { name: p.name, basic: pk.startsWith("basic:"), entries, buys: entries.reduce((s, e) => s + e.n, 0) };
       })
       .filter((p) => p.entries.length > 0)
-      .sort((a, b) => b.entries.length - a.entries.length || b.buys - a.buys)
-      .slice(0, 10);
+      // Primero la cesta básica, luego lo comparable entre tiendas y lo más comprado
+      .sort((a, b) => Number(b.basic) - Number(a.basic) || b.entries.length - a.entries.length || b.buys - a.buys)
+      .slice(0, 20);
 
     const nightRows = (["entry", "drink"] as const).map((k) => ({
       kind: k,
