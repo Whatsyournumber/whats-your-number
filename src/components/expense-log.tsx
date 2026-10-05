@@ -436,7 +436,15 @@ export function ExpenseLog() {
         if (shareError) throw new Error(shareError.message);
         amount = -half;
         description = `${SHARED_PREFIX}50/50|${editSharePartner.name}`;
-        if (expenseId) void notifyShared({ data: { expenseId } });
+        // Notify after the existing transaction has been updated, so both sides show the same expense.
+        if (expenseId) {
+          const { error: updateError } = await supabase.from("imported_transactions").update({
+            merchant: editMerchant.trim() || translateCategory(editCategory, lang),
+            amount, tx_date: editDate, category: editCategory, description,
+          }).eq("id", editTx.id);
+          if (updateError) throw new Error(updateError.message);
+          await notifyShared({ data: { expenseId } });
+        }
       }
       const { error } = await supabase
         .from("imported_transactions")
