@@ -46,6 +46,7 @@ import { useCategoryRules } from "@/hooks/use-category-rules";
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { BudgetDialog } from "@/components/budget-dialog";
+import { PriceComparatorDialog, type ComparatorKind } from "@/components/price-comparator-dialog";
 import { BUDGET_CATEGORIES, findBudgetCategory } from "@/lib/budget-categories";
 import targetIcon from "@/assets/target-icon-v2.png.asset.json";
 import { useProfile } from "@/hooks/use-profile";
@@ -254,6 +255,7 @@ function Gastos() {
   const [range, setRange] = usePersistedRange(() => buildPresets(t)[0]!.range(), searchRange);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [detailCat, setDetailCat] = useState<string | null>(null);
+  const [comparator, setComparator] = useState<ComparatorKind | null>(null);
   const [fixedOpen, setFixedOpen] = useState(false);
   const [budgetRowsOpen, setBudgetRowsOpen] = useState(false);
 
@@ -292,6 +294,14 @@ function Gastos() {
   const expenses = useMemo(
     () => transactions.filter((t) => isExpense(t) && !matchesFixed(t)),
     [transactions, matchesFixed],
+  );
+
+  const comparatorKindOf = (label: string): ComparatorKind | null =>
+    /super|mercado|grocer/i.test(label) ? "groceries" : /nightlife|nocturn|ocio|bar|discot/i.test(label) ? "nightlife" : null;
+  const comparatorTxs = useMemo(
+    () => (comparator ? expenses.filter((x) => comparatorKindOf(categoryOf(x)) === comparator) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [comparator, expenses],
   );
 
   const current = useMemo(() => expenses.filter((t) => inRange(t, from, to)), [expenses, from, to]);
@@ -1842,6 +1852,16 @@ function Gastos() {
               </div>
             </div>
 
+            {comparator && (
+              <PriceComparatorDialog
+                open
+                onOpenChange={(v) => !v && setComparator(null)}
+                kind={comparator}
+                txs={comparatorTxs}
+                fmt={fmt}
+                t={t}
+              />
+            )}
             <ul className="grid gap-2 md:grid-cols-2">
               {advice.map((a, i) => {
                 const fv = futureValue(a.monthlySaving);
@@ -1869,6 +1889,17 @@ function Gastos() {
                     </div>
                     <p className="hidden text-xs leading-relaxed text-muted-foreground sm:block">{a.diagnosis}</p>
                     <p className="text-sm font-medium text-foreground/90">→ {a.action}</p>
+                    {comparatorKindOf(a.label) && (
+                      <button
+                        type="button"
+                        onClick={() => setComparator(comparatorKindOf(a.label))}
+                        className="self-start rounded-full border border-primary/40 px-2.5 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+                      >
+                        {comparatorKindOf(a.label) === "groceries"
+                          ? t("Comparar supermercados y productos", "Compare supermarkets & products")
+                          : t("Comparar tragos y entradas", "Compare drinks & entries")}
+                      </button>
+                    )}
                     <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 pt-1 text-xs">
                       <span className="shrink-0 whitespace-nowrap inline-flex items-center rounded-full bg-positive/15 px-2 py-1 text-xs font-semibold text-positive sm:bg-transparent sm:px-0 sm:py-0 sm:font-medium">
                         +{fmt(a.monthlySaving)}{t("/mes de ahorro", "/mo saved")}
