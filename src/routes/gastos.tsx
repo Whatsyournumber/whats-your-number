@@ -632,10 +632,11 @@ function Gastos() {
       }
     }
     return {
-      stores: [...stores.values()]
-        .map((s) => ({ name: s.name, amount: s.amount, trips: s.trips.size }))
+      stores: [...stores.entries()]
+        .filter(([sk]) => GROCERY_ALLOWED_KEYS.has(sk))
+        .map(([sk, s]) => ({ name: s.name, amount: s.amount, trips: s.trips.size }))
         .sort((a, b) => b.amount - a.amount)
-        .slice(0, 10),
+        .slice(0, MAX_STORES),
       basics: [...prices.values()]
         .filter((p) => p.byStore.size > 0)
         .sort((a, b) => b.seen - a.seen)
