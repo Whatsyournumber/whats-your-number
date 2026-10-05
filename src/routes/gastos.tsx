@@ -38,6 +38,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { planCategories } from "@/lib/category-ai.functions";
+import { receiptItemsFrom } from "@/lib/receipt-insights";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { useCategories } from "@/hooks/use-categories";
@@ -605,6 +606,46 @@ function Gastos() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expenses, categories.rules, txCat, learned.rules]);
 
+  /** Histórico de supermercados (todos los meses): gasto, compras y precios de la cesta básica por tienda. */
+  const groceryHistory = useMemo(() => {
+    const stores = new Map<string, { name: string; amount: number; trips: Set<string> }>();
+    // producto normalizado -> tienda -> mejor precio visto
+    const prices = new Map<string, { product: string; byStore: Map<string, number>; seen: number }>();
+    const BASIC_GROUPS = new Set(["dairy", "produce", "protein", "bakery", "pantry"]);
+    for (const tx of expenses) {
+      if (!/super|grocer|mercado/i.test(categoryOf(tx))) continue;
+      const s = stores.get(tx.merchant) ?? { name: tx.merchant, amount: 0, trips: new Set<string>() };
+      s.amount += Math.abs(tx.amount);
+      if (tx.tx_date) s.trips.add(`${tx.merchant}|${String(tx.tx_date).slice(0, 10)}`);
+      stores.set(tx.merchant, s);
+      for (const item of receiptItemsFrom(tx.description)) {
+        if (!BASIC_GROUPS.has(item.category)) continue;
+        const key = item.name.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(" ").slice(0, 3).join(" ");
+        if (!key) continue;
+        const p = prices.get(key) ?? { product: item.name, byStore: new Map<string, number>(), seen: 0 };
+        p.seen += 1;
+        const prev = p.byStore.get(tx.merchant);
+        if (prev === undefined || item.amount < prev) p.byStore.set(tx.merchant, item.amount);
+        prices.set(key, p);
+      }
+    }
+    return {
+      stores: [...stores.values()]
+        .map((s) => ({ name: s.name, amount: s.amount, trips: s.trips.size }))
+        .sort((a, b) => b.amount - a.amount)
+        .slice(0, 10),
+      basics: [...prices.values()]
+        .filter((p) => p.byStore.size > 0)
+        .sort((a, b) => b.seen - a.seen)
+        .slice(0, 15)
+        .map((p) => ({
+          product: p.product,
+          prices: [...p.byStore.entries()].map(([store, price]) => ({ store, price })),
+        })),
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [expenses, categories.rules, txCat, learned.rules]);
+
   /** Gasto por comercio del periodo anterior, para detectar subidas concretas. */
   const prevByMerchant = useMemo(() => {
     const map = new Map<string, number>();
@@ -774,6 +815,8 @@ function Gastos() {
           })),
           budgets: budgetRows.filter((b) => !FIXED_ADVICE_IDS.has(b.id)).map((b) => ({ name: b.name, planned: b.planned, actual: b.actual })),
           nightlifeVenues,
+          groceryStores: groceryHistory.stores,
+          groceryBasics: groceryHistory.basics,
         },
       });
       if ((res as { upgradeRequired?: string }).upgradeRequired) {

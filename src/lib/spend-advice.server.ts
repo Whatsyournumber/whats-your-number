@@ -23,6 +23,10 @@ export type AdviceInput = {
   budgets?: { name: string; planned: number; actual: number }[];
   /** Histórico de nightlife por sitio (todos los meses): gasto total y noches distintas. */
   nightlifeVenues?: { name: string; amount: number; nights: number }[];
+  /** Histórico de supermercados (todos los meses): gasto total y compras. */
+  groceryStores?: { name: string; amount: number; trips: number }[];
+  /** Precios históricos de productos de la cesta básica por tienda (de tickets con foto). */
+  groceryBasics?: { product: string; prices: { store: string; price: number }[] }[];
   /** Análisis anteriores guardados de este usuario (más reciente primero). */
   history?: {
     periodLabel: string;
@@ -80,7 +84,7 @@ Reglas:
   · Bancos, tarjetas y seguros → busca intereses, comisiones de mantenimiento, descubiertos y cuotas de tarjeta: si pagas la tarjeta completa a tiempo no deberías pagar intereses; negocia o cambia a una cuenta sin comisiones y revisa duplicidad de coberturas.
   · Trenes, vuelos y viajes → compra con 2-4 semanas de antelación, compara fechas y evita cambios de última hora.
   · Restaurantes y delivery → frecuencia y ticket medio a nivel de CATEGORÍA (no de un solo comercio): "Has comido fuera 26 veces este mes ($46 media); baja a 20 o pide directo al restaurante y ahorras $208".
-  · Supermercado → COMPARA LOS SUPERMERCADOS del contexto (comercios con categoría supermercado): calcula el ticket medio de cada uno (monto ÷ compras), di cuál es el más barato y cuánto ahorraría al mes moviendo la compra del más caro al más barato (diferencia de ticket medio × compras del caro). Ej.: "Compra en Mercadona ($28 media) en vez de Carrefour ($41 media) y ahorras $52". Si solo hay un supermercado, sugiere marca blanca y lista semanal.
+  · Supermercado → COMPARA LOS SUPERMERCADOS con el "Histórico de supermercados" del contexto (TODOS los meses, no solo el periodo): calcula el ticket medio de cada uno (gasto ÷ compras), di cuál es el más barato y cuánto ahorraría al mes moviendo la compra del más caro al más barato. Si el contexto trae "Precios de la cesta básica por tienda", úsalos como prueba concreta: nombra 1-2 productos de primera necesidad (leche, huevos, pan, arroz, aceite, pollo...) con su precio en cada tienda y di dónde son más baratos. Ej.: "La leche cuesta $1.10 en Mercadona y $1.45 en Carrefour; compra la cesta básica en Mercadona ($28 media) en vez de Carrefour ($41) y ahorras $52". Si solo hay un supermercado, sugiere marca blanca y lista semanal.
   · Apps y suscripciones → cancela las que no usas, pasa a plan anual o familiar.
   · Transporte diario (Uber, taxi) → abono de transporte o combinar con transporte público en las horas caras.
   · Nightlife (bares, discotecas, copas) → el "count" de esta categoría son DÍAS distintos (salidas reales), no movimientos: úsalo tal cual y habla de la CATEGORÍA completa, no de un solo club. Si el contexto trae "Histórico de nightlife por sitio", COMPARA LOS SITIOS con ese histórico (todos los meses, no solo el periodo): calcula el coste medio por noche de cada sitio (gasto total ÷ noches), di cuál es el más barato y cuánto ahorraría al mes saliendo en el barato en vez del caro (diferencia de media × salidas del caro en el periodo). Ej.: "En Fabrik gastas $95 por noche y en BarCo $38; saliendo más en BarCo ahorras $114 al mes". Si hay histórico, la acción DEBE nombrar el sitio barato y el caro con sus medias; si no hay histórico, usa el formato: "Has salido N veces este mes ($X de media); reduce a M salidas o gasta menos por salida y ahorras $Y", donde M = plan ÷ media (redondeado hacia abajo) e Y = exceso sobre el plan.
@@ -328,6 +332,26 @@ ${(input.nightlifeVenues ?? [])
   .join("\n")}`
     : "";
 
+  const groceryStores = input.groceryStores ?? [];
+  const groceryBasics = input.groceryBasics ?? [];
+  const groceryBlock = groceryStores.length
+    ? `
+
+Histórico de supermercados (TODOS los meses, no solo el periodo; ticket medio = gasto ÷ compras):
+${groceryStores
+  .map((s) => `- ${s.name}: ${s.amount.toFixed(0)} ${input.currency} en ${s.trips} compras · ticket medio ${money(s.trips > 0 ? s.amount / s.trips : s.amount, input.currency)}`)
+  .join("\n")}${
+    groceryBasics.length
+      ? `
+
+Precios de la cesta básica por tienda (histórico de tickets con foto; mejor precio visto por producto y tienda):
+${groceryBasics
+  .map((p) => `- ${p.product}: ${p.prices.map((pr) => `${pr.store} ${money(pr.price, input.currency)}`).join(" · ")}`)
+  .join("\n")}`
+      : ""
+  }`
+    : "";
+
   const overBudget = (input.budgets ?? [])
     .filter((b) => b.planned > 0 && b.actual > b.planned)
     .sort((a, b) => (b.actual - b.planned) - (a.actual - a.planned))[0];
@@ -408,7 +432,7 @@ ${
     overBudget
       ? `\n\nCategoría donde MÁS se excedió el plan: ${overBudget.name} (real ${overBudget.actual.toFixed(0)} vs. plan ${overBudget.planned.toFixed(0)}). Debe ser la primera acción.`
       : ""
-  }${nightlifeBlock}${memoryBlock}`;
+  }${nightlifeBlock}${groceryBlock}${memoryBlock}`;
 
   const result = await generateText({
     model: gateway("google/gemini-3.6-flash"),

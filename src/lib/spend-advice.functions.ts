@@ -38,6 +38,15 @@ const schema = z.object({
     .array(z.object({ name: z.string(), amount: z.number(), nights: z.number() }))
     .optional()
     .default([]),
+  /** Histórico de supermercados (todos los meses) y precios de la cesta básica por tienda. */
+  groceryStores: z
+    .array(z.object({ name: z.string(), amount: z.number(), trips: z.number() }))
+    .optional()
+    .default([]),
+  groceryBasics: z
+    .array(z.object({ product: z.string(), prices: z.array(z.object({ store: z.string(), price: z.number() })) }))
+    .optional()
+    .default([]),
 });
 
 export const getSpendAdvice = createServerFn({ method: "POST" })
