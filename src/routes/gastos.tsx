@@ -614,18 +614,20 @@ function Gastos() {
     const BASIC_GROUPS = new Set(["dairy", "produce", "protein", "bakery", "pantry"]);
     for (const tx of expenses) {
       if (!/super|grocer|mercado/i.test(categoryOf(tx))) continue;
-      const s = stores.get(tx.merchant) ?? { name: tx.merchant, amount: 0, trips: new Set<string>() };
+      // Une variantes del mismo supermercado ("SUP.EX. PONZANO" = "Super Express Ponzano")
+      const sk = storeKey(tx.merchant) || tx.merchant.toLowerCase();
+      const s = stores.get(sk) ?? { name: tx.merchant, amount: 0, trips: new Set<string>() };
       s.amount += Math.abs(tx.amount);
-      if (tx.tx_date) s.trips.add(`${tx.merchant}|${String(tx.tx_date).slice(0, 10)}`);
-      stores.set(tx.merchant, s);
+      if (tx.tx_date) s.trips.add(`${sk}|${String(tx.tx_date).slice(0, 10)}`);
+      stores.set(sk, s);
       for (const item of receiptItemsFrom(tx.description)) {
         if (!BASIC_GROUPS.has(item.category)) continue;
         const key = item.name.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(" ").slice(0, 3).join(" ");
         if (!key) continue;
         const p = prices.get(key) ?? { product: item.name, byStore: new Map<string, number>(), seen: 0 };
         p.seen += 1;
-        const prev = p.byStore.get(tx.merchant);
-        if (prev === undefined || item.amount < prev) p.byStore.set(tx.merchant, item.amount);
+        const prev = p.byStore.get(sk);
+        if (prev === undefined || item.amount < prev) p.byStore.set(sk, item.amount);
         prices.set(key, p);
       }
     }
