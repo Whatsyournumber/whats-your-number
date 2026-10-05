@@ -43,7 +43,8 @@ const storeTokens = (s: string) =>
 
 export const storeKey = (s: string) => {
   const tokens = storeTokens(s);
-  return (tokens.length ? tokens : storeTokens(cleanStore(s))).slice(0, 2).join(" ");
+  // Sin espacios para unir "Ahorramas" y "AHORRA MAS" en la misma tienda
+  return (tokens.length ? tokens : storeTokens(cleanStore(s))).slice(0, 2).join("");
 };
 
 export const cleanStoreName = cleanStore;
