@@ -27,6 +27,8 @@ Supermarket receipt insights parse itemized lines from transaction descriptions 
 
 Grocery rules are synced per user; show only saved corrections/additions as rules, not every detected receipt product, and apply them to past and future receipts without rewriting bank data.
 
+Classify receipt products through the shared bilingual grocery vocabulary after user rules and before the `other` fallback, so current and historical receipt views improve without rewriting transactions.
+
 Shared-expense edits use the authenticated public invoker RPC backed by a private checked function to update the expense, both shares, and the editor's transaction together; balances convert each expense currency to the profile currency and refresh after writes so totals stay consistent.
 
 Monthly shared-balance payments are private per-user append-only entries with amount, currency, direction, and date, separate from expense shares, so partial payments retain history and change only the outstanding balance, not historical spending.
