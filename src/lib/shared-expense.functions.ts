@@ -64,3 +64,74 @@ export const notifySharedExpense = createServerFn({ method: "POST" })
     });
     return { sent: result.sent, synced: true };
   });
+
+/** Removes both sides of a shared entry before emailing the other participant. */
+export const deleteSharedExpense = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ transactionId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { userId, supabase } = context;
+    const { data: ownTx, error: txError } = await supabase.from("imported_transactions")
+      .select("id, merchant, tx_date, currency, description, amount")
+      .eq("id", data.transactionId).eq("user_id", userId).single();
+    if (txError || !ownTx?.description?.startsWith("shared:")) throw new Error("Shared expense not found");
+
+    const { data: parts, error: partsError } = await supabase.from("shared_expense_participants")
+      .select("expense_id, user_id, display_name, share_amount, shared_expenses(id, created_by, merchant, tx_date, currency, total)")
+      .eq("user_id", userId).neq("status", "declined");
+    if (partsError) throw new Error(partsError.message);
+    const candidates = (parts ?? []).filter((part) =>
+      part.shared_expenses?.tx_date === ownTx.tx_date &&
+      part.shared_expenses?.merchant === ownTx.merchant &&
+      part.shared_expenses?.currency === ownTx.currency,
+    );
+    const chosen = candidates.find((part) => Math.abs(Number(part.share_amount) - Math.abs(Number(ownTx.amount))) < 0.02)
+      ?? (candidates.length === 1 ? candidates[0] : undefined);
+    const expense = chosen?.shared_expenses;
+    if (!expense || !chosen) throw new Error("Shared expense not found");
+    const others = (await supabase.from("shared_expense_participants")
+      .select("user_id, display_name, share_amount").eq("expense_id", chosen.expense_id)).data ?? [];
+    const other = others.find((part) => part.user_id !== userId);
+    if (!other) throw new Error("Shared partner not found");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: otherTransactions, error: otherError } = await supabaseAdmin.from("imported_transactions")
+      .select("id, amount, description")
+      .eq("user_id", other.user_id).eq("tx_date", expense.tx_date)
+      .eq("merchant", expense.merchant).eq("currency", expense.currency)
+      .like("description", "shared:%");
+    if (otherError) throw new Error(otherError.message);
+    const otherName = chosen.display_name?.trim().toLowerCase();
+    const scoped = (otherTransactions ?? []).filter((tx) => !otherName || tx.description?.toLowerCase().includes(otherName));
+    const otherTx = scoped.find((tx) => Math.abs(Math.abs(Number(tx.amount)) - Number(other.share_amount)) < 0.02)
+      ?? (scoped.length === 1 ? scoped[0] : undefined);
+    if (!otherTx) throw new Error("Matching shared entry not found");
+
+    // Delete only the identified pair; never remove unrelated bank transactions.
+    const { error: removeOtherError } = await supabaseAdmin.from("imported_transactions").delete()
+      .eq("id", otherTx.id).eq("user_id", other.user_id);
+    if (removeOtherError) throw new Error(removeOtherError.message);
+    const { error: removeOwnError } = await supabaseAdmin.from("imported_transactions").delete()
+      .eq("id", ownTx.id).eq("user_id", userId);
+    if (removeOwnError) throw new Error(removeOwnError.message);
+    const { error: removeExpenseError } = await supabaseAdmin.from("shared_expenses").delete().eq("id", expense.id);
+    if (removeExpenseError) throw new Error(removeExpenseError.message);
+
+    const { data: profile } = await supabaseAdmin.from("profiles").select("email, full_name").eq("id", other.user_id).maybeSingle();
+    if (profile?.email) {
+      const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+      try {
+        await sendTemplateEmail("shared-expense-deleted", profile.email, {
+          idempotencyKey: `shared-expense-deleted-${expense.id}`,
+          templateData: {
+            fromName: chosen.display_name ?? "",
+            toName: (profile.full_name ?? "").split(" ")[0],
+            concept: expense.merchant,
+          },
+        });
+      } catch (error) {
+        console.error("Shared expense deletion email failed", error);
+      }
+    }
+    return { deleted: true };
+  });
