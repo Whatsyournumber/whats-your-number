@@ -639,12 +639,13 @@ function Gastos() {
         .slice(0, MAX_STORES),
       basics: [...prices.values()]
         .filter((p) => p.byStore.size > 0)
-        .sort((a, b) => b.seen - a.seen)
-        .slice(0, 15)
         .map((p) => ({
           product: p.product,
-          prices: [...p.byStore.entries()].map(([sk, price]) => ({ store: stores.get(sk)?.name ?? sk, price })),
-        })),
+          prices: [...p.byStore.entries()].filter(([sk]) => GROCERY_ALLOWED_KEYS.has(sk)).map(([sk, price]) => ({ store: stores.get(sk)?.name ?? sk, price })),
+        }))
+        .filter((p) => p.prices.length > 0)
+        .sort((a, b) => b.prices.length - a.prices.length)
+        .slice(0, 15),
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expenses, categories.rules, txCat, learned.rules]);
