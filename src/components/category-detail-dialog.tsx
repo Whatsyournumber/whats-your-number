@@ -108,15 +108,15 @@ export function CategoryDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[88vh] max-w-2xl overflow-auto">
-        <DialogHeader>
+      <DialogContent className="max-h-[92dvh] w-[calc(100vw-16px)] max-w-2xl min-w-0 gap-3 overflow-x-hidden overflow-y-auto p-4 sm:w-full sm:gap-4 sm:p-6">
+        <DialogHeader className="min-w-0 pr-8">
           <DialogTitle className="text-lg">{name === "Nightlife" ? t("Nightlife / Ocio", "Nightlife / Leisure") : name}</DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-balance">
             {t("Análisis del rubro en el periodo seleccionado.", "Category analysis for the selected period.")}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid min-w-0 grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
           <Stat
             label={t("Total", "Total")}
             value={fmt(amount)}
@@ -132,7 +132,7 @@ export function CategoryDetailDialog({
         </div>
 
         {trend.length > 1 && (
-          <div className="mt-1 rounded-2xl border border-border bg-elevated/40 p-3">
+          <div className="mt-1 min-w-0 overflow-hidden rounded-2xl border border-border bg-elevated/40 p-2.5 sm:p-3">
             <p className="mb-2 text-xs text-muted-foreground">{t("Evolución del rubro", "Category trend")}</p>
             <ResponsiveContainer width="100%" height={140}>
               <AreaChart data={trend} margin={{ left: -12, right: 8, top: 4 }}>
@@ -160,8 +160,8 @@ export function CategoryDetailDialog({
 
         {grocery && grocery.receiptCount > 0 && (
           <section className="border-t border-border pt-3">
-            <Button type="button" variant="ghost" className="h-auto w-full justify-between gap-2 px-1 py-1.5 text-left" aria-expanded={groceryOpen} aria-controls="grocery-receipt-insights" onClick={() => setGroceryOpen((v) => !v)}>
-              <span className="flex min-w-0 items-center gap-2"><span className="grid size-7 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground"><Sparkles className="size-3.5" /></span><span className="min-w-0 text-sm font-semibold whitespace-normal">{t(`Análisis de ${grocery.receiptCount} tickets del súper del mes`, `Analysis of ${grocery.receiptCount} grocery receipts this month`)}</span></span>
+            <Button type="button" variant="ghost" className="h-auto w-full min-w-0 justify-between gap-2 whitespace-normal px-1 py-1.5 text-left" aria-expanded={groceryOpen} aria-controls="grocery-receipt-insights" onClick={() => setGroceryOpen((v) => !v)}>
+              <span className="flex min-w-0 items-center gap-2"><span className="grid size-7 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground"><Sparkles className="size-3.5" /></span><span className="min-w-0 text-sm font-semibold leading-snug">{t(`Análisis de ${grocery.receiptCount} tickets del súper del mes`, `Analysis of ${grocery.receiptCount} grocery receipts this month`)}</span></span>
               <ChevronDown className={cn("size-4 shrink-0 text-muted-foreground transition-transform", groceryOpen && "rotate-180")} />
             </Button>
             {groceryOpen && <div id="grocery-receipt-insights"><GroceryInsights summary={grocery} fmt={fmt} onCorrect={groceryRules.learn} addedByGroup={addedByGroup} /></div>}
@@ -230,12 +230,12 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
   const max = Math.max(...summary.groups.map((group) => group.amount), 1);
   return (
     <section className="pt-0" aria-label={t(`Análisis de ${summary.receiptCount} tickets del súper del mes`, `Analysis of ${summary.receiptCount} grocery receipts this month`)}>
-      <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1 pl-9 -mt-1">
-        <p className="min-w-0 text-xs text-muted-foreground">
+      <div className="-mt-1 grid min-w-0 gap-2 pl-9 sm:flex sm:flex-wrap sm:items-start sm:justify-between sm:gap-x-3 sm:gap-y-1">
+        <p className="min-w-0 break-words text-xs leading-snug text-muted-foreground">
           {t("Podrás cambiar de categoría si no se registra correctamente.", "You can change the category if it wasn't captured correctly.")}
         </p>
         {comparable && (
-          <div className={cn("numeric rounded-md px-2 py-1 text-xs font-semibold", delta > 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
+          <div className={cn("numeric w-fit max-w-full rounded-md px-2 py-1 text-xs font-semibold", delta > 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
             {delta > 0 ? "+" : delta < 0 ? "−" : ""}{fmt(Math.abs(delta))}
             <span className="ml-1 text-xs font-normal">{t("vs. tickets anteriores", "vs. prior receipts")}</span>
           </div>
@@ -307,8 +307,8 @@ function Stat({
   tone?: "positive" | "negative" | undefined;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-elevated/40 p-3">
-      <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</p>
+    <div className="min-w-0 rounded-2xl border border-border bg-elevated/40 p-3">
+      <p className="truncate text-[11px] uppercase tracking-wide text-muted-foreground" title={label}>{label}</p>
       <p
         className={cn(
           "numeric mt-1 text-lg font-semibold",
