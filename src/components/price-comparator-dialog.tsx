@@ -301,7 +301,7 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
                       <thead>
                         <tr className="border-b border-border/60 text-left text-[11px] uppercase tracking-wide text-muted-foreground">
                           <th className="px-3 py-2 font-medium">{t("Producto", "Product")}</th>
-                          {sortedStores.map((s) => (
+                          {productStores.map((s) => (
                             <th key={s.key} className="max-w-[90px] truncate px-3 py-2 text-right font-medium">{s.name}</th>
                           ))}
                         </tr>
@@ -312,7 +312,7 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
                           return (
                             <tr key={p.name} className="border-b border-border/40 last:border-0">
                               <td className="max-w-[130px] truncate px-3 py-2 font-medium">{p.name}</td>
-                              {sortedStores.map((s) => {
+                              {productStores.map((s) => {
                                 const e = p.entries.find((x) => x.store === s.key);
                                 return (
                                   <td
