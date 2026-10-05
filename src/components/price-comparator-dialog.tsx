@@ -132,6 +132,9 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
     );
   };
 
+  const sortedStores = [...data.storeRows].sort((a, b) => a.avg - b.avg);
+  const winnerKey = sortedStores[0]?.key;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[calc(100dvh-16px)] w-[calc(100vw-16px)] max-w-2xl overflow-y-auto overflow-x-hidden p-4 sm:p-6">
@@ -149,7 +152,7 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
                 <Trophy className="mt-0.5 h-4 w-4 shrink-0 text-positive" />
                 <div className="min-w-0 text-sm">
                   <p className="font-semibold">
-                    {t("Más barato", "Cheapest")}: {data.cheapest.name} · {fmt(data.cheapest.avg)} {t("de media", "avg")}
+                    {t("Ganador", "Winner")}: {data.cheapest.name} · {fmt(data.cheapest.avg)} {t("de media", "avg")}
                   </p>
                   {data.monthlySaving > 0 && data.priciest && (
                     <p className="text-xs text-muted-foreground">
@@ -163,22 +166,35 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
 
             <section>
               <p className="mb-2 text-[12px] uppercase tracking-wide text-muted-foreground">
-                {isNight ? t("Gasto medio por salida", "Average per night") : t("Ticket medio por sitio", "Average ticket per store")}
+                {isNight ? t("Sitios", "Venues") : t("Supermercados", "Stores")}
               </p>
-              <ul className="space-y-1.5">
-                {[...data.storeRows].sort((a, b) => a.avg - b.avg).map((r, i) => (
-                  <li key={r.key} className="flex items-center gap-3 rounded-xl bg-elevated/40 px-3 py-2">
-                    <span className={cn("numeric w-4 text-xs", i === 0 ? "text-positive" : "text-muted-foreground")}>{i + 1}</span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{r.name}</p>
-                      <p className="text-[11px] text-muted-foreground">
-                        {r.visits} {visitWord} · {fmt(r.total)}
-                      </p>
-                    </div>
-                    <span className={cn("numeric text-sm font-semibold", i === 0 && "text-positive")}>{fmt(r.avg)}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="overflow-x-auto rounded-xl border border-border/60">
+                <table className="w-full min-w-[340px] text-sm">
+                  <thead>
+                    <tr className="border-b border-border/60 text-left text-[11px] uppercase tracking-wide text-muted-foreground">
+                      <th className="px-3 py-2 font-medium">{isNight ? t("Sitio", "Venue") : t("Tienda", "Store")}</th>
+                      <th className="px-3 py-2 text-right font-medium">{visitWord}</th>
+                      <th className="px-3 py-2 text-right font-medium">{t("Total", "Total")}</th>
+                      <th className="px-3 py-2 text-right font-medium">{isNight ? t("Por salida", "Per night") : t("Ticket medio", "Avg ticket")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sortedStores.map((r) => (
+                      <tr key={r.key} className={cn("border-b border-border/40 last:border-0", r.key === winnerKey && "bg-positive/10")}>
+                        <td className="max-w-[140px] truncate px-3 py-2 font-medium">
+                          <span className="inline-flex items-center gap-1.5">
+                            {r.key === winnerKey && <Trophy className="h-3.5 w-3.5 shrink-0 text-positive" />}
+                            <span className="truncate">{r.name}</span>
+                          </span>
+                        </td>
+                        <td className="numeric px-3 py-2 text-right text-muted-foreground">{r.visits}</td>
+                        <td className="numeric px-3 py-2 text-right text-muted-foreground">{fmt(r.total)}</td>
+                        <td className={cn("numeric px-3 py-2 text-right font-semibold", r.key === winnerKey && "text-positive")}>{fmt(r.avg)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </section>
 
             {isNight ? (
@@ -198,16 +214,44 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
               </section>
             ) : (
               <section>
-                <p className="mb-2 text-[12px] uppercase tracking-wide text-muted-foreground">{t("Productos principales", "Top products")}</p>
+                <p className="mb-2 text-[12px] uppercase tracking-wide text-muted-foreground">{t("Productos: precio por tienda", "Products: price per store")}</p>
                 {data.productRows.length ? (
-                  <ul className="space-y-2">
-                    {data.productRows.map((p) => (
-                      <li key={p.name} className="rounded-xl bg-elevated/40 px-3 py-2">
-                        <p className="mb-1 truncate text-sm font-medium">{p.name}</p>
-                        <PriceTable entries={p.entries} />
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="overflow-x-auto rounded-xl border border-border/60">
+                    <table className="w-full min-w-[340px] text-sm">
+                      <thead>
+                        <tr className="border-b border-border/60 text-left text-[11px] uppercase tracking-wide text-muted-foreground">
+                          <th className="px-3 py-2 font-medium">{t("Producto", "Product")}</th>
+                          {sortedStores.map((s) => (
+                            <th key={s.key} className="max-w-[90px] truncate px-3 py-2 text-right font-medium">{s.name}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.productRows.map((p) => {
+                          const min = Math.min(...p.entries.map((e) => e.price));
+                          return (
+                            <tr key={p.name} className="border-b border-border/40 last:border-0">
+                              <td className="max-w-[130px] truncate px-3 py-2 font-medium">{p.name}</td>
+                              {sortedStores.map((s) => {
+                                const e = p.entries.find((x) => x.store === s.key);
+                                return (
+                                  <td
+                                    key={s.key}
+                                    className={cn(
+                                      "numeric px-3 py-2 text-right",
+                                      e && e.price === min && p.entries.length > 1 ? "font-semibold text-positive" : "text-muted-foreground",
+                                    )}
+                                  >
+                                    {e ? fmt(e.price) : "—"}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 ) : (
                   <p className="text-xs text-muted-foreground">{t("Sube fotos de tickets para comparar productos.", "Upload receipt photos to compare products.")}</p>
                 )}
