@@ -41,10 +41,12 @@ const storeTokens = (s: string) =>
     .split(" ")
     .filter((w) => w && !GENERIC_STORE_TOKENS.has(w) && !/^\d+$/.test(w));
 
-const storeKey = (s: string) => {
+export const storeKey = (s: string) => {
   const tokens = storeTokens(s);
   return (tokens.length ? tokens : storeTokens(cleanStore(s))).slice(0, 2).join(" ");
 };
+
+export const cleanStoreName = cleanStore;
 
 const productKey = (s: string) =>
   s
