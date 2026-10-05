@@ -33,6 +33,11 @@ const schema = z.object({
     .array(z.object({ name: z.string(), planned: z.number(), actual: z.number() }))
     .optional()
     .default([]),
+  /** Histórico de nightlife por sitio (todos los meses), para comparar precios entre sitios. */
+  nightlifeVenues: z
+    .array(z.object({ name: z.string(), amount: z.number(), nights: z.number() }))
+    .optional()
+    .default([]),
 });
 
 export const getSpendAdvice = createServerFn({ method: "POST" })

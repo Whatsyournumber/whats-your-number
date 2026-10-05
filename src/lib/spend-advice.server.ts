@@ -21,6 +21,8 @@ export type AdviceInput = {
   }[];
   /** Plan de gasto por categoría definido por el usuario. */
   budgets?: { name: string; planned: number; actual: number }[];
+  /** Histórico de nightlife por sitio (todos los meses): gasto total y noches distintas. */
+  nightlifeVenues?: { name: string; amount: number; nights: number }[];
   /** Análisis anteriores guardados de este usuario (más reciente primero). */
   history?: {
     periodLabel: string;
