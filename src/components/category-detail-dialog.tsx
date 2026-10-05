@@ -227,7 +227,6 @@ export function CategoryDetailDialog({
 function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: ReturnType<typeof summarizeGroceryReceipts>; fmt: (n: number) => string; onCorrect: (name: string, group: GroceryGroup) => void; addedByGroup: Map<GroceryGroup, string[]> }) {
   const t = useT();
   const [expanded, setExpanded] = useState<GroceryGroup | null>(null);
-  const comparable = summary.previousReceiptCount > 0;
   const max = Math.max(...summary.groups.map((group) => group.amount), 1);
   return (
     <section className="pt-0" aria-label={t(`Análisis de ${summary.receiptCount} tickets del súper del mes`, `Analysis of ${summary.receiptCount} grocery receipts this month`)}>
@@ -238,11 +237,8 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
       </div>
 
       <TooltipProvider delayDuration={150}><div className="mt-2 divide-y divide-border/70">
-        {[...summary.groups].sort((a, b) => comparable
-          ? (b.amount - b.previousAmount) - (a.amount - a.previousAmount)
-          : b.amount - a.amount).map((group) => {
+        {[...summary.groups].sort((a, b) => b.amount - a.amount).map((group) => {
           const label = GROCERY_LABELS[group.id];
-          const difference = group.amount - group.previousAmount;
           const open = expanded === group.id;
           return (
             <div key={group.id}>
@@ -253,12 +249,9 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
                     <span className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-baseline gap-x-2">
                       <span className="truncate text-xs font-medium text-foreground" title={t(label.es, label.en)}>{t(label.es, label.en)}</span>
                       <span className="numeric shrink-0 text-xs font-semibold text-foreground">{fmt(group.amount)}</span>
-                      {comparable && <span className={cn("numeric text-xs", difference > 0 ? "text-negative" : "text-positive")}>{difference > 0 ? "+" : difference < 0 ? "−" : ""}{fmt(Math.abs(difference))}</span>}
                     </span>
                     <span className="block text-[11px] font-normal text-muted-foreground">
-                      {comparable
-                        ? t(`${group.count} productos vs. ${group.previousCount} antes`, `${group.count} items vs. ${group.previousCount} before`)
-                        : t(`${group.count} productos en tus tickets`, `${group.count} items on your receipts`)}
+                      {t(`${group.count} productos en tus tickets`, `${group.count} items on your receipts`)}
                     </span>
                   </span>
                   <span className="h-1 overflow-hidden rounded-full bg-muted"><span className={cn("block h-full rounded-full", label.color)} style={{ width: `${Math.max(3, (group.amount / max) * 100)}%` }} /></span>
@@ -282,9 +275,9 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
           );
         })}
       </div></TooltipProvider>
-      <p className="mt-2 flex items-center gap-1.5 whitespace-nowrap border-t border-border pt-3 text-xs text-muted-foreground">
+      <p className="mt-2 flex items-center gap-1.5 border-t border-border pt-3 text-xs text-muted-foreground">
         <ReceiptText className="size-3.5 shrink-0" />
-        <span>{t("Solo tickets desglosados; si algo no cuadra, cámbialo y se guarda.", "Itemized receipts only; fix any item and it's saved.")}</span>
+        <span>{t("Tickets desglosados; si algo no cuadra, cámbialo.", "Itemized receipts; fix anything that's off.")}</span>
       </p>
     </section>
   );
