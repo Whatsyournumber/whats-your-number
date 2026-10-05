@@ -227,7 +227,6 @@ export function CategoryDetailDialog({
 function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: ReturnType<typeof summarizeGroceryReceipts>; fmt: (n: number) => string; onCorrect: (name: string, group: GroceryGroup) => void; addedByGroup: Map<GroceryGroup, string[]> }) {
   const t = useT();
   const [expanded, setExpanded] = useState<GroceryGroup | null>(null);
-  const comparable = summary.previousReceiptCount > 0;
   const max = Math.max(...summary.groups.map((group) => group.amount), 1);
   return (
     <section className="pt-0" aria-label={t(`Análisis de ${summary.receiptCount} tickets del súper del mes`, `Analysis of ${summary.receiptCount} grocery receipts this month`)}>
@@ -238,11 +237,8 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
       </div>
 
       <TooltipProvider delayDuration={150}><div className="mt-2 divide-y divide-border/70">
-        {[...summary.groups].sort((a, b) => comparable
-          ? (b.amount - b.previousAmount) - (a.amount - a.previousAmount)
-          : b.amount - a.amount).map((group) => {
+        {[...summary.groups].sort((a, b) => b.amount - a.amount).map((group) => {
           const label = GROCERY_LABELS[group.id];
-          const difference = group.amount - group.previousAmount;
           const open = expanded === group.id;
           return (
             <div key={group.id}>
