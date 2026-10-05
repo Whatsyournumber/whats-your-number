@@ -29,6 +29,7 @@ const cleanStore = (s: string) =>
 const GENERIC_STORE_TOKENS = new Set([
   "super", "supermercado", "sup", "ex", "exp", "expreso", "expres", "express", "market", "mercado",
   "tienda", "sucursal", "hiper", "hipermercado", "minimarket", "shop", "store", "sl", "sa",
+  "groceries", "grocery", "alimentacion", "comestibles", "food", "foods",
   "de", "la", "el", "los", "las", "del", "y",
 ]);
 
@@ -110,20 +111,24 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
 
     for (const tx of txs) {
       const raw = tx.merchant || tx.description || "";
-      const key = storeKey(raw);
-      if (!key) continue;
+      const realKey = storeKey(raw);
+      // Tickets sin tienda clara ("Groceries", "Alimentación") no salen como tienda,
+      // pero sus productos sí cuentan en la comparativa de abajo.
+      const key = realKey || "otros";
       const amount = Math.abs(Number(tx.amount) || 0);
       const day = String(tx.tx_date ?? "").slice(0, 10);
-      const s = stores.get(key) ?? { name: cleanStore(raw) || raw, names: new Map<string, number>(), total: 0, visits: new Set(), count: 0, last: "" };
-      const variant = cleanStore(raw) || raw;
-      s.names.set(variant, (s.names.get(variant) ?? 0) + 1);
-      // Nombre visible: la variante más frecuente; en empate, la más corta y limpia
-      s.name = [...s.names.entries()].sort((a, b) => b[1] - a[1] || a[0].length - b[0].length)[0]![0];
-      s.total += amount;
-      s.count += 1;
-      if (day) s.visits.add(day);
-      if (day > s.last) s.last = day;
-      stores.set(key, s);
+      if (realKey) {
+        const s = stores.get(key) ?? { name: cleanStore(raw) || raw, names: new Map<string, number>(), total: 0, visits: new Set(), count: 0, last: "" };
+        const variant = cleanStore(raw) || raw;
+        s.names.set(variant, (s.names.get(variant) ?? 0) + 1);
+        // Nombre visible: la variante más frecuente; en empate, la más corta y limpia
+        s.name = [...s.names.entries()].sort((a, b) => b[1] - a[1] || a[0].length - b[0].length)[0]![0];
+        s.total += amount;
+        s.count += 1;
+        if (day) s.visits.add(day);
+        if (day > s.last) s.last = day;
+        stores.set(key, s);
+      }
 
       for (const item of receiptItemsFrom(tx.description)) {
         if (kind === "nightlife") {
@@ -149,11 +154,11 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
       .sort((a, b) => b.total - a.total)
       .slice(0, 6);
     const storeKeys = new Set(storeRows.map((r) => r.key));
-    const nameOf = (k: string) => storeRows.find((r) => r.key === k)?.name ?? k;
+    const nameOf = (k: string) => (k === "otros" ? "Otros tickets" : storeRows.find((r) => r.key === k)?.name ?? k);
 
     const productRows = [...products.entries()]
       .map(([pk, p]) => {
-        const entries = [...p.prices.entries()].filter(([k]) => storeKeys.has(k)).map(([k, v]) => ({ store: k, price: avg(v), n: v.length }));
+        const entries = [...p.prices.entries()].filter(([k]) => k === "otros" || storeKeys.has(k)).map(([k, v]) => ({ store: k, price: avg(v), n: v.length }));
         return { name: p.name, basic: pk.startsWith("basic:"), entries, buys: entries.reduce((s, e) => s + e.n, 0) };
       })
       .filter((p) => p.entries.length > 0)
