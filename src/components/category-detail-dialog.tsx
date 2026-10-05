@@ -228,20 +228,13 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
   const t = useT();
   const [expanded, setExpanded] = useState<GroceryGroup | null>(null);
   const comparable = summary.previousReceiptCount > 0;
-  const delta = summary.total - summary.previousTotal;
   const max = Math.max(...summary.groups.map((group) => group.amount), 1);
   return (
     <section className="pt-0" aria-label={t(`Análisis de ${summary.receiptCount} tickets del súper del mes`, `Analysis of ${summary.receiptCount} grocery receipts this month`)}>
       <div className="mt-1 grid min-w-0 gap-2 pl-11 pr-1 sm:flex sm:flex-wrap sm:items-start sm:justify-between sm:gap-x-3 sm:gap-y-1">
-        <p className="min-w-0 text-xs leading-relaxed text-muted-foreground">
-          {t("Podrás cambiar de categoría si no se registra correctamente.", "You can change the category if it wasn't captured correctly.")}
+        <p className="whitespace-nowrap text-xs text-muted-foreground">
+          {t("Podrás cambiar de categoría si no se registra bien.", "You can change the category if it wasn't captured correctly.")}
         </p>
-        {comparable && (
-          <div className={cn("numeric w-fit max-w-full rounded-full px-3 py-1 text-xs font-semibold", delta > 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
-            {delta > 0 ? "+" : delta < 0 ? "−" : ""}{fmt(Math.abs(delta))}
-            <span className="ml-1 text-xs font-normal">{t("vs. tickets anteriores", "vs. prior receipts")}</span>
-          </div>
-        )}
       </div>
 
       <TooltipProvider delayDuration={150}><div className="mt-2 divide-y divide-border/70">
@@ -289,9 +282,9 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
           );
         })}
       </div></TooltipProvider>
-      <p className="mt-2 flex items-center gap-1.5 whitespace-nowrap overflow-hidden border-t border-border pt-3 text-xs text-muted-foreground" title={t("Solo tickets desglosados; si no se registra bien, podrás cambiarlo y se guarda como regla para la próxima vez.", "Itemized receipts only; if something is misclassified, change it and it's saved as a rule for next time.")}>
+      <p className="mt-2 flex items-center gap-1.5 whitespace-nowrap border-t border-border pt-3 text-xs text-muted-foreground">
         <ReceiptText className="size-3.5 shrink-0" />
-        <span className="truncate">{t("Solo tickets desglosados; si algo no cuadra, cámbialo y se guarda como regla.", "Itemized receipts only; fix any item and it's saved as a rule.")}</span>
+        <span>{t("Solo tickets desglosados; si algo no cuadra, cámbialo y se guarda.", "Itemized receipts only; fix any item and it's saved.")}</span>
       </p>
     </section>
   );
