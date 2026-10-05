@@ -1298,7 +1298,7 @@ function Gastos() {
 
       <Panel
         variant="minimal"
-        title={t("Compara tus gastos variables mes a mes", "Compare your variable expenses month by month")}
+        title={t("Compara tus gastos variables", "Compare variable expenses")}
         description={t("Compara dos meses de tus EEFF", "Compare two statement months")}
         className="flex h-full flex-col lg:col-span-2"
         bleedMobile

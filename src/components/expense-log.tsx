@@ -2496,7 +2496,7 @@ export function ExpenseLog() {
                     aria-expanded={fixedOpen}
                     className="flex min-w-0 flex-1 items-center justify-between gap-2 text-left"
                   >
-                    <h3 className="text-base font-semibold">{t("Gastos fijos (Próximos pagos)", "Fixed expenses (Upcoming payments)")}</h3>
+                    <h3 className="text-base font-semibold whitespace-nowrap">{t("Gastos fijos próximos", "Upcoming fixed expenses")}</h3>
                     <span className="flex shrink-0 items-center gap-2">
                       <p className={cn("numeric hidden font-semibold text-muted-foreground max-md:block", fixedOpen && "max-md:hidden")}>
                         {upcoming.length > 0 ? fmt(upcoming.reduce((s, i) => s + i.amount, 0)) : null}
