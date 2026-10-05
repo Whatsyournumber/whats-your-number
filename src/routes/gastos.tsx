@@ -2003,6 +2003,34 @@ function Gastos() {
           </div>
         )}
 
+        {comparator && (
+          <PriceComparatorDialog
+            open
+            onOpenChange={(v) => !v && setComparator(null)}
+            kind={comparator}
+            txs={comparatorTxs}
+            fmt={fmt}
+            t={t}
+          />
+        )}
+        {hasData && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setComparator("groceries")}
+              className="rounded-full border border-primary/40 px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+            >
+              {t("Comparar supermercados y productos", "Compare supermarkets & products")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setComparator("nightlife")}
+              className="rounded-full border border-primary/40 px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+            >
+              {t("Comparar tragos y entradas", "Compare drinks & entries")}
+            </button>
+          </div>
+        )}
       </Panel>
     </PageShell>
   );
