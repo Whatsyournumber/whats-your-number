@@ -64,7 +64,7 @@ const DRINK_RE = /trago|copa|cerveza|beer|gin|vodka|ron|rum|whisk|tequila|mojito
 
 export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }: Props) {
   const data = useMemo(() => {
-    const stores = new Map<string, { name: string; total: number; visits: Set<string>; count: number; last: string }>();
+    const stores = new Map<string, { name: string; names: Map<string, number>; total: number; visits: Set<string>; count: number; last: string }>();
     const products = new Map<string, { name: string; prices: Map<string, number[]> }>();
     const nightItems = { entry: new Map<string, number[]>(), drink: new Map<string, number[]>() };
 
@@ -74,7 +74,11 @@ export function PriceComparatorDialog({ open, onOpenChange, kind, txs, fmt, t }:
       if (!key) continue;
       const amount = Math.abs(Number(tx.amount) || 0);
       const day = String(tx.tx_date ?? "").slice(0, 10);
-      const s = stores.get(key) ?? { name: cleanStore(raw) || raw, total: 0, visits: new Set(), count: 0, last: "" };
+      const s = stores.get(key) ?? { name: cleanStore(raw) || raw, names: new Map<string, number>(), total: 0, visits: new Set(), count: 0, last: "" };
+      const variant = cleanStore(raw) || raw;
+      s.names.set(variant, (s.names.get(variant) ?? 0) + 1);
+      // Nombre visible: la variante más frecuente; en empate, la más corta y limpia
+      s.name = [...s.names.entries()].sort((a, b) => b[1] - a[1] || a[0].length - b[0].length)[0]![0];
       s.total += amount;
       s.count += 1;
       if (day) s.visits.add(day);
