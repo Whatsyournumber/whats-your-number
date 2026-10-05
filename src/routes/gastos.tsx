@@ -623,6 +623,8 @@ function Gastos() {
     const nights = days.size;
     const monthCount = Math.max(1, months.size);
     const planned = budgets.lines.find((l) => l.id === "nightlife")?.amount ?? 0;
+    // Plan del periodo seleccionado (equivale al mensual cuando el periodo es un mes)
+    const periodPlanned = budgetRows.find((r) => r.id === "nightlife")?.planned ?? planned;
     // Periodo seleccionado
     const pDays = new Set<string>();
     let pAmount = 0;
@@ -644,10 +646,11 @@ function Gastos() {
       periodNights: pNights,
       periodAmount: pAmount,
       periodAvg: pNights ? pAmount / pNights : 0,
-      overPlan: planned > 0 && pAmount > planned,
+      periodPlanned,
+      overPlan: periodPlanned > 0 && pAmount > periodPlanned,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [expenses, current, categories.rules, txCat, learned.rules, budgets.lines]);
+  }, [expenses, current, categories.rules, txCat, learned.rules, budgets.lines, budgetRows]);
 
   /** Histórico de supermercados (todos los meses): gasto, compras y precios de la cesta básica por tienda. */
   const groceryHistory = useMemo(() => {

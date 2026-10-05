@@ -51,6 +51,7 @@ const schema = z.object({
       periodNights: z.number(),
       periodAmount: z.number(),
       periodAvg: z.number(),
+      periodPlanned: z.number(),
       overPlan: z.boolean(),
     })
     .optional(),

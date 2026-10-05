@@ -24,7 +24,7 @@ export type AdviceInput = {
   /** Histórico de nightlife por sitio (todos los meses): gasto total y noches distintas. */
   nightlifeVenues?: { name: string; amount: number; nights: number }[];
   /** Nightlife en todo el historial: salidas al mes, ticket medio y plan mensual. */
-  nightlifeStats?: { months: number; nights: number; amount: number; avg: number; nightsPerMonth: number; amountPerMonth: number; planned: number; periodNights: number; periodAmount: number; periodAvg: number; overPlan: boolean } | undefined;
+  nightlifeStats?: { months: number; nights: number; amount: number; avg: number; nightsPerMonth: number; amountPerMonth: number; planned: number; periodNights: number; periodAmount: number; periodAvg: number; periodPlanned: number; overPlan: boolean } | undefined;
   /** Histórico de supermercados (todos los meses): gasto total y compras. */
   groceryStores?: { name: string; amount: number; trips: number }[];
   /** Precios históricos de productos de la cesta básica por tienda (de tickets con foto). */
