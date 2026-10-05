@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Ajustar editor de gasto y resumen compartido para iPhone 14; notificar al otro participante cuando se crea o elimina un gasto y sincronizar la eliminación.
+
 - [x] Registrar cada pago compartido con quién pagó, importe, fecha e historial; mostrar saldo remanente y separar el símbolo de moneda del monto.
 
 - [x] Ajustar el resumen de compartidos de septiembre a los movimientos visibles y sus importes exactos.
