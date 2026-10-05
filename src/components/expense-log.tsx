@@ -22,6 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -56,7 +57,7 @@ import { SPEND_PLAN_FIELDS, compact, getWynMoneyLocale, money } from "@/lib/onbo
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { cn } from "@/lib/utils";
 import { SharedExpenseDialog, SharedExpenseInbox, parseShared, sharedIOwe, SHARED_PREFIX } from "@/components/shared-expense";
-import { notifySharedExpense } from "@/lib/shared-expense.functions";
+import { notifySharedExpense, deleteSharedExpense } from "@/lib/shared-expense.functions";
 import { InviteShareActions } from "@/components/invite-share-actions";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Users } from "lucide-react";
@@ -184,6 +185,7 @@ export function ExpenseLog() {
   const [recDay, setRecDay] = useState(1);
   const [recEditId, setRecEditId] = useState<string | null>(null);
   const [editTx, setEditTx] = useState<Tx | null>(null);
+  const [confirmDeleteTx, setConfirmDeleteTx] = useState(false);
   const [editMerchant, setEditMerchant] = useState("");
   const [editAmount, setEditAmount] = useState(0);
   const [editDate, setEditDate] = useState("");
@@ -201,6 +203,7 @@ export function ExpenseLog() {
   const [editInviting, setEditInviting] = useState(false);
   const [editInvitePending, setEditInvitePending] = useState<string | null>(null);
   const notifyShared = useServerFn(notifySharedExpense);
+  const removeShared = useServerFn(deleteSharedExpense);
   const { data: editKnownPartners = [] } = useQuery({
     queryKey: ["shared-partners", user?.id],
     enabled: Boolean(user?.id),
@@ -433,7 +436,15 @@ export function ExpenseLog() {
         if (shareError) throw new Error(shareError.message);
         amount = -half;
         description = `${SHARED_PREFIX}50/50|${editSharePartner.name}`;
-        if (expenseId) void notifyShared({ data: { expenseId } });
+        // Notify after the existing transaction has been updated, so both sides show the same expense.
+        if (expenseId) {
+          const { error: updateError } = await supabase.from("imported_transactions").update({
+            merchant: editMerchant.trim() || translateCategory(editCategory, lang),
+            amount, tx_date: editDate, category: editCategory, description,
+          }).eq("id", editTx.id);
+          if (updateError) throw new Error(updateError.message);
+          await notifyShared({ data: { expenseId } });
+        }
       }
       const { error } = await supabase
         .from("imported_transactions")
@@ -465,10 +476,18 @@ export function ExpenseLog() {
     if (!editTx) return;
     setSaving(true);
     try {
-      const { error } = await supabase.from("imported_transactions").delete().eq("id", editTx.id);
-      if (error) throw new Error(error.message);
-      await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      if (parseShared(editTx.description)) {
+        await removeShared({ data: { transactionId: editTx.id } });
+      } else {
+        const { error } = await supabase.from("imported_transactions").delete().eq("id", editTx.id);
+        if (error) throw new Error(error.message);
+      }
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["imported-transactions"] }),
+        queryClient.invalidateQueries({ queryKey: ["shared-balances"] }),
+      ]);
       toast.success(t("Gasto eliminado", "Expense deleted"));
+      setConfirmDeleteTx(false);
       setEditTx(null);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : String(error));
@@ -2910,7 +2929,7 @@ export function ExpenseLog() {
                   const isOwed = b.balance > 0.005;
                   const iOwe = b.balance < -0.005;
                   return (
-                    <div key={b.id} className="min-w-0 rounded-lg border border-border p-4 sm:p-5">
+                    <div key={b.id} className="min-w-0 rounded-lg border border-border p-3 sm:p-5">
                       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 sm:gap-4">
                         <div className="flex min-w-0 items-center gap-3">
                           <span className="flex shrink-0 -space-x-2.5" aria-hidden="true">
@@ -2933,19 +2952,19 @@ export function ExpenseLog() {
                         </Button>
                       </div>
                       <div className="mt-5 grid grid-cols-3 border-t border-border/60 pt-4">
-                        <div className="min-w-0 pr-2">
-                          <p className="text-[11px] leading-5 text-muted-foreground sm:text-xs">{t("Total compartido", "Total shared")}</p>
-                          <p className="numeric whitespace-nowrap text-base font-semibold sm:text-lg">{fmtShared(b.together)}</p>
+                        <div className="min-w-0 pr-1.5">
+                          <p className="whitespace-nowrap text-[10px] leading-5 text-muted-foreground sm:text-xs">{t("Total compartido", "Total shared")}</p>
+                          <p className="numeric whitespace-nowrap text-sm font-semibold sm:text-lg">{fmtShared(b.together)}</p>
                         </div>
-                        <div className="min-w-0 border-l border-border pl-2 sm:pl-4">
-                          <p className="text-[11px] leading-5 text-muted-foreground sm:text-xs">{t("Tu parte", "Your share")}</p>
-                          <p className="numeric whitespace-nowrap text-base font-semibold sm:text-lg">{fmtShared(b.myShare)}</p>
+                        <div className="min-w-0 border-l border-border pl-1.5 sm:pl-4">
+                          <p className="whitespace-nowrap text-[10px] leading-5 text-muted-foreground sm:text-xs">{t("Tu parte", "Your share")}</p>
+                          <p className="numeric whitespace-nowrap text-sm font-semibold sm:text-lg">{fmtShared(b.myShare)}</p>
                         </div>
-                        <div className="min-w-0 border-l border-border pl-2 sm:pl-4">
-                          <p className="whitespace-nowrap text-[11px] leading-5 text-muted-foreground sm:text-xs">
+                        <div className="min-w-0 border-l border-border pl-1.5 sm:pl-4">
+                          <p className="whitespace-nowrap text-[10px] leading-5 text-muted-foreground sm:text-xs">
                             {isOwed ? t(`${firstNameOf(b.name)} te debe`, `${firstNameOf(b.name)} owes you`) : iOwe ? t(`Debes a ${firstNameOf(b.name)}`, `You owe ${firstNameOf(b.name)}`) : t("Saldo saldado", "Settled")}
                           </p>
-                          <p className={cn("numeric whitespace-nowrap text-base font-semibold sm:text-lg", isOwed && "text-positive", iOwe && "text-negative")}>{fmtShared(Math.abs(b.balance))}</p>
+                          <p className={cn("numeric whitespace-nowrap text-sm font-semibold sm:text-lg", isOwed && "text-positive", iOwe && "text-negative")}>{fmtShared(Math.abs(b.balance))}</p>
                         </div>
                       </div>
                     </div>
@@ -3324,7 +3343,7 @@ export function ExpenseLog() {
       </Dialog>
 
       <Dialog open={Boolean(editTx)} onOpenChange={(open) => !open && setEditTx(null)}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="max-h-[calc(100dvh-2rem)] min-w-0 overflow-y-auto p-4 sm:max-w-md sm:p-6">
           <DialogHeader>
             <DialogTitle>{t("Editar gasto", "Edit expense")}</DialogTitle>
             <DialogDescription>
@@ -3505,17 +3524,30 @@ export function ExpenseLog() {
               )}
             </div>
           </div>
-          <DialogFooter className="gap-2 sm:justify-between">
-            <Button type="button" variant="ghost" className="text-negative" onClick={onDeleteEditTx} disabled={saving}>
+          <DialogFooter className="grid grid-cols-2 gap-3 sm:flex sm:justify-between">
+            <Button type="button" variant="outline" className="min-w-0 text-negative" onClick={() => setConfirmDeleteTx(true)} disabled={saving}>
               {t("Eliminar", "Delete")}
             </Button>
-            <Button onClick={onSaveEditTx} disabled={saving}>
+            <Button className="min-w-0" onClick={onSaveEditTx} disabled={saving}>
               {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {t("Guardar", "Save")}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={confirmDeleteTx} onOpenChange={setConfirmDeleteTx}>
+        <AlertDialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("¿Eliminar este gasto?", "Delete this expense?")}</AlertDialogTitle>
+            <AlertDialogDescription>{parseShared(editTx?.description) ? t("Se eliminará para las dos personas.", "It will be removed for both people.") : t("Esta acción no se puede deshacer.", "This cannot be undone.")}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={saving}>{t("Cancelar", "Cancel")}</AlertDialogCancel>
+            <AlertDialogAction disabled={saving} onClick={(event) => { event.preventDefault(); void onDeleteEditTx(); }} className="bg-negative text-background hover:bg-negative/80">{t("Eliminar", "Delete")}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <Dialog open={Boolean(moveItem)} onOpenChange={(open) => !open && setMoveItem(null)}>
         <DialogContent className="sm:max-w-md">

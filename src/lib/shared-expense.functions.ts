@@ -64,3 +64,33 @@ export const notifySharedExpense = createServerFn({ method: "POST" })
     });
     return { sent: result.sent, synced: true };
   });
+
+/** Removes both sides of a shared entry before emailing the other participant. */
+export const deleteSharedExpense = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ transactionId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    // The checked database function validates membership and deletes both entries atomically.
+    const { data: rows, error: deletionError } = await context.supabase.rpc("delete_shared_expense", { _transaction_id: data.transactionId });
+    if (deletionError) throw new Error(deletionError.message);
+    const deleted = rows?.[0];
+    if (!deleted) throw new Error("Shared expense not found");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: profile } = await supabaseAdmin.from("profiles").select("email, full_name").eq("id", deleted.other_user_id).maybeSingle();
+    if (profile?.email) {
+      const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+      try {
+        await sendTemplateEmail("shared-expense-deleted", profile.email, {
+          idempotencyKey: `shared-expense-deleted-${deleted.deleted_expense_id}`,
+          templateData: {
+            fromName: deleted.actor_name ?? "",
+            toName: (profile.full_name ?? "").split(" ")[0],
+            concept: deleted.concept,
+          },
+        });
+      } catch (error) {
+        console.error("Shared expense deletion email failed", error);
+      }
+    }
+    return { deleted: true };
+  });

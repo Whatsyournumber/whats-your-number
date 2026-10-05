@@ -1791,6 +1791,16 @@ export type Database = {
             }
             Returns: string
           }
+      delete_shared_expense: {
+        Args: { _transaction_id: string }
+        Returns: {
+          actor_name: string
+          concept: string
+          deleted_expense_id: string
+          other_name: string
+          other_user_id: string
+        }[]
+      }
       find_user_by_email: {
         Args: { _email: string }
         Returns: {
