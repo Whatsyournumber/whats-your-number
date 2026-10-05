@@ -2042,13 +2042,13 @@ function Gastos() {
             <p className="hidden sm:flex items-center gap-1.5 text-[11px] text-muted-foreground">
               <Brain className="h-3 w-3 text-primary" />
               {t(
-                "Tu IA guarda cada análisis. Sube tickets de restaurantes, nightlife o súper y podrás analizar cualquier rubro.",
-                "Your AI saves every analysis. Upload receipts from restaurants, nightlife or groceries and you'll be able to analyze any category.",
+                "Tu IA guarda cada análisis. Sube tickets (rest, nightlife, súper) y analiza cualquier rubro.",
+                "Your AI saves every analysis. Upload receipts (restaurants, nightlife, groceries) to analyze any category.",
               )}
             </p>
             <p className="flex sm:hidden items-center gap-1.5 text-[11px] text-muted-foreground">
               <Brain className="h-3 w-3 text-primary" />
-              {t("Sube tickets de rest, nightlife o súper para analizar mejor.", "Upload receipts from restaurants, nightlife or groceries to analyze better.")}
+              {t("Sube tickets y analiza mejor cualquier rubro.", "Upload receipts to analyze any category better.")}
             </p>
           </div>
         )}
