@@ -27,8 +27,11 @@ import {
   Sparkles,
   Target,
   TrendingUp,
+  Wallet,
 } from "lucide-react";
 
+import { DailySpendingPreview } from "@/components/daily-spending-preview";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { lifestyleCities } from "@/lib/lifestyle-cities";
 import { useT } from "@/hooks/use-language";
@@ -126,14 +129,16 @@ export function ProductPreview() {
   const t = useT();
 
   const views = [
-    { id: "portafolio", label: t("Portafolio", "Portfolio"), icon: TrendingUp },
+    { id: "tracking", label: t("Tracking de Gastos diarios", "Daily expense tracking"), icon: Wallet },
     { id: "gastos", label: t("Análisis de gasto", "Spending analysis"), icon: BarChart3 },
+    { id: "portafolio", label: t("Portfolio", "Portfolio"), icon: TrendingUp },
     { id: "hipoteca", label: t("Tu hipoteca", "Your mortgage"), icon: Home },
     { id: "nextcity", label: t("Your next city", "Your next city"), icon: Globe },
     { id: "whatsyournumber", label: "WhatsYournumber", icon: Target },
   ] as const;
 
   const kpis: Record<(typeof views)[number]["id"], { kpi: string; delta: string; sub: string }> = {
+    tracking: { kpi: "€1.8K", delta: t("Te quedan €1.2K", "€1.2K left"), sub: t("Mis gastos diarios", "My daily spending") },
     hipoteca: {
       kpi: "€104,074",
       delta: t("Ahorras €49.606 abonando €500/mes", "Save €49,606 paying €500/mo extra"),
@@ -162,6 +167,7 @@ export function ProductPreview() {
   };
 
   const insights: Record<(typeof views)[number]["id"], { icon: typeof Sparkles; text: string }> = {
+    tracking: { icon: Wallet, text: t("Controla tu dinero día a día", "Control your money daily") },
     portafolio: {
       icon: TrendingUp,
       text: t(
@@ -199,7 +205,7 @@ export function ProductPreview() {
     },
   };
 
-  const [active, setActive] = useState<(typeof views)[number]["id"]>("portafolio");
+  const [active, setActive] = useState<(typeof views)[number]["id"]>("tracking");
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
@@ -207,7 +213,7 @@ export function ProductPreview() {
       if (paused) return;
       setActive((cur) => {
         const i = views.findIndex((v) => v.id === cur);
-        return views[(i + 1) % views.length]!.id;
+        return views[(i + 1) % views.length]?.id ?? "tracking";
       });
     }, 7000);
 
@@ -252,7 +258,7 @@ export function ProductPreview() {
     el.scrollBy({ left: dir === "left" ? -180 : 180, behavior: "smooth" });
   };
 
-  const view = views.find((v) => v.id === active)!;
+   const view = views.find((v) => v.id === active) ?? views[0];
   const kpi = kpis[active];
   const Insight = insights[active];
 
@@ -264,7 +270,7 @@ export function ProductPreview() {
   ];
 
   return (
-    <div className="surface glow relative overflow-hidden p-4 md:p-6">
+    <div className="surface glow relative overflow-hidden p-4 md:p-6" data-product-preview onFocusCapture={() => setPaused(true)} onPointerDownCapture={() => setPaused(true)}>
       <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.05]" />
       <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
 
@@ -289,9 +295,11 @@ export function ProductPreview() {
           {views.map((v) => {
             const Icon = v.icon;
             return (
-              <button
+              <Button
                 key={v.id}
+                variant="ghost"
                 type="button"
+                aria-pressed={active === v.id}
                 onClick={() => {
                   setActive(v.id);
                   setPaused(true);
@@ -305,7 +313,7 @@ export function ProductPreview() {
               >
                 <Icon className="h-3.5 w-3.5" />
                 {v.label}
-              </button>
+              </Button>
             );
           })}
           <span className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-elevated px-3 py-1 text-[11px] text-muted-foreground md:inline-flex">
@@ -331,7 +339,7 @@ export function ProductPreview() {
         </button>
       </div>
 
-      <div className="relative mt-5 grid gap-4 lg:grid-cols-[1.55fr_1fr]">
+      {active === "tracking" ? <DailySpendingPreview /> : <div className="relative mt-5 grid gap-4 lg:grid-cols-[1.55fr_1fr]">
         <div className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
           <p className="text-xs text-muted-foreground">{kpi.sub}</p>
           <AnimatePresence mode="wait">
@@ -864,7 +872,7 @@ export function ProductPreview() {
             </div>
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }
