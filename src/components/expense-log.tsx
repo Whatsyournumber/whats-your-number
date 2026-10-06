@@ -138,6 +138,10 @@ const buildMonthLabel =
     return `${labels[Number(m) - 1] ?? m} ${y}`;
   };
 
+/** Unifica la categoría base «Otros» con la fila variable «Otros gastos». */
+const normalizeExpenseCategoryId = (id: string | null | undefined) =>
+  id === "other" ? "others" : id;
+
 /** Registro de gastos: captura rápida (manual, voz, recibo) y control contra tu plan. */
 export function ExpenseLog() {
   const t = useT();
@@ -403,7 +407,7 @@ export function ExpenseLog() {
           _tx_date: editDate,
         });
         if (error) throw new Error(error.message);
-        const selectedCategoryId = match(editCategory) ?? "others";
+        const selectedCategoryId = normalizeExpenseCategoryId(match(editCategory)) ?? "others";
         saveCatOverrides({ ...catOverrides, [editTx.id]: selectedCategoryId });
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: ["imported-transactions"] }),
@@ -457,7 +461,7 @@ export function ExpenseLog() {
         })
         .eq("id", editTx.id);
       if (error) throw new Error(error.message);
-      const selectedCategoryId = match(editCategory) ?? "others";
+      const selectedCategoryId = normalizeExpenseCategoryId(match(editCategory)) ?? "others";
       saveCatOverrides({ ...catOverrides, [editTx.id]: selectedCategoryId });
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["imported-transactions"] }),
@@ -962,7 +966,7 @@ export function ExpenseLog() {
 
   const moveExpenses = (keys: string[], toId: string) => {
     const next = { ...catOverrides };
-    for (const key of keys) next[key] = toId;
+    for (const key of keys) next[key] = normalizeExpenseCategoryId(toId) ?? "others";
     saveCatOverrides(next);
     const cat = findBudgetCategory(toId);
     toast.success(
@@ -1040,12 +1044,12 @@ export function ExpenseLog() {
       // Los gastos compartidos ya traen la categoría elegida por la persona:
       // se respeta aunque el comercio coincida con otra regla automática.
       const name = x.description?.startsWith(SHARED_PREFIX) && x.category ? x.category : categorizeTx(x as Tx, categories.rules);
-      const id = catOverrides[x.id] ?? match(name) ?? "others";
+      const id = normalizeExpenseCategoryId(catOverrides[x.id] ?? match(name)) ?? "others";
       push(id, x.id, x.merchant || name, Math.abs(x.amount), x.tx_date ?? undefined);
     }
     for (const item of expenseFixedItems) {
       const amount = (Number(item.amount) || 0) * periodFactor;
-      const id = catOverrides[item.id] ?? match(item.name) ?? "others";
+      const id = normalizeExpenseCategoryId(catOverrides[item.id] ?? match(item.name)) ?? "others";
       push(id, item.id, item.name, amount);
     }
     const sortByDate = (
@@ -1061,12 +1065,13 @@ export function ExpenseLog() {
     const list = planLines
       .filter((l) => l.amount > 0)
       .map((l) => {
+        const id = normalizeExpenseCategoryId(l.id) ?? l.id;
         const cat = findBudgetCategory(l.id);
-        const spentCat = actual.get(l.id) ?? 0;
+        const spentCat = actual.get(id) ?? 0;
         const planned = l.amount * periodFactor;
         return {
-          id: l.id,
-           name: l.label ?? (cat ? t(cat.es, cat.en) : l.id),
+          id,
+          name: id === "others" ? t("Otros gastos", "Other spending") : l.label ?? (cat ? t(cat.es, cat.en) : l.id),
           emoji: cat?.emoji ?? l.emoji ?? "📦",
           group: cat?.group === "essentials" || l.group === "essentials" ? "essentials" as const : "lifestyle" as const,
           planned,
@@ -1113,7 +1118,7 @@ export function ExpenseLog() {
       if (d < prevStart || d > prevEnd) continue;
       if (isSavingsName(`${x.merchant} ${x.description ?? ""}`)) continue;
       const name = x.description?.startsWith(SHARED_PREFIX) && x.category ? x.category : categorizeTx(x as Tx, categories.rules);
-      const id = catOverrides[x.id] ?? match(name) ?? "others";
+      const id = normalizeExpenseCategoryId(catOverrides[x.id] ?? match(name)) ?? "others";
       map.set(id, (map.get(id) ?? 0) + Math.abs(x.amount));
     }
     return map;
@@ -2878,7 +2883,7 @@ export function ExpenseLog() {
               if (date < subDays(periodStart, periodDays) || date >= periodStart) return false;
               if (isSavingsName(`${tx.merchant} ${tx.description ?? ""}`)) return false;
               const category = tx.description?.startsWith(SHARED_PREFIX) && tx.category ? tx.category : categorizeTx(tx, categories.rules);
-              return (catOverrides[tx.id] ?? match(category) ?? "others") === row.id;
+              return (normalizeExpenseCategoryId(catOverrides[tx.id] ?? match(category)) ?? "others") === row.id;
             });
             return (
               <CategoryDetailDialog
