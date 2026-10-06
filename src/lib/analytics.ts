@@ -52,10 +52,31 @@ export function initGTM() {
   gtmLoaded = true;
 }
 
-function pushGtag(...args: unknown[]) {
+// gtag.js solo procesa objetos `arguments`, no arrays.
+function pushGtag(..._args: unknown[]) {
   if (typeof window === "undefined") return;
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push(args);
+  // eslint-disable-next-line prefer-rest-params
+  window.dataLayer.push(arguments);
+}
+
+export type ConversionEvent = "sign_up" | "login" | "demo_start" | "demo_complete";
+
+/**
+ * Evento de conversión para GA4 (gtag) y GTM (dataLayer).
+ * GA4 solo con consentimiento de analítica; GTM solo con consentimiento de marketing.
+ * En GTM crea un activador "Evento personalizado" con el mismo nombre (sign_up, login, demo_start, demo_complete).
+ */
+export function trackConversion(name: ConversionEvent, params: Record<string, unknown> = {}) {
+  if (typeof window === "undefined") return;
+  if (hasAnalyticsConsent()) {
+    if (!initialized) initGA();
+    pushGtag("event", name, params);
+  }
+  if (hasMarketingConsent()) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: name, ...params });
+  }
 }
 
 function updateConsentState() {

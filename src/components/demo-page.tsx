@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LanguageToggle, useLanguage, useT } from "@/hooks/use-language";
 import { saveDemoSnapshot } from "@/lib/demo-snapshot";
+import { trackConversion } from "@/lib/analytics";
 
 const RETURN_RATE = 0.07;
 const WITHDRAW_RATE = 0.07;
@@ -37,6 +38,12 @@ export function DemoPage() {
   useEffect(() => {
     if (start === 1 && step === 0) setStep(1);
   }, [start, step]);
+
+  useEffect(() => {
+    if (step === 1) trackConversion("demo_start", { demo: "adults", language: lang });
+    if (step === 4) trackConversion("demo_complete", { demo: "adults", language: lang, currency });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
 
   // Guardamos el resultado del demo para poder alimentar el dashboard.
   useEffect(() => {

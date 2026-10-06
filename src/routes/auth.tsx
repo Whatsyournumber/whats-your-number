@@ -27,6 +27,7 @@ import reviewCarlos from "@/assets/review-carlos.jpg";
 import reviewMariana from "@/assets/review-mariana.jpg";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { trackConversion } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -458,10 +459,12 @@ function AuthPage() {
           return;
         }
         if (error) throw error;
+        trackConversion("sign_up", { method: "email" });
         toast.success(t("auth.toast.signup"));
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        trackConversion("login", { method: "email" });
         toast.success(t("auth.toast.login"));
       }
     } catch (err) {
@@ -503,6 +506,7 @@ function AuthPage() {
         setBusy(false);
         return;
       }
+      trackConversion(mode === "signup" ? "sign_up" : "login", { method: "google" });
       if (result.redirected) return;
       const pendingPlan = getPendingCheckoutPlan();
       if (pendingPlan) navigate({ to: "/precios", search: { plan: pendingPlan } });
