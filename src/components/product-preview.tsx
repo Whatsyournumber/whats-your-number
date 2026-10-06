@@ -334,7 +334,7 @@ export function ProductPreview() {
                 className={cn(
                   "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all",
                   active === v.id
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary hover:text-primary-foreground"
                     : "bg-elevated text-muted-foreground hover:bg-elevated/80 hover:text-foreground",
                 )}
               >

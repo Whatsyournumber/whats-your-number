@@ -31,17 +31,6 @@ button:disabled,
 
 @custom-variant dark (&:is(.dark *));
 
-/* Selected daily-spending direction, scoped to the public showcase. */
-.dark .daily-spending-showcase {
-  --card: oklch(from #0d1212 l c h);
-  --elevated: oklch(from #141a1a l c h);
-  --foreground: oklch(from #ffffff l c h);
-  --positive: oklch(from #4ade80 l c h);
-  --chart-2: oklch(from #22d3ee l c h);
-  --chart-4: oklch(from #a78bfa l c h);
-  --border: oklch(from #ffffff l c h / 0.05);
-}
-
 /*
  * Personal Finance OS — design system.
  * Dark-first, premium fintech aesthetic (Monarch / Copilot / Linear).
