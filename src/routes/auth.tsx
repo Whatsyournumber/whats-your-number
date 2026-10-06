@@ -27,6 +27,7 @@ import reviewCarlos from "@/assets/review-carlos.jpg";
 import reviewMariana from "@/assets/review-mariana.jpg";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { trackConversion } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
