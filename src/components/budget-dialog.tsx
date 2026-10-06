@@ -173,9 +173,6 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
   const openAddCategory = () => {
     setCustomGroup("lifestyle");
     setAdding(true);
-    window.requestAnimationFrame(() =>
-      addCategoryRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }),
-    );
   };
 
   return (
@@ -189,7 +186,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
       >
         {/* Cabecera con el total mensual (no editable; se edita en el pie). */}
         <DialogHeader className="sticky top-0 z-10 -mx-3 min-w-0 space-y-1.5 bg-background/95 px-3 pb-4 pt-6 text-left backdrop-blur-sm sm:-mx-6 sm:px-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 pr-9 sm:pr-10">
             <DialogTitle className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
               {t("Tu plan de gasto mensual", "Your monthly spending plan")}
             </DialogTitle>
@@ -197,7 +194,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
               <Button
                 type="button"
                 size="icon"
-                className="h-8 w-8 shrink-0 rounded-full"
+                className="ml-auto h-8 w-8 shrink-0 rounded-full"
                 onClick={openAddCategory}
                 aria-label={t("Añadir otra categoría", "Add another category")}
                 title={t("Añadir otra categoría", "Add another category")}
