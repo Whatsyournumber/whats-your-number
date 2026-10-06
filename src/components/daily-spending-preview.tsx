@@ -60,7 +60,7 @@ export function DailySpendingPreview() {
         </div>
         <div className="mt-7 flex items-start gap-4 rounded-lg border border-positive/20 bg-elevated p-5">
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><Bot className="h-5 w-5" /></span>
-          <div className="min-w-0"><h4 className="mb-1 text-sm font-semibold text-positive">AI Advisor</h4><p className="text-sm leading-relaxed text-foreground/75">{t("Tu gasto en ocio es un 12% menor que el mes pasado. Si mantienes este ritmo, podrías ahorrar €240 adicionales para tu objetivo de inversión.", "Your leisure spending is 12% lower than last month. At this pace, you could save an extra €240 toward your investment goal.")}</p></div>
+          <div className="min-w-0"><h4 className="mb-1 text-sm font-semibold text-positive">AI Advisor</h4><p className="text-sm leading-relaxed text-foreground/75"><span className="line-clamp-2 md:hidden">{t("Tu gasto en ocio bajó 12%: a este ritmo ahorras €240 más.", "Leisure spending fell 12%: at this pace you save €240 more.")}</span><span className="hidden md:inline">{t("Tu gasto en ocio es un 12% menor que el mes pasado. Si mantienes este ritmo, podrías ahorrar €240 adicionales para tu objetivo de inversión.", "Your leisure spending is 12% lower than last month. At this pace, you could save an extra €240 toward your investment goal.")}</span></p></div>
         </div>
         <div className="mt-7 grid gap-5 sm:grid-cols-3">
           {[

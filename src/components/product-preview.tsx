@@ -166,13 +166,24 @@ export function ProductPreview() {
     },
   };
 
-  const insights: Record<(typeof views)[number]["id"], { icon: typeof Sparkles; text: string }> = {
-    tracking: { icon: Wallet, text: t("Controla tu dinero día a día", "Control your money daily") },
+  const insights: Record<
+    (typeof views)[number]["id"],
+    { icon: typeof Sparkles; text: string; short: string }
+  > = {
+    tracking: {
+      icon: Wallet,
+      text: t("Controla tu dinero día a día", "Control your money daily"),
+      short: t("Controla tu dinero día a día", "Control your money daily"),
+    },
     portafolio: {
       icon: TrendingUp,
       text: t(
         "Tu cartera supera al S&P 500 en 6.1 pts: el 46% en ETFs es lo que amortigua la volatilidad.",
         "Your portfolio beats the S&P 500 by 6.1 pts: the 46% in ETFs is what cushions volatility.",
+      ),
+      short: t(
+        "Tu cartera supera al S&P 500 en 6.1 pts gracias al 46% en ETFs.",
+        "Your portfolio beats the S&P 500 by 6.1 pts thanks to 46% in ETFs.",
       ),
     },
     gastos: {
@@ -181,12 +192,20 @@ export function ProductPreview() {
         "Detecté 3 suscripciones sin uso y un 18% en restaurantes: recortando ahí ahorras €84/mes.",
         "I found 3 unused subscriptions and 18% in restaurants: trimming there saves you €84/mo.",
       ),
+      short: t(
+        "3 suscripciones sin uso y 18% en restaurantes: recórtalos y ahorra €84/mes.",
+        "3 unused subscriptions and 18% in restaurants: trim them and save €84/mo.",
+      ),
     },
     hipoteca: {
       icon: Home,
       text: t(
         "Abonando €500/mes al capital pagas €49.606 menos en intereses y terminas 4 años antes.",
         "Paying €500/mo extra to principal cuts €49,606 in interest and ends it 4 years sooner.",
+      ),
+      short: t(
+        "Abona €500/mes: ahorras €49.606 y terminas 4 años antes.",
+        "Pay €500/mo extra: save €49,606 and finish 4 years sooner.",
       ),
     },
     nextcity: {
@@ -195,12 +214,20 @@ export function ProductPreview() {
         "Lisboa cuesta €400/mes menos que Madrid: mudarte adelantaría tu número casi 1 año.",
         "Lisbon costs €400/mo less than Madrid: moving would pull your number forward almost a year.",
       ),
+      short: t(
+        "Lisboa cuesta €400/mes menos que Madrid y adelanta tu número.",
+        "Lisbon costs €400/mo less than Madrid and moves your number up.",
+      ),
     },
     whatsyournumber: {
       icon: FileText,
       text: t(
         "Si mantienes este ritmo de ahorro, llegas a tu número 2 años antes de lo previsto.",
         "At this savings pace, you reach your number 2 years ahead of plan.",
+      ),
+      short: t(
+        "A este ritmo de ahorro llegas 2 años antes de lo previsto.",
+        "At this savings pace you reach your number 2 years sooner.",
       ),
     },
   };
@@ -610,7 +637,8 @@ export function ProductPreview() {
                 className="mt-1.5 flex items-start gap-2 text-xs text-foreground"
               >
                 <Insight.icon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
-                {Insight.text}
+                <span className="min-w-0 line-clamp-2 md:hidden">{Insight.short}</span>
+                <span className="hidden min-w-0 md:inline">{Insight.text}</span>
               </motion.p>
             </AnimatePresence>
           </div>
