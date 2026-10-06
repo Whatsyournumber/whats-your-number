@@ -20,7 +20,6 @@ export function DailySpendingPreview() {
   const reducedMotion = useReducedMotion();
   const gradientId = useId().replace(/:/g, "");
   const [tab, setTab] = useState<"all" | "mine" | "shared">("all");
-  const [fixedOpen, setFixedOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const expenses = [
     { name: "Ahorramas", category: t("Supermercado", "Groceries"), date: t("Hoy", "Today"), amount: "€32.40", icon: ShoppingBasket, shared: true },
