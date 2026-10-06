@@ -190,24 +190,27 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
             <DialogTitle className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
               {t("Tu plan de gasto mensual", "Your monthly spending plan")}
             </DialogTitle>
+          </div>
+          {/* Total + botón de añadir categoría, alineados con la cifra. */}
+          <div className="flex items-center justify-between gap-3 pr-14 sm:pr-16">
+            <div className="flex min-w-0 items-center gap-2">
+              <span className="numeric text-3xl font-semibold">
+                {new Intl.NumberFormat(lang === "es" ? "es-ES" : "en-US", { maximumFractionDigits: 0 }).format(total)}
+              </span>
+              <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
+            </div>
             {!adding ? (
               <Button
                 type="button"
                 size="icon"
-                className="ml-auto h-8 w-8 shrink-0 rounded-full"
+                className="h-11 w-11 shrink-0 rounded-full"
                 onClick={openAddCategory}
                 aria-label={t("Añadir otra categoría", "Add another category")}
                 title={t("Añadir otra categoría", "Add another category")}
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-5 w-5" />
               </Button>
             ) : null}
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="numeric text-3xl font-semibold">
-              {new Intl.NumberFormat(lang === "es" ? "es-ES" : "en-US", { maximumFractionDigits: 0 }).format(total)}
-            </span>
-            <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
           </div>
           <DialogDescription className="text-xs leading-4 text-muted-foreground">
             <span className="sm:hidden">
