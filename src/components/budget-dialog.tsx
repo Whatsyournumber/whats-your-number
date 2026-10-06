@@ -223,6 +223,57 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
 
         </DialogHeader>
 
+        {/* Formulario de nueva categoría: se abre aquí, bajo la cabecera. */}
+        {adding ? (
+          <div ref={addCategoryRef} className="scroll-mt-24 space-y-4 rounded-xl border border-border/60 bg-card/40 p-3 sm:p-4">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm font-semibold">{t("¿Qué tipo de gasto es?", "What type of expense is it?")}</p>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                className="h-9 w-9 shrink-0"
+                onClick={() => {
+                  setAdding(false);
+                  setCustomName("");
+                }}
+                aria-label={t("Cerrar", "Close")}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("Tipo de gasto", "Expense type")}>
+              {(["essentials", "lifestyle"] as const).map((group) => {
+                const selected = customGroup === group;
+                return (
+                  <Button
+                    key={group}
+                    type="button"
+                    variant={selected ? "default" : "outline"}
+                    className="h-12 whitespace-nowrap px-2 text-sm"
+                    onClick={() => setCustomGroup(group)}
+                    aria-pressed={selected}
+                  >
+                    {group === "essentials"
+                      ? t("Gastos fijos", "Fixed expenses")
+                      : t("Gastos variables", "Variable expenses")}
+                  </Button>
+                );
+              })}
+            </div>
+            <div className="flex items-center gap-2">
+              <Input
+                value={customName}
+                onChange={(e) => setCustomName(e.target.value)}
+                placeholder={t("Otra categoría", "Another category")}
+                className="h-9 text-sm"
+              />
+              <Button type="button" size="sm" variant="secondary" onClick={addCustom} disabled={!customName.trim()}>
+                {t("Añadir", "Add")}
+              </Button>
+            </div>
+          </div>
+        ) : null}
 
         <div className="space-y-4">
           {(["essentials", "lifestyle", "other"] as BudgetGroup[]).map((g) => {
