@@ -189,10 +189,23 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
       >
         {/* Cabecera con el total mensual (no editable; se edita en el pie). */}
         <DialogHeader className="sticky top-0 z-10 -mx-3 min-w-0 space-y-1.5 bg-background/95 px-3 pb-4 pt-6 text-left backdrop-blur-sm sm:-mx-6 sm:px-6">
-          <DialogTitle className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-
-            {t("Tu plan de gasto mensual", "Your monthly spending plan")}
-          </DialogTitle>
+          <div className="flex items-center gap-3">
+            <DialogTitle className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              {t("Tu plan de gasto mensual", "Your monthly spending plan")}
+            </DialogTitle>
+            {!adding ? (
+              <Button
+                type="button"
+                size="icon"
+                className="h-8 w-8 shrink-0 rounded-full"
+                onClick={openAddCategory}
+                aria-label={t("Añadir otra categoría", "Add another category")}
+                title={t("Añadir otra categoría", "Add another category")}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            ) : null}
+          </div>
           <div className="flex items-center gap-2">
             <span className="numeric text-3xl font-semibold">
               {new Intl.NumberFormat(lang === "es" ? "es-ES" : "en-US", { maximumFractionDigits: 0 }).format(total)}
@@ -224,18 +237,6 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
                   <p className="min-w-0 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
                     {t(GROUP_LABELS[g].es, GROUP_LABELS[g].en)}
                   </p>
-                  {g === "lifestyle" && !adding ? (
-                    <Button
-                      type="button"
-                      size="icon"
-                      className="h-8 w-8 shrink-0 rounded-full"
-                      onClick={openAddCategory}
-                      aria-label={t("Añadir otra categoría", "Add another category")}
-                      title={t("Añadir otra categoría", "Add another category")}
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  ) : null}
                 </div>
                 {groupLines.map((l) => (
                   <div key={l.id} className="group min-w-0 rounded-xl border border-border/50 px-2 py-2 sm:px-3">
