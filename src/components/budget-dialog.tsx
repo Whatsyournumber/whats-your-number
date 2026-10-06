@@ -58,6 +58,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
   const [editingName, setEditingName] = useState("");
   const [appsOpen, setAppsOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const addCategoryRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -169,6 +170,14 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
     setAdding(false);
   };
 
+  const openAddCategory = () => {
+    setCustomGroup("lifestyle");
+    setAdding(true);
+    window.requestAnimationFrame(() =>
+      addCategoryRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }),
+    );
+  };
+
   return (
     <Dialog open={open} onOpenChange={requestOpenChange}>
       <DialogContent
@@ -211,9 +220,23 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
             if (!groupLines.length) return null;
             return (
               <div key={g} className="space-y-2">
-                <p className="min-w-0 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                  {t(GROUP_LABELS[g].es, GROUP_LABELS[g].en)}
-                </p>
+                <div className="flex min-w-0 items-center justify-between gap-3">
+                  <p className="min-w-0 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                    {t(GROUP_LABELS[g].es, GROUP_LABELS[g].en)}
+                  </p>
+                  {g === "lifestyle" && !adding ? (
+                    <Button
+                      type="button"
+                      size="icon"
+                      className="h-8 w-8 shrink-0 rounded-full"
+                      onClick={openAddCategory}
+                      aria-label={t("Añadir otra categoría", "Add another category")}
+                      title={t("Añadir otra categoría", "Add another category")}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  ) : null}
+                </div>
                 {groupLines.map((l) => (
                   <div key={l.id} className="group min-w-0 rounded-xl border border-border/50 px-2 py-2 sm:px-3">
                     <div className="flex min-w-0 items-center gap-1.5 sm:gap-3">
@@ -341,7 +364,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
         </div>
 
         {adding ? (
-          <div className="space-y-4 rounded-xl border border-border/60 bg-card/40 p-3 sm:p-4">
+          <div ref={addCategoryRef} className="scroll-mt-24 space-y-4 rounded-xl border border-border/60 bg-card/40 p-3 sm:p-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-semibold">{t("¿Qué tipo de gasto es?", "What type of expense is it?")}</p>
               <Button
@@ -389,12 +412,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
               </Button>
             </div>
           </div>
-        ) : (
-          <Button type="button" variant="outline" size="sm" className="w-fit" onClick={() => setAdding(true)}>
-            <Plus className="mr-1 h-4 w-4" />
-            {t("Añadir categoría", "Add category")}
-          </Button>
-        )}
+        ) : null}
 
         <div className="flex min-w-0 flex-col gap-3 border-t border-border/60 pt-3 sm:flex-row sm:items-center sm:justify-between">
           {!adding ? <div className="flex items-center gap-2">
