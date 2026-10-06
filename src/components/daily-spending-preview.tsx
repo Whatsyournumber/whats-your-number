@@ -2,7 +2,7 @@ import { useId, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 import { useReducedMotion } from "motion/react";
-import { Bot, Camera, ChevronDown, Mic, PencilLine, Plus, ShoppingBasket, Users, Utensils, Upload, Wallet } from "lucide-react";
+import { Bot, Camera, Mic, PencilLine, Plus, ShoppingBasket, Users, Utensils, Upload, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
 import { cn } from "@/lib/utils";
@@ -69,10 +69,6 @@ export function DailySpendingPreview() {
             { label: t("Restaurantes", "Restaurants"), amount: "€240", progress: "w-2/5", color: "bg-chart-2" },
             { label: t("Otros gastos", "Other spending"), amount: "€340", progress: "w-[55%]", color: "bg-chart-4" },
           ].map((category) => <div key={category.label} className="min-w-0"><div className="flex flex-wrap justify-between gap-1 text-xs font-medium"><span className="text-muted-foreground">{category.label}</span><span className="numeric">{category.amount}</span></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-border"><div className={cn("h-full rounded-full", category.progress, category.color)} /></div></div>)}
-        </div>
-        <div className="mt-5 border-t border-border pt-2">
-          <Button variant="ghost" className="w-full justify-between px-0 text-xs text-muted-foreground" aria-expanded={fixedOpen} onClick={() => setFixedOpen(!fixedOpen)}>{t("Gastos fijos", "Fixed expenses")}<ChevronDown className={cn("transition-transform", fixedOpen && "rotate-180")} /></Button>
-          {fixedOpen && <div className="space-y-2 pb-2 text-xs"><div className="flex justify-between"><span className="text-muted-foreground">{t("Alquiler", "Rent")}</span><span className="numeric">€850</span></div><div className="flex justify-between gap-2"><span className="text-muted-foreground">{t("Apps y suscripciones", "Apps & subscriptions")}</span><span className="numeric">€50</span></div><div className="flex justify-between border-t border-border pt-2 font-semibold"><span>Total</span><span className="numeric">€900</span></div></div>}
         </div>
       </div>
       <div className="min-w-0 border-t border-border bg-elevated/30 p-5 sm:p-6 md:border-l md:border-t-0">
