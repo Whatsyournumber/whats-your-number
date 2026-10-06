@@ -186,7 +186,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt, appSubs, 
       >
         {/* Cabecera con el total mensual (no editable; se edita en el pie). */}
         <DialogHeader className="sticky top-0 z-10 -mx-3 min-w-0 space-y-1.5 bg-background/95 px-3 pb-4 pt-6 text-left backdrop-blur-sm sm:-mx-6 sm:px-6">
-          <div className="flex items-center gap-3 pr-9 sm:pr-10">
+          <div className="flex items-center gap-3 pr-16 sm:pr-16">
             <DialogTitle className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
               {t("Tu plan de gasto mensual", "Your monthly spending plan")}
             </DialogTitle>
