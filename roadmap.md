@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Portada: Tracking de Gastos diarios primero, Análisis de gasto segundo y Portfolio tercero; muestra basada en Mis gastos diarios.
+- [x] Portada: Tracking de Gastos diarios primero, Análisis de gasto segundo y Portfolio tercero; muestra basada en Mis gastos diarios.
 
 - [ ] Análisis de nightlife: salidas al mes, ticket promedio por salida y cómo bajarlo para entrar en el budget.
 - [ ] Ajustar editor de gasto y resumen compartido para iPhone 14; notificar al otro participante cuando se crea o elimina un gasto y sincronizar la eliminación.
