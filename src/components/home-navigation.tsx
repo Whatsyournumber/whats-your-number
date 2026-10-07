@@ -53,7 +53,7 @@ export function HomeNavigation() {
               animate={{ opacity: 1, x: 0, y: '-50%', scale: 1 }}
               exit={{ opacity: 0, x: slide, y: '-50%', scale: 0.96 }}
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="contact-bubble absolute right-16 top-1/2 flex items-center gap-2.5 whitespace-nowrap rounded-xl py-2.5 pl-7 pr-4"
+              className="contact-bubble absolute right-16 top-1/2 flex items-center gap-2.5 whitespace-nowrap rounded-xl py-2.5 pl-4 pr-4"
             >
               <svg
                 aria-hidden="true"
@@ -62,7 +62,7 @@ export function HomeNavigation() {
                 stroke="currentColor"
                 strokeWidth="2.4"
                 strokeLinecap="round"
-                className="contact-sparkle absolute left-2 top-1/2 size-5 -translate-y-1/2 text-positive"
+                className="contact-sparkle absolute -left-1.5 -top-2.5 size-5 text-positive"
               >
                 <path d="M14.6 3.4 L16 7.4" />
                 <path d="M8.4 8.2 L11.6 11.2" />
