@@ -105,7 +105,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
     ],
     scripts: [
-      { src: "https://t.contentsquare.net/uxa/155389cb90f8b.js", async: true },
+      { src: "https://t.contentsquare.net/uxa/155389cb90f8b.js", defer: true },
       {
         type: "application/ld+json",
         children: JSON.stringify({
