@@ -31,7 +31,7 @@ import { useLiveCount, formatCount } from "@/components/live-count";
 import { RotatingAvatars } from "@/components/rotating-avatars";
 import { ProductPreview } from "@/components/product-preview";
 import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
+import { HomeNavigation } from "@/components/home-navigation";
 import { Button } from "@/components/ui/button";
 import { FaqSection } from "@/components/faq-section";
 import { useAuth } from "@/hooks/use-auth";
@@ -441,9 +441,7 @@ export function Landing() {
     <div className="relative min-h-screen overflow-hidden bg-background">
       <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl" />
 
-      <div className="absolute inset-x-0 top-0 z-30">
-        <SiteHeader />
-      </div>
+      <HomeNavigation />
 
       <main className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-10 md:pb-12">
 

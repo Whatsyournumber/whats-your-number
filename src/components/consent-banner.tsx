@@ -64,7 +64,7 @@ export function ConsentBanner() {
 
   return (
     <>
-      <div className="fixed inset-x-0 bottom-0 z-[70] p-3 sm:p-4">
+      <div data-cookie-banner className="fixed inset-x-0 bottom-0 z-[70] p-3 sm:p-4">
         <div className="surface mx-auto flex max-w-4xl flex-col gap-3 rounded-2xl border border-border/70 bg-background/95 p-4 shadow-2xl backdrop-blur-xl sm:flex-row sm:items-center sm:gap-4">
           <div className="flex items-start gap-3">
             <Cookie className="mt-0.5 h-4 w-4 shrink-0 text-primary" />

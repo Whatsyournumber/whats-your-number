@@ -31,6 +31,12 @@ button:disabled,
 
 @custom-variant dark (&:is(.dark *));
 
+@media (min-width: 1024px) {
+  body:has([data-cookie-banner]) .home-contact-link {
+    bottom: 9rem;
+  }
+}
+
 /*
  * Personal Finance OS — design system.
  * Dark-first, premium fintech aesthetic (Monarch / Copilot / Linear).
