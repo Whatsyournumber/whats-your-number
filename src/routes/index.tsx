@@ -705,12 +705,12 @@ export function Landing() {
               {t("Cómo funciona", "How it works")}
             </span>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
-              {t("Tu dinero, con dirección", "Your money, with direction")}
+              {t("Tu dinero, con propósito", "Your money, with purpose")}
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">
               {t(
-                "Cuéntanos tu objetivo —libertad financiera, tu primera hipoteca, crear un negocio, estudiar un MBA, mudarte de país o tener el control de tu dinero. La IA te muestra el camino para alcanzarlo.",
-                "Tell us your goal —financial freedom, your first mortgage, starting a business, an MBA, moving abroad or taking control of your money. Built for personal finance for families, the AI shows you the path to reach it.",
+                "Cuéntanos tu objetivo —monitorear el día a día de tus gastos, libertad financiera, tu primera hipoteca, crear un negocio, estudiar un MBA o mudarte de país. La IA te muestra el camino para alcanzarlo.",
+                "Tell us your goal —tracking your day-to-day spending, financial freedom, your first mortgage, starting a business, an MBA or moving abroad. The AI shows you the path to reach it.",
               )}
             </p>
           </motion.div>
