@@ -42,8 +42,8 @@ button:disabled,
   background: #ffffff;
   box-shadow:
     0 0 0 1px color-mix(in oklab, #ffffff 92%, transparent),
-    0 0 0 5px color-mix(in oklab, var(--muted-foreground) 34%, transparent),
-    0 0 16px 2px color-mix(in oklab, var(--positive) 50%, transparent),
+    0 0 0 5px color-mix(in oklab, var(--muted-foreground) 30%, transparent),
+    0 0 12px 1px color-mix(in oklab, var(--positive) 26%, transparent),
     0 12px 28px -10px color-mix(in oklab, #000000 75%, transparent);
 }
 
@@ -51,23 +51,23 @@ button:disabled,
 @keyframes contact-avatar-shimmer {
   0%,
   100% {
-    opacity: 0.3;
-    transform: scale(0.96);
+    opacity: 0.16;
+    transform: scale(0.98);
   }
   50% {
-    opacity: 0.9;
-    transform: scale(1.14);
+    opacity: 0.46;
+    transform: scale(1.08);
   }
 }
 
 .contact-avatar-halo {
   background: radial-gradient(
     circle,
-    color-mix(in oklab, var(--positive) 78%, transparent) 0 38%,
-    transparent 74%
+    color-mix(in oklab, var(--positive) 46%, transparent) 0 40%,
+    transparent 76%
   );
-  filter: blur(7px);
-  animation: contact-avatar-shimmer 3.2s ease-in-out infinite;
+  filter: blur(10px);
+  animation: contact-avatar-shimmer 4.6s ease-in-out infinite;
   will-change: opacity, transform;
 }
 
