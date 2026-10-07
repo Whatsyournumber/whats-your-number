@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Home en escritorio: acceso flotante a Contacto y menú visible al bajar; mantener móvil sin cambios.
+- [x] Home en escritorio: acceso flotante a Contacto y menú visible al bajar; mantener móvil sin cambios.
 
 - [x] Portada: Tracking de Gastos diarios primero, Análisis de gasto segundo y Portfolio tercero; muestra basada en Mis gastos diarios.
 - [x] Hacer la muestra de gastos diarios más gráfica con el diseño elegido «Gráfico y movimientos».
