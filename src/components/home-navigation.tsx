@@ -23,8 +23,8 @@ export function HomeNavigation() {
       <div
         data-home-navigation
         className={cn(
-          'absolute inset-x-0 top-0 z-30 lg:fixed lg:transition-colors lg:duration-200 motion-reduce:transition-none',
-          scrolled && 'lg:border-b lg:border-border/50 lg:bg-background/70 lg:backdrop-blur-xl',
+'fixed inset-x-0 top-0 z-30 transition-colors duration-200 motion-reduce:transition-none',
+          scrolled && 'border-b border-border/50 bg-background/70 backdrop-blur-xl',
         )}
       >
         <SiteHeader />
