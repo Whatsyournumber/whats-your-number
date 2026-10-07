@@ -57,7 +57,7 @@ import avatarFaces from "@/assets/kids-avatars-three.png";
 import stageBaby from "@/assets/kid-stage-baby.jpg";
 import stageBoy from "@/assets/kid-stage-boy.jpg";
 import stageTeen from "@/assets/kid-stage-teen.jpg";
-import { SiteHeader } from "@/components/site-header";
+import { HomeNavigation } from "@/components/home-navigation";
 import { SiteFooter } from "@/components/site-footer";
 import { FaqSection } from "@/components/faq-section";
 import { useT } from "@/hooks/use-language";
@@ -2650,7 +2650,7 @@ export function KidsFinanceLanding() {
 
   return (
     <div className="min-h-screen">
-      <SiteHeader />
+      <HomeNavigation />
 
       <main className="pt-16">
         <motion.section
