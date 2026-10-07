@@ -709,8 +709,8 @@ export function Landing() {
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">
               {t(
-                "Cuéntanos tu objetivo —monitorear el día a día de tus gastos, libertad financiera, tu primera hipoteca, crear un negocio, estudiar un MBA o mudarte de país. La IA te muestra el camino para alcanzarlo.",
-                "Tell us your goal —tracking your day-to-day spending, financial freedom, your first mortgage, starting a business, an MBA or moving abroad. The AI shows you the path to reach it.",
+                "Cuéntanos tu objetivo — monitorear el día a día de tus gastos, libertad financiera, tu primera hipoteca, crear un negocio, estudiar un MBA o mudarte de país. La IA te muestra el camino para alcanzarlo.",
+                "Tell us your goal — tracking your day-to-day spending, financial freedom, your first mortgage, starting a business, an MBA or moving abroad. The AI shows you the path to reach it.",
               )}
             </p>
           </motion.div>
