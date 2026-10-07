@@ -2650,7 +2650,7 @@ export function KidsFinanceLanding() {
 
   return (
     <div className="min-h-screen">
-      <SiteHeader />
+      <HomeNavigation />
 
       <main className="pt-16">
         <motion.section
