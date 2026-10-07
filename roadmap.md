@@ -4,6 +4,7 @@
 
 - [x] Acceso flotante de contacto: más compacto, abanico de tres rayitas verdes bien colocado y halo verde titilando detrás de la foto.
 - [x] Acceso flotante de contacto: un poco más grande, glow circular más sutil y bocadillo «¿Tienes dudas?» que aparece solo al bajar.
+- [x] Acceso flotante de contacto: las tres rayitas verdes de vuelta en la esquina superior izquierda del bocadillo.
 
 
 
