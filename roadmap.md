@@ -3,6 +3,8 @@
 - [x] Home en escritorio: acceso flotante a Contacto y menú visible al bajar; mantener móvil sin cambios.
 
 - [x] Acceso flotante de contacto: más compacto, abanico de tres rayitas verdes bien colocado y halo verde titilando detrás de la foto.
+- [x] Acceso flotante de contacto: un poco más grande, glow circular más sutil y bocadillo «¿Tienes dudas?» que aparece solo al bajar.
+
 
 
 - [x] Portada: Tracking de Gastos diarios primero, Análisis de gasto segundo y Portfolio tercero; muestra basada en Mis gastos diarios.
