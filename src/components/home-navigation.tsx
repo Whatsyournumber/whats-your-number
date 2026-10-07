@@ -31,50 +31,52 @@ export function HomeNavigation() {
       <Link
         to="/contacto"
         aria-label={t('Atención al cliente: Contacto', 'Customer support: Contact')}
-        className="home-contact-link group fixed bottom-8 right-8 z-40 hidden items-center gap-4 lg:flex"
+        className="home-contact-link group fixed bottom-6 right-6 z-40 hidden items-center gap-2.5 lg:flex"
       >
-        <span className="contact-bubble relative rounded-2xl py-4 pl-7 pr-7 shadow-xl shadow-black/30 transition-transform duration-200 group-hover:-translate-y-0.5 motion-reduce:transition-none">
+        <span className="contact-bubble relative rounded-xl py-2 pl-3.5 pr-3 transition-transform duration-200 group-hover:-translate-y-0.5 motion-reduce:transition-none">
           <svg
             aria-hidden="true"
-            viewBox="0 0 22 22"
+            viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2.6"
+            strokeWidth="2.4"
             strokeLinecap="round"
-            className="absolute -left-1 top-2.5 size-5 text-positive"
+            className="contact-sparkle absolute -left-1.5 -top-2 size-5 text-positive"
           >
-            <path d="M15 4 L13 9" />
-            <path d="M9.5 5.5 L10 10" />
-            <path d="M4.5 9 L7 12" />
+            <path d="M14.6 3.4 L16 7.4" />
+            <path d="M8.4 8.2 L11.6 11.2" />
+            <path d="M3 14.6 L7.1 15.8" />
           </svg>
-          <span className="block text-lg font-bold leading-tight tracking-tight">
+          <span className="block text-[13px] font-bold leading-tight tracking-tight">
             {t('¿Tienes dudas?', 'Any questions?')}
           </span>
-          <span className="block text-base opacity-60">
+          <span className="block text-[11px] leading-tight opacity-60">
             {t('Estamos aquí para ayudarte', 'We’re here to help')}
           </span>
           <span
             aria-hidden="true"
-            className="absolute -right-1.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 rotate-45 bg-white"
+            className="absolute -right-1 top-1/2 size-2 -translate-y-1/2 rotate-45 bg-white"
           />
         </span>
-        <span className="relative flex size-28 items-center justify-center">
+        <span className="relative flex size-12 items-center justify-center">
           <span
             aria-hidden="true"
-            className="contact-avatar-halo absolute -inset-1.5 rounded-full"
+            className="contact-avatar-halo absolute -inset-3 rounded-full"
           />
           <span
             aria-hidden="true"
-            className="absolute inset-0 rounded-full bg-background ring-1 ring-border/60"
+            className="contact-avatar-sheen absolute -inset-2 rounded-full"
           />
-          <img
-            src={contactAvatar}
-            alt=""
-            loading="lazy"
-            width={816}
-            height={816}
-            className="relative size-24 rounded-full object-cover ring-2 ring-background"
-          />
+          <span className="contact-avatar-frame relative flex size-11 items-center justify-center rounded-full">
+            <img
+              src={contactAvatar}
+              alt=""
+              loading="lazy"
+              width={816}
+              height={816}
+              className="size-9 rounded-full object-cover"
+            />
+          </span>
         </span>
       </Link>
     </>

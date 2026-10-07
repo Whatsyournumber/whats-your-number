@@ -34,38 +34,95 @@ button:disabled,
 .contact-bubble {
   background: #ffffff;
   color: #0f172a;
+  box-shadow: 0 10px 28px -12px color-mix(in oklab, #000000 70%, transparent);
 }
 
-@media (min-width: 1024px) {
-  body:has([data-cookie-banner]) .home-contact-link {
-    bottom: 9rem;
-  }
+/* Marco de la foto: anillo blanco fino + anillo gris oscuro grueso + brillo verde */
+.contact-avatar-frame {
+  background: #ffffff;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, #ffffff 92%, transparent),
+    0 0 0 5px color-mix(in oklab, var(--muted-foreground) 34%, transparent),
+    0 0 16px 2px color-mix(in oklab, var(--positive) 50%, transparent),
+    0 12px 28px -10px color-mix(in oklab, #000000 75%, transparent);
 }
 
+/* Halo verde que respira detrás de la chica */
 @keyframes contact-avatar-shimmer {
   0%,
   100% {
-    opacity: 0.2;
-    transform: scale(1);
+    opacity: 0.3;
+    transform: scale(0.96);
   }
   50% {
-    opacity: 0.65;
-    transform: scale(1.07);
+    opacity: 0.9;
+    transform: scale(1.14);
   }
 }
 
 .contact-avatar-halo {
   background: radial-gradient(
     circle,
-    color-mix(in oklab, var(--positive) 40%, transparent),
-    transparent 72%
+    color-mix(in oklab, var(--positive) 78%, transparent) 0 38%,
+    transparent 74%
   );
-  animation: contact-avatar-shimmer 2.8s ease-in-out infinite;
+  filter: blur(7px);
+  animation: contact-avatar-shimmer 3.2s ease-in-out infinite;
   will-change: opacity, transform;
 }
 
+/* Brillo que orbita el borde exterior del marco */
+@keyframes contact-avatar-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.contact-avatar-sheen {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    color-mix(in oklab, var(--positive) 95%, transparent) 48deg,
+    transparent 120deg,
+    transparent 360deg
+  );
+  -webkit-mask: radial-gradient(
+    circle,
+    transparent 0 82%,
+    #000 86%,
+    #000 95%,
+    transparent 99%
+  );
+  mask: radial-gradient(circle, transparent 0 82%, #000 86%, #000 95%, transparent 99%);
+  animation: contact-avatar-orbit 6s linear infinite;
+  will-change: transform;
+}
+
+/* Las tres rayitas titilan suave */
+@keyframes contact-sparkle-blink {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.contact-sparkle {
+  animation: contact-sparkle-blink 2.6s ease-in-out infinite;
+}
+
+@media (min-width: 1024px) {
+  body:has([data-cookie-banner]) .home-contact-link {
+    bottom: 8rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .contact-avatar-halo {
+  .contact-avatar-halo,
+  .contact-avatar-sheen,
+  .contact-sparkle {
     animation: none;
   }
 }
