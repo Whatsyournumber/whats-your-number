@@ -1077,7 +1077,7 @@ export function ExpenseLog() {
           planned,
           actual: spentCat,
           pct: planned > 0 ? (spentCat / planned) * 100 : 0,
-          items: sortItems(l.id),
+          items: sortItems(id),
         };
       })
       .sort((a, b) => b.pct - a.pct);
