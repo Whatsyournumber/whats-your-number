@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { MessageCircle } from 'lucide-react'
 
+import contactAvatar from '@/assets/contact-avatar.png'
 import { SiteHeader } from '@/components/site-header'
-import { Button } from '@/components/ui/button'
 import { useT } from '@/hooks/use-language'
 import { cn } from '@/lib/utils'
 
@@ -23,27 +22,61 @@ export function HomeNavigation() {
       <div
         data-home-navigation
         className={cn(
-'fixed inset-x-0 top-0 z-30 transition-colors duration-200 motion-reduce:transition-none',
+          'fixed inset-x-0 top-0 z-30 transition-colors duration-200 motion-reduce:transition-none',
           scrolled && 'border-b border-border/50 bg-background/70 backdrop-blur-xl',
         )}
       >
         <SiteHeader />
       </div>
-      <Button
-        asChild
-        variant="ghost"
-        className="home-contact-link group fixed bottom-8 right-8 z-40 hidden h-auto gap-4 rounded-none p-0 hover:bg-transparent lg:inline-flex"
+      <Link
+        to="/contacto"
+        aria-label={t('Atención al cliente: Contacto', 'Customer support: Contact')}
+        className="home-contact-link group fixed bottom-8 right-8 z-40 hidden items-center gap-4 lg:flex"
       >
-        <Link to="/contacto" aria-label={t('Atención al cliente: Contacto', 'Customer support: Contact')}>
-          <span className="relative rounded-lg border border-border bg-popover px-5 py-3 text-base font-medium text-popover-foreground transition-colors group-hover:border-primary motion-reduce:transition-none">
-            {t('Hablemos', 'Let’s connect')}
-            <span aria-hidden="true" className="absolute -right-1.5 top-1/2 h-3 w-3 -translate-y-1/2 rotate-45 border-r border-t border-border bg-popover transition-colors group-hover:border-primary motion-reduce:transition-none" />
+        <span className="contact-bubble relative rounded-2xl py-4 pl-7 pr-7 shadow-xl shadow-black/30 transition-transform duration-200 group-hover:-translate-y-0.5 motion-reduce:transition-none">
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 22 22"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.6"
+            strokeLinecap="round"
+            className="absolute -left-1 top-2.5 size-5 text-positive"
+          >
+            <path d="M15 4 L13 9" />
+            <path d="M9.5 5.5 L10 10" />
+            <path d="M4.5 9 L7 12" />
+          </svg>
+          <span className="block text-lg font-bold leading-tight tracking-tight">
+            {t('¿Tienes dudas?', 'Any questions?')}
           </span>
-          <span className="grid h-16 w-16 place-items-center rounded-full border border-border bg-background text-foreground ring-2 ring-border/60 ring-offset-2 ring-offset-background transition-colors group-hover:border-primary group-hover:text-primary motion-reduce:transition-none">
-            <MessageCircle aria-hidden="true" className="size-8" strokeWidth={1.5} />
+          <span className="block text-base opacity-60">
+            {t('Estamos aquí para ayudarte', 'We’re here to help')}
           </span>
-        </Link>
-      </Button>
+          <span
+            aria-hidden="true"
+            className="absolute -right-1.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 rotate-45 bg-white"
+          />
+        </span>
+        <span className="relative flex size-28 items-center justify-center">
+          <span
+            aria-hidden="true"
+            className="contact-avatar-halo absolute -inset-1.5 rounded-full"
+          />
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 rounded-full bg-background ring-1 ring-border/60"
+          />
+          <img
+            src={contactAvatar}
+            alt=""
+            loading="lazy"
+            width={816}
+            height={816}
+            className="relative size-24 rounded-full object-cover ring-2 ring-background"
+          />
+        </span>
+      </Link>
     </>
   )
 }
