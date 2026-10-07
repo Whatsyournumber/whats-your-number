@@ -62,7 +62,7 @@ export function HomeNavigation() {
                 stroke="currentColor"
                 strokeWidth="2.4"
                 strokeLinecap="round"
-                className="contact-sparkle absolute -top-[19px] left-2 size-5 text-positive"
+                className="contact-sparkle absolute -left-2 -top-3 size-5 text-positive"
               >
                 <path d="M14.6 3.4 L16 7.4" />
                 <path d="M8.4 8.2 L11.6 11.2" />
