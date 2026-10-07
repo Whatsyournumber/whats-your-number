@@ -31,6 +31,11 @@ button:disabled,
 
 @custom-variant dark (&:is(.dark *));
 
+.contact-bubble {
+  background: #ffffff;
+  color: #0f172a;
+}
+
 @media (min-width: 1024px) {
   body:has([data-cookie-banner]) .home-contact-link {
     bottom: 9rem;
