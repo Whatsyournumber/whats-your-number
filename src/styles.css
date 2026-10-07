@@ -37,6 +37,34 @@ button:disabled,
   }
 }
 
+@keyframes contact-avatar-shimmer {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.07);
+  }
+}
+
+.contact-avatar-halo {
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--positive) 40%, transparent),
+    transparent 72%
+  );
+  animation: contact-avatar-shimmer 2.8s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-avatar-halo {
+    animation: none;
+  }
+}
+
 /*
  * Personal Finance OS — design system.
  * Dark-first, premium fintech aesthetic (Monarch / Copilot / Linear).
