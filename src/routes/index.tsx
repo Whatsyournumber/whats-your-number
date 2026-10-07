@@ -761,7 +761,13 @@ export function Landing() {
 
         <section className="mt-24 md:mt-32">
 
-          <div className="mb-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-10 text-center"
+          >
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("Lo que dicen", "What people say")}
             </span>
