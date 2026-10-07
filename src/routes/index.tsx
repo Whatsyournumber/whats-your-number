@@ -588,7 +588,7 @@ export function Landing() {
               )}
             </p>
 
-          </div>
+          </motion.div>
 
 
           <div className="grid gap-4 text-left md:grid-cols-3">
