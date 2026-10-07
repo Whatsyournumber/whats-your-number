@@ -635,7 +635,13 @@ export function Landing() {
         <section className="relative mt-24 md:mt-32">
           <div className="wealth-gradient pointer-events-none absolute left-1/2 top-10 h-[420px] w-[820px] -translate-x-1/2 rounded-full opacity-[0.10] blur-3xl" />
 
-          <div className="relative mb-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="relative mb-8 text-center"
+          >
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("Así se ve por dentro", "This is what it looks like inside")}
             </span>
