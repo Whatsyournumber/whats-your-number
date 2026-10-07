@@ -13,6 +13,8 @@
 
 The home daily-spending showcase uses an isolated preview component with illustrative data; never mount authenticated expense management on the public home page.
 
+Keep the home-only fixed desktop header and contact shortcut in HomeNavigation, shared by both home languages, so other pages and mobile navigation remain unchanged.
+
 The four entitlements rank free < pro < investor < patrimonio (Family): Free has the number summary on Dashboard and savings goals/money flow, Pro unlocks the full number, AI and planners, Investor adds net worth, portfolio and mortgage, and Family adds children's profiles; keep sidebar and mobile tour destinations aligned with these gates.
 
 The sidebar distributes remaining height among each plan's unlocked groups according to item count, with locked destinations in a collapsible group, so plan navigation remains visible without a main sidebar scrollbar.
