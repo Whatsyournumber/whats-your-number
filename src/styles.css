@@ -102,7 +102,7 @@ button:disabled,
 @keyframes contact-sparkle-blink {
   0%,
   100% {
-    opacity: 0.55;
+    opacity: 0.72;
   }
   50% {
     opacity: 1;

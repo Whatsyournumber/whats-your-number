@@ -33,7 +33,7 @@ export function HomeNavigation() {
         aria-label={t('Atención al cliente: Contacto', 'Customer support: Contact')}
         className="home-contact-link group fixed bottom-6 right-6 z-40 hidden items-center gap-2.5 lg:flex"
       >
-        <span className="contact-bubble relative rounded-xl py-2 pl-3.5 pr-4 transition-transform duration-200 group-hover:-translate-y-0.5 motion-reduce:transition-none">
+        <span className="contact-bubble relative rounded-xl py-2 pl-3.5 pr-3 transition-transform duration-200 group-hover:-translate-y-0.5 motion-reduce:transition-none">
           <svg
             aria-hidden="true"
             viewBox="0 0 24 24"
