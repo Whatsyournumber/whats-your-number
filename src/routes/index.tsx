@@ -780,7 +780,7 @@ export function Landing() {
                 "Real stories from users who moved from confusion to financial clarity.",
               )}
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid gap-4 md:grid-cols-3">
             {reviews.map((r, i) => (
