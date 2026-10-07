@@ -25,10 +25,10 @@ export function renderErrorPage(pathname = "/"): string {
     <meta name="robots" content="noindex" />
     <style>
       *{box-sizing:border-box}
-      body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:3.5rem 1rem;background:#0F172A;color:#F8FAFC;font:15px/1.5 Inter,system-ui,-apple-system,sans-serif;overflow:hidden;position:relative}
+      body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:3.5rem 1rem;background:#14161F;color:#F8FAFC;font:15px/1.5 Inter,system-ui,-apple-system,sans-serif;overflow:hidden;position:relative}
       .sky{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-      .glow{position:absolute;inset:auto 0 0 0;height:33%;background:linear-gradient(to top,rgba(59,130,246,.12),rgba(59,130,246,.04),transparent)}
-      .beam{position:absolute;top:38%;left:50%;width:140vmax;height:40vmax;transform-origin:0 50%;background:conic-gradient(from -12deg at 0 50%,transparent,rgba(59,130,246,.10),transparent 24deg);animation:sweep 9s ease-in-out infinite alternate}
+      .glow{position:absolute;inset:auto 0 0 0;height:33%;background:linear-gradient(to top,rgba(52,211,153,.12),rgba(52,211,153,.04),transparent)}
+      .beam{position:absolute;top:38%;left:50%;width:140vmax;height:40vmax;transform-origin:0 50%;background:conic-gradient(from -12deg at 0 50%,transparent,rgba(52,211,153,.10),transparent 24deg);animation:sweep 9s ease-in-out infinite alternate}
       .star{position:absolute;border-radius:50%;background:#F8FAFC;opacity:.15;animation:twinkle 4s ease-in-out infinite}
       @keyframes twinkle{50%{opacity:.8}}
       @keyframes sweep{from{transform:rotate(160deg)}to{transform:rotate(380deg)}}
@@ -36,17 +36,17 @@ export function renderErrorPage(pathname = "/"): string {
       @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
       main{position:relative;z-index:1;max-width:36rem;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;animation:rise .6s cubic-bezier(.32,.72,0,1) both}
       .pill{display:inline-flex;align-items:center;gap:.5rem;border:1px solid rgba(148,163,184,.2);background:rgba(30,41,59,.7);border-radius:999px;padding:.25rem .75rem;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#94A3B8}
-      .dot{width:6px;height:6px;border-radius:50%;background:#3B82F6}
+      .dot{width:6px;height:6px;border-radius:50%;background:#34D399}
       h1{margin:1.25rem 0 0;display:flex;align-items:center;gap:.03em;font-size:8rem;line-height:.82;font-weight:700;letter-spacing:-.05em}
-      .zero{position:relative;width:.78em;height:.78em;border-radius:50%;background:rgba(59,130,246,.05);box-shadow:inset 0 0 0 1px rgba(59,130,246,.25);display:grid;place-items:center}
-      .zero::before{content:"";position:absolute;inset:0;border-radius:50%;background:rgba(59,130,246,.3);filter:blur(24px);opacity:.5;animation:halo 3.5s ease-in-out infinite}
-      .zero svg{position:relative;width:.48em;height:.48em}
+      .zero{position:relative;width:.78em;height:.78em;border-radius:50%;background:rgba(52,211,153,.05);box-shadow:inset 0 0 0 1px rgba(52,211,153,.25);display:grid;place-items:center}
+      .zero::before{content:"";position:absolute;inset:0;border-radius:50%;background:rgba(52,211,153,.3);filter:blur(24px);opacity:.5;animation:halo 3.5s ease-in-out infinite}
+      
       .lead{margin:1.25rem 0 0;font-size:1.25rem;font-weight:600}
       .sub{margin:.5rem auto 0;max-width:28rem;font-size:.875rem;color:#94A3B8}
       .actions{margin-top:2rem;display:flex;gap:.625rem;flex-wrap:wrap;justify-content:center}
       .btn{display:inline-flex;align-items:center;gap:.5rem;border-radius:999px;padding:.75rem 1.75rem;font:600 .875rem Inter,system-ui,sans-serif;cursor:pointer;text-decoration:none;border:1px solid transparent;transition:transform .2s}
       .btn:hover{transform:scale(1.03)}
-      .primary{background:#3B82F6;color:#fff;box-shadow:0 0 32px rgba(59,130,246,.35)}
+      .primary{background:#34D399;color:#06281D;box-shadow:0 0 32px rgba(52,211,153,.35)}
       .secondary{background:rgba(30,41,59,.6);color:#F8FAFC;border-color:rgba(148,163,184,.2)}
       .help{margin-top:2.5rem;font-size:.8rem;color:#94A3B8}
       .help a{color:#F8FAFC}
@@ -58,7 +58,7 @@ export function renderErrorPage(pathname = "/"): string {
     <div class="sky" aria-hidden="true"><div class="beam"></div>${stars}<div class="glow"></div></div>
     <main>
       <span class="pill"><span class="dot"></span>${t("Algo falló", "Something went wrong")}</span>
-      <h1 aria-label="404"><span>4</span><span class="zero" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 21h4l-1-11h-2z"/><path d="M9 10h6l-1-4h-4z"/><path d="M12 3v3"/><path d="M5 7l3 1M19 7l-3 1"/></svg></span><span>4</span></h1>
+      <h1 aria-label="404"><span>4</span><span class="zero" aria-hidden="true"><img src="/__l5e/assets-v1/39f570ec-8267-4103-b468-0ffc20a1f895/brand-lighthouse-clean.png" alt="" style="position:relative;width:.5em;height:.5em;object-fit:contain;filter:drop-shadow(0 0 6px rgba(52,211,153,.45))" /></span><span>4</span></h1>
       <p class="lead">${t("Esta página no cargó.", "This page didn't load.")}</p>
       <p class="sub">${t("Algo falló de nuestro lado. Puedes reintentar o volver al inicio.", "Something went wrong on our end. You can retry or go back home.")}</p>
       <div class="actions">
