@@ -668,7 +668,7 @@ export function Landing() {
               ))}
             </div>
 
-          </div>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 24 }}
