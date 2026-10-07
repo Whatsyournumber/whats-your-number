@@ -82,19 +82,19 @@ button:disabled,
   background: conic-gradient(
     from 0deg,
     transparent 0deg,
-    color-mix(in oklab, var(--positive) 95%, transparent) 48deg,
+    color-mix(in oklab, var(--positive) 42%, transparent) 48deg,
     transparent 120deg,
     transparent 360deg
   );
   -webkit-mask: radial-gradient(
     circle,
-    transparent 0 82%,
-    #000 86%,
-    #000 95%,
-    transparent 99%
+    transparent 0 84%,
+    #000 88%,
+    #000 94%,
+    transparent 98%
   );
-  mask: radial-gradient(circle, transparent 0 82%, #000 86%, #000 95%, transparent 99%);
-  animation: contact-avatar-orbit 6s linear infinite;
+  mask: radial-gradient(circle, transparent 0 84%, #000 88%, #000 94%, transparent 98%);
+  animation: contact-avatar-orbit 9s linear infinite;
   will-change: transform;
 }
 
