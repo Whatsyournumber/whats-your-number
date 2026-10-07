@@ -568,7 +568,13 @@ export function Landing() {
 
 
 
-          <div className="mb-8 mt-4 text-center md:mt-6">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-8 mt-4 text-center md:mt-6"
+          >
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("¿Por qué WhatsYourNumber?", "Why WhatsYourNumber?")}
             </span>
@@ -582,7 +588,7 @@ export function Landing() {
               )}
             </p>
 
-          </div>
+          </motion.div>
 
 
           <div className="grid gap-4 text-left md:grid-cols-3">
@@ -629,7 +635,13 @@ export function Landing() {
         <section className="relative mt-24 md:mt-32">
           <div className="wealth-gradient pointer-events-none absolute left-1/2 top-10 h-[420px] w-[820px] -translate-x-1/2 rounded-full opacity-[0.10] blur-3xl" />
 
-          <div className="relative mb-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="relative mb-8 text-center"
+          >
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("Así se ve por dentro", "This is what it looks like inside")}
             </span>
@@ -656,7 +668,7 @@ export function Landing() {
               ))}
             </div>
 
-          </div>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -705,10 +717,10 @@ export function Landing() {
 
           <div className="mt-10 grid items-stretch gap-6 lg:grid-cols-2">
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4 }}
+              initial={{ opacity: 0, x: -72 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
               className="relative flex min-h-[420px] flex-col items-center justify-center gap-6 p-2 sm:p-4"
             >
               <img
@@ -723,10 +735,10 @@ export function Landing() {
               {features.map((f, i) => (
                 <motion.div
                   key={f.title}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.35, delay: i * 0.05 }}
+                  initial={{ opacity: 0, x: 48 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ duration: 0.55, delay: 0.15 + i * 0.09, ease: [0.22, 1, 0.36, 1] }}
                   className="surface flex gap-4 p-5"
                 >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-elevated">
@@ -749,7 +761,13 @@ export function Landing() {
 
         <section className="mt-24 md:mt-32">
 
-          <div className="mb-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-10 text-center"
+          >
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("Lo que dicen", "What people say")}
             </span>
@@ -762,7 +780,7 @@ export function Landing() {
                 "Real stories from users who moved from confusion to financial clarity.",
               )}
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid gap-4 md:grid-cols-3">
             {reviews.map((r, i) => (
