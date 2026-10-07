@@ -91,6 +91,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "google-site-verification",
         content: "k-GDaLmVT5tt4Y3Dqkju61WzEM-cmeadYWfYjgo3XnM",
       },
+      { name: "hotjar-verification", content: "155389cb90f8b" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
