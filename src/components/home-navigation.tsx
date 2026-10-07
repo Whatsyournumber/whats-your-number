@@ -24,7 +24,7 @@ export function HomeNavigation() {
         data-home-navigation
         className={cn(
           'absolute inset-x-0 top-0 z-30 lg:fixed lg:transition-colors lg:duration-200 motion-reduce:transition-none',
-          scrolled && 'lg:border-b lg:border-border/70 lg:bg-background/95 lg:backdrop-blur-xl',
+          scrolled && 'lg:border-b lg:border-border/50 lg:bg-background/70 lg:backdrop-blur-xl',
         )}
       >
         <SiteHeader />

@@ -71,10 +71,6 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
           ? "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
           : "text-muted-foreground hover:bg-elevated hover:text-foreground",
       )}
-      activeOptions={{ exact: true, includeHash: false }}
-      activeProps={{
-        className: isLight ? "bg-slate-100 text-slate-900" : "bg-elevated text-foreground",
-      }}
     >
       {tab.label === "demo" ? (
         <span className="inline-flex items-center gap-1.5 text-primary">
