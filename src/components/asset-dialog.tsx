@@ -21,10 +21,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useT } from "@/hooks/use-language";
 import { defaultReturn, newHolding, useHoldings, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { useQuotes, useSymbolSearch } from "@/hooks/use-market";
-import { liabilityFieldVisible } from "@/lib/liability-form";
+import {
+  LIABILITY_TYPES,
+  liabilityFieldVisible,
+  liabilityTypeFromNote,
+  noteWithLiabilityType,
+  type LiabilityType,
+} from "@/lib/liability-form";
 
 type Draft = {
   kind: HoldingKind;
+  liability_type: LiabilityType;
   label: string;
   ticker: string;
   quantity: string;
@@ -47,6 +54,7 @@ function cryptoCostInput(h: Holding): string {
 function draftFrom(h: Holding): Draft {
   return {
     kind: h.kind,
+    liability_type: liabilityTypeFromNote(h.note),
     label: h.label ?? "",
     ticker: h.ticker ?? "",
     quantity: h.quantity ? String(h.quantity) : "",
@@ -135,6 +143,7 @@ export function AssetDialog({
   const selectNewKind = (kind: HoldingKind) => {
     const fresh: Draft = {
       kind,
+      liability_type: "loan",
       label: "",
       ticker: "",
       quantity: "",
@@ -174,7 +183,14 @@ export function AssetDialog({
       linked_liability: numOr(draft.linked_liability),
       purchased_at: draft.purchased_at || base.purchased_at || null,
       // Lo creado desde Patrimonio no se muestra en Portafolio; desde el onboarding sí.
-      note: persistedHolding ? base.note : forPortfolio ? null : PATRIMONIO_ONLY_NOTE,
+      note:
+        draft.kind === "debt"
+          ? noteWithLiabilityType(persistedHolding ? base.note : forPortfolio ? null : PATRIMONIO_ONLY_NOTE, draft.liability_type)
+          : persistedHolding
+            ? base.note
+            : forPortfolio
+              ? null
+              : PATRIMONIO_ONLY_NOTE,
     };
     try {
       await saveAll(persistedHolding ? holdings.map((h) => (h.id === updated.id ? updated : h)) : [...holdings, updated]);
@@ -223,6 +239,17 @@ export function AssetDialog({
     ["future", t("Futuros", "Futures"), t("Contratos de derivados", "Derivative contracts")],
     ["debt", t("Préstamo", "Loan"), t("Dinero prestado", "Money lent")],
     ["other", t("Otros", "Other"), t("Cualquier otro activo", "Any other asset")],
+  ];
+  const liabilityTypes: Array<[LiabilityType, string]> = [
+    ["loan", t("Préstamo", "Loan")],
+    ["credit_card", t("Tarjeta de crédito (TDC)", "Credit card")],
+    ["mortgage", t("Hipoteca", "Mortgage")],
+    ["auto_loan", t("Préstamo de auto", "Auto loan")],
+    ["student_loan", t("Préstamo estudiantil", "Student loan")],
+    ["credit_line", t("Línea de crédito", "Line of credit")],
+    ["tax_debt", t("Deuda tributaria", "Tax debt")],
+    ["medical_debt", t("Deuda médica", "Medical debt")],
+    ["other", t("Otro", "Other")],
   ];
 
   return (
@@ -274,7 +301,11 @@ export function AssetDialog({
                 </Button>
                 <div>
                   <p className="text-sm font-semibold">{draft.kind === "debt" ? t("Pasivo", "Liability") : kinds.find(([kind]) => kind === draft.kind)?.[1]}</p>
-                  <p className="text-xs text-muted-foreground">{kinds.find(([kind]) => kind === draft.kind)?.[2]}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {draft.kind === "debt"
+                      ? liabilityTypes.find(([type]) => type === draft.liability_type)?.[1]
+                      : kinds.find(([kind]) => kind === draft.kind)?.[2]}
+                  </p>
                 </div>
               </div>
             ) : null}
@@ -287,18 +318,36 @@ export function AssetDialog({
                  <Label className="text-[11px] text-muted-foreground">
                    {draft.kind === "debt" ? t("Tipo de pasivo", "Liability type") : t("Tipo de activo", "Asset type")}
                  </Label>
-                <Select value={draft.kind} onValueChange={(v) => changeKind(v as HoldingKind)}>
-                  <SelectTrigger className="h-9">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(draft.kind === "debt" ? kinds.filter(([kind]) => kind === "debt") : kinds).map(([kind, label]) => (
-                      <SelectItem key={kind} value={kind}>
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                 {draft.kind === "debt" ? (
+                   <Select value={draft.liability_type} onValueChange={(value) => setDraft({ ...draft, liability_type: value as LiabilityType })}>
+                     <SelectTrigger className="h-9">
+                       <SelectValue />
+                     </SelectTrigger>
+                     <SelectContent>
+                       {LIABILITY_TYPES.map((type) => {
+                         const label = liabilityTypes.find(([candidate]) => candidate === type)?.[1] ?? type;
+                         return (
+                           <SelectItem key={type} value={type}>
+                             {label}
+                           </SelectItem>
+                         );
+                       })}
+                     </SelectContent>
+                   </Select>
+                 ) : (
+                   <Select value={draft.kind} onValueChange={(v) => changeKind(v as HoldingKind)}>
+                     <SelectTrigger className="h-9">
+                       <SelectValue />
+                     </SelectTrigger>
+                     <SelectContent>
+                       {kinds.map(([kind, label]) => (
+                         <SelectItem key={kind} value={kind}>
+                           {label}
+                         </SelectItem>
+                       ))}
+                     </SelectContent>
+                   </Select>
+                 )}
               </div>
               {QUOTED_KINDS.includes(draft.kind) && (
                 <>
