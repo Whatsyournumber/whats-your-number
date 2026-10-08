@@ -201,3 +201,56 @@ export function summarizeGroceryReceipts(items: Tx[], previousItems: Tx[] = [], 
     previousTotal: [...groups.values()].reduce((sum, group) => sum + group.previousAmount, 0),
   };
 }
+/**
+ * Nombres de tienda compartidos: el comparador y el análisis de tickets
+ * tienen que llamar «AhorraMas» al mismo comercio, no «SUM*AHORRAMAS SRL».
+ */
+/** Tiendas que el usuario confirmó que son la misma. */
+const STORE_ALIASES: [RegExp, string][] = [
+  [/ponzano|supercor/, "ponzano"],
+  [/^m?p?dia$|mpdia|^dia/, "dia"],
+];
+
+/** Nombre corto y legible para las tiendas unidas por alias. */
+const STORE_DISPLAY: Record<string, string> = {
+  ponzano: "Super Ponzano",
+  dia: "MPDIA",
+  ahorramas: "AhorraMas",
+};
+
+export const storeDisplayName = (key: string, fallback: string) => STORE_DISPLAY[key] ?? fallback;
+
+/** Quita formas jurídicas, cifras y símbolos del nombre del comercio. */
+export const cleanStore = (s: string) =>
+  s
+    .replace(/\b(s\.?a\.?|s\.?l\.?|sucursal|tienda|madrid|barcelona)\b/gi, "")
+    .replace(/[0-9#*]+/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+/** Palabras genéricas que no distinguen una tienda: "SUP.EX. PONZANO" y "Super Express Ponzano" son la misma. */
+const GENERIC_STORE_TOKENS = new Set([
+  "super", "supermercado", "sup", "ex", "exp", "expreso", "expres", "express", "market", "mercado",
+  "tienda", "sucursal", "hiper", "hipermercado", "minimarket", "shop", "store", "sl", "sa",
+  "groceries", "grocery", "alimentacion", "comestibles", "food", "foods",
+  "de", "la", "el", "los", "las", "del", "y",
+]);
+
+const storeTokens = (s: string) =>
+  s
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .split(" ")
+    .filter((w) => w && !GENERIC_STORE_TOKENS.has(w) && !/^\d+$/.test(w));
+
+/** Clave que une las variantes del mismo comercio ("AHORRA MAS" = "Ahorramas"). */
+export const storeKey = (s: string) => {
+  const tokens = storeTokens(s);
+  // Sin espacios para unir "Ahorramas" y "AHORRA MAS" en la misma tienda
+  const key = (tokens.length ? tokens : storeTokens(cleanStore(s))).slice(0, 2).join("");
+  const all = storeTokens(s).join("");
+  for (const [re, alias] of STORE_ALIASES) if (re.test(key) || re.test(all)) return alias;
+  return key;
+};
