@@ -233,7 +233,7 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
     <section className="pt-0" aria-label={t(`Análisis de ${summary.receiptCount} tickets del súper del mes`, `Analysis of ${summary.receiptCount} grocery receipts this month`)}>
       <div className="mt-1 grid min-w-0 gap-2 pl-11 pr-1 sm:flex sm:flex-wrap sm:items-start sm:justify-between sm:gap-x-3 sm:gap-y-1">
         <p className="whitespace-nowrap text-xs text-muted-foreground">
-          {t("Podrás cambiar de categoría si no se registra bien.", "You can change the category if it wasn't captured correctly.")}
+          {t("Cambia la categoría si no es la correcta.", "Change the category if it's wrong.")}
         </p>
       </div>
 
@@ -266,7 +266,7 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
                     return (
                       <li key={product.name} className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 py-1.5 text-xs">
                         <span className="min-w-0 break-words text-foreground/90">{product.name}{product.count > 1 ? ` · ${product.count}×` : ""}</span>
-                        <span className="numeric justify-self-end shrink-0 text-foreground">{fmt(product.amount)}</span>
+                        <span className="numeric justify-self-end self-start shrink-0 text-foreground">{fmt(product.amount)}</span>
                         <span className="min-w-0 truncate text-[11px] text-muted-foreground" title={meta}>{meta}</span>
                         <span className="relative justify-self-end">
                           <select aria-label={t(`Clasificar ${product.name}`, `Classify ${product.name}`)} value={group.id} onChange={(event) => onCorrect(product.name, event.target.value as GroceryGroup)} className="h-6 max-w-[8.5rem] min-w-0 cursor-pointer appearance-none rounded-md border border-border/70 bg-background/80 pl-2 pr-5 text-[11px] font-medium text-muted-foreground transition-colors hover:border-border hover:text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring sm:max-w-[11rem]">
