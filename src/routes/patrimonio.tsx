@@ -143,6 +143,7 @@ function PatrimonioContent() {
     value.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: value < 10 ? 2 : 0 });
   const [evoMonth, setEvoMonth] = useState<string | null>(null);
   const [addAsset, setAddAsset] = useState(false);
+  const [addLiability, setAddLiability] = useState(false);
   const [editAssetId, setEditAssetId] = useState<string | null>(null);
   const [editFallbackAsset, setEditFallbackAsset] = useState<Holding | null>(null);
   const [benchmark, setBenchmark] = useState<"none" | "sp500" | "nasdaq" | "world">("none");
