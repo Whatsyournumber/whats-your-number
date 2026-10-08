@@ -65,3 +65,4 @@
 - [ ] Revisar que el análisis con IA se relance al cambiar de periodo (con "Last month" seguía mostrando el texto del periodo anterior).
 - [x] Diálogo de activos: «Monto invertido» pasa a «Inversión inicial» y «Valor actual» a «Precio de entrada» (Portafolio y Patrimonio)
 - [x] Simplificar deuda/préstamo a nombre, tipo de pasivo, monto, tasa y fecha.
+- [ ] Añadir tipos habituales de pasivo al selector: préstamo, TDC, hipoteca y otras deudas comunes.
