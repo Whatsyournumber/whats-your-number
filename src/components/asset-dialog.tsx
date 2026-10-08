@@ -21,7 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useT } from "@/hooks/use-language";
 import { defaultReturn, newHolding, useHoldings, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { useQuotes, useSymbolSearch } from "@/hooks/use-market";
-import { LIABILITY_FIELD_KEYS } from "@/lib/liability-form";
+import { liabilityFieldVisible } from "@/lib/liability-form";
 
 type Draft = {
   kind: HoldingKind;
@@ -197,7 +197,9 @@ export function AssetDialog({
     if (!persistedHolding) return;
     try {
       await saveAll(holdings.filter((h) => h.id !== persistedHolding.id));
-      toast.success(t("Activo eliminado", "Asset deleted"));
+      toast.success(
+        persistedHolding.kind === "debt" ? t("Pasivo eliminado", "Liability deleted") : t("Activo eliminado", "Asset deleted"),
+      );
       forceClose();
     } catch {
       toast.error(t("No pudimos eliminar. Inténtalo de nuevo.", "We couldn't delete it. Please try again."));
@@ -393,7 +395,7 @@ export function AssetDialog({
                   </p>
                 ) : null}
               </div>
-              {draft.kind !== "debt" && (!isNew || draft.kind !== "cash") && (
+              {(draft.kind !== "debt" || liabilityFieldVisible("entryPrice")) && (!isNew || draft.kind !== "cash") && (
                 <div className="space-y-1">
                   <Label className="text-[11px] text-muted-foreground">{t("Precio de entrada", "Entry price")}</Label>
                   <Input className="h-9" inputMode="decimal" value={draft.manual_value} onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })} />
@@ -405,7 +407,7 @@ export function AssetDialog({
                   <Input className="h-9" inputMode="decimal" value={draft.linked_liability} onChange={(e) => setDraft({ ...draft, linked_liability: e.target.value })} />
                 </div>
               )}
-              {draft.kind !== "cash" && draft.kind !== "debt" && (
+              {draft.kind !== "cash" && (draft.kind !== "debt" || liabilityFieldVisible("monthlyContribution")) && (
                 <div className="space-y-1">
                   <Label className="text-[11px] text-muted-foreground">{t("Aporte mensual", "Monthly contribution")}</Label>
                   <Input
@@ -440,9 +442,7 @@ export function AssetDialog({
             </div>
             <div className="flex items-center justify-between gap-3">
               <p className="text-[11px] text-muted-foreground">
-                 {draft.kind === "debt"
-                   ? `${LIABILITY_FIELD_KEYS.length} ${t("datos del pasivo", "liability details")}`
-                   : QUOTED_KINDS.includes(draft.kind)
+                 {QUOTED_KINDS.includes(draft.kind)
                   ? t("En cero, usamos el precio de mercado.", "At zero, we use the market price.")
                   : ""}
               </p>
