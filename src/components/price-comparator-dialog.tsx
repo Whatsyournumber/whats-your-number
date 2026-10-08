@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Trophy } from "lucide-react";
 
 import type { Tx } from "@/hooks/use-transactions";
-import { receiptItemsFrom } from "@/lib/receipt-insights";
+import { cleanStore, receiptItemsFrom, storeDisplayName, storeKey } from "@/lib/receipt-insights";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
@@ -18,56 +18,10 @@ type Props = {
   t: (es: string, en: string) => string;
 };
 
-const cleanStore = (s: string) =>
-  s
-    .replace(/\b(s\.?a\.?|s\.?l\.?|sucursal|tienda|madrid|barcelona)\b/gi, "")
-    .replace(/[0-9#*]+/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-
-/** Palabras genéricas que no distinguen una tienda: "SUP.EX. PONZANO" y "Super Express Ponzano" son la misma. */
-const GENERIC_STORE_TOKENS = new Set([
-  "super", "supermercado", "sup", "ex", "exp", "expreso", "expres", "express", "market", "mercado",
-  "tienda", "sucursal", "hiper", "hipermercado", "minimarket", "shop", "store", "sl", "sa",
-  "groceries", "grocery", "alimentacion", "comestibles", "food", "foods",
-  "de", "la", "el", "los", "las", "del", "y",
-]);
-
-const storeTokens = (s: string) =>
-  s
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, " ")
-    .split(" ")
-    .filter((w) => w && !GENERIC_STORE_TOKENS.has(w) && !/^\d+$/.test(w));
-
-/** Tiendas que el usuario confirmó que son la misma. */
-const STORE_ALIASES: [RegExp, string][] = [
-  [/ponzano|supercor/, "ponzano"],
-  [/^m?p?dia$|mpdia|^dia/, "dia"],
-];
-
 /** En supermercado solo se comparan estas tiendas; el resto no sale en la tabla. */
 export const GROCERY_ALLOWED_KEYS = new Set(["ponzano", "dia", "ahorramas"]);
 /** Máximo de comercios en la comparativa. */
 export const MAX_STORES = 5;
-/** Nombre corto y legible para las tiendas unidas por alias. */
-const STORE_DISPLAY: Record<string, string> = {
-  ponzano: "Super Ponzano",
-  dia: "MPDIA",
-  ahorramas: "AhorraMas",
-};
-export const storeDisplayName = (key: string, fallback: string) => STORE_DISPLAY[key] ?? fallback;
-
-export const storeKey = (s: string) => {
-  const tokens = storeTokens(s);
-  // Sin espacios para unir "Ahorramas" y "AHORRA MAS" en la misma tienda
-  const key = (tokens.length ? tokens : storeTokens(cleanStore(s))).slice(0, 2).join("");
-  const all = storeTokens(s).join("");
-  for (const [re, alias] of STORE_ALIASES) if (re.test(key) || re.test(all)) return alias;
-  return key;
-};
 
 /** Cesta básica: se comparan estos productos aunque el nombre del ticket varíe. */
 const BASICS: { id: string; label: string; re: RegExp }[] = [
@@ -96,8 +50,6 @@ export const basicOf = (name: string) => {
   const n = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   return BASICS.find((b) => b.re.test(n));
 };
-
-export const cleanStoreName = cleanStore;
 
 const productKey = (s: string) =>
   s
