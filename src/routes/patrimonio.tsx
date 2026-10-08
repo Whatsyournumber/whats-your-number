@@ -143,6 +143,7 @@ function PatrimonioContent() {
     value.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: value < 10 ? 2 : 0 });
   const [evoMonth, setEvoMonth] = useState<string | null>(null);
   const [addAsset, setAddAsset] = useState(false);
+  const [addLiability, setAddLiability] = useState(false);
   const [editAssetId, setEditAssetId] = useState<string | null>(null);
   const [editFallbackAsset, setEditFallbackAsset] = useState<Holding | null>(null);
   const [benchmark, setBenchmark] = useState<"none" | "sp500" | "nasdaq" | "world">("none");
@@ -819,7 +820,17 @@ function PatrimonioContent() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel id="tour-pat-assets" title={t("Activos", "Assets")} description={fmt(totalAssetsAll)}>
+        <Panel
+          id="tour-pat-assets"
+          title={t("Activos", "Assets")}
+          description={fmt(totalAssetsAll)}
+          actions={
+            <Button type="button" size="sm" variant="outline" className="gap-1.5" onClick={() => setAddAsset(true)}>
+              <Plus className="h-4 w-4" />
+              {t("Añadir activo", "Add asset")}
+            </Button>
+          }
+        >
           <div className="space-y-2">
             {assetRows.map((a) => {
               const info = ASSET_CLASS[a.key];
@@ -852,7 +863,16 @@ function PatrimonioContent() {
           </Button>
         </Panel>
 
-        <Panel title={t("Pasivos", "Liabilities")} description={fmt(liabilitiesTotal)}>
+        <Panel
+          title={t("Pasivos", "Liabilities")}
+          description={fmt(liabilitiesTotal)}
+          actions={
+            <Button type="button" size="sm" variant="outline" className="gap-1.5" onClick={() => setAddLiability(true)}>
+              <Plus className="h-4 w-4" />
+              {t("Añadir pasivo", "Add liability")}
+            </Button>
+          }
+        >
           <div className="space-y-2">
             {liabilityRows.map((l) => (
               <div key={l.id} className="flex items-center gap-2 rounded-xl bg-elevated/60 p-3">
@@ -1082,6 +1102,7 @@ function PatrimonioContent() {
       </Panel>
 
       {addAsset ? <AssetDialog open onOpenChange={setAddAsset} /> : null}
+      {addLiability ? <AssetDialog open initialKind="debt" onOpenChange={setAddLiability} /> : null}
       {editAssetId ? (
         <AssetDialog open holdingId={editAssetId} onOpenChange={(o) => !o && setEditAssetId(null)} />
       ) : null}

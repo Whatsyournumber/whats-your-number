@@ -1,5 +1,5 @@
 import { PATRIMONIO_ONLY_NOTE } from "@/hooks/use-holdings";
-import { useRef, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -73,7 +73,10 @@ export function AssetDialog({
   holdingId = null,
   fallbackHolding = null,
   forPortfolio = false,
+  initialKind = null,
 }: {
+  /** Abre directamente el formulario de un tipo (p. ej. "debt" para un pasivo). */
+  initialKind?: HoldingKind | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   holdingId?: string | null;
@@ -144,6 +147,11 @@ export function AssetDialog({
     setDraft(fresh);
     baseline.current = JSON.stringify(fresh);
   };
+
+  useEffect(() => {
+    if (open && isNew && initialKind && !draft) selectNewKind(initialKind);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, initialKind]);
 
   const save = async () => {
     if (!draft) return;
