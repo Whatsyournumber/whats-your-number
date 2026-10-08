@@ -38,3 +38,5 @@ Shared-expense edits use the authenticated public invoker RPC backed by a privat
 Monthly shared-balance payments are private per-user append-only entries with amount, currency, direction, and date, separate from expense shares, so partial payments retain history and change only the outstanding balance, not historical spending.
 
 Monthly shared-balance summaries match accepted expense records one-to-one to visible user transactions by date, merchant when present, and currency; prefer exact share amount but allow named legacy transactions with rounded or altered amounts. Orphaned participant rows must not inflate counts or balances because their transactions cannot be inspected or edited.
+
+Keep liability form rules in `src/lib/liability-form.ts` so the UI and its rule tests share one source of truth.
