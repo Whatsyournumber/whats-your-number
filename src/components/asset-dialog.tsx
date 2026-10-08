@@ -35,13 +35,21 @@ type Draft = {
   purchased_at: string;
 };
 
+/** En cripto el campo muestra el precio promedio por unidad; el costo total guardado es precio × unidades. */
+function cryptoCostInput(h: Holding): string {
+  const qty = Number(h.quantity) || 0;
+  const total = Number(h.cost_basis) || 0;
+  if (h.kind === "crypto" && qty > 0 && total > 0) return String(Math.round((total / qty) * 1e4) / 1e4);
+  return h.cost_basis ? String(h.cost_basis) : "";
+}
+
 function draftFrom(h: Holding): Draft {
   return {
     kind: h.kind,
     label: h.label ?? "",
     ticker: h.ticker ?? "",
     quantity: h.quantity ? String(h.quantity) : "",
-    cost_basis: h.cost_basis ? String(h.cost_basis) : "",
+    cost_basis: cryptoCostInput(h),
     manual_value: h.manual_value ? String(h.manual_value) : "",
     monthly_contribution: h.monthly_contribution ? String(h.monthly_contribution) : "",
     expected_return: h.expected_return ? String(h.expected_return) : "",
@@ -146,7 +154,11 @@ export function AssetDialog({
       label: draft.label.trim() || draft.ticker.trim().toUpperCase() || base.label || t("Posición", "Position"),
       ticker: draft.ticker.trim().toUpperCase() || null,
       quantity: numOr(draft.quantity),
-      cost_basis: numOr(draft.cost_basis),
+      // En cripto el campo es el precio promedio: el costo total guardado es precio × unidades.
+      cost_basis:
+        draft.kind === "crypto" && numOr(draft.quantity) > 0
+          ? Math.round(numOr(draft.cost_basis) * numOr(draft.quantity) * 100) / 100
+          : numOr(draft.cost_basis),
       manual_value: numOr(draft.manual_value),
       monthly_contribution: numOr(draft.monthly_contribution),
       expected_return: numOr(draft.expected_return, base.expected_return),
@@ -340,11 +352,19 @@ export function AssetDialog({
                 <Label className="text-[11px] text-muted-foreground">
                   {draft.kind === "cash"
                     ? t("Saldo actual", "Current balance")
-                    : draft.kind === "property"
-                      ? t("Precio de compra", "Purchase price")
-                      : t("Monto invertido", "Amount invested")}
+                    : draft.kind === "crypto"
+                      ? t("Precio promedio", "Average price")
+                      : draft.kind === "property"
+                        ? t("Precio de compra", "Purchase price")
+                        : t("Monto invertido", "Amount invested")}
                 </Label>
                 <Input className="h-9" inputMode="decimal" value={draft.cost_basis} onChange={(e) => setDraft({ ...draft, cost_basis: e.target.value })} />
+                {draft.kind === "crypto" && numOr(draft.quantity) > 0 && numOr(draft.cost_basis) > 0 ? (
+                  <p className="text-[10px] leading-tight text-muted-foreground">
+                    {t("Monto invertido", "Amount invested")}:{" "}
+                    {(numOr(draft.cost_basis) * numOr(draft.quantity)).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                  </p>
+                ) : null}
               </div>
               {(!isNew || draft.kind !== "cash") && (
                 <div className="space-y-1">
