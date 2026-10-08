@@ -149,8 +149,10 @@ export function groceryGroup(name: string, rules: GroceryRule[] = []): GroceryGr
   return "other";
 }
 
+export type ReceiptProduct = { name: string; amount: number; count: number; store: string; date: string | null };
+
 export type GrocerySummary = {
-  groups: { id: GroceryGroup; amount: number; count: number; previousAmount: number; previousCount: number; products: { name: string; amount: number; count: number }[] }[];
+  groups: { id: GroceryGroup; amount: number; count: number; previousAmount: number; previousCount: number; products: ReceiptProduct[] }[];
   receiptCount: number;
   previousReceiptCount: number;
   total: number;
@@ -158,7 +160,7 @@ export type GrocerySummary = {
 };
 
 export function summarizeGroceryReceipts(items: Tx[], previousItems: Tx[] = [], rules: GroceryRule[] = []): GrocerySummary {
-  const groups = new Map(GROCERY_GROUPS.map((id) => [id, { id, amount: 0, count: 0, previousAmount: 0, previousCount: 0, products: [] as { name: string; amount: number; count: number }[] }]));
+  const groups = new Map(GROCERY_GROUPS.map((id) => [id, { id, amount: 0, count: 0, previousAmount: 0, previousCount: 0, products: [] as ReceiptProduct[] }]));
   const counts = [0, 0];
   for (const [period, transactions] of [items, previousItems].entries()) {
     for (const tx of transactions) {
