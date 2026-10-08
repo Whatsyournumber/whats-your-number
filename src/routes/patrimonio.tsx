@@ -703,7 +703,7 @@ function PatrimonioContent() {
           hint={
             overallRate === null
               ? t("sin activos con renta aún", "no income assets yet")
-              : t("promedio ponderado con renta", "weighted average of income assets")
+              : t("promedio ponderado con renta", "weighted avg of income assets")
           }
           index={3}
         />
