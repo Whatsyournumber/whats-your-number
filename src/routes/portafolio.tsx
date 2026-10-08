@@ -520,8 +520,9 @@ function PortafolioContent() {
               : Math.round(value / (1 + growth)),
         // Rentabilidad real: precio de hoy vs precio del día de compra.
         priceRet: tk ? marketReturnPct(h, prices[tk] ?? null, holdingSeries[tk] ?? null, holdingDaily[tk] ?? null) : null,
-        // Strike price: precio por unidad al que se compró.
-        strike: tk ? purchaseUnitPrice(h, holdingSeries[tk] ?? null, holdingDaily[tk] ?? null) : null,
+        // Strike price: precio por unidad al que se compró. Si el usuario fijó un
+        // «Precio de entrada» en el diálogo (manual_value), tiene prioridad sobre la estimación.
+        strike: tk ? (h.kind !== "crypto" && h.manual_value > 0 ? h.manual_value : purchaseUnitPrice(h, holdingSeries[tk] ?? null, holdingDaily[tk] ?? null)) : null,
         units: h.quantity && h.quantity > 0 ? h.quantity : null,
         improvements: h.kind === "property" ? Math.round(h.quantity || 0) : 0,
         years:
