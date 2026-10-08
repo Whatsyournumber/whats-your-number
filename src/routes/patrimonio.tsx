@@ -501,6 +501,37 @@ function PatrimonioContent() {
   const selPrev = selIdx > 0 ? (months[selIdx - 1]?.netWorth ?? 0) : 0;
   const growthMonth = selPrev !== 0 ? ((selNetWorth - selPrev) / Math.abs(selPrev)) * 100 : 0;
   const selAssets = selNetWorth + liabilitiesTotal;
+  const assetCount = hasDetail ? detailRows.length : assetRows.length;
+
+  // Crecimiento real del último mes (vista en vivo): ahorro real del mes según las
+  // transacciones + variación de mercado de los últimos 30 días en las posiciones que
+  // ya existían hace un mes. Con un mes elegido manda la serie del calendario.
+  const realGrowth = (() => {
+    if (evoIdx >= 0) return { pct: growthMonth, value: selNetWorth - selPrev };
+    const monthAgo = Date.now() - 30 * 24 * 3600 * 1000;
+    let marketGain = 0;
+    for (const h of holdings) {
+      if (h.kind === "debt" || h.kind === "future") continue;
+      const raw = holdingValue(h, prices);
+      const key = h.ticker?.toUpperCase() ?? null;
+      if (!key || !prices[key] || raw <= 0) continue;
+      const boughtRaw = h.purchased_at ?? h.created_at;
+      const boughtMs = boughtRaw ? new Date(boughtRaw).getTime() : 0;
+      if (boughtMs && boughtMs > monthAgo) continue; // no existía hace un mes
+      const daily = holdingDaily[key] ?? [];
+      const last = daily[daily.length - 1];
+      const p30 = [...daily].reverse().find((p) => p.t * 1000 <= monthAgo);
+      if (!last || !p30 || last.price <= 0 || p30.price <= 0) continue;
+      marketGain += raw * (1 - p30.price / last.price);
+    }
+    const lastRaw = rawMonths[rawMonths.length - 1];
+    const contributed = lastRaw ? holdingContributions[lastRaw.month] ?? 0 : 0;
+    // El ahorro real del mes excluye aportes/compras: mover dinero entre activos no crea patrimonio.
+    const netFlow = lastRaw ? lastRaw.savings - contributed : 0;
+    const prev = netWorthAll - marketGain - netFlow;
+    if (prev <= 0) return { pct: growthMonth, value: selNetWorth - selPrev };
+    return { pct: ((netWorthAll - prev) / prev) * 100, value: netWorthAll - prev };
+  })();
 
   // Comparación contra benchmarks: patrimonio e índice indexados a % desde el primer mes.
   const benchSymbol = benchmark === "nasdaq" ? "^NDX" : benchmark === "world" ? "URTH" : "^GSPC";
