@@ -292,9 +292,10 @@ function PatrimonioContent() {
         sub: kindLabel(h.kind),
         ticker: h.ticker,
         cost,
-        // Strike price: precio por unidad al que se compró el activo.
+        // Strike price: precio por unidad al que se compró el activo. Si el usuario fijó un
+        // «Precio de entrada» en el diálogo (manual_value), tiene prioridad sobre la estimación.
         strike: tickerKey
-          ? purchaseUnitPrice(h, holdingSeries[tickerKey] ?? null, holdingDaily[tickerKey] ?? null)
+          ? (h.kind !== "crypto" && h.manual_value > 0 ? h.manual_value : purchaseUnitPrice(h, holdingSeries[tickerKey] ?? null, holdingDaily[tickerKey] ?? null))
           : null,
         livePrice: h.ticker ? (prices[h.ticker.toUpperCase()] ?? null) : null,
         quantity: h.quantity,
