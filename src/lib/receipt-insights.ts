@@ -183,9 +183,15 @@ export function summarizeGroceryReceipts(items: Tx[], previousItems: Tx[] = [], 
           group.amount += amount;
           group.count += 1;
           const key = normalize(line.name);
+          // El producto se muestra con la tienda y la fecha del ticket más reciente.
+          const store = storeDisplayName(storeKey(tx.merchant), cleanStore(tx.merchant) || tx.merchant);
+          const date = tx.tx_date ?? null;
           const product = group.products.find((p) => normalize(p.name) === key);
-          if (product) { product.amount += amount; product.count += 1; }
-          else group.products.push({ name: line.name, amount, count: 1 });
+          if (product) {
+            product.amount += amount;
+            product.count += 1;
+            if (date && (!product.date || date > product.date)) { product.store = store; product.date = date; }
+          } else group.products.push({ name: line.name, amount, count: 1, store, date });
         } else {
           group.previousAmount += amount;
           group.previousCount += 1;
