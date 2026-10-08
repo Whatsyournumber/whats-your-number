@@ -64,3 +64,4 @@
 - [x] Análisis de nightlife: salidas al mes, ticket promedio por salida y cómo bajarlo para entrar en el budget (tarjeta forzosa + veredicto por plan).
 - [ ] Revisar que el análisis con IA se relance al cambiar de periodo (con "Last month" seguía mostrando el texto del periodo anterior).
 - [x] Diálogo de activos: «Monto invertido» pasa a «Inversión inicial» y «Valor actual» a «Precio de entrada» (Portafolio y Patrimonio)
+- [x] Simplificar deuda/préstamo a nombre, tipo de pasivo, monto, tasa y fecha.
