@@ -665,16 +665,34 @@ function PatrimonioContent() {
           label={t("Patrimonio neto", "Net worth")}
           labelSm={t("Patrimonio", "Net worth")}
           value={fmt(selNetWorth)}
-          delta={growthMonth}
+          delta={realGrowth.pct}
+          deltaValue={fmt(realGrowth.value)}
           hint={evoIdx >= 0 ? t("vs el mes anterior", "vs previous month") : t("vs el mes pasado", "vs last month")}
           accent
           index={0}
         />
-        <KpiCard label={t("Activos", "Assets")} value={fmt(selAssets)} index={1} />
+        <KpiCard
+          label={t("Activos", "Assets")}
+          value={fmt(selAssets)}
+          hint={
+            assetCount > 0
+              ? t(assetCount === 1 ? "1 activo" : `${assetCount} activos`, assetCount === 1 ? "1 asset" : `${assetCount} assets`)
+              : undefined
+          }
+          index={1}
+        />
         <KpiCard
           label={t("Pasivos", "Liabilities")}
           labelSm={t("Deudas", "Debts")}
           value={fmt(liabilitiesTotal)}
+          hint={
+            liabilityRows.length > 0
+              ? t(
+                  liabilityRows.length === 1 ? "1 pasivo" : `${liabilityRows.length} pasivos`,
+                  liabilityRows.length === 1 ? "1 liability" : `${liabilityRows.length} liabilities`,
+                )
+              : undefined
+          }
           inverse
           index={2}
         />
@@ -685,7 +703,7 @@ function PatrimonioContent() {
           hint={
             overallRate === null
               ? t("sin activos con renta aún", "no income assets yet")
-              : t("promedio ponderado de tus activos con rentabilidad", "weighted average of assets with a return")
+              : t("promedio ponderado con renta", "weighted average of income assets")
           }
           index={3}
         />
