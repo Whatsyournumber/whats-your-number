@@ -356,19 +356,19 @@ export function AssetDialog({
                       ? t("Precio promedio", "Average price")
                       : draft.kind === "property"
                         ? t("Precio de compra", "Purchase price")
-                        : t("Monto invertido", "Amount invested")}
+                        : t("Inversión inicial", "Initial investment")}
                 </Label>
                 <Input className="h-9" inputMode="decimal" value={draft.cost_basis} onChange={(e) => setDraft({ ...draft, cost_basis: e.target.value })} />
                 {draft.kind === "crypto" && numOr(draft.quantity) > 0 && numOr(draft.cost_basis) > 0 ? (
                   <p className="text-[10px] leading-tight text-muted-foreground">
-                    {t("Monto invertido", "Amount invested")}:{" "}
+                    {t("Inversión inicial", "Initial investment")}:{" "}
                     {(numOr(draft.cost_basis) * numOr(draft.quantity)).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                   </p>
                 ) : null}
               </div>
               {(!isNew || draft.kind !== "cash") && (
                 <div className="space-y-1">
-                  <Label className="text-[11px] text-muted-foreground">{t("Valor actual", "Current value")}</Label>
+                  <Label className="text-[11px] text-muted-foreground">{t("Precio de entrada", "Entry price")}</Label>
                   <Input className="h-9" inputMode="decimal" value={draft.manual_value} onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })} />
                 </div>
               )}
