@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { format, parseISO } from "date-fns";
-import { es } from "date-fns/locale";
+import { enUS, es } from "date-fns/locale";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { ChevronDown, Info, ReceiptText, Sparkles, Users } from "lucide-react";
 
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip as Hint, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useGroceryRules } from "@/hooks/use-grocery-rules";
-import { useT } from "@/hooks/use-language";
+import { useLanguage, useT } from "@/hooks/use-language";
 import { merchantKey, type Tx } from "@/hooks/use-transactions";
 import { GROCERY_GROUPS, GROCERY_LABELS, summarizeGroceryReceipts, type GroceryGroup } from "@/lib/receipt-insights";
 import { cn } from "@/lib/utils";

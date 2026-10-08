@@ -38,7 +38,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { planCategories } from "@/lib/category-ai.functions";
-import { receiptItemsFrom } from "@/lib/receipt-insights";
+import { receiptItemsFrom, storeDisplayName, storeKey } from "@/lib/receipt-insights";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { useCategories } from "@/hooks/use-categories";
@@ -47,7 +47,7 @@ import { useCategoryRules } from "@/hooks/use-category-rules";
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { BudgetDialog } from "@/components/budget-dialog";
-import { PriceComparatorDialog, storeKey, GROCERY_ALLOWED_KEYS, MAX_STORES, basicOf, storeDisplayName, type ComparatorKind } from "@/components/price-comparator-dialog";
+import { PriceComparatorDialog, GROCERY_ALLOWED_KEYS, MAX_STORES, basicOf, type ComparatorKind } from "@/components/price-comparator-dialog";
 import { BUDGET_CATEGORIES, findBudgetCategory } from "@/lib/budget-categories";
 import targetIcon from "@/assets/target-icon-v2.png.asset.json";
 import { useProfile } from "@/hooks/use-profile";
