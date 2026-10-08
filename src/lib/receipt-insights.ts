@@ -216,8 +216,15 @@ export function summarizeGroceryReceipts(items: Tx[], previousItems: Tx[] = [], 
 /** Tiendas que el usuario confirmó que son la misma. */
 const STORE_ALIASES: [RegExp, string][] = [
   [/ponzano|supercor/, "ponzano"],
-  [/^m?p?dia$|mpdia|^dia/, "dia"],
+  [/ahorra ?mas/, "ahorramas"],
+  [/(^| )dia( |$)|mp ?dia/, "dia"],
 ];
+
+/**
+ * Negocios del barrio que no son supermercado aunque lleven el nombre de uno:
+ * «FARMACIA PONZANO» o «LA LIANTA DE PONZANO» no son «Super Ponzano».
+ */
+const NON_STORE = /^(farmacia|fcia|barra|lianta|sirena|marabu|marab|lateral|degustacion|kuikku|goldies|encarnacion)/;
 
 /** Nombre corto y legible para las tiendas unidas por alias. */
 const STORE_DISPLAY: Record<string, string> = {
@@ -259,6 +266,9 @@ export const storeKey = (s: string) => {
   // Sin espacios para unir "Ahorramas" y "AHORRA MAS" en la misma tienda
   const key = (tokens.length ? tokens : storeTokens(cleanStore(s))).slice(0, 2).join("");
   const all = storeTokens(s).join("");
-  for (const [re, alias] of STORE_ALIASES) if (re.test(key) || re.test(all)) return alias;
+  const spaced = tokens.join(" ");
+  if (!NON_STORE.test(spaced)) {
+    for (const [re, alias] of STORE_ALIASES) if (re.test(key) || re.test(all) || re.test(spaced)) return alias;
+  }
   return key;
 };
