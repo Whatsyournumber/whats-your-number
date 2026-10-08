@@ -226,6 +226,7 @@ export function CategoryDetailDialog({
 
 function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: ReturnType<typeof summarizeGroceryReceipts>; fmt: (n: number) => string; onCorrect: (name: string, group: GroceryGroup) => void; addedByGroup: Map<GroceryGroup, string[]> }) {
   const t = useT();
+  const { lang } = useLanguage();
   const [expanded, setExpanded] = useState<GroceryGroup | null>(null);
   const max = Math.max(...summary.groups.map((group) => group.amount), 1);
   return (
