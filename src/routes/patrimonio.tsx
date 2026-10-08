@@ -501,6 +501,37 @@ function PatrimonioContent() {
   const selPrev = selIdx > 0 ? (months[selIdx - 1]?.netWorth ?? 0) : 0;
   const growthMonth = selPrev !== 0 ? ((selNetWorth - selPrev) / Math.abs(selPrev)) * 100 : 0;
   const selAssets = selNetWorth + liabilitiesTotal;
+  const assetCount = hasDetail ? detailRows.length : assetRows.length;
+
+  // Crecimiento real del último mes (vista en vivo): ahorro real del mes según las
+  // transacciones + variación de mercado de los últimos 30 días en las posiciones que
+  // ya existían hace un mes. Con un mes elegido manda la serie del calendario.
+  const realGrowth = (() => {
+    if (evoIdx >= 0) return { pct: growthMonth, value: selNetWorth - selPrev };
+    const monthAgo = Date.now() - 30 * 24 * 3600 * 1000;
+    let marketGain = 0;
+    for (const h of holdings) {
+      if (h.kind === "debt" || h.kind === "future") continue;
+      const raw = holdingValue(h, prices);
+      const key = h.ticker?.toUpperCase() ?? null;
+      if (!key || !prices[key] || raw <= 0) continue;
+      const boughtRaw = h.purchased_at ?? h.created_at;
+      const boughtMs = boughtRaw ? new Date(boughtRaw).getTime() : 0;
+      if (boughtMs && boughtMs > monthAgo) continue; // no existía hace un mes
+      const daily = holdingDaily[key] ?? [];
+      const last = daily[daily.length - 1];
+      const p30 = [...daily].reverse().find((p) => p.t * 1000 <= monthAgo);
+      if (!last || !p30 || last.price <= 0 || p30.price <= 0) continue;
+      marketGain += raw * (1 - p30.price / last.price);
+    }
+    const lastRaw = rawMonths[rawMonths.length - 1];
+    const contributed = lastRaw ? holdingContributions[lastRaw.month] ?? 0 : 0;
+    // El ahorro real del mes excluye aportes/compras: mover dinero entre activos no crea patrimonio.
+    const netFlow = lastRaw ? lastRaw.savings - contributed : 0;
+    const prev = netWorthAll - marketGain - netFlow;
+    if (prev <= 0) return { pct: growthMonth, value: selNetWorth - selPrev };
+    return { pct: ((netWorthAll - prev) / prev) * 100, value: netWorthAll - prev };
+  })();
 
   // Comparación contra benchmarks: patrimonio e índice indexados a % desde el primer mes.
   const benchSymbol = benchmark === "nasdaq" ? "^NDX" : benchmark === "world" ? "URTH" : "^GSPC";
@@ -634,16 +665,34 @@ function PatrimonioContent() {
           label={t("Patrimonio neto", "Net worth")}
           labelSm={t("Patrimonio", "Net worth")}
           value={fmt(selNetWorth)}
-          delta={growthMonth}
+          delta={realGrowth.pct}
+          deltaValue={fmt(realGrowth.value)}
           hint={evoIdx >= 0 ? t("vs el mes anterior", "vs previous month") : t("vs el mes pasado", "vs last month")}
           accent
           index={0}
         />
-        <KpiCard label={t("Activos", "Assets")} value={fmt(selAssets)} index={1} />
+        <KpiCard
+          label={t("Activos", "Assets")}
+          value={fmt(selAssets)}
+          hint={
+            assetCount > 0
+              ? t(assetCount === 1 ? "1 activo" : `${assetCount} activos`, assetCount === 1 ? "1 asset" : `${assetCount} assets`)
+              : undefined
+          }
+          index={1}
+        />
         <KpiCard
           label={t("Pasivos", "Liabilities")}
           labelSm={t("Deudas", "Debts")}
           value={fmt(liabilitiesTotal)}
+          hint={
+            liabilityRows.length > 0
+              ? t(
+                  liabilityRows.length === 1 ? "1 pasivo" : `${liabilityRows.length} pasivos`,
+                  liabilityRows.length === 1 ? "1 liability" : `${liabilityRows.length} liabilities`,
+                )
+              : undefined
+          }
           inverse
           index={2}
         />
@@ -654,7 +703,7 @@ function PatrimonioContent() {
           hint={
             overallRate === null
               ? t("sin activos con renta aún", "no income assets yet")
-              : t("promedio ponderado de tus activos con rentabilidad", "weighted average of assets with a return")
+              : t("promedio ponderado con renta", "weighted avg of income assets")
           }
           index={3}
         />
