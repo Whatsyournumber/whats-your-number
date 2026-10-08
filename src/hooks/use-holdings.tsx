@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { storedExpectedReturn } from "@/lib/liability-form";
 
 export const HOLDING_KINDS = [
   "cash",
@@ -61,7 +62,7 @@ function toHolding(r: Row, i: number): Holding {
     cost_basis: num(r["cost_basis"]),
     manual_value: num(r["manual_value"]),
     monthly_contribution: num(r["monthly_contribution"]),
-    expected_return: num(r["expected_return"]) || 7,
+    expected_return: storedExpectedReturn(r["expected_return"]),
     linked_liability: num(r["linked_liability"]),
     monthly_income: num(r["monthly_income"]),
     target_year: (r["target_year"] as number | null) ?? null,

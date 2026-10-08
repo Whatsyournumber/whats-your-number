@@ -21,6 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useT } from "@/hooks/use-language";
 import { defaultReturn, newHolding, useHoldings, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { useQuotes, useSymbolSearch } from "@/hooks/use-market";
+import { LIABILITY_FIELD_KEYS } from "@/lib/liability-form";
 
 type Draft = {
   kind: HoldingKind;
@@ -49,7 +50,7 @@ function draftFrom(h: Holding): Draft {
     label: h.label ?? "",
     ticker: h.ticker ?? "",
     quantity: h.quantity ? String(h.quantity) : "",
-    cost_basis: cryptoCostInput(h),
+    cost_basis: h.kind === "debt" ? String(h.manual_value || h.cost_basis || "") : cryptoCostInput(h),
     manual_value: h.manual_value ? String(h.manual_value) : "",
     monthly_contribution: h.monthly_contribution ? String(h.monthly_contribution) : "",
     expected_return: h.expected_return ? String(h.expected_return) : "",
@@ -167,7 +168,7 @@ export function AssetDialog({
         draft.kind === "crypto" && numOr(draft.quantity) > 0
           ? Math.round(numOr(draft.cost_basis) * numOr(draft.quantity) * 100) / 100
           : numOr(draft.cost_basis),
-      manual_value: numOr(draft.manual_value),
+      manual_value: draft.kind === "debt" ? 0 : numOr(draft.manual_value),
       monthly_contribution: numOr(draft.monthly_contribution),
       expected_return: numOr(draft.expected_return, base.expected_return),
       linked_liability: numOr(draft.linked_liability),
@@ -177,7 +178,15 @@ export function AssetDialog({
     };
     try {
       await saveAll(persistedHolding ? holdings.map((h) => (h.id === updated.id ? updated : h)) : [...holdings, updated]);
-      toast.success(editingHolding ? t("Activo actualizado", "Asset updated") : t("Activo añadido", "Asset added"));
+      toast.success(
+        draft.kind === "debt"
+          ? editingHolding
+            ? t("Pasivo actualizado", "Liability updated")
+            : t("Pasivo añadido", "Liability added")
+          : editingHolding
+            ? t("Activo actualizado", "Asset updated")
+            : t("Activo añadido", "Asset added"),
+      );
       forceClose();
     } catch {
       toast.error(t("No pudimos guardar. Inténtalo de nuevo.", "We couldn't save. Please try again."));
@@ -219,9 +228,15 @@ export function AssetDialog({
       <DialogContent className="max-h-[85dvh] w-[calc(100vw-1.5rem)] max-w-2xl overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>
-            {editingHolding ? t(`Editar ${editingHolding.label}`, `Edit ${editingHolding.label}`) : t("Nuevo activo", "New asset")}
+            {editingHolding
+              ? t(`Editar ${editingHolding.label}`, `Edit ${editingHolding.label}`)
+              : draft?.kind === "debt" || initialKind === "debt"
+                ? t("Nuevo pasivo", "New liability")
+                : t("Nuevo activo", "New asset")}
           </DialogTitle>
-          <DialogDescription className="sr-only">{t("Datos del activo", "Asset details")}</DialogDescription>
+          <DialogDescription className="sr-only">
+            {draft?.kind === "debt" || initialKind === "debt" ? t("Datos del pasivo", "Liability details") : t("Datos del activo", "Asset details")}
+          </DialogDescription>
         </DialogHeader>
 
         {!draft ? (
@@ -256,7 +271,7 @@ export function AssetDialog({
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
                 <div>
-                  <p className="text-sm font-semibold">{kinds.find(([kind]) => kind === draft.kind)?.[1]}</p>
+                  <p className="text-sm font-semibold">{draft.kind === "debt" ? t("Pasivo", "Liability") : kinds.find(([kind]) => kind === draft.kind)?.[1]}</p>
                   <p className="text-xs text-muted-foreground">{kinds.find(([kind]) => kind === draft.kind)?.[2]}</p>
                 </div>
               </div>
@@ -267,13 +282,15 @@ export function AssetDialog({
                 <Input className="h-9" value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} />
               </div>
               <div className="space-y-1">
-                <Label className="text-[11px] text-muted-foreground">{t("Tipo de activo", "Asset type")}</Label>
+                 <Label className="text-[11px] text-muted-foreground">
+                   {draft.kind === "debt" ? t("Tipo de pasivo", "Liability type") : t("Tipo de activo", "Asset type")}
+                 </Label>
                 <Select value={draft.kind} onValueChange={(v) => changeKind(v as HoldingKind)}>
                   <SelectTrigger className="h-9">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {kinds.map(([kind, label]) => (
+                    {(draft.kind === "debt" ? kinds.filter(([kind]) => kind === "debt") : kinds).map(([kind, label]) => (
                       <SelectItem key={kind} value={kind}>
                         {label}
                       </SelectItem>
@@ -358,7 +375,9 @@ export function AssetDialog({
               )}
               <div className="space-y-1">
                 <Label className="text-[11px] text-muted-foreground">
-                  {draft.kind === "cash"
+                   {draft.kind === "debt"
+                     ? t("Monto", "Amount")
+                     : draft.kind === "cash"
                     ? t("Saldo actual", "Current balance")
                     : draft.kind === "crypto"
                       ? t("Precio promedio", "Average price")
@@ -374,7 +393,7 @@ export function AssetDialog({
                   </p>
                 ) : null}
               </div>
-              {(!isNew || draft.kind !== "cash") && (
+              {draft.kind !== "debt" && (!isNew || draft.kind !== "cash") && (
                 <div className="space-y-1">
                   <Label className="text-[11px] text-muted-foreground">{t("Precio de entrada", "Entry price")}</Label>
                   <Input className="h-9" inputMode="decimal" value={draft.manual_value} onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })} />
@@ -386,7 +405,7 @@ export function AssetDialog({
                   <Input className="h-9" inputMode="decimal" value={draft.linked_liability} onChange={(e) => setDraft({ ...draft, linked_liability: e.target.value })} />
                 </div>
               )}
-              {draft.kind !== "cash" && (
+              {draft.kind !== "cash" && draft.kind !== "debt" && (
                 <div className="space-y-1">
                   <Label className="text-[11px] text-muted-foreground">{t("Aporte mensual", "Monthly contribution")}</Label>
                   <Input
@@ -399,7 +418,9 @@ export function AssetDialog({
               )}
               {(!isNew || draft.kind !== "cash") && (
                 <div className="space-y-1">
-                  <Label className="text-[11px] text-muted-foreground">{t("Retorno esperado %", "Expected return %")}</Label>
+                   <Label className="text-[11px] text-muted-foreground">
+                     {draft.kind === "debt" ? t("Tasa %", "Rate %") : t("Retorno esperado %", "Expected return %")}
+                   </Label>
                   <Input
                     className="h-9"
                     inputMode="decimal"
@@ -410,14 +431,18 @@ export function AssetDialog({
               )}
               {(!isNew || draft.kind !== "cash") && (
                 <div className="space-y-1">
-                  <Label className="text-[11px] text-muted-foreground">{t("Fecha de compra", "Purchase date")}</Label>
+                   <Label className="text-[11px] text-muted-foreground">
+                     {draft.kind === "debt" ? t("Fecha", "Date") : t("Fecha de compra", "Purchase date")}
+                   </Label>
                   <Input className="h-9" type="date" value={draft.purchased_at} onChange={(e) => setDraft({ ...draft, purchased_at: e.target.value })} />
                 </div>
               )}
             </div>
             <div className="flex items-center justify-between gap-3">
               <p className="text-[11px] text-muted-foreground">
-                {QUOTED_KINDS.includes(draft.kind)
+                 {draft.kind === "debt"
+                   ? `${LIABILITY_FIELD_KEYS.length} ${t("datos del pasivo", "liability details")}`
+                   : QUOTED_KINDS.includes(draft.kind)
                   ? t("En cero, usamos el precio de mercado.", "At zero, we use the market price.")
                   : ""}
               </p>
