@@ -5,6 +5,8 @@
 - [x] Acceso flotante de contacto: más compacto, abanico de tres rayitas verdes bien colocado y halo verde titilando detrás de la foto.
 - [x] Acceso flotante de contacto: un poco más grande, glow circular más sutil y bocadillo «¿Tienes dudas?» que aparece solo al bajar.
 - [x] Acceso flotante de contacto: las tres rayitas verdes de vuelta en la esquina superior izquierda del bocadillo.
+- [x] Productos del ticket: tienda y fecha bajo cada producto y categoría como botón pequeño; nombres de tienda unificados (AhorraMas, Super Ponzano, MPDIA).
+- [x] Análisis de súper: frase de ayuda de una sola línea sin recortar en móvil, en español e inglés.
 
 
 

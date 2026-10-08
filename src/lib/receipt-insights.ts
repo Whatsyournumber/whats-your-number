@@ -149,8 +149,10 @@ export function groceryGroup(name: string, rules: GroceryRule[] = []): GroceryGr
   return "other";
 }
 
+export type ReceiptProduct = { name: string; amount: number; count: number; store: string; date: string | null };
+
 export type GrocerySummary = {
-  groups: { id: GroceryGroup; amount: number; count: number; previousAmount: number; previousCount: number; products: { name: string; amount: number; count: number }[] }[];
+  groups: { id: GroceryGroup; amount: number; count: number; previousAmount: number; previousCount: number; products: ReceiptProduct[] }[];
   receiptCount: number;
   previousReceiptCount: number;
   total: number;
@@ -158,7 +160,7 @@ export type GrocerySummary = {
 };
 
 export function summarizeGroceryReceipts(items: Tx[], previousItems: Tx[] = [], rules: GroceryRule[] = []): GrocerySummary {
-  const groups = new Map(GROCERY_GROUPS.map((id) => [id, { id, amount: 0, count: 0, previousAmount: 0, previousCount: 0, products: [] as { name: string; amount: number; count: number }[] }]));
+  const groups = new Map(GROCERY_GROUPS.map((id) => [id, { id, amount: 0, count: 0, previousAmount: 0, previousCount: 0, products: [] as ReceiptProduct[] }]));
   const counts = [0, 0];
   for (const [period, transactions] of [items, previousItems].entries()) {
     for (const tx of transactions) {
@@ -181,9 +183,15 @@ export function summarizeGroceryReceipts(items: Tx[], previousItems: Tx[] = [], 
           group.amount += amount;
           group.count += 1;
           const key = normalize(line.name);
+          // El producto se muestra con la tienda y la fecha del ticket más reciente.
+          const store = storeDisplayName(storeKey(tx.merchant), cleanStore(tx.merchant) || tx.merchant);
+          const date = tx.tx_date ?? null;
           const product = group.products.find((p) => normalize(p.name) === key);
-          if (product) { product.amount += amount; product.count += 1; }
-          else group.products.push({ name: line.name, amount, count: 1 });
+          if (product) {
+            product.amount += amount;
+            product.count += 1;
+            if (date && (!product.date || date > product.date)) { product.store = store; product.date = date; }
+          } else group.products.push({ name: line.name, amount, count: 1, store, date });
         } else {
           group.previousAmount += amount;
           group.previousCount += 1;
@@ -201,3 +209,66 @@ export function summarizeGroceryReceipts(items: Tx[], previousItems: Tx[] = [], 
     previousTotal: [...groups.values()].reduce((sum, group) => sum + group.previousAmount, 0),
   };
 }
+/**
+ * Nombres de tienda compartidos: el comparador y el análisis de tickets
+ * tienen que llamar «AhorraMas» al mismo comercio, no «SUM*AHORRAMAS SRL».
+ */
+/** Tiendas que el usuario confirmó que son la misma. */
+const STORE_ALIASES: [RegExp, string][] = [
+  [/ponzano|supercor/, "ponzano"],
+  [/ahorra ?mas/, "ahorramas"],
+  [/(^| )dia( |$)|mp ?dia/, "dia"],
+];
+
+/**
+ * Negocios del barrio que no son supermercado aunque lleven el nombre de uno:
+ * «FARMACIA PONZANO» o «LA LIANTA DE PONZANO» no son «Super Ponzano».
+ */
+const NON_STORE = /^(farmacia|fcia|barra|lianta|sirena|marabu|marab|lateral|degustacion|kuikku|goldies|encarnacion)/;
+
+/** Nombre corto y legible para las tiendas unidas por alias. */
+const STORE_DISPLAY: Record<string, string> = {
+  ponzano: "Super Ponzano",
+  dia: "MPDIA",
+  ahorramas: "AhorraMas",
+};
+
+export const storeDisplayName = (key: string, fallback: string) => STORE_DISPLAY[key] ?? fallback;
+
+/** Quita formas jurídicas, cifras y símbolos del nombre del comercio. */
+export const cleanStore = (s: string) =>
+  s
+    .replace(/\b(s\.?a\.?|s\.?l\.?|sucursal|tienda|madrid|barcelona)\b/gi, "")
+    .replace(/[0-9#*]+/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+/** Palabras genéricas que no distinguen una tienda: "SUP.EX. PONZANO" y "Super Express Ponzano" son la misma. */
+const GENERIC_STORE_TOKENS = new Set([
+  "super", "supermercado", "sup", "ex", "exp", "expreso", "expres", "express", "market", "mercado",
+  "tienda", "sucursal", "hiper", "hipermercado", "minimarket", "shop", "store", "sl", "sa",
+  "groceries", "grocery", "alimentacion", "comestibles", "food", "foods",
+  "de", "la", "el", "los", "las", "del", "y",
+]);
+
+const storeTokens = (s: string) =>
+  s
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .split(" ")
+    .filter((w) => w && !GENERIC_STORE_TOKENS.has(w) && !/^\d+$/.test(w));
+
+/** Clave que une las variantes del mismo comercio ("AHORRA MAS" = "Ahorramas"). */
+export const storeKey = (s: string) => {
+  const tokens = storeTokens(s);
+  // Sin espacios para unir "Ahorramas" y "AHORRA MAS" en la misma tienda
+  const key = (tokens.length ? tokens : storeTokens(cleanStore(s))).slice(0, 2).join("");
+  const all = storeTokens(s).join("");
+  const spaced = tokens.join(" ");
+  if (!NON_STORE.test(spaced)) {
+    for (const [re, alias] of STORE_ALIASES) if (re.test(key) || re.test(all) || re.test(spaced)) return alias;
+  }
+  return key;
+};
