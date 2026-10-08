@@ -260,15 +260,22 @@ function GroceryInsights({ summary, fmt, onCorrect, addedByGroup }: { summary: R
               </Button><Hint><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="size-7 shrink-0 text-muted-foreground" aria-label={t(`Qué incluye ${label.es}`, `What ${label.en} includes`)}><Info className="size-3.5" /></Button></TooltipTrigger><TooltipContent side="top" className="max-w-60">{(() => { const detail = t(label.detailEs, label.detailEn); const extras = (addedByGroup.get(group.id) ?? []).join(", "); return extras ? `${detail}, ${extras}` : detail; })()}</TooltipContent></Hint></div>
               {open && (
                 <ul className="mb-2 ml-9 space-y-1 border-l border-border pl-3">
-                  {group.products.map((product) => (
-                    <li key={product.name} className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 text-xs sm:grid-cols-[minmax(0,1fr)_auto_auto]">
-                      <span className="min-w-0 break-words text-muted-foreground">{product.name}{product.count > 1 ? ` · ${product.count}×` : ""}</span>
-                      <span className="numeric ml-auto shrink-0 text-foreground">{fmt(product.amount)}</span>
-                      <select aria-label={t(`Clasificar ${product.name}`, `Classify ${product.name}`)} value={group.id} onChange={(event) => onCorrect(product.name, event.target.value as GroceryGroup)} className="col-span-2 w-full min-w-0 rounded border border-border bg-background px-2 py-1.5 text-xs text-foreground sm:col-span-1 sm:w-auto sm:max-w-40">
-                        {GROCERY_GROUPS.map((id) => <option key={id} value={id}>{t(GROCERY_LABELS[id].es, GROCERY_LABELS[id].en)}</option>)}
-                      </select>
-                    </li>
-                  ))}
+                  {group.products.map((product) => {
+                    const meta = [product.store, product.date ? format(parseISO(product.date), "d MMM", { locale: lang === "en" ? enUS : es }) : ""].filter(Boolean).join(" · ");
+                    return (
+                      <li key={product.name} className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 py-1.5 text-xs">
+                        <span className="min-w-0 break-words text-foreground/90">{product.name}{product.count > 1 ? ` · ${product.count}×` : ""}</span>
+                        <span className="numeric justify-self-end shrink-0 text-foreground">{fmt(product.amount)}</span>
+                        <span className="min-w-0 truncate text-[11px] text-muted-foreground" title={meta}>{meta}</span>
+                        <span className="relative justify-self-end">
+                          <select aria-label={t(`Clasificar ${product.name}`, `Classify ${product.name}`)} value={group.id} onChange={(event) => onCorrect(product.name, event.target.value as GroceryGroup)} className="h-6 max-w-[8.5rem] min-w-0 cursor-pointer appearance-none rounded-md border border-border/70 bg-background/80 pl-2 pr-5 text-[11px] font-medium text-muted-foreground transition-colors hover:border-border hover:text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring sm:max-w-[11rem]">
+                            {GROCERY_GROUPS.map((id) => <option key={id} value={id}>{t(GROCERY_LABELS[id].es, GROCERY_LABELS[id].en)}</option>)}
+                          </select>
+                          <ChevronDown className="pointer-events-none absolute right-1.5 top-1/2 size-3 -translate-y-1/2 text-muted-foreground" />
+                        </span>
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </div>
