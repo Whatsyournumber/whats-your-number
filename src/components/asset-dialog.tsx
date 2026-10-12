@@ -446,7 +446,9 @@ export function AssetDialog({
               </div>
               {(draft.kind !== "debt" || liabilityFieldVisible("entryPrice")) && (!isNew || draft.kind !== "cash") && (
                 <div className="space-y-1">
-                  <Label className="text-[11px] text-muted-foreground">{t("Precio de entrada", "Entry price")}</Label>
+                  <Label className="text-[11px] text-muted-foreground">
+                    {QUOTED_KINDS.includes(draft.kind) && draft.kind !== "crypto" ? t("Precio de entrada", "Entry price") : t("Valor actual", "Current value")}
+                  </Label>
                   <Input className="h-9" inputMode="decimal" value={draft.manual_value} onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })} />
                 </div>
               )}
