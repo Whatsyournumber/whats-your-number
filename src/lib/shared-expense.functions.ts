@@ -39,7 +39,7 @@ export const notifySharedExpense = createServerFn({ method: "POST" })
     const split = String(exp.split_mode).split("/").reverse().join("/");
     // Mismo formato que la bandeja: productos del ticket y marca "owed" si pagó quien creó el gasto.
     const { sharedReceiptDescription } = await import("@/lib/receipt-insights");
-    const items = Array.isArray(exp.receipt_items) ? (exp.receipt_items as { name: string; amount: number }[]) : [];
+    const items = Array.isArray(exp.receipt_items) ? (exp.receipt_items as unknown as import("@/lib/receipt-insights").ReceiptItem[]) : [];
     const share = Number(other.share_amount) || 0;
     const base = sharedReceiptDescription(split, me?.display_name ?? "", items);
     const description = exp.payer_id !== other.user_id && share > 0
