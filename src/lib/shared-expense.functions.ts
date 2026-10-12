@@ -10,7 +10,7 @@ export const notifySharedExpense = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { data: exp } = await supabase
       .from("shared_expenses")
-      .select("id, created_by, total, currency, category, merchant, split_mode")
+      .select("id, created_by, payer_id, total, currency, category, merchant, split_mode, receipt_items")
       .eq("id", data.expenseId)
       .maybeSingle();
     if (!exp || exp.created_by !== userId) throw new Error("Forbidden");
@@ -37,10 +37,19 @@ export const notifySharedExpense = createServerFn({ method: "POST" })
       st = created.data;
     }
     const split = String(exp.split_mode).split("/").reverse().join("/");
+    // Mismo formato que la bandeja: productos del ticket y marca "owed" si pagó quien creó el gasto.
+    const { sharedReceiptDescription } = await import("@/lib/receipt-insights");
+    const items = Array.isArray(exp.receipt_items) ? (exp.receipt_items as { name: string; amount: number }[]) : [];
+    const share = Number(other.share_amount) || 0;
+    const base = sharedReceiptDescription(split, me?.display_name ?? "", items);
+    const description = exp.payer_id !== other.user_id && share > 0
+      ? base.replace(/(\|wyn-receipt:|$)/, "|owed$1")
+      : base;
+    const debtToOther = share === 0 && exp.payer_id === other.user_id;
     const ins = await supabaseAdmin.from("imported_transactions").insert({
       user_id: other.user_id, statement_id: st!.id, tx_date: exp2?.tx_date ?? null,
-      merchant: exp.merchant || exp.category, description: `shared:${split}|${me?.display_name ?? ""}`,
-      amount: -Math.abs(Number(other.share_amount)), currency: exp.currency, category: exp.category,
+      merchant: exp.merchant || exp.category, description,
+      amount: debtToOther ? Math.abs(Number(exp.total)) : -Math.abs(share), currency: exp.currency, category: exp.category,
     });
     if (ins.error) throw new Error(ins.error.message);
     await supabaseAdmin.from("shared_expense_participants").update({ status: "accepted" })
