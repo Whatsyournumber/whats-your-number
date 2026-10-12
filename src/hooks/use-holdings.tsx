@@ -113,10 +113,19 @@ export function holdingValue(h: Holding, prices?: Record<string, number>): numbe
   if (h.ticker && h.quantity > 0) {
     const p = prices?.[h.ticker.toUpperCase()];
     if (p && p > 0) return Math.round(h.quantity * p);
+    // En activos cotizados (no cripto) manual_value es el «Precio de entrada» por unidad:
+    // sin cotización en vivo, el total es precio × unidades, no el precio suelto.
+    if (h.kind !== "crypto" && h.manual_value > 0) return Math.round(h.manual_value * h.quantity);
   }
   if (h.manual_value > 0) return Math.round(h.manual_value);
   if (h.cost_basis > 0) return Math.round(h.cost_basis);
   return 0;
+}
+
+/** Total de una posición para series históricas: precio de entrada × unidades si aplica, si no el valor/costo guardado. */
+export function holdingEntryTotal(h: Holding): number {
+  if (h.ticker && h.kind !== "crypto" && h.manual_value > 0 && h.quantity > 0) return Math.round(h.manual_value * h.quantity);
+  return Math.round(h.manual_value || h.cost_basis || 0);
 }
 
 export type WealthTotals = {
