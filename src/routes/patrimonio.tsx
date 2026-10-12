@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useT, useLanguage } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
-import { holdingValue, useHoldings, type Holding, type HoldingKind } from "@/hooks/use-holdings";
+import { holdingEntryTotal, holdingValue, useHoldings, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { useDailySeries, useMarketSeries, useQuotes } from "@/hooks/use-market";
 import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
@@ -449,7 +449,7 @@ function PatrimonioContent() {
       const date = h.purchased_at ?? h.created_at;
       if (!date) continue;
       const key = String(date).slice(0, 7);
-      const value = h.manual_value || h.cost_basis || 0;
+      const value = holdingEntryTotal(h);
       if (!value) continue;
       map[key] = (map[key] ?? 0) + value;
     }
@@ -463,7 +463,7 @@ function PatrimonioContent() {
     if (!hasDetail) return rawMonths;
     const holdingsNow = holdings
       .filter((h) => h.kind !== "debt")
-      .reduce((s, h) => s + (h.manual_value || h.cost_basis || 0), 0);
+      .reduce((s, h) => s + holdingEntryTotal(h), 0);
     const staticBase = Math.max(0, totalAssetsAll - holdingsNow);
     // Patrimonio de cada mes = base estática + lo realmente comprado (purchased_at) hasta ese mes.
     // Así las compras antiguas (inmuebles, fondos, cripto) existen en toda la serie y nada sale negativo.
@@ -472,7 +472,7 @@ function PatrimonioContent() {
       if (h.kind === "debt") continue;
       const date = h.purchased_at ?? h.created_at;
       if (!date) continue;
-      const value = h.manual_value || h.cost_basis || 0;
+      const value = holdingEntryTotal(h);
       if (value > 0) dated.push({ key: String(date).slice(0, 7), value });
     }
     const costCum = (upTo: string) => dated.filter((r) => r.key <= upTo).reduce((s, r) => s + r.value, 0);
