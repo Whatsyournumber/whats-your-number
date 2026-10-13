@@ -416,7 +416,6 @@ function AdminPage() {
       <Tabs defaultValue="users" className="w-full">
         <div className="-mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <TabsList className="w-max flex-nowrap justify-start">
-            <TabsTrigger value="funnel" className="shrink-0">{t("Embudo", "Funnel")}</TabsTrigger>
             <TabsTrigger value="users" className="shrink-0">{t("Usuarios", "Users")}</TabsTrigger>
             <TabsTrigger value="subs" className="shrink-0">
               <span className="sm:hidden">{t("Pagos", "Payments")}</span>
@@ -428,6 +427,7 @@ function AdminPage() {
             </TabsTrigger>
             <TabsTrigger value="promos" className="shrink-0">{t("Invitaciones", "Invites")}</TabsTrigger>
             <TabsTrigger value="affiliates" className="shrink-0">{t("Afiliados", "Affiliates")}</TabsTrigger>
+            <TabsTrigger value="funnel" className="shrink-0">{t("Embudo", "Funnel")}</TabsTrigger>
           </TabsList>
         </div>
 
