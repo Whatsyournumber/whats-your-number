@@ -1,3 +1,5 @@
+import { trackFunnel } from "@/lib/funnel";
+
 declare global {
   interface Window {
     dataLayer: unknown[];
@@ -69,6 +71,7 @@ export type ConversionEvent = "sign_up" | "login" | "demo_start" | "demo_complet
  */
 export function trackConversion(name: ConversionEvent, params: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;
+  if (name === "sign_up" || name === "login") trackFunnel(name);
   if (hasAnalyticsConsent()) {
     if (!initialized) initGA();
     pushGtag("event", name, params);
