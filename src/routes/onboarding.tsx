@@ -405,7 +405,10 @@ export function OnboardingPage() {
 
   const finish = () => {
     queueAppTour();
-    if (user) sessionStorage.setItem(SUMMARY_SESSION_KEY, user.id);
+    if (user) {
+      sessionStorage.setItem(SUMMARY_SESSION_KEY, user.id);
+      sessionStorage.removeItem(EDIT_SESSION_KEY);
+    }
     setStep(SUMMARY_STEP);
     void persist({
       completed: true,
@@ -446,16 +449,12 @@ export function OnboardingPage() {
   // Show the final celebration at the top even if the questionnaire was scrolled down.
   // El paso final vive en /number-ready para poder medir la conversión en GA4/GTM.
   useEffect(() => {
-    if (step === SUMMARY_STEP) {
-      window.scrollTo({ top: 0, behavior: "instant" });
-      if (window.location.pathname !== "/number-ready") {
-        window.history.replaceState(null, "", "/number-ready");
-        trackPageView("/number-ready");
-      }
-    } else if (window.location.pathname === "/number-ready") {
-      window.history.replaceState(null, "", "/onboarding");
+    if (step !== SUMMARY_STEP) return;
+    window.scrollTo({ top: 0, behavior: "instant" });
+    if (window.location.pathname !== "/number-ready") {
+      navigate({ to: "/number-ready", replace: true });
     }
-  }, [step]);
+  }, [step, navigate]);
 
   if (loading || !ready) {
     return (
@@ -1646,9 +1645,15 @@ export function OnboardingPage() {
                 life={life}
                 plan={plan}
                 currency={cur}
-                onEdit={() => setStep(1)}
+                onEdit={() => {
+                  if (user) sessionStorage.setItem(EDIT_SESSION_KEY, user.id);
+                  sessionStorage.removeItem(SUMMARY_SESSION_KEY);
+                  setStep(1);
+                  navigate({ to: "/onboarding", replace: true });
+                }}
                 onEnter={() => {
                   sessionStorage.removeItem(SUMMARY_SESSION_KEY);
+                  sessionStorage.removeItem(EDIT_SESSION_KEY);
                   navigate({ to: "/dashboard" });
                 }}
               />
