@@ -66,3 +66,5 @@
 - [x] Diálogo de activos: «Monto invertido» pasa a «Inversión inicial» y «Valor actual» a «Precio de entrada» (Portafolio y Patrimonio)
 - [x] Simplificar deuda/préstamo a nombre, tipo de pasivo, monto, tasa y fecha.
 - [x] Añadir tipos habituales de pasivo al selector: préstamo, TDC, hipoteca y otras deudas comunes.
+- [x] Registro gratis: la prueba de 14 días concede el plan que la persona eligió (Pro, Inversor o Familiar) en lugar de siempre Pro.
+- [x] Perfil extra de hijos: el botón ya no abre el pago; lleva al registro gratis en la página de precios.

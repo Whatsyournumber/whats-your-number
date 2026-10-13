@@ -13,11 +13,21 @@ const PRICE_TO_PRODUCT: Record<string, string> = {
   patrimonio_yearly: "patrimonio_plan",
 };
 
+/** Free-trial tier the person actually clicked on the pricing page. */
+export type TrialPlan = "pro" | "investor" | "familiar";
+
+const TRIAL_TIER: Record<TrialPlan, { product: string; price: string }> = {
+  pro: { product: "pro_plan", price: "pro_monthly" },
+  investor: { product: "investor_plan", price: "investor_monthly" },
+  familiar: { product: "patrimonio_plan", price: "patrimonio_monthly" },
+};
+
 export const startProTrial = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { environment: PaddleEnv }) => data)
+  .inputValidator((data: { environment: PaddleEnv; plan?: TrialPlan }) => data)
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    const tier = TRIAL_TIER[data.plan ?? "pro"] ?? TRIAL_TIER.pro;
 
     // Only one trial per user: skip if they already have any subscription row.
     const { data: existing } = await supabase
@@ -48,8 +58,8 @@ export const startProTrial = createServerFn({ method: "POST" })
         user_id: userId,
         paddle_subscription_id: `trial_${userId}_${now.getTime()}`,
         paddle_customer_id: "trial",
-        product_id: "pro_plan",
-        price_id: "pro_monthly",
+        product_id: tier.product,
+        price_id: tier.price,
         status: "trialing",
         current_period_start: now.toISOString(),
         current_period_end: periodEnd.toISOString(),

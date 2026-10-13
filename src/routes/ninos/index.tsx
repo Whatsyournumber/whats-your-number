@@ -15,7 +15,6 @@ const MAX_ADULTS = 2;
 import { useRegionalPricing } from "@/hooks/use-regional-pricing";
 import { EXTRA_SEAT_PRICE, formatMoney } from "@/lib/pricing-tiers";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
-import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { useProfile } from "@/hooks/use-profile";
 
 const ADULT_AVATARS = ["👨‍💼", "👩‍💼", "🧔‍♂️", "👩‍🦰", "👨‍🦱", "👩‍🦱", "🧑‍🎓", "👨‍🍳", "👩‍⚕️", "👨‍🚀", "🦸‍♀️", "🦸‍♂️", "👵", "👴"];
@@ -102,7 +101,6 @@ function ProfileSelector() {
     typeof window !== "undefined" ? (localStorage.getItem("holder_subtitle") ?? "") : "",
   );
   const createParent = useCreateParent();
-  const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const queryClient = useQueryClient();
 
   function saveHolderAvatar(a: string) {
@@ -155,15 +153,9 @@ function ProfileSelector() {
   }
 
   async function unlockExtraProfile() {
-    const { data } = await supabase.auth.getUser();
-    const user = data.user;
-    await openCheckout({
-      priceId: "extra_kid_monthly",
-      quantity: 1,
-      ...(user?.email ? { customerEmail: user.email } : {}),
-      customData: { userId: user?.id ?? "", type: "extra_kid_profile" },
-      successUrl: `${window.location.origin}/ninos`,
-    });
+    // Payments paused: the extra profile is not billed, so this goes to the
+    // free-signup pricing page instead of opening a checkout.
+    router.navigate({ to: "/precios", search: { plan: "familiar" } });
   }
 
   async function saveAvatar(m: Member, avatar: string) {
@@ -849,8 +841,8 @@ function ProfileSelector() {
                   </h2>
                   <p className="mt-2 text-sm text-muted-foreground">
                     {t(
-                      `Tu plan Familiar incluye 3 perfiles en total (adultos e hijos). Añade uno más por ${extraSeatPrice}/mes, cancela cuando quieras.`,
-                      `Your Family plan includes 3 profiles in total (adults and kids). Add one more for ${extraSeatPrice}/mo, cancel anytime.`,
+                      `Tu plan Familiar incluye 3 perfiles en total (adultos e hijos). El perfil extra cuesta ${extraSeatPrice}/mes, pero los pagos están pausados: entra gratis mientras tanto.`,
+                      `Your Family plan includes 3 profiles in total (adults and kids). The extra profile costs ${extraSeatPrice}/mo, but payments are paused: join free in the meantime.`,
                     )}
                   </p>
                   <div className="mt-6 flex justify-end gap-2">
@@ -859,12 +851,9 @@ function ProfileSelector() {
                     </Button>
                     <button
                       onClick={() => void unlockExtraProfile()}
-                      disabled={checkoutLoading}
-                      className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
+                      className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
                     >
-                      {checkoutLoading
-                        ? t("Abriendo…", "Opening…")
-                        : t(`Pagar ${extraSeatPrice}/mes`, `Pay ${extraSeatPrice}/mo`)}
+                      {t("Registro gratis", "Sign up free")}
                     </button>
                   </div>
                 </div>

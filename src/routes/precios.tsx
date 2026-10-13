@@ -226,11 +226,18 @@ function Pricing() {
       }
       return;
     }
-    // Payments paused: everyone joins free; the first 100 get a 14-day Pro trial.
+    // Payments paused: everyone joins free; the first 100 get a 14-day trial
+    // of the exact plan they clicked.
     clearPendingCheckoutPlan();
-    void startProTrial({ data: { environment: getPaddleEnvironment() } })
+    const trialPlan = selectedPlan === "familiar" ? "familiar" : selectedPlan === "inversor" ? "investor" : "pro";
+    const planLabel =
+      plan.name === "Familiar" ? t("Familiar", "Family") : plan.name === "Inversor" ? t("Inversor", "Investor") : "Pro";
+    void startProTrial({ data: { environment: getPaddleEnvironment(), plan: trialPlan } })
       .then((r) => {
-        if (r && !r.skipped) toast.success(t("¡Tienes 14 días de Pro gratis!", "You have 14 days of Pro free!"));
+        if (r && !r.skipped)
+          toast.success(
+            t(`¡Tienes 14 días de ${planLabel} gratis!`, `You have 14 days of ${planLabel} free!`),
+          );
       })
       .catch(() => undefined)
       .finally(() => navigate({ to: "/onboarding" }));
@@ -259,7 +266,7 @@ function Pricing() {
         <section className="pt-10 text-center md:pt-16">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
             <Sparkles className="h-3.5 w-3.5 text-primary" />
-            {t("Registro gratis · Las primeras 100 personas tienen 14 días de Pro", "Free signup · The first 100 people get 14 days of Pro")}
+            {t("Registro gratis · Las primeras 100 personas tienen 14 días de su plan", "Free signup · The first 100 people get 14 days of their plan")}
           </span>
 
           {discount ? (
