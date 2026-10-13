@@ -37,6 +37,7 @@ import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
 import { Route as NinosRouteRouteImport } from './routes/ninos/route'
+import { Route as NumberReadyRouteImport } from './routes/number-ready'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PatrimonioRouteImport } from './routes/patrimonio'
 import { Route as PortafolioRouteImport } from './routes/portafolio'
@@ -226,6 +227,11 @@ const MiPerfilRoute = MiPerfilRouteImport.update({
 const NinosRouteRoute = NinosRouteRouteImport.update({
   id: '/ninos',
   path: '/ninos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NumberReadyRoute = NumberReadyRouteImport.update({
+  id: '/number-ready',
+  path: '/number-ready',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -508,6 +514,7 @@ export interface FileRoutesByFullPath {
   '/llms.txt': typeof LlmsDottxtRoute
   '/mcp': typeof McpRoute
   '/mi-perfil': typeof MiPerfilRoute
+  '/number-ready': typeof NumberReadyRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
@@ -583,6 +590,7 @@ export interface FileRoutesByTo {
   '/llms.txt': typeof LlmsDottxtRoute
   '/mcp': typeof McpRoute
   '/mi-perfil': typeof MiPerfilRoute
+  '/number-ready': typeof NumberReadyRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
@@ -661,6 +669,7 @@ export interface FileRoutesById {
   '/llms.txt': typeof LlmsDottxtRoute
   '/mcp': typeof McpRoute
   '/mi-perfil': typeof MiPerfilRoute
+  '/number-ready': typeof NumberReadyRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
@@ -741,6 +750,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/mcp'
     | '/mi-perfil'
+    | '/number-ready'
     | '/onboarding'
     | '/patrimonio'
     | '/portafolio'
@@ -816,6 +826,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/mcp'
     | '/mi-perfil'
+    | '/number-ready'
     | '/onboarding'
     | '/patrimonio'
     | '/portafolio'
@@ -893,6 +904,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/mcp'
     | '/mi-perfil'
+    | '/number-ready'
     | '/onboarding'
     | '/patrimonio'
     | '/portafolio'
@@ -972,6 +984,7 @@ export interface RootRouteChildren {
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   McpRoute: typeof McpRoute
   MiPerfilRoute: typeof MiPerfilRoute
+  NumberReadyRoute: typeof NumberReadyRoute
   OnboardingRoute: typeof OnboardingRoute
   PatrimonioRoute: typeof PatrimonioRoute
   PortafolioRoute: typeof PortafolioRoute
@@ -1194,6 +1207,13 @@ declare module '@tanstack/react-router' {
       path: '/ninos'
       fullPath: '/ninos'
       preLoaderRoute: typeof NinosRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/number-ready': {
+      id: '/number-ready'
+      path: '/number-ready'
+      fullPath: '/number-ready'
+      preLoaderRoute: typeof NumberReadyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -1647,6 +1667,7 @@ const rootRouteChildren: RootRouteChildren = {
   LlmsDottxtRoute: LlmsDottxtRoute,
   McpRoute: McpRoute,
   MiPerfilRoute: MiPerfilRoute,
+  NumberReadyRoute: NumberReadyRoute,
   OnboardingRoute: OnboardingRoute,
   PatrimonioRoute: PatrimonioRoute,
   PortafolioRoute: PortafolioRoute,

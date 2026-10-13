@@ -158,8 +158,9 @@ const QUESTIONS = 9; // pantallas 1..9
 const BUILD_STEP = 10;
 const SUMMARY_STEP = 11;
 const SUMMARY_SESSION_KEY = "wyn.onboarding.summary";
+const EDIT_SESSION_KEY = "wyn.onboarding.editing";
 
-function OnboardingPage() {
+export function OnboardingPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const t = useT();
@@ -196,9 +197,14 @@ function OnboardingPage() {
       if (!alive) return;
       // Keep the just-finished result visible after a reload in this tab.
       const resumeSummary = sessionStorage.getItem(SUMMARY_SESSION_KEY) === user.id;
-      if (row && (row as Record<string, unknown>)["completed"] && !resumeSummary) {
+      const editing = sessionStorage.getItem(EDIT_SESSION_KEY) === user.id;
+      if (row && (row as Record<string, unknown>)["completed"] && !resumeSummary && !editing) {
         navigate({ to: "/dashboard", replace: true });
         return;
+      }
+      // El cuestionario vive en /onboarding; /number-ready es solo el resumen final.
+      if (!resumeSummary && window.location.pathname === "/number-ready") {
+        navigate({ to: "/onboarding", replace: true });
       }
       if (row) {
         const r = row as Record<string, unknown>;
@@ -398,7 +404,10 @@ function OnboardingPage() {
 
   const finish = () => {
     queueAppTour();
-    if (user) sessionStorage.setItem(SUMMARY_SESSION_KEY, user.id);
+    if (user) {
+      sessionStorage.setItem(SUMMARY_SESSION_KEY, user.id);
+      sessionStorage.removeItem(EDIT_SESSION_KEY);
+    }
     setStep(SUMMARY_STEP);
     void persist({
       completed: true,
@@ -437,9 +446,14 @@ function OnboardingPage() {
   };
 
   // Show the final celebration at the top even if the questionnaire was scrolled down.
+  // El paso final vive en /number-ready para poder medir la conversión en GA4/GTM.
   useEffect(() => {
-    if (step === SUMMARY_STEP) window.scrollTo({ top: 0, behavior: "instant" });
-  }, [step]);
+    if (step !== SUMMARY_STEP) return;
+    window.scrollTo({ top: 0, behavior: "instant" });
+    if (window.location.pathname !== "/number-ready") {
+      navigate({ to: "/number-ready", replace: true });
+    }
+  }, [step, navigate]);
 
   if (loading || !ready) {
     return (
@@ -1630,9 +1644,15 @@ function OnboardingPage() {
                 life={life}
                 plan={plan}
                 currency={cur}
-                onEdit={() => setStep(1)}
+                onEdit={() => {
+                  if (user) sessionStorage.setItem(EDIT_SESSION_KEY, user.id);
+                  sessionStorage.removeItem(SUMMARY_SESSION_KEY);
+                  setStep(1);
+                  navigate({ to: "/onboarding", replace: true });
+                }}
                 onEnter={() => {
                   sessionStorage.removeItem(SUMMARY_SESSION_KEY);
+                  sessionStorage.removeItem(EDIT_SESSION_KEY);
                   navigate({ to: "/dashboard" });
                 }}
               />
