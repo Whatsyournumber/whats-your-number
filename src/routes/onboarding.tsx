@@ -1,3 +1,4 @@
+import { trackFunnel } from "@/lib/funnel";
 import { queueAppTour } from "@/components/app-tour";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
@@ -166,6 +167,11 @@ export function OnboardingPage() {
   const t = useT();
   const { isPatrimonio } = useSubscription();
   const [step, setStep] = useState(1);
+  useEffect(() => {
+    if (loading || !user) return;
+    if (step === SUMMARY_STEP) trackFunnel("onboarding_complete");
+    else trackFunnel("onboarding_step", step);
+  }, [step, loading, user]);
 
   const [data, setData] = useState<OnboardingData>({
     ...emptyOnboarding,

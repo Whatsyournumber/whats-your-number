@@ -43,6 +43,13 @@
       "when": 1791184799055,
       "tag": "0005_match_full_paid_shared_entries_on_delete",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791918008192,
+      "tag": "0006_funnel_events",
+      "breakpoints": true
     }
   ]
 }

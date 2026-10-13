@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useRouterState } from "@tanstack/react-router";
 
+import { trackFunnel } from "@/lib/funnel";
 import { hasAnalyticsConsent, hasMarketingConsent, initGA, initGTM, trackPageView, updateConsent } from "@/lib/analytics";
 
 /** Inicializa GA4 y envía page_view en cada cambio de ruta si hay consentimiento de medición. */
@@ -11,6 +12,7 @@ export function GoogleAnalytics() {
   useEffect(() => {
     if (typeof window === "undefined" || booted.current) return;
     booted.current = true;
+    trackFunnel("visit");
 
     // Inicializa el script si ya hay consentimiento previo; si no, queda listo
     // para cuando el usuario decida desde el banner.
@@ -37,6 +39,7 @@ export function GoogleAnalytics() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (pathname.startsWith("/auth")) trackFunnel("auth_view");
     if (hasAnalyticsConsent()) {
       initGA();
       trackPageView(pathname);
