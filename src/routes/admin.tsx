@@ -5,6 +5,7 @@ import { Users, CreditCard, FileText, TrendingUp, Trash2, Handshake, Plus, Penci
 import { toast } from "sonner";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
+import { AdminFunnel } from "@/components/admin-funnel";
 import { KpiCard } from "@/components/kpi-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -415,6 +416,7 @@ function AdminPage() {
       <Tabs defaultValue="users" className="w-full">
         <div className="-mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <TabsList className="w-max flex-nowrap justify-start">
+            <TabsTrigger value="funnel" className="shrink-0">{t("Embudo", "Funnel")}</TabsTrigger>
             <TabsTrigger value="users" className="shrink-0">{t("Usuarios", "Users")}</TabsTrigger>
             <TabsTrigger value="subs" className="shrink-0">
               <span className="sm:hidden">{t("Pagos", "Payments")}</span>
@@ -428,6 +430,10 @@ function AdminPage() {
             <TabsTrigger value="affiliates" className="shrink-0">{t("Afiliados", "Affiliates")}</TabsTrigger>
           </TabsList>
         </div>
+
+        <TabsContent value="funnel" className="mt-4">
+          <AdminFunnel />
+        </TabsContent>
 
         <TabsContent value="users" className="mt-4">
           <Panel title={t("Registros", "Sign-ups")} description={`${filteredUsers.length} ${t("usuarios", "users")}`}>
