@@ -7,11 +7,19 @@ import { OnboardingPage } from "./onboarding";
 // /onboarding, que reanuda el resumen gracias a la marca de sesión.
 export const Route = createFileRoute("/number-ready")({
   component: OnboardingPage,
-  head: () => ({
-    meta: [
-      { title: "Tu Número está listo | WhatsYournumber" },
-      { name: "robots", content: "noindex" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
+  head: () => {
+    const isEn =
+      typeof window !== "undefined" && window.localStorage.getItem("yn.lang") === "en";
+    return {
+      meta: [
+        {
+          title: isEn
+            ? "Your Number is ready | WhatsYournumber"
+            : "Tu Número está listo | WhatsYournumber",
+        },
+        { name: "robots", content: "noindex" },
+        { name: "twitter:card", content: "summary" },
+      ],
+    };
+  },
 });
