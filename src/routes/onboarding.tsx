@@ -159,8 +159,9 @@ const QUESTIONS = 9; // pantallas 1..9
 const BUILD_STEP = 10;
 const SUMMARY_STEP = 11;
 const SUMMARY_SESSION_KEY = "wyn.onboarding.summary";
+const EDIT_SESSION_KEY = "wyn.onboarding.editing";
 
-function OnboardingPage() {
+export function OnboardingPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const t = useT();
@@ -197,9 +198,14 @@ function OnboardingPage() {
       if (!alive) return;
       // Keep the just-finished result visible after a reload in this tab.
       const resumeSummary = sessionStorage.getItem(SUMMARY_SESSION_KEY) === user.id;
-      if (row && (row as Record<string, unknown>)["completed"] && !resumeSummary) {
+      const editing = sessionStorage.getItem(EDIT_SESSION_KEY) === user.id;
+      if (row && (row as Record<string, unknown>)["completed"] && !resumeSummary && !editing) {
         navigate({ to: "/dashboard", replace: true });
         return;
+      }
+      // El cuestionario vive en /onboarding; /number-ready es solo el resumen final.
+      if (!resumeSummary && window.location.pathname === "/number-ready") {
+        navigate({ to: "/onboarding", replace: true });
       }
       if (row) {
         const r = row as Record<string, unknown>;
