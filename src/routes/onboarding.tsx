@@ -437,8 +437,17 @@ function OnboardingPage() {
   };
 
   // Show the final celebration at the top even if the questionnaire was scrolled down.
+  // El paso final vive en /number-ready para poder medir la conversión en GA4/GTM.
   useEffect(() => {
-    if (step === SUMMARY_STEP) window.scrollTo({ top: 0, behavior: "instant" });
+    if (step === SUMMARY_STEP) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+      if (window.location.pathname !== "/number-ready") {
+        window.history.replaceState(null, "", "/number-ready");
+        trackPageView("/number-ready");
+      }
+    } else if (window.location.pathname === "/number-ready") {
+      window.history.replaceState(null, "", "/onboarding");
+    }
   }, [step]);
 
   if (loading || !ready) {
