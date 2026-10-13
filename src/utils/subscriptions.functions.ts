@@ -28,6 +28,14 @@ export const startProTrial = createServerFn({ method: "POST" })
       .limit(1);
     if (existing && existing.length > 0) return { ok: true, skipped: true, periodEnd: null };
 
+    // Launch offer: only the first 100 people get the free Pro trial.
+    const { supabaseAdmin: admin } = await import("@/integrations/supabase/client.server");
+    const { count } = await admin
+      .from("subscriptions")
+      .select("id", { count: "exact", head: true })
+      .eq("paddle_customer_id", "trial");
+    if ((count ?? 0) >= 100) return { ok: true, skipped: true, full: true, periodEnd: null };
+
     const now = new Date();
     const periodEnd = new Date(now);
     periodEnd.setDate(periodEnd.getDate() + 14);

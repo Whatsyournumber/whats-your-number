@@ -9,7 +9,10 @@ import { SiteFooter } from "@/components/site-footer";
 import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+import { startProTrial } from "@/utils/subscriptions.functions";
+import { getPaddleEnvironment } from "@/lib/paddle";
+import { toast } from "sonner";
+import { clearPendingCheckoutPlan } from "@/lib/pending-checkout";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { getPendingCheckoutPlan, setPendingCheckoutPlan } from "@/lib/pending-checkout";
 import { useRegionalPricing } from "@/hooks/use-regional-pricing";
@@ -56,7 +59,7 @@ function Pricing() {
   const navigate = useNavigate();
   const { plan: planParam } = Route.useSearch();
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
-  const { openCheckout, loading } = usePaddleCheckout();
+  const loading = false;
   const resumedCheckout = useRef(false);
   const [discount, setDiscount] = useState<PendingDiscount | null>(null);
   const highlightedName = planParam === "familiar" ? "Familiar" : planParam === "inversor" ? "Inversor" : "Pro";
@@ -224,22 +227,14 @@ function Pricing() {
       }
       return;
     }
-    const checkoutOptions: {
-      priceId: string;
-      quantity: number;
-      customerEmail?: string;
-      customData?: Record<string, string>;
-      successUrl?: string;
-      discountCode?: string;
-    } = {
-      priceId: plan.priceId,
-      quantity: 1,
-      customData: { selectedPlan },
-      successUrl: `${window.location.origin}/checkout/success?plan=${selectedPlan}`,
-    };
-    if (user.email) checkoutOptions.customerEmail = user.email;
-    if (discount?.code) checkoutOptions.discountCode = discount.code;
-    void openCheckout(checkoutOptions);
+    // Payments paused: everyone joins free; the first 100 get a 14-day Pro trial.
+    clearPendingCheckoutPlan();
+    void startProTrial({ data: { environment: getPaddleEnvironment() } })
+      .then((r) => {
+        if (r && !r.skipped) toast.success(t("¡Tienes 14 días de Pro gratis!", "You have 14 days of Pro free!"));
+      })
+      .catch(() => undefined)
+      .finally(() => navigate({ to: "/onboarding" }));
   };
 
 
@@ -258,7 +253,6 @@ function Pricing() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
-      <PaymentTestModeBanner />
       <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl" />
       <SiteHeader />
 
@@ -266,7 +260,7 @@ function Pricing() {
         <section className="pt-10 text-center md:pt-16">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
             <Sparkles className="h-3.5 w-3.5 text-primary" />
-            {t("Sin permanencia, cancela cuando quieras", "No lock-in, cancel anytime")}
+            {t("Registro gratis · Las primeras 100 personas tienen 14 días de Pro", "Free signup · The first 100 people get 14 days of Pro")}
           </span>
 
           {discount ? (
