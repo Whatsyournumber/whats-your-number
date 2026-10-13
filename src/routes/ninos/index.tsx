@@ -102,7 +102,6 @@ function ProfileSelector() {
     typeof window !== "undefined" ? (localStorage.getItem("holder_subtitle") ?? "") : "",
   );
   const createParent = useCreateParent();
-  const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const queryClient = useQueryClient();
 
   function saveHolderAvatar(a: string) {
@@ -155,15 +154,9 @@ function ProfileSelector() {
   }
 
   async function unlockExtraProfile() {
-    const { data } = await supabase.auth.getUser();
-    const user = data.user;
-    await openCheckout({
-      priceId: "extra_kid_monthly",
-      quantity: 1,
-      ...(user?.email ? { customerEmail: user.email } : {}),
-      customData: { userId: user?.id ?? "", type: "extra_kid_profile" },
-      successUrl: `${window.location.origin}/ninos`,
-    });
+    // Payments paused: the extra profile is not billed, so this goes to the
+    // free-signup pricing page instead of opening a checkout.
+    router.navigate({ to: "/precios", search: { plan: "familiar" } });
   }
 
   async function saveAvatar(m: Member, avatar: string) {
