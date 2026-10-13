@@ -1,5 +1,4 @@
 import { queueAppTour } from "@/components/app-tour";
-import { trackPageView } from "@/lib/analytics";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import {
