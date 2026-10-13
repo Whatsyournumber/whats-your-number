@@ -6,7 +6,6 @@ import { ArrowRight, Check, ShieldCheck, Sparkles, Target, Zap } from "lucide-re
 import { SiteHeader } from "@/components/site-header";
 import { PricingComparison, PricingFaq } from "@/components/pricing-comparison";
 import { SiteFooter } from "@/components/site-footer";
-import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { startProTrial } from "@/utils/subscriptions.functions";
