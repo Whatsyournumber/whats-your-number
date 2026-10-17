@@ -75,6 +75,7 @@ export function useTransactions() {
   const query = useQuery({
     queryKey: ["imported-transactions", userId, fxUpdatedAt],
     enabled: Boolean(userId),
+    refetchInterval: 30_000,
     queryFn: async () => {
       if (!userId) return [];
       const { data, error } = await supabase

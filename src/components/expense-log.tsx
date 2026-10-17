@@ -230,6 +230,7 @@ export function ExpenseLog() {
   const { data: sharedBalanceRows = [] } = useQuery({
     queryKey: ["shared-balances", user?.id],
     enabled: Boolean(user?.id),
+    refetchInterval: 30_000,
     queryFn: async () => {
       const { data: rows, error } = await supabase
         .from("shared_expense_participants")
