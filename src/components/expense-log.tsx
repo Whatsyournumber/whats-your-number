@@ -63,6 +63,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Check, Users } from "lucide-react";
 import { normalizeValidEmail } from "@/lib/email-validation";
 import { receiptItemsFrom as parseReceiptItems, sharedReceiptDescription } from "@/lib/receipt-insights";
+import { expenseSplit, type ExpenseSplitMode } from "@/lib/expense-split";
 
 const firstNameOf = (name: string) => name.trim().split(/\s+/)[0] || name;
 // Corta el texto de forma limpia (sin puntos suspensivos) para que no pase a dos líneas.
@@ -88,13 +89,14 @@ type Draft = {
   partner?: { id: string; name: string } | null;
   /** Mi parte cuando el gasto se comparte (amount sigue siendo el total). */
   myShare?: number | null;
+  splitMode?: ExpenseSplitMode;
+  myPercent?: number;
+  payer?: "me" | "partner";
 };
 
-const draftShare = (d: Draft) => Math.min(d.amount, Math.max(0, d.myShare ?? d.amount / 2));
-const draftSplit = (d: Draft) => {
-  const pct = d.amount > 0 ? Math.round((draftShare(d) / d.amount) * 100) : 50;
-  return `${pct}/${100 - pct}`;
-};
+const draftAllocation = (d: Draft) => expenseSplit(d.amount, d.splitMode ?? (d.myShare != null ? "amount" : "equal"), d.myPercent ?? 50, d.myShare ?? d.amount / 2);
+const draftShare = (d: Draft) => draftAllocation(d).mine;
+const draftSplit = (d: Draft) => draftAllocation(d).label;
 /** Una fila compartida en positivo significa que la otra persona te debe su parte. */
 const sharedDebtOf = (tx: { description?: string | null; amount: number | string }) =>
   Boolean(parseShared(tx.description)) && Number(tx.amount) > 0;
@@ -228,10 +230,11 @@ export function ExpenseLog() {
   const { data: sharedBalanceRows = [] } = useQuery({
     queryKey: ["shared-balances", user?.id],
     enabled: Boolean(user?.id),
+    refetchInterval: 30_000,
     queryFn: async () => {
       const { data: rows, error } = await supabase
         .from("shared_expense_participants")
-        .select("id, expense_id, user_id, display_name, share_amount, status, shared_expenses(id, total, currency, payer_id, tx_date, merchant)")
+        .select("id, expense_id, user_id, display_name, share_amount, status, shared_expenses(id, total, currency, payer_id, tx_date, merchant, category)")
         .neq("status", "declined");
       if (error) throw error;
       return rows;
@@ -324,6 +327,16 @@ export function ExpenseLog() {
     setRecEditId(null);
   };
 
+  const sharedRowFor = (x: Tx) => {
+    const matches = sharedBalanceRows.filter((row) => {
+      const exp = row.shared_expenses;
+      if (!exp || row.user_id !== user?.id || exp.tx_date !== x.tx_date || (exp.merchant || exp.category) !== x.merchant || exp.currency !== (x.original_currency ?? x.currency)) return false;
+      const expected = Number(row.share_amount) === 0 && exp.payer_id === user?.id ? Number(exp.total) : Number(row.share_amount);
+      return Math.abs(expected - Math.abs(x.original_amount ?? x.amount)) < 0.02;
+    });
+    return matches.length === 1 ? matches[0] : undefined;
+  };
+
   const openEditTx = (x: Tx) => {
     setEditTx(x);
     setEditMerchant(x.merchant ?? "");
@@ -333,12 +346,8 @@ export function ExpenseLog() {
     const shared = parseShared(x.description);
     setEditSharedWith(shared?.name ?? null);
     if (shared) {
-      const matching = sharedBalanceRows.filter((row) => {
-        const expense = row.shared_expenses;
-        return expense?.merchant === x.merchant && expense?.tx_date === x.tx_date;
-      });
-      const expense = matching.length === 2 ? matching[0]?.shared_expenses : null;
-      const myRow = matching.find((row) => row.user_id === user?.id);
+      const myRow = sharedRowFor(x);
+      const expense = myRow?.shared_expenses;
       const total = expense ? convertAmount(Number(expense.total), expense.currency, x.currency) : 0;
       const myShare = expense && myRow ? convertAmount(Number(myRow.share_amount), expense.currency, x.currency) : Math.abs(x.amount);
       const a = expense && total > 0 ? myShare / total * 100 : Number(shared.split.split("/")[0]);
@@ -395,7 +404,7 @@ export function ExpenseLog() {
         const total = Math.abs(editTotal);
         const mine =
           editMode === "equal" ? total / 2 : editMode === "percent" ? (total * editMyPct) / 100 : Math.min(editMyAmount, total);
-        const expenseRow = sharedBalanceRows.find((row) => row.user_id === user?.id && row.shared_expenses?.merchant === editTx.merchant && row.shared_expenses?.tx_date === editTx.tx_date);
+        const expenseRow = sharedRowFor(editTx);
         if (!expenseRow?.shared_expenses) throw new Error(t("No se encontró el gasto compartido", "Shared expense not found"));
         const sourceCurrency = expenseRow.shared_expenses.currency;
         const { error } = await supabase.rpc("update_shared_expense", {
@@ -1476,7 +1485,7 @@ export function ExpenseLog() {
         theirs = Math.round((draft.amount - ownAmount) * 100) / 100;
         const { data: expenseId, error: shareError } = await supabase.rpc("create_shared_expense", {
           _partner_id: draft.partner.id,
-          _payer_id: user.id,
+          _payer_id: draft.payer === "partner" ? draft.partner.id : user.id,
           _total: draft.amount,
           _currency: currency,
           _category: draft.category,
@@ -1494,6 +1503,7 @@ export function ExpenseLog() {
         sharedDescription = draft.source === "receipt"
           ? sharedReceiptDescription(draftSplit(draft), draft.partner.name, draft.items)
           : `${SHARED_PREFIX}${draftSplit(draft)}|${draft.partner.name}`;
+        if (draft.payer === "partner" && ownAmount > 0) sharedDescription = sharedDescription.replace(/(\|wyn-receipt:|$)/, "|owed$1");
         void notifyShared({ data: { expenseId } }).catch(() => {});
       }
       const savedId = await saveExpense({
@@ -1502,8 +1512,8 @@ export function ExpenseLog() {
         merchant: draft.merchant,
         category: draft.category,
         // Si tu parte es 0 y tú pagaste, la otra persona te debe el total: se guarda en positivo (verde).
-        amount: ownAmount > 0 ? ownAmount : theirs,
-        debtToMe: ownAmount === 0,
+        amount: ownAmount === 0 && draft.payer !== "partner" ? theirs : ownAmount,
+        debtToMe: Boolean(draft.partner) && ownAmount === 0 && draft.payer !== "partner",
         currency,
         description:
           sharedDescription ??
@@ -3112,7 +3122,7 @@ export function ExpenseLog() {
       </Dialog>
 
       <Dialog open={Boolean(draft)} onOpenChange={(open) => { if (!open && !saving) setDraft(null); }}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{t("Confirma el gasto", "Confirm the expense")}</DialogTitle>
             <DialogDescription>
@@ -3123,19 +3133,13 @@ export function ExpenseLog() {
           </DialogHeader>
           {draft && (
             <div className="grid gap-3">
-              {draft.source !== "receipt" && (
                 <div className="grid gap-1.5">
                   <Label>{t("Comercio", "Merchant")}</Label>
                   <Input value={draft.merchant} onChange={(e) => setDraft({ ...draft, merchant: e.target.value })} />
                 </div>
-              )}
               <div className="grid gap-1.5">
-                <Label>{draft.partner ? `${t("Mi parte", "My share")} (${currency})` : `${t("Monto", "Amount")} (${currency})`}</Label>
-                {draft.partner ? (
-                  <NumberInput value={draftShare(draft)} onChange={(v) => setDraft({ ...draft, myShare: Math.min(draft.amount, v || 0) })} min={0} format />
-                ) : (
+                <Label>{draft.partner ? `${t("Monto total", "Total amount")} (${currency})` : `${t("Monto", "Amount")} (${currency})`}</Label>
                   <NumberInput value={draft.amount} onChange={(v) => setDraft({ ...draft, amount: v || 0 })} min={0} format />
-                )}
               </div>
               <div className="grid gap-1.5">
                 <Label>{t("Fecha", "Date")}</Label>
@@ -3200,12 +3204,19 @@ export function ExpenseLog() {
                   )}
                   {draftInviting && draftInvitePending && <InviteShareActions email={draftInvitePending} onClose={() => setDraftInvitePending(null)} />}
                   {draft.partner && (
-                    <p className="text-xs text-muted-foreground">
-                      {t(
-                        `Total ${fmt(draft.amount)} · ${draftSplit(draft)} · ${draft.partner.name.split(" ")[0]} paga ${fmt(draft.amount - draftShare(draft))}`,
-                        `Total ${fmt(draft.amount)} · ${draftSplit(draft)} · ${draft.partner.name.split(" ")[0]} pays ${fmt(draft.amount - draftShare(draft))}`,
-                      )}
-                    </p>
+                    <div className="grid gap-3">
+                      <div className="flex gap-2" role="group" aria-label={t("Reparto", "Split")}>
+                        {(["equal", "percent", "amount"] as const).map((mode) => (
+                          <Button key={mode} type="button" variant="outline" aria-pressed={(draft.splitMode ?? (draft.myShare != null ? "amount" : "equal")) === mode} className={cn("min-w-0 flex-1 px-2", (draft.splitMode ?? (draft.myShare != null ? "amount" : "equal")) === mode && "border-positive bg-positive/15")} onClick={() => setDraft({ ...draft, splitMode: mode })}>
+                            {mode === "equal" ? "50 / 50" : mode === "percent" ? t("Porcentaje", "Percent") : t("Cantidad", "Amount")}
+                          </Button>
+                        ))}
+                      </div>
+                      {draft.splitMode === "percent" && <div className="grid gap-1.5"><Label>{t("Tu porcentaje", "Your percentage")}</Label><NumberInput value={draft.myPercent ?? 50} onChange={(v) => setDraft({ ...draft, myPercent: Math.max(0, Math.min(100, v || 0)) })} min={0} max={100} /></div>}
+                      {(draft.splitMode === "amount" || (!draft.splitMode && draft.myShare != null)) && <div className="grid gap-1.5"><Label>{`${t("Mi parte", "My share")} (${currency})`}</Label><NumberInput value={draftShare(draft)} onChange={(v) => setDraft({ ...draft, myShare: v || 0 })} min={0} max={draft.amount} format /></div>}
+                      <div className="grid gap-1.5"><Label>{t("Quién pagó", "Who paid")}</Label><Select value={draft.payer ?? "me"} onValueChange={(v) => setDraft({ ...draft, payer: v === "partner" ? "partner" : "me" })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="me">{t("Tú", "You")}</SelectItem><SelectItem value="partner">{firstNameOf(draft.partner.name)}</SelectItem></SelectContent></Select></div>
+                      <div className="flex flex-wrap justify-between gap-2 text-sm"><span>{t("Tu parte", "Your share")}: {fmtShared(draftShare(draft))}</span><span>{firstNameOf(draft.partner.name)}: {fmtShared(draftAllocation(draft).theirs)}</span></div>
+                    </div>
                   )}
                 </div>
               )}
@@ -3463,7 +3474,7 @@ export function ExpenseLog() {
                     const mine =
                       editMode === "equal" ? total / 2 : editMode === "percent" ? (total * editMyPct) / 100 : Math.min(editMyAmount, total);
                     const theirs = Math.max(0, total - mine);
-                    const editExpense = sharedBalanceRows.find((row) => row.user_id === user?.id && row.shared_expenses?.merchant === editTx?.merchant && row.shared_expenses?.tx_date === editTx?.tx_date)?.shared_expenses;
+                    const editExpense = editTx ? sharedRowFor(editTx)?.shared_expenses : undefined;
                     const partnerPaid = editExpense ? editExpense.payer_id !== user?.id : sharedIOwe(editTx?.description);
                     return (
                       <div className="rounded-lg border border-border">

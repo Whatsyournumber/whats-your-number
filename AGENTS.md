@@ -33,7 +33,7 @@ Grocery rules are synced per user; show only saved corrections/additions as rule
 
 Classify receipt products through the shared bilingual grocery vocabulary after user rules and before the `other` fallback, so current and historical receipt views improve without rewriting transactions.
 
-Shared-expense edits use the authenticated public invoker RPC backed by a private checked function to update the expense, both shares, and the editor's transaction together; balances convert each expense currency to the profile currency and refresh after writes so totals stay consistent.
+Shared-expense edits use the authenticated public invoker RPC backed by a private checked function to update the expense, both shares, and both transactions atomically; resolve each side by currency, date, merchant and share amount, rejecting ambiguous matches so either participant can edit without stale records. Receipt capture uses the shared expense-split calculation for equal, percentage and amount modes.
 
 Monthly shared-balance payments are private per-user append-only entries with amount, currency, direction, and date, separate from expense shares, so partial payments retain history and change only the outstanding balance, not historical spending.
 
