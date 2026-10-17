@@ -233,7 +233,7 @@ export function ExpenseLog() {
     queryFn: async () => {
       const { data: rows, error } = await supabase
         .from("shared_expense_participants")
-        .select("id, expense_id, user_id, display_name, share_amount, status, shared_expenses(id, total, currency, payer_id, tx_date, merchant)")
+        .select("id, expense_id, user_id, display_name, share_amount, status, shared_expenses(id, total, currency, payer_id, tx_date, merchant, category)")
         .neq("status", "declined");
       if (error) throw error;
       return rows;
