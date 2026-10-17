@@ -1,4 +1,6 @@
 # Roadmap
+- [ ] Permitir editar gastos a ambos participantes y sincronizar sus movimientos.
+- [ ] Ofrecer reparto igual, porcentajes o montos al tomar/subir fotos.
 
 - [x] Home en escritorio: acceso flotante a Contacto y menú visible al bajar; mantener móvil sin cambios.
 
