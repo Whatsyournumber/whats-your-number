@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Recuperar la edición de gastos compartidos antiguos sin mezclar movimientos; pendiente de aprobar el plan de recuperación segura.
 - [x] Permitir editar gastos a ambos participantes y sincronizar sus movimientos.
 - [x] Ofrecer reparto igual, porcentajes o montos al tomar/subir fotos.
 
