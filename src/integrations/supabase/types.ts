@@ -1477,6 +1477,7 @@ export type Database = {
           id: string
           share_amount: number
           status: string
+          transaction_id: string | null
           user_id: string
         }
         Insert: {
@@ -1486,6 +1487,7 @@ export type Database = {
           id?: string
           share_amount: number
           status?: string
+          transaction_id?: string | null
           user_id: string
         }
         Update: {
@@ -1495,6 +1497,7 @@ export type Database = {
           id?: string
           share_amount?: number
           status?: string
+          transaction_id?: string | null
           user_id?: string
         }
         Relationships: [
@@ -1503,6 +1506,13 @@ export type Database = {
             columns: ["expense_id"]
             isOneToOne: false
             referencedRelation: "shared_expenses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shared_expense_participants_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "imported_transactions"
             referencedColumns: ["id"]
           },
         ]
@@ -1785,6 +1795,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      confirm_shared_link: {
+        Args: { _expense_id: string; _transaction_id: string }
+        Returns: undefined
+      }
       create_shared_expense:
         | {
             Args: {
@@ -1857,6 +1871,7 @@ export type Database = {
         Args: { _expense_id: string }
         Returns: boolean
       }
+      recover_shared_links: { Args: never; Returns: undefined }
       redeem_promo_code: {
         Args: { _code: string; _environment: string; _user_id: string }
         Returns: Json
