@@ -213,6 +213,9 @@ export const PROFILE_MONEY_FIELDS = [
   "liabilities",
   "mortgage_balance",
   "desired_retirement_income",
+  "home_price",
+  "business_target",
+  "retirement_monthly_contribution",
 ] as const;
 
 /** Redondeo amable según la magnitud de la moneda destino. */
