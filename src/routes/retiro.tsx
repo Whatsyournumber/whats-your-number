@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { useProfile } from "@/hooks/use-profile";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useHoldings, holdingValue } from "@/hooks/use-holdings";
-import { useQuotes } from "@/hooks/use-market";
+import { useQuotes, useHoldingQuotes } from "@/hooks/use-market";
 
 import { useT } from "@/hooks/use-language";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
@@ -52,7 +52,7 @@ function RetiroContent() {
   const [editingHave, setEditingHave] = useState(false);
   const [draftHave, setDraftHave] = useState(0);
   const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
-  const holdingQuotes = useQuotes(holdingSymbols);
+  const holdingQuotes = useHoldingQuotes(holdingSymbols);
   const prices = Object.fromEntries(
     (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]),
   );

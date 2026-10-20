@@ -29,7 +29,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Tooltip as UiTooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
 import { useLanguage, useT } from "@/hooks/use-language";
-import { useDailySeries, useMarketSeries, useQuotes, useSymbolReturns, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
+import { useDailySeries, useMarketSeries, useQuotes, useHoldingQuotes, useSymbolReturns, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { PATRIMONIO_ONLY_NOTE, defaultReturn, holdingValue, newHolding, useHoldings, type HoldingKind } from "@/hooks/use-holdings";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -462,7 +462,7 @@ function PortafolioContent() {
 
   // Precios reales para las posiciones con ticker + unidades.
   const holdingSymbols = holdings.filter((h) => h.ticker && (h.quantity > 0 || h.cost_basis > 0 || h.manual_value > 0)).map((h) => h.ticker!);
-  const holdingQuotes = useQuotes(holdingSymbols);
+  const holdingQuotes = useHoldingQuotes(holdingSymbols);
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
   // Cambio diario por ticker (para derivar retorno del mercado en ETFs/acciones/cripto).
   const dayChange: Record<string, number> = Object.fromEntries(
@@ -1639,8 +1639,8 @@ function PortafolioContent() {
                     </span>
                   ) : null}
                 </p>
-                <p className="numeric text-sm font-semibold">{tk && prices[tk] ? fmtUsd(prices[tk]) : "—"}</p>
-                <p className="numeric text-[11px] text-muted-foreground">{h.strike && h.strike > 0 ? fmtUsd(h.strike) : "—"}</p>
+                <p className="numeric text-sm font-semibold">{tk && prices[tk] ? fmt(prices[tk]) : "—"}</p>
+                <p className="numeric text-[11px] text-muted-foreground">{h.strike && h.strike > 0 ? fmt(h.strike) : "—"}</p>
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Ganancia / pérdida", "Gain / loss")}</p>

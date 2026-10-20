@@ -1,5 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+import { useFxRates } from "@/hooks/use-fx-rates";
+import { useProfile } from "@/hooks/use-profile";
+import { convertAmount } from "@/lib/fx";
 
 import { getDailySeries, getMarketQuotes, getMarketSeries, getSymbolReturns, searchMarketSymbols } from "@/lib/market.functions";
 
@@ -98,4 +102,28 @@ export function useSymbolReturns(symbols: string[]) {
     enabled: symbols.length > 0,
     staleTime: 30 * 60_000,
   });
+}
+
+/** Cotizaciones de las posiciones del usuario convertidas a la moneda de su perfil,
+ *  para que valor, precio de entrada y ganancia usen siempre la misma divisa. */
+export function useHoldingQuotes(symbols: string[]) {
+  const { profile } = useProfile();
+  useFxRates();
+  const to = (profile.currency || "USD").toUpperCase();
+  const query = useQuotes(symbols);
+  const data = useMemo(
+    () =>
+      query.data
+        ? {
+            ...query.data,
+            quotes: query.data.quotes.map((q) => ({
+              ...q,
+              price: convertAmount(q.price, q.currency || "USD", to),
+              currency: to,
+            })),
+          }
+        : query.data,
+    [query.data, to],
+  );
+  return { ...query, data };
 }
