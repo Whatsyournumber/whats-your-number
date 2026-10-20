@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { convertStoredFixedExpenses } from "@/hooks/use-fixed-expenses";
+import { convertBudgetCurrency } from "@/lib/convert-budget-cloud";
 import { useFxRates } from "@/hooks/use-fx-rates";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateOption } from "@/lib/i18n-data";
@@ -200,9 +201,12 @@ function MiPerfil() {
   const changeCurrency = (next: string, extra?: Partial<Profile>) => {
     setDirty(true);
     const from = form.currency || "EUR";
+    if (next && next !== from) {
+      convertStoredFixedExpenses(from, next);
+      void convertBudgetCurrency(user?.id ?? null, from, next);
+    }
     setForm((f) => {
       if (!next || next === from) return { ...f, ...(extra ?? {}) };
-      convertStoredFixedExpenses(from, next);
       return { ...convertProfileCurrency(f, from, next), ...(extra ?? {}), currency: next };
     });
   };
