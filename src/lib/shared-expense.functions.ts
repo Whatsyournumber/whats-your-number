@@ -17,7 +17,7 @@ export const notifySharedExpense = createServerFn({ method: "POST" })
 
     const { data: parts } = await supabase
       .from("shared_expense_participants")
-      .select("user_id, display_name, share_amount")
+      .select("user_id, display_name, share_amount, transaction_id")
       .eq("expense_id", exp.id);
     const me = parts?.find((p) => p.user_id === userId);
     const other = parts?.find((p) => p.user_id !== userId);
@@ -46,12 +46,16 @@ export const notifySharedExpense = createServerFn({ method: "POST" })
       ? base.replace(/(\|wyn-receipt:|$)/, "|owed$1")
       : base;
     const debtToOther = share === 0 && exp.payer_id === other.user_id;
+    const { withSharedExpenseId } = await import("@/lib/shared-transaction-link");
+    if (!st) throw new Error("Manual statement could not be created");
+    if (!other.transaction_id) {
     const ins = await supabaseAdmin.from("imported_transactions").insert({
-      user_id: other.user_id, statement_id: st!.id, tx_date: exp2?.tx_date ?? null,
-      merchant: exp.merchant || exp.category, description,
+      user_id: other.user_id, statement_id: st.id, tx_date: exp2?.tx_date ?? null,
+      merchant: exp.merchant || exp.category, description: withSharedExpenseId(description, exp.id),
       amount: debtToOther ? Math.abs(Number(exp.total)) : -Math.abs(share), currency: exp.currency, category: exp.category,
     });
     if (ins.error) throw new Error(ins.error.message);
+    }
     await supabaseAdmin.from("shared_expense_participants").update({ status: "accepted" })
       .eq("expense_id", exp.id).eq("user_id", other.user_id);
     const { data: prof } = await supabaseAdmin.from("profiles").select("email, full_name").eq("id", other.user_id).maybeSingle();

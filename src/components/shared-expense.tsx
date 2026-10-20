@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { normalizeValidEmail } from "@/lib/email-validation";
 import { captureExpense } from "@/lib/expense-capture.functions";
 import { sharedReceiptDescription, type ReceiptItem } from "@/lib/receipt-insights";
+import { withSharedExpenseId } from "@/lib/shared-transaction-link";
 
 type Mode = "equal" | "percent" | "amount";
 type Partner = { id: string; name: string };
@@ -219,16 +220,17 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
         });
         if (error) throw error;
         if (!expenseId) throw new Error(t("No se pudo crear el gasto compartido", "The shared expense could not be created"));
+        const debtToMe = mine === 0 && payer === "me";
+        const base = sharedReceiptDescription(split, p.name, receiptItems);
+        await saveExpense({
+          userId: user.id, date: dateStr, category: cat, currency,
+          amount: debtToMe ? theirs : mine, debtToMe,
+          merchant: merchant.trim() || translateCategory(cat, lang),
+          description: withSharedExpenseId(payer !== "me" && mine > 0 ? base.replace(/(\|wyn-receipt:|$)/, "|owed$1") : base, expenseId),
+        });
         await notify({ data: { expenseId } });
       }
-      // Cuando tu parte es 0 y tú pagaste, la otra persona te debe el total: se guarda en positivo (verde).
       const debtToMe = mine === 0 && payer === "me";
-      await saveExpense({
-        userId: user.id, date: dateStr, category: cat, currency,
-        amount: debtToMe ? theirsTotal : mine, debtToMe,
-        merchant: merchant.trim() || translateCategory(cat, lang),
-        description: sharedReceiptDescription(split, names, receiptItems),
-      });
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
       void queryClient.invalidateQueries({ queryKey: ["shared-balances"] });
       void queryClient.invalidateQueries({ queryKey: ["shared-partners"] });
@@ -416,7 +418,7 @@ export function SharedExpenseInbox() {
     queryFn: async () => {
       const { data: rows, error } = await supabase
         .from("shared_expense_participants")
-        .select("id, share_amount, expense_id, shared_expenses(created_by, payer_id, total, currency, category, merchant, tx_date, split_mode, receipt_items)")
+        .select("id, share_amount, expense_id, transaction_id, shared_expenses(created_by, payer_id, total, currency, category, merchant, tx_date, split_mode, receipt_items)")
         .eq("user_id", user!.id)
         .eq("status", "pending");
       if (error) throw error;
@@ -443,7 +445,7 @@ export function SharedExpenseInbox() {
     setBusy(row.id);
     try {
       const exp = row.shared_expenses as unknown as { payer_id: string; total: number; currency: string; category: string; merchant: string; tx_date: string; split_mode: string; receipt_items: ReceiptItem[] };
-      if (accept) {
+      if (accept && !row.transaction_id) {
         const split = exp.split_mode.split("/").reverse().join("/");
         const share = Number(row.share_amount);
         const base = sharedReceiptDescription(split, row.from, Array.isArray(exp.receipt_items) ? exp.receipt_items : []);
@@ -454,8 +456,8 @@ export function SharedExpenseInbox() {
           merchant: exp.merchant || translateCategory(exp.category, lang),
           // Si el gasto lo puso (y pagó) la otra persona, marco la fila: mi parte se muestra en rojo.
           description: exp.payer_id !== user.id && share > 0
-            ? base.replace(/(\|wyn-receipt:|$)/, `${SHARED_OWE_MARKER}$1`)
-            : base,
+            ? withSharedExpenseId(base.replace(/(\|wyn-receipt:|$)/, `${SHARED_OWE_MARKER}$1`), row.expense_id)
+            : withSharedExpenseId(base, row.expense_id),
         });
       }
       const { error } = await supabase.from("shared_expense_participants").update({ status: accept ? "accepted" : "declined" }).eq("id", row.id);
