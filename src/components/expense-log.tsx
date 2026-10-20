@@ -666,10 +666,11 @@ export function ExpenseLog() {
       );
       const expected = Number(mine.share_amount) === 0 && exp.payer_id === user.id
         ? Number(exp.total) : Number(mine.share_amount);
-      const matched = mine.transaction_id ? visibleShared.find((tx) => tx.id === mine.transaction_id && !matchedTransactions.has(tx.id)) : candidates.find((tx) => Math.abs(Math.abs(tx.original_amount ?? tx.amount) - expected) < 0.02)
-        // Los movimientos antiguos pueden haberse guardado redondeados o con
-        // otro importe: emparejar por nombre solo si el comercio está presente.
-        ?? (exp.merchant.trim() ? candidates[0] : undefined);
+      const matched = mine.transaction_id
+        ? visibleShared.find((tx) => tx.id === mine.transaction_id && !matchedTransactions.has(tx.id))
+        : candidates.find((tx) => Math.abs(Math.abs(tx.original_amount ?? tx.amount) - expected) < 0.02)
+          // Preserve the existing named legacy fallback only for unlinked rows.
+          ?? (exp.merchant.trim() ? candidates[0] : undefined);
       if (!matched) continue;
       matchedTransactions.add(matched.id);
       for (const p of partners) {

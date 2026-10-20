@@ -15,6 +15,9 @@ export const notifySharedExpense = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!exp || exp.created_by !== userId) throw new Error("Forbidden");
 
+    const { error: recoveryError } = await supabase.rpc("recover_shared_links");
+    if (recoveryError) throw new Error(recoveryError.message);
+
     const { data: parts } = await supabase
       .from("shared_expense_participants")
       .select("user_id, display_name, share_amount, transaction_id")
