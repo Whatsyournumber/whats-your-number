@@ -139,8 +139,6 @@ function PatrimonioContent() {
   const { holdings } = useHoldings();
   const d = buildDataset(profile);
   const { fmt, assets } = d;
-  const fmtUsd = (value: number) =>
-    value.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: value < 10 ? 2 : 0 });
   const [evoMonth, setEvoMonth] = useState<string | null>(null);
   const [addAsset, setAddAsset] = useState(false);
   const [addLiability, setAddLiability] = useState(false);
