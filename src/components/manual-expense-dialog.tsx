@@ -245,7 +245,7 @@ export function ManualExpenseDialog({
         });
         if (shareError) throw new Error(shareError.message);
         if (!expenseId) throw new Error(t("No se pudo compartir el gasto", "Could not share the expense"));
-        description = `shared:50/50|${partner.name}`;
+        description = `shared:50/50|${partner.name}|expense:${expenseId}`;
         // Compartir no debe impedir que se registre tu parte si falla el aviso.
         void notifyShared({ data: { expenseId } }).catch(() => {});
       }

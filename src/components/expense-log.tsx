@@ -64,6 +64,7 @@ import { Check, Users } from "lucide-react";
 import { normalizeValidEmail } from "@/lib/email-validation";
 import { receiptItemsFrom as parseReceiptItems, sharedReceiptDescription } from "@/lib/receipt-insights";
 import { expenseSplit, type ExpenseSplitMode } from "@/lib/expense-split";
+import { linkedParticipant, withSharedExpenseId } from "@/lib/shared-transaction-link";
 
 const firstNameOf = (name: string) => name.trim().split(/\s+/)[0] || name;
 // Corta el texto de forma limpia (sin puntos suspensivos) para que no pase a dos líneas.
@@ -191,6 +192,7 @@ export function ExpenseLog() {
   const [recDay, setRecDay] = useState(1);
   const [recEditId, setRecEditId] = useState<string | null>(null);
   const [editTx, setEditTx] = useState<Tx | null>(null);
+  const [repairExpenseId, setRepairExpenseId] = useState("");
   const [confirmDeleteTx, setConfirmDeleteTx] = useState(false);
   const [editMerchant, setEditMerchant] = useState("");
   const [editAmount, setEditAmount] = useState(0);
@@ -232,9 +234,11 @@ export function ExpenseLog() {
     enabled: Boolean(user?.id),
     refetchInterval: 30_000,
     queryFn: async () => {
+      const { error: recoveryError } = await supabase.rpc("recover_shared_links");
+      if (recoveryError) throw recoveryError;
       const { data: rows, error } = await supabase
         .from("shared_expense_participants")
-        .select("id, expense_id, user_id, display_name, share_amount, status, shared_expenses(id, total, currency, payer_id, tx_date, merchant, category)")
+        .select("id, expense_id, transaction_id, user_id, display_name, share_amount, status, shared_expenses(id, total, currency, payer_id, tx_date, merchant, category)")
         .neq("status", "declined");
       if (error) throw error;
       return rows;
@@ -328,16 +332,11 @@ export function ExpenseLog() {
   };
 
   const sharedRowFor = (x: Tx) => {
-    const matches = sharedBalanceRows.filter((row) => {
-      const exp = row.shared_expenses;
-      if (!exp || row.user_id !== user?.id || exp.tx_date !== x.tx_date || (exp.merchant || exp.category) !== x.merchant || exp.currency !== (x.original_currency ?? x.currency)) return false;
-      const expected = Number(row.share_amount) === 0 && exp.payer_id === user?.id ? Number(exp.total) : Number(row.share_amount);
-      return Math.abs(expected - Math.abs(x.original_amount ?? x.amount)) < 0.02;
-    });
-    return matches.length === 1 ? matches[0] : undefined;
+    return linkedParticipant(sharedBalanceRows, user?.id, x.id);
   };
 
   const openEditTx = (x: Tx) => {
+    setRepairExpenseId("");
     setEditTx(x);
     setEditMerchant(x.merchant ?? "");
     setEditAmount(Math.abs(x.amount));
@@ -415,7 +414,9 @@ export function ExpenseLog() {
           _category: editCategory,
           _tx_date: editDate,
         });
-        if (error) throw new Error(error.message);
+        if (error) throw new Error(error.message === "Partner must confirm their legacy transaction first"
+          ? t("La otra persona debe abrir su gasto antiguo y confirmar a qué gasto compartido pertenece", "The other person must open their legacy transaction and confirm its shared expense")
+          : error.message);
         const selectedCategoryId = normalizeExpenseCategoryId(match(editCategory)) ?? "others";
         saveCatOverrides({ ...catOverrides, [editTx.id]: selectedCategoryId });
         await Promise.all([
@@ -448,7 +449,7 @@ export function ExpenseLog() {
         });
         if (shareError) throw new Error(shareError.message);
         amount = -half;
-        description = `${SHARED_PREFIX}50/50|${editSharePartner.name}`;
+        description = expenseId ? withSharedExpenseId(`${SHARED_PREFIX}50/50|${editSharePartner.name}`, expenseId) : `${SHARED_PREFIX}50/50|${editSharePartner.name}`;
         // Notify after the existing transaction has been updated, so both sides show the same expense.
         if (expenseId) {
           const { error: updateError } = await supabase.from("imported_transactions").update({
@@ -629,7 +630,7 @@ export function ExpenseLog() {
   const initialsOf = (name: string) => name.trim().slice(0, 1).toUpperCase() || "?";
   const sharedBalances = useMemo<SharedBalance[]>(() => {
     if (!user?.id) return [];
-    type Row = { expense_id: string; user_id: string; display_name: string | null; share_amount: number; status: string; shared_expenses: { total: number; payer_id: string; tx_date: string; currency: string; merchant: string } | null };
+    type Row = { expense_id: string; transaction_id: string | null; user_id: string; display_name: string | null; share_amount: number; status: string; shared_expenses: { total: number; payer_id: string; tx_date: string; currency: string; merchant: string } | null };
     const byExpense = new Map<string, Row[]>();
     for (const row of sharedBalanceRows as unknown as Row[]) {
       const list = byExpense.get(row.expense_id) ?? [];
@@ -665,10 +666,11 @@ export function ExpenseLog() {
       );
       const expected = Number(mine.share_amount) === 0 && exp.payer_id === user.id
         ? Number(exp.total) : Number(mine.share_amount);
-      const matched = candidates.find((tx) => Math.abs(Math.abs(tx.original_amount ?? tx.amount) - expected) < 0.02)
-        // Los movimientos antiguos pueden haberse guardado redondeados o con
-        // otro importe: emparejar por nombre solo si el comercio está presente.
-        ?? (exp.merchant.trim() ? candidates[0] : undefined);
+      const matched = mine.transaction_id
+        ? visibleShared.find((tx) => tx.id === mine.transaction_id && !matchedTransactions.has(tx.id))
+        : candidates.find((tx) => Math.abs(Math.abs(tx.original_amount ?? tx.amount) - expected) < 0.02)
+          // Preserve the existing named legacy fallback only for unlinked rows.
+          ?? (exp.merchant.trim() ? candidates[0] : undefined);
       if (!matched) continue;
       matchedTransactions.add(matched.id);
       for (const p of partners) {
@@ -1504,6 +1506,7 @@ export function ExpenseLog() {
           ? sharedReceiptDescription(draftSplit(draft), draft.partner.name, draft.items)
           : `${SHARED_PREFIX}${draftSplit(draft)}|${draft.partner.name}`;
         if (draft.payer === "partner" && ownAmount > 0) sharedDescription = sharedDescription.replace(/(\|wyn-receipt:|$)/, "|owed$1");
+        sharedDescription = withSharedExpenseId(sharedDescription, expenseId);
         void notifyShared({ data: { expenseId } }).catch(() => {});
       }
       const savedId = await saveExpense({
@@ -3442,6 +3445,33 @@ export function ExpenseLog() {
               )}
               {editSharedWith && (
                 <div className="grid gap-2">
+                  {editTx && !sharedRowFor(editTx) && (
+                    <div className="grid gap-2 border-b border-border pb-3">
+                      <Label>{t("Confirmar gasto compartido antiguo", "Confirm legacy shared expense")}</Label>
+                      <Select value={repairExpenseId} onValueChange={setRepairExpenseId}>
+                        <SelectTrigger><SelectValue placeholder={t("Selecciona el gasto al que pertenece", "Select the matching shared expense")} /></SelectTrigger>
+                        <SelectContent>
+                          {sharedBalanceRows.filter((r) => r.user_id === user?.id && r.status === "accepted" && !r.transaction_id && r.shared_expenses?.currency === (editTx.original_currency ?? editTx.currency)).map((r) => (
+                            <SelectItem key={r.id} value={r.expense_id}>
+                              {r.shared_expenses?.merchant || r.shared_expenses?.category} · {r.shared_expenses?.tx_date} · {r.shared_expenses?.currency} {Number(r.share_amount).toFixed(2)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button variant="outline" disabled={!repairExpenseId || saving} onClick={async () => {
+                        if (!editTx) return;
+                        setSaving(true);
+                        try {
+                          const { error } = await supabase.rpc("confirm_shared_link", { _expense_id: repairExpenseId, _transaction_id: editTx.id });
+                          if (error) throw error;
+                          await queryClient.invalidateQueries({ queryKey: ["shared-balances"] });
+                          setEditTx(null);
+                          toast.success(t("Vínculo confirmado. Vuelve a abrir el gasto para editarlo", "Link confirmed. Reopen the expense to edit it"));
+                        } catch (error) { toast.error(error instanceof Error ? error.message : t("No se pudo confirmar el gasto", "Could not confirm the expense")); }
+                        finally { setSaving(false); }
+                      }}><Link2 className="h-4 w-4" />{t("Confirmar que es este gasto", "Confirm this is the expense")}</Button>
+                    </div>
+                  )}
                   <div className="flex gap-2">
                     {(["equal", "percent", "amount"] as const).map((m) => (
                       <button
