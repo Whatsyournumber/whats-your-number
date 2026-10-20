@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { convertStoredFixedExpenses } from "@/hooks/use-fixed-expenses";
+import { convertBudgetCurrency } from "@/lib/convert-budget-cloud";
 import { useAuth } from "@/hooks/use-auth";
 import { useProfile } from "@/hooks/use-profile";
 import { useT } from "@/hooks/use-language";
@@ -25,8 +26,11 @@ export function CurrencyToggle({ className = "" }: { className?: string }) {
     try {
       const live = await ensureLiveRates();
       convertStoredFixedExpenses(current, next);
+      await convertBudgetCurrency(user.id, current, next);
       const { completed: _c, ...rest } = convertProfileCurrency(profile, current, next);
       await save({ ...rest, currency: next });
+      // Recarga para que el plan y los gastos fijos lean los importes ya convertidos.
+      window.setTimeout(() => window.location.reload(), 600);
       toast.success(t(`Moneda cambiada a ${next}`, `Currency switched to ${next}`), {
         description: live
           ? t(
