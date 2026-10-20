@@ -39,7 +39,7 @@ import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { BUDGET_CATEGORIES } from "@/lib/budget-categories";
 import { useIndexReturns } from "@/hooks/use-index-returns";
 import { holdingValue, useHoldings, wealthTotals } from "@/hooks/use-holdings";
-import { useDailySeries, useMarketSeries, useQuotes } from "@/hooks/use-market";
+import { useDailySeries, useMarketSeries, useQuotes, useHoldingQuotes } from "@/hooks/use-market";
 import { marketReturnPct } from "@/lib/holding-return";
 import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { useSyncedSetting } from "@/hooks/use-synced-setting";
@@ -185,7 +185,7 @@ function Dashboard() {
   const holdingSymbols = holdings
     .filter((h) => h.ticker && (h.quantity > 0 || h.cost_basis > 0 || h.manual_value > 0))
     .map((h) => h.ticker!);
-  const holdingQuotes = useQuotes(holdingSymbols);
+  const holdingQuotes = useHoldingQuotes(holdingSymbols);
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
   // Series reales (misma fuente que /portafolio): precio del día de compra y S&P 500 a 12m.
   const holdingTickers = holdings.filter((h) => h.ticker).map((h) => h.ticker!.toUpperCase());

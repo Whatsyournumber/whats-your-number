@@ -34,7 +34,7 @@ import { NumberInput } from "@/components/ui/number-input";
 import { Label } from "@/components/ui/label";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useT } from "@/hooks/use-language";
-import { useQuotes } from "@/hooks/use-market";
+import { useQuotes, useHoldingQuotes } from "@/hooks/use-market";
 import { useLifeGoals, type LifeGoal } from "@/hooks/use-life-goals";
 import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { useProfile } from "@/hooks/use-profile";
@@ -133,7 +133,7 @@ function LifePlannerContent() {
   const holdingSymbols = holdings
     .filter((h) => h.ticker && (h.quantity > 0 || h.cost_basis > 0 || h.manual_value > 0))
     .map((h) => h.ticker!);
-  const holdingQuotes = useQuotes(holdingSymbols);
+  const holdingQuotes = useHoldingQuotes(holdingSymbols);
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
   const investable = holdings.length
     ? holdings

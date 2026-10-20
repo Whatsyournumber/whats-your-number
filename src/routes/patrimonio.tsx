@@ -19,7 +19,7 @@ import { useT, useLanguage } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { holdingEntryTotal, holdingValue, useHoldings, type Holding, type HoldingKind } from "@/hooks/use-holdings";
-import { useDailySeries, useMarketSeries, useQuotes } from "@/hooks/use-market";
+import { useDailySeries, useMarketSeries, useQuotes, useHoldingQuotes } from "@/hooks/use-market";
 import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
@@ -139,8 +139,6 @@ function PatrimonioContent() {
   const { holdings } = useHoldings();
   const d = buildDataset(profile);
   const { fmt, assets } = d;
-  const fmtUsd = (value: number) =>
-    value.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: value < 10 ? 2 : 0 });
   const [evoMonth, setEvoMonth] = useState<string | null>(null);
   const [addAsset, setAddAsset] = useState(false);
   const [addLiability, setAddLiability] = useState(false);
@@ -153,7 +151,7 @@ function PatrimonioContent() {
 
   // Precios reales para posiciones con ticker.
   const holdingSymbols = holdings.filter((h) => h.ticker && (h.quantity > 0 || h.cost_basis > 0 || h.manual_value > 0)).map((h) => h.ticker!);
-  const holdingQuotes = useQuotes(holdingSymbols);
+  const holdingQuotes = useHoldingQuotes(holdingSymbols);
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
   const dayChange: Record<string, number> = Object.fromEntries(
     (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
@@ -1050,8 +1048,8 @@ function PatrimonioContent() {
                                </span>
                              ) : null}
                           </p>
-                           <p className="numeric text-sm font-semibold">{r.livePrice ? fmtUsd(r.livePrice) : "—"}</p>
-                           <p className="numeric text-[11px] text-muted-foreground">{r.strike && r.strike > 0 ? fmtUsd(r.strike) : "—"}</p>
+                           <p className="numeric text-sm font-semibold">{r.livePrice ? fmt(r.livePrice) : "—"}</p>
+                           <p className="numeric text-[11px] text-muted-foreground">{r.strike && r.strike > 0 ? fmt(r.strike) : "—"}</p>
                         </div>
                         <div>
                            <p className="text-[11px] text-muted-foreground">{t("Ganancia / pérdida", "Gain / loss")}</p>
@@ -1067,8 +1065,8 @@ function PatrimonioContent() {
                        <>
                          <div>
                            <p className="text-[11px] text-muted-foreground">{t("Precio actual", "Current price")}</p>
-                           <p className="numeric text-sm font-semibold">{r.livePrice ? fmtUsd(r.livePrice) : "—"}</p>
-                           <p className="numeric text-[11px] text-muted-foreground">{r.strike && r.strike > 0 ? fmtUsd(r.strike) : "—"}</p>
+                           <p className="numeric text-sm font-semibold">{r.livePrice ? fmt(r.livePrice) : "—"}</p>
+                           <p className="numeric text-[11px] text-muted-foreground">{r.strike && r.strike > 0 ? fmt(r.strike) : "—"}</p>
                          </div>
                          <div>
                            <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
