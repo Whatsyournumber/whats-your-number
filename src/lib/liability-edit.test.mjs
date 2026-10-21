@@ -2,6 +2,13 @@ import { describe, expect, test } from "bun:test";
 import { mortgageAllocation, profileLiabilityPatch } from "./liability-edit";
 
 describe("edición de pasivos existentes", () => {
+  test("eliminar deudas deja únicamente el saldo de hipoteca", () => {
+    expect(profileLiabilityPatch("debts", 0, 0, { liabilities: 360000, mortgage_balance: 173700 }, 173700)).toEqual({ liabilities: 173700 });
+  });
+  test("eliminar la hipoteca conserva las demás deudas y elimina saldos vinculados", () => {
+    expect(profileLiabilityPatch("mortgage", 0, 0, { liabilities: 360000, mortgage_balance: 173700 }, 173700)).toEqual({ mortgage_balance: 0, mortgage_rate: 0, liabilities: 186300 });
+    expect(mortgageAllocation([100, 200], 0)).toEqual([0, 0]);
+  });
   test("editar deudas conserva la hipoteca que ya está incluida", () => {
     expect(profileLiabilityPatch("debts", 150000, 0, { liabilities: 360000, mortgage_balance: 173700 }, 173700)).toEqual({ liabilities: 323700 });
   });

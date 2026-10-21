@@ -1200,7 +1200,7 @@ function PatrimonioContent() {
 
       {addAsset ? <AssetDialog open onOpenChange={setAddAsset} /> : null}
       {addLiability ? <AssetDialog open initialKind="debt" onOpenChange={setAddLiability} /> : null}
-      {editLiability ? <AssetDialog open fallbackHolding={editLiability.holding} onSaveHolding={saveExistingLiability} onOpenChange={(open) => { if (!open) setEditLiability(null); }} /> : null}
+      {editLiability ? <AssetDialog open fallbackHolding={editLiability.holding} onSaveHolding={saveExistingLiability} onDeleteHolding={() => saveExistingLiability({ ...editLiability.holding, cost_basis: 0, manual_value: 0, expected_return: 0 })} onOpenChange={(open) => { if (!open) setEditLiability(null); }} /> : null}
       {editAssetId ? (
         <AssetDialog open holdingId={editAssetId} onOpenChange={(o) => !o && setEditAssetId(null)} />
       ) : null}
