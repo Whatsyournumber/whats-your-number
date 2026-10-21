@@ -4,6 +4,9 @@ import { Area, AreaChart, Cell, ComposedChart, Line, Pie, PieChart, ResponsiveCo
 import { Pencil, Plus } from "lucide-react";
 
 import { AssetDialog } from "@/components/asset-dialog";
+import { useSyncedSetting } from "@/hooks/use-synced-setting";
+import { noteWithLiabilityType, liabilityTypeFromNote } from "@/lib/liability-form";
+import { mortgageAllocation, profileLiabilityPatch } from "@/lib/liability-edit";
 
 import { cn } from "@/lib/utils";
 
@@ -31,6 +34,8 @@ export const Route = createFileRoute("/patrimonio")({
       { name: "description", content: "Activos, pasivos, asset allocation y crecimiento de tu patrimonio neto." },
       { property: "og:title", content: "Patrimonio — WhatsYournumber" },
       { property: "og:description", content: "Efectivo, bancos, fondos, ETFs, cripto, propiedades y deudas consolidados." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
@@ -134,9 +139,11 @@ function PatrimonioContent() {
   const isMobile = useIsMobile();
   const t = useT();
   const { lang } = useLanguage();
-  const { profile } = useProfile();
+  const { profile, save: saveProfile } = useProfile();
   const { transactions } = useTransactions();
-  const { holdings } = useHoldings();
+  const { holdings, saveAll: saveHoldings } = useHoldings();
+  const [editLiability, setEditLiability] = useState<{ id: string; holding: Holding } | null>(null);
+  const { value: liabilityDetails, save: saveLiabilityDetails } = useSyncedSetting<Record<string, { label: string; note: string | null; date: string | null; rate: number }>>("liability-details", {});
   const d = buildDataset(profile);
   const { fmt, assets } = d;
   const [evoMonth, setEvoMonth] = useState<string | null>(null);
@@ -182,8 +189,48 @@ function PatrimonioContent() {
   // Deudas del onboarding que no son la hipoteca ya contada arriba.
   const otherDebts = Math.max(0, Math.max(0, profile?.liabilities || 0) - mortgageCovered);
   const otherDebtRows = otherDebts > 0 ? [{ id: "debts-profile", label: t("Deudas", "Debts"), value: otherDebts, interest: 0 }] : [];
-  const liabilityRows = [...debtRows, ...mortgageRows, ...otherDebtRows].sort((a, b) => b.value - a.value);
+  const liabilityRows = [...debtRows, ...mortgageRows, ...otherDebtRows].map((row) => ({
+    ...row,
+    label: liabilityDetails[row.id]?.label || row.label,
+    interest: liabilityDetails[row.id]?.rate ?? row.interest,
+  })).sort((a, b) => b.value - a.value);
   const liabilitiesTotal = liabilityRows.reduce((s, r) => s + r.value, 0);
+
+  const openLiability = (row: (typeof liabilityRows)[number]) => {
+    if (holdings.some((h) => h.id === row.id && h.kind === "debt")) {
+      setEditAssetId(row.id);
+      return;
+    }
+    const details = liabilityDetails[row.id];
+    setEditLiability({ id: row.id, holding: {
+      id: row.id, kind: "debt", label: row.label, ticker: null, quantity: 0,
+      cost_basis: row.value, manual_value: 0, monthly_contribution: 0,
+      expected_return: row.interest, linked_liability: 0, monthly_income: 0,
+      target_year: null, probability: 100, position: holdings.length,
+      note: details?.note ?? noteWithLiabilityType(null, row.id.startsWith("mort-") ? "mortgage" : "other"),
+      purchased_at: details?.date ?? null,
+    } });
+  };
+
+  const saveExistingLiability = async (updated: Holding) => {
+    if (!editLiability) return;
+    const id = editLiability.id;
+    const amount = updated.cost_basis;
+    if (id === "debts-profile") {
+      await saveProfile(profileLiabilityPatch("debts", amount, updated.expected_return, profile, mortgageCovered));
+    } else if (id === "mort-profile") {
+      const properties = holdings.filter((h) => h.kind === "property" && h.linked_liability > 0);
+      const allocations = mortgageAllocation(properties.map((h) => h.linked_liability), amount);
+      const balances = new Map(properties.map((h, index) => [h.id, allocations[index] ?? 0]));
+      if (properties.length) await saveHoldings(holdings.map((h) => balances.has(h.id) ? { ...h, linked_liability: balances.get(h.id) ?? 0 } : h));
+      await saveProfile(profileLiabilityPatch("mortgage", amount, updated.expected_return, profile, mortgageCovered));
+    } else {
+      const propertyId = id.slice(5);
+      await saveHoldings(holdings.map((h) => h.id === propertyId ? { ...h, linked_liability: amount } : h));
+      if (profile.liabilities >= mortgageCovered) await saveProfile({ liabilities: profile.liabilities - editLiability.holding.cost_basis + amount });
+    }
+    saveLiabilityDetails({ ...liabilityDetails, [id]: { label: updated.label, note: noteWithLiabilityType(null, liabilityTypeFromNote(updated.note)), date: updated.purchased_at ?? null, rate: updated.expected_return } });
+  };
 
   // Detalle completo: inversiones + inmuebles + retiro + cash + activos futuros (trading, venta, etc.).
   const groupOf = (kind: string) =>
@@ -931,6 +978,9 @@ function PatrimonioContent() {
                   )}
                 </div>
                 <span className="numeric ml-auto shrink-0 text-sm font-semibold">{fmt(l.value)}</span>
+                <Button type="button" variant="ghost" size="icon" className="h-9 w-9 shrink-0" onClick={() => openLiability(l)} aria-label={t(`Editar ${l.label}`, `Edit ${l.label}`)} title={t(`Editar ${l.label}`, `Edit ${l.label}`)}>
+                  <Pencil className="h-4 w-4" />
+                </Button>
               </div>
             ))}
             {liabilityRows.length === 0 && <p className="text-sm text-muted-foreground">{t("No registras deudas. 🎉", "You have no debts. 🎉")}</p>}
@@ -1150,6 +1200,7 @@ function PatrimonioContent() {
 
       {addAsset ? <AssetDialog open onOpenChange={setAddAsset} /> : null}
       {addLiability ? <AssetDialog open initialKind="debt" onOpenChange={setAddLiability} /> : null}
+      {editLiability ? <AssetDialog open fallbackHolding={editLiability.holding} onSaveHolding={saveExistingLiability} onOpenChange={(open) => { if (!open) setEditLiability(null); }} /> : null}
       {editAssetId ? (
         <AssetDialog open holdingId={editAssetId} onOpenChange={(o) => !o && setEditAssetId(null)} />
       ) : null}

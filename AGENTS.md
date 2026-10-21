@@ -40,5 +40,6 @@ Monthly shared-balance payments are private per-user append-only entries with am
 Monthly shared-balance summaries match accepted expense records one-to-one to visible user transactions by date, merchant when present, and currency; prefer exact share amount but allow named legacy transactions with rounded or altered amounts. Orphaned participant rows must not inflate counts or balances because their transactions cannot be inspected or edited.
 
 Keep liability form rules in `src/lib/liability-form.ts` so the UI and its rule tests share one source of truth.
+Liability rows reuse AssetDialog: stored debts edit their holding, while profile and property liabilities update their original balance source and keep supplemental name/type/date in user settings, avoiding duplicate debts.
 
 Currency edits in My Profile are draft-only for both profile and holdings; persist through `save_financial_profile`, also used by the header selector, so profile, holdings, goals and budgets commit together with an original-currency check. Invalidate only the active user's caches after commit.
