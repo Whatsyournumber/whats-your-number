@@ -71,6 +71,13 @@
       "when": 1792618836724,
       "tag": "0009_atomic_profile_currency_save",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792618917391,
+      "tag": "0010_atomic_group_shared_expenses",
+      "breakpoints": true
     }
   ]
 }
