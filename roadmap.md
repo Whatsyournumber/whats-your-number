@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Permitir editar y eliminar con confirmación todos los pasivos de Patrimonio, incluidas deudas e hipotecas del perfil.
+- [x] Permitir editar y eliminar con confirmación todos los pasivos de Patrimonio, incluidas deudas e hipotecas del perfil.
 - [ ] Corregir la conversión de moneda al guardar/descartar Mi perfil y el conteo de la parte propia al compartir con varias personas; fallos confirmados, pendiente de aprobar el plan transaccional.
 - [ ] Recuperar la edición de gastos compartidos antiguos sin mezclar movimientos; pendiente de aprobar el plan de recuperación segura.
 - [x] Permitir editar gastos a ambos participantes y sincronizar sus movimientos.
