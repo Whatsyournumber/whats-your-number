@@ -43,3 +43,5 @@ Keep liability form rules in `src/lib/liability-form.ts` so the UI and its rule 
 Liability rows reuse AssetDialog with confirmed deletion: stored debts edit/delete their holding, while profile and property liabilities update/clear their original balance source and keep supplemental name/type/date in user settings, avoiding duplicate debts and preserving property assets.
 
 Currency edits in My Profile are draft-only for both profile and holdings; persist through `save_financial_profile`, also used by the header selector, so profile, holdings, goals and budgets commit together with an original-currency check. Invalidate only the active user's caches after commit.
+
+Portfolio liquidity uses the shared holdings through portfolioLiquidity regardless of creation-screen notes, so net-worth cash and bank balances appear without duplicated records.

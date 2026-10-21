@@ -38,6 +38,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
 import { currencySymbol } from "@/lib/onboarding";
+import { portfolioLiquidity } from "@/lib/portfolio-liquidity";
 import { cn } from "@/lib/utils";
 
 function SimTooltip({
@@ -139,6 +140,8 @@ export const Route = createFileRoute("/portafolio")({
       { name: "description", content: "ETFs, acciones, cripto y cash con costo promedio, rentabilidad, dividendos y benchmark." },
       { property: "og:title", content: "Portafolio — Finance OS" },
       { property: "og:description", content: "Rentabilidad de tu portafolio comparada contra el S&P 500." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
@@ -533,7 +536,7 @@ function PortafolioContent() {
     })
     .filter((h) => h.value > 0);
 
-  const cashDetailed = holdings.filter((h) => h.note !== PATRIMONIO_ONLY_NOTE && ["cash", "bank", "money_market"].includes(h.kind));
+  const cashDetailed = portfolioLiquidity(holdings);
   if (cashDetailed.length) {
     const cash = cashDetailed.reduce((s, h) => s + holdingValue(h, prices), 0);
     if (cash > 0)
