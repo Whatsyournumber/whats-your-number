@@ -1044,7 +1044,7 @@ function PatrimonioContent() {
                       : t("Ganancia anual", "Annual gain");
                 const gainTone = annual > 0 ? "text-positive" : annual < 0 ? "text-negative" : "text-muted-foreground";
                 const isCrypto = r.kind === "crypto";
-                const isMarketSecurity = (r.kind === "etf" || r.kind === "stock") && Boolean(r.livePrice);
+                const isMarketSecurity = r.kind === "etf" || r.kind === "stock";
                 const tk = r.ticker?.toUpperCase();
                 const today = tk && dayChange[tk] !== undefined ? dayChange[tk] : null;
                 const extraMeta =
@@ -1081,7 +1081,7 @@ function PatrimonioContent() {
                          ) : null}
                        </p>
                     </div>
-                     {isCrypto ? (
+                     {isCrypto || isMarketSecurity ? (
                       <>
                         <div>
                           <p className="text-[11px] text-muted-foreground">{t("Valor actual", "Current value")}</p>
@@ -1111,34 +1111,6 @@ function PatrimonioContent() {
                           </p>
                         </div>
                       </>
-                     ) : isMarketSecurity ? (
-                       <>
-                         <div>
-                           <p className="text-[11px] text-muted-foreground">{t("Precio actual", "Current price")}</p>
-                           <p className="numeric text-sm font-semibold">{r.livePrice ? fmt(r.livePrice) : "—"}</p>
-                           <p className="numeric text-[11px] text-muted-foreground">{r.strike && r.strike > 0 ? fmt(r.strike) : "—"}</p>
-                         </div>
-                         <div>
-                           <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                             {t("Mercado actual", "Current market")}
-                             <span className="relative flex h-1.5 w-1.5">
-                               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-positive/70" />
-                               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-positive" />
-                             </span>
-                           </p>
-                           <p className="numeric text-sm font-medium">{fmt(r.value)}</p>
-                           <p className="numeric text-[11px] text-muted-foreground">{fmt(r.cost)}</p>
-                         </div>
-                         <div>
-                           <p className="text-[11px] text-muted-foreground">{t("Ganancia / pérdida", "Gain / loss")}</p>
-                           <p className={cn("numeric text-sm font-semibold", r.gain === 0 ? "text-muted-foreground/50" : r.gain > 0 ? "text-positive" : "text-negative")}>
-                             {r.gain === 0 ? "—" : `${r.gain > 0 ? "+" : ""}${fmt(r.gain)}`}
-                           </p>
-                           <p className={cn("numeric text-[11px]", today === null ? "text-muted-foreground/50" : today < 0 ? "text-negative" : "text-positive")}>
-                             {today === null ? "—" : `${today > 0 ? "+" : ""}${today.toFixed(2)}%`}
-                           </p>
-                         </div>
-                       </>
                     ) : (
                       <>
                         <div>
