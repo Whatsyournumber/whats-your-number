@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { convertStoredFixedExpenses } from "@/hooks/use-fixed-expenses";
-import { convertBudgetCurrency } from "@/lib/convert-budget-cloud";
+import { saveFinancialProfile } from "@/lib/convert-budget-cloud";
+import { currencyDraft } from "@/lib/currency-draft";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { useProfile } from "@/hooks/use-profile";
 import { useT } from "@/hooks/use-language";
-import { convertProfileCurrency, ensureLiveRates, getRatesUpdatedAt } from "@/lib/fx";
+import { ensureLiveRates, getRatesUpdatedAt } from "@/lib/fx";
 import { currencies } from "@/lib/onboarding";
 
 /** Selector de moneda: reconvierte todos los importes del perfil a la divisa elegida. */
 export function CurrencyToggle({ className = "" }: { className?: string }) {
   const { user } = useAuth();
-  const { profile, save } = useProfile();
+  const { profile } = useProfile();
+  const queryClient = useQueryClient();
   const t = useT();
   const [busy, setBusy] = useState(false);
 
@@ -21,14 +23,13 @@ export function CurrencyToggle({ className = "" }: { className?: string }) {
   const current = profile.currency || "EUR";
 
   const onChange = async (next: string) => {
-    if (!next || next === current) return;
+    if (busy || !next || next === current) return;
     setBusy(true);
     try {
       const live = await ensureLiveRates();
-      convertStoredFixedExpenses(current, next);
-      await convertBudgetCurrency(user.id, current, next);
-      const { completed: _c, ...rest } = convertProfileCurrency(profile, current, next);
-      await save({ ...rest, currency: next });
+      const converted = currencyDraft(profile, [], next).profile;
+      await saveFinancialProfile(user.id, current, next, converted);
+      await queryClient.invalidateQueries();
       // Recarga para que el plan y los gastos fijos lean los importes ya convertidos.
       window.setTimeout(() => window.location.reload(), 600);
       toast.success(t(`Moneda cambiada a ${next}`, `Currency switched to ${next}`), {

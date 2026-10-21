@@ -1799,6 +1799,20 @@ export type Database = {
         Args: { _expense_id: string; _transaction_id: string }
         Returns: undefined
       }
+      create_group_shared_expense: {
+        Args: {
+          _category: string
+          _currency: string
+          _merchant: string
+          _participants: Json
+          _payer_id: string
+          _receipt_items: Json
+          _request_id: string
+          _total: number
+          _tx_date: string
+        }
+        Returns: string
+      }
       create_shared_expense:
         | {
             Args: {
@@ -1875,6 +1889,16 @@ export type Database = {
       redeem_promo_code: {
         Args: { _code: string; _environment: string; _user_id: string }
         Returns: Json
+      }
+      save_financial_profile: {
+        Args: {
+          _from: string
+          _holdings?: Json
+          _profile: Json
+          _rate: number
+          _to: string
+        }
+        Returns: undefined
       }
       update_shared_expense: {
         Args: {

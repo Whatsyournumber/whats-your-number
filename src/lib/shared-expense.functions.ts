@@ -23,12 +23,14 @@ export const notifySharedExpense = createServerFn({ method: "POST" })
       .select("user_id, display_name, share_amount, transaction_id")
       .eq("expense_id", exp.id);
     const me = parts?.find((p) => p.user_id === userId);
-    const other = parts?.find((p) => p.user_id !== userId);
-    if (!other) return { sent: false };
+    const others = parts?.filter((p) => p.user_id !== userId) ?? [];
+    if (!others.length) return { sent: false };
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    // Sincroniza el gasto en la app de la otra persona: su parte entra en sus gastos.
+    let sent = false;
+    for (const other of others) {
+    // Legacy creation still needs synchronization; group creation already has every linked transaction.
     const { data: exp2 } = await supabase.from("shared_expenses").select("tx_date").eq("id", exp.id).single();
     let { data: st } = await supabaseAdmin
       .from("statements").select("id").eq("user_id", other.user_id).eq("storage_path", "manual").limit(1).maybeSingle();
@@ -62,13 +64,13 @@ export const notifySharedExpense = createServerFn({ method: "POST" })
     await supabaseAdmin.from("shared_expense_participants").update({ status: "accepted" })
       .eq("expense_id", exp.id).eq("user_id", other.user_id);
     const { data: prof } = await supabaseAdmin.from("profiles").select("email, full_name").eq("id", other.user_id).maybeSingle();
-    if (!prof?.email) return { sent: false, synced: true };
+    if (!prof?.email) continue;
 
     const money = (v: number) =>
       new Intl.NumberFormat("es-ES", { style: "currency", currency: exp.currency || "USD" }).format(Number(v));
     const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
     const result = await sendTemplateEmail("shared-expense", prof.email, {
-      idempotencyKey: `shared-expense-${exp.id}`,
+      idempotencyKey: `shared-expense-${exp.id}-${other.user_id}`,
       templateData: {
         fromName: me?.display_name ?? "",
         toName: (prof.full_name ?? "").split(" ")[0],
@@ -78,7 +80,9 @@ export const notifySharedExpense = createServerFn({ method: "POST" })
         split: exp.split_mode,
       },
     });
-    return { sent: result.sent, synced: true };
+    sent ||= result.sent;
+    }
+    return { sent, synced: true };
   });
 
 /** Removes both sides of a shared entry before emailing the other participant. */
@@ -89,15 +93,15 @@ export const deleteSharedExpense = createServerFn({ method: "POST" })
     // The checked database function validates membership and deletes both entries atomically.
     const { data: rows, error: deletionError } = await context.supabase.rpc("delete_shared_expense", { _transaction_id: data.transactionId });
     if (deletionError) throw new Error(deletionError.message);
-    const deleted = rows?.[0];
-    if (!deleted) throw new Error("Shared expense not found");
+    if (!rows?.length) throw new Error("Shared expense not found");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    for (const deleted of rows) {
     const { data: profile } = await supabaseAdmin.from("profiles").select("email, full_name").eq("id", deleted.other_user_id).maybeSingle();
     if (profile?.email) {
       const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
       try {
         await sendTemplateEmail("shared-expense-deleted", profile.email, {
-          idempotencyKey: `shared-expense-deleted-${deleted.deleted_expense_id}`,
+          idempotencyKey: `shared-expense-deleted-${deleted.deleted_expense_id}-${deleted.other_user_id}`,
           templateData: {
             fromName: deleted.actor_name ?? "",
             toName: (profile.full_name ?? "").split(" ")[0],
@@ -107,6 +111,7 @@ export const deleteSharedExpense = createServerFn({ method: "POST" })
       } catch (error) {
         console.error("Shared expense deletion email failed", error);
       }
+    }
     }
     return { deleted: true };
   });

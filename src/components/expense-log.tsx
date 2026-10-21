@@ -335,6 +335,9 @@ export function ExpenseLog() {
     return linkedParticipant(sharedBalanceRows, user?.id, x.id);
   };
 
+  const editParticipants = editTx ? sharedBalanceRows.filter((row) => row.expense_id === sharedRowFor(editTx)?.expense_id && row.status === "accepted") : [];
+  const editParticipantCount = Math.max(2, editParticipants.length);
+
   const openEditTx = (x: Tx) => {
     setRepairExpenseId("");
     setEditTx(x);
@@ -352,7 +355,8 @@ export function ExpenseLog() {
       const a = expense && total > 0 ? myShare / total * 100 : Number(shared.split.split("/")[0]);
       const pct = Number.isFinite(a) && a >= 0 && a <= 100 ? a : 50;
       setEditMyPct(pct);
-      setEditMode(pct === 50 ? "equal" : "percent");
+      const count = sharedBalanceRows.filter((row) => row.expense_id === myRow?.expense_id && row.status === "accepted").length;
+      setEditMode(count > 2 ? "amount" : pct === 50 ? "equal" : "percent");
       setEditMyAmount(myShare);
       setEditTotal(total || (pct > 0 ? myShare / (pct / 100) : Math.abs(x.amount)));
     } else {
@@ -402,7 +406,7 @@ export function ExpenseLog() {
         // Sigue compartido: se recalcula el reparto con el total y el modo elegidos.
         const total = Math.abs(editTotal);
         const mine =
-          editMode === "equal" ? total / 2 : editMode === "percent" ? (total * editMyPct) / 100 : Math.min(editMyAmount, total);
+          editMode === "equal" ? total / editParticipantCount : editMode === "percent" ? (total * editMyPct) / 100 : Math.min(editMyAmount, total);
         const expenseRow = sharedRowFor(editTx);
         if (!expenseRow?.shared_expenses) throw new Error(t("No se encontró el gasto compartido", "Shared expense not found"));
         const sourceCurrency = expenseRow.shared_expenses.currency;
@@ -3483,7 +3487,7 @@ export function ExpenseLog() {
                           editMode === m ? "border-positive bg-positive/15 text-foreground" : "border-border text-muted-foreground",
                         )}
                       >
-                        {m === "equal" ? "50 / 50" : m === "percent" ? t("Porcentaje", "Percent") : t("Cantidad", "Amount")}
+                        {m === "equal" ? (editParticipantCount > 2 ? t("Partes iguales", "Equal parts") : "50 / 50") : m === "percent" ? t("Porcentaje", "Percent") : t("Cantidad", "Amount")}
                       </button>
                     ))}
                   </div>
@@ -3502,7 +3506,7 @@ export function ExpenseLog() {
                   {(() => {
                     const total = Math.abs(editTotal);
                     const mine =
-                      editMode === "equal" ? total / 2 : editMode === "percent" ? (total * editMyPct) / 100 : Math.min(editMyAmount, total);
+                      editMode === "equal" ? total / editParticipantCount : editMode === "percent" ? (total * editMyPct) / 100 : Math.min(editMyAmount, total);
                     const theirs = Math.max(0, total - mine);
                     const editExpense = editTx ? sharedRowFor(editTx)?.shared_expenses : undefined;
                     const partnerPaid = editExpense ? editExpense.payer_id !== user?.id : sharedIOwe(editTx?.description);
@@ -3513,7 +3517,7 @@ export function ExpenseLog() {
                           <span className="numeric text-sm font-semibold">{fmtShared(mine)}</span>
                         </div>
                         <div className="flex items-center justify-between gap-2 border-t border-border px-3 py-2.5">
-                          <span className="text-sm">{firstNameOf(editSharedWith)} {t("paga", "pays")}</span>
+                          <span className="text-sm">{editParticipantCount > 2 ? t("Resto del grupo", "Rest of group") : firstNameOf(editSharedWith)} {t("paga", "pays")}</span>
                           <span className="numeric text-sm font-semibold">{fmtShared(theirs)}</span>
                         </div>
                         <div className="border-t border-border px-3 py-2.5 text-xs">

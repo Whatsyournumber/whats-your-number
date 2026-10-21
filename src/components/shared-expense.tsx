@@ -29,6 +29,7 @@ import { normalizeValidEmail } from "@/lib/email-validation";
 import { captureExpense } from "@/lib/expense-capture.functions";
 import { sharedReceiptDescription, type ReceiptItem } from "@/lib/receipt-insights";
 import { withSharedExpenseId } from "@/lib/shared-transaction-link";
+import { groupExpenseShares } from "@/lib/group-expense-split";
 
 type Mode = "equal" | "percent" | "amount";
 type Partner = { id: string; name: string };
@@ -97,6 +98,8 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   const [receiptItems, setReceiptItems] = useState<ReceiptItem[]>([]);
   const [receiptName, setReceiptName] = useState("");
   const receiptRef = useRef<HTMLInputElement>(null);
+  const requestId = useRef<string | null>(null);
+  const savingRef = useRef(false);
 
   // Personas con las que ya compartiste gastos: quedan guardadas para reutilizarlas.
   const { data: knownPartners = [] } = useQuery({
@@ -118,9 +121,9 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   const n = partners.length;
   // Con varias personas el reparto es a partes iguales entre todos.
   const effectiveMode: Mode = n > 1 ? "equal" : mode;
-  const mine = effectiveMode === "equal" ? total / (n + 1) : effectiveMode === "percent" ? (total * myPct) / 100 : Math.min(myAmount, total);
+  const shares = groupExpenseShares(total, n || 1, effectiveMode, myPct, myAmount);
+  const mine = shares[0] ?? 0;
   const theirsTotal = Math.max(0, total - mine);
-  const theirs = n > 0 ? theirsTotal / n : 0;
   const pct = total > 0 ? (mine / total) * 100 : 50;
   const fmt = (v: number) =>
     new Intl.NumberFormat(lang === "es" ? "es-ES" : "en-US", { style: "currency", currency, maximumFractionDigits: 2 }).format(v);
@@ -129,6 +132,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
     setTotal(0); setMerchant(""); setPartners([]); setMode("equal"); setMyPct(50); setMyAmount(0); setPayer("me");
     setDate(new Date());
     setInvitePending(null); setReceiptItems([]); setReceiptName("");
+    requestId.current = null;
   };
 
   async function onReceipt(file?: File) {
@@ -191,45 +195,32 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
   }
 
   async function onSave() {
+    if (savingRef.current) return;
     if (!user?.id) return;
     if (!total || total <= 0) { toast.error(t("Escribe un monto mayor que cero", "Enter an amount greater than zero")); return; }
     if (reading) return;
     if (!partners.length) { toast.error(t("Elige con quién lo compartes", "Choose who you share it with")); return; }
+    savingRef.current = true;
     setSaving(true);
     try {
       const dateStr = format(date, "yyyy-MM-dd");
-      const split = modeLabel(effectiveMode === "equal" ? "equal" : "percent", pct);
       const names = partners.map((p) => p.name).join(", ");
-      // Un gasto compartido por persona; tu parte solo se guarda una vez.
-      // Cada registro es por pareja: tu parte + la de esa persona (la BD valida que sumen el total del registro).
-      for (const p of partners) {
-        const { data: expenseId, error } = await supabase.rpc("create_shared_expense", {
-          _partner_id: p.id,
-          _payer_id: payer === "me" ? user.id : p.id,
-          _total: mine + theirs,
+      requestId.current ??= crypto.randomUUID();
+      const { data: expenseId, error } = await supabase.rpc("create_group_shared_expense", {
+          _request_id: requestId.current,
+          _payer_id: payer === "me" ? user.id : (partners[0]?.id ?? user.id),
+          _total: Math.round(total * 100) / 100,
           _currency: currency,
           _category: cat,
           _merchant: merchant.trim(),
           _tx_date: dateStr,
-          _split_mode: split,
-          _creator_name: myName,
-          _partner_name: p.name,
-          _creator_share: mine,
-          _partner_share: theirs,
+          _participants: [{ user_id: user.id, name: myName, share: mine }, ...partners.map((p, i) => ({ user_id: p.id, name: p.name, share: shares[i + 1] ?? 0 }))],
           _receipt_items: receiptItems,
         });
         if (error) throw error;
         if (!expenseId) throw new Error(t("No se pudo crear el gasto compartido", "The shared expense could not be created"));
-        const debtToMe = mine === 0 && payer === "me";
-        const base = sharedReceiptDescription(split, p.name, receiptItems);
-        await saveExpense({
-          userId: user.id, date: dateStr, category: cat, currency,
-          amount: debtToMe ? theirs : mine, debtToMe,
-          merchant: merchant.trim() || translateCategory(cat, lang),
-          description: withSharedExpenseId(payer !== "me" && mine > 0 ? base.replace(/(\|wyn-receipt:|$)/, "|owed$1") : base, expenseId),
-        });
-        await notify({ data: { expenseId } });
-      }
+      // All participant transactions already committed together; email failure must not duplicate the expense.
+      void notify({ data: { expenseId } }).catch(() => undefined);
       const debtToMe = mine === 0 && payer === "me";
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
       void queryClient.invalidateQueries({ queryKey: ["shared-balances"] });
@@ -246,6 +237,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
     } catch (e) {
       toast.error(e instanceof Error ? e.message : ((e as { message?: string })?.message ?? String(e)));
     } finally {
+      savingRef.current = false;
       setSaving(false);
     }
   }
@@ -383,7 +375,7 @@ export function SharedExpenseDialog({ open, onOpenChange, onSaved }: { open: boo
           <div className="divide-y divide-border rounded-2xl border border-border">
             {[{ n: t("Tú pagas", "You pay"), v: mine, i: initials(myName) },
               ...(partners.length
-                ? partners.map((p) => ({ n: `${p.name} ${t("paga", "pays")}`, v: theirs, i: initials(p.name) }))
+                ? partners.map((p, i) => ({ n: `${p.name} ${t("paga", "pays")}`, v: shares[i + 1] ?? 0, i: initials(p.name) }))
                 : [{ n: `${t("Otra persona", "Other")} ${t("paga", "pays")}`, v: 0, i: "?" }]),
             ].map((r) => (
               <div key={r.n} className="flex items-center gap-3 px-3 py-2.5">
