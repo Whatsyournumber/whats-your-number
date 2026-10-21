@@ -64,6 +64,13 @@
       "when": 1792513517983,
       "tag": "0008_durable_shared_transaction_links",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792618836724,
+      "tag": "0009_atomic_profile_currency_save",
+      "breakpoints": true
     }
   ]
 }

@@ -1876,6 +1876,16 @@ export type Database = {
         Args: { _code: string; _environment: string; _user_id: string }
         Returns: Json
       }
+      save_financial_profile: {
+        Args: {
+          _from: string
+          _holdings?: Json
+          _profile: Json
+          _rate: number
+          _to: string
+        }
+        Returns: undefined
+      }
       update_shared_expense: {
         Args: {
           _category: string
