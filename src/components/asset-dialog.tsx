@@ -84,8 +84,10 @@ export function AssetDialog({
   forPortfolio = false,
   initialKind = null,
   onSaveHolding,
+  onDeleteHolding,
 }: {
   onSaveHolding?: (holding: Holding) => Promise<void>;
+  onDeleteHolding?: () => Promise<void>;
   /** Abre directamente el formulario de un tipo (p. ej. "debt" para un pasivo). */
   initialKind?: HoldingKind | null;
   open: boolean;
@@ -98,6 +100,7 @@ export function AssetDialog({
   const t = useT();
   const { holdings, saveAll, saving } = useHoldings();
   const [customSaving, setCustomSaving] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const busy = saving || customSaving;
   const persistedHolding = holdingId ? (holdings.find((h) => h.id === holdingId) ?? null) : null;
   const editingHolding = persistedHolding ?? fallbackHolding;
@@ -221,15 +224,20 @@ export function AssetDialog({
   };
 
   const remove = async () => {
-    if (!persistedHolding) return;
+    if (!editingHolding || (!persistedHolding && !onDeleteHolding)) return;
     try {
-      await saveAll(holdings.filter((h) => h.id !== persistedHolding.id));
+      setCustomSaving(true);
+      if (onDeleteHolding) await onDeleteHolding();
+      else if (persistedHolding) await saveAll(holdings.filter((h) => h.id !== persistedHolding.id));
       toast.success(
-        persistedHolding.kind === "debt" ? t("Pasivo eliminado", "Liability deleted") : t("Activo eliminado", "Asset deleted"),
+        editingHolding.kind === "debt" ? t("Pasivo eliminado", "Liability deleted") : t("Activo eliminado", "Asset deleted"),
       );
+      setConfirmDelete(false);
       forceClose();
     } catch {
       toast.error(t("No pudimos eliminar. Inténtalo de nuevo.", "We couldn't delete it. Please try again."));
+    } finally {
+      setCustomSaving(false);
     }
   };
 
@@ -509,13 +517,13 @@ export function AssetDialog({
                   : ""}
               </p>
               <div className="flex shrink-0 gap-2">
-                {persistedHolding ? (
+                {persistedHolding || onDeleteHolding ? (
                   <Button
                     type="button"
                     size="sm"
                     variant="ghost"
-                    onClick={() => void remove()}
-                    disabled={saving}
+                    onClick={() => editingHolding?.kind === "debt" ? setConfirmDelete(true) : void remove()}
+                    disabled={busy}
                     className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -530,6 +538,18 @@ export function AssetDialog({
           </div>
         )}
       </DialogContent>
+      <AlertDialog open={confirmDelete} onOpenChange={(open) => { if (!busy) setConfirmDelete(open); }}>
+        <AlertDialogContent className="w-[calc(100vw-2rem)] max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("¿Eliminar pasivo?", "Delete liability?")}</AlertDialogTitle>
+            <AlertDialogDescription>{t(`Se eliminará ${editingHolding?.label ?? ""} de tus pasivos y se actualizará tu patrimonio neto.`, `${editingHolding?.label ?? ""} will be removed from your liabilities and your net worth will update.`)}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={busy}>{t("Cancelar", "Cancel")}</AlertDialogCancel>
+            <Button variant="destructive" disabled={busy} onClick={() => void remove()}>{busy ? t("Eliminando", "Deleting") : t("Eliminar", "Delete")}</Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <AlertDialog open={confirmAction !== null} onOpenChange={(v) => (!v ? setConfirmAction(null) : null)}>
         <AlertDialogContent className="w-[calc(100vw-2rem)] max-w-sm">
           <AlertDialogHeader>
