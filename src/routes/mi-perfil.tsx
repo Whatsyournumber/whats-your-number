@@ -20,8 +20,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { convertStoredFixedExpenses } from "@/hooks/use-fixed-expenses";
-import { convertBudgetCurrency } from "@/lib/convert-budget-cloud";
+import { saveFinancialProfile } from "@/lib/convert-budget-cloud";
+import { currencyDraft } from "@/lib/currency-draft";
 import { useFxRates } from "@/hooks/use-fx-rates";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateOption } from "@/lib/i18n-data";
@@ -43,7 +43,7 @@ import {
   plansChildrenOptions,
   travelOptions,
 } from "@/lib/onboarding";
-import { convertAmount, convertProfileCurrency } from "@/lib/fx";
+import { convertAmount } from "@/lib/fx";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 import { Amount } from "@/components/ui/amount";
@@ -56,6 +56,8 @@ export const Route = createFileRoute("/mi-perfil")({
       { property: "og:title", content: "Mis datos — WhatsYournumber" },
       { property: "og:description", content: "Tu perfil financiero editable en WhatsYournumber." },
       { name: "robots", content: "noindex, nofollow" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: MiPerfil,
@@ -65,7 +67,9 @@ function MiPerfil() {
   const t = useT();
   const { lang } = useLanguage();
   const tr = (label: string) => translateOption(label, lang);
-  const { profile, isLoading, save, saving } = useProfile();
+  const { profile, isLoading } = useProfile();
+  const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
   const { user } = useAuth();
   const { isPro, isInvestor } = useSubscription();
   const proOnly = isPro && !isInvestor;
@@ -76,7 +80,7 @@ function MiPerfil() {
   const googleName = (user?.user_metadata?.["full_name"] as string | undefined) ?? null;
   const navigate = useNavigate();
   const [form, setForm] = useState<Profile>(profile);
-  const { holdings, isLoading: loadingHoldings, saveAll } = useHoldings();
+  const { holdings, isLoading: loadingHoldings } = useHoldings();
   const [wealth, setWealth] = useState<Holding[]>([]);
 
 
@@ -199,16 +203,16 @@ function MiPerfil() {
 
   /** Cambia la moneda y reconvierte todos los importes con la tasa del día. */
   const changeCurrency = (next: string, extra?: Partial<Profile>) => {
+    if (savingRef.current) return;
     setDirty(true);
     const from = form.currency || "EUR";
     if (next && next !== from) {
-      convertStoredFixedExpenses(from, next);
-      void convertBudgetCurrency(user?.id ?? null, from, next);
+      const converted = currencyDraft(form, wealth, next);
+      setWealth(converted.holdings);
+      setForm({ ...converted.profile, ...(extra ?? {}) });
+    } else {
+      setForm((f) => ({ ...f, ...(extra ?? {}) }));
     }
-    setForm((f) => {
-      if (!next || next === from) return { ...f, ...(extra ?? {}) };
-      return { ...convertProfileCurrency(f, from, next), ...(extra ?? {}), currency: next };
-    });
   };
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -283,26 +287,28 @@ function MiPerfil() {
   const preview = buildDataset(merged);
 
   const onSave = async () => {
+    if (!user || savingRef.current || loadingHoldings) return false;
+    savingRef.current = true;
+    setSaving(true);
     const { completed: _c, ...rest } = merged;
-    // Guardamos perfil y patrimonio por separado: si uno falla, el otro igualmente se guarda.
-    const [wealthRes, profileRes] = await Promise.allSettled([
-      saveAll(wealth),
-      save({ ...rest, completed: true }),
-    ]);
-
-    if (wealthRes.status === "rejected" || profileRes.status === "rejected") {
-      const err = wealthRes.status === "rejected" ? wealthRes.reason : profileRes.status === "rejected" ? profileRes.reason : null;
+    try {
+      await saveFinancialProfile(user.id, profile.currency || "EUR", form.currency || "EUR", { ...rest, completed: true }, wealth);
+      setDirty(false);
+      await queryClient.invalidateQueries();
+      toast.success(t("Cambios guardados", "Changes saved"), {
+        description: t("Recalculamos todos los números de tus pestañas.", "We recalculated every number across your tabs."),
+      });
+      return true;
+    } catch (err) {
       console.error("[mi-perfil] save failed", err);
       toast.error(t("No pudimos guardar tus datos", "We couldn't save your data"), {
         description: err instanceof Error ? err.message : String(err ?? ""),
       });
-      return;
+      return false;
+    } finally {
+      savingRef.current = false;
+      setSaving(false);
     }
-
-    setDirty(false);
-    toast.success(t("Cambios guardados", "Changes saved"), {
-      description: t("Recalculamos todos los números de tus pestañas.", "We recalculated every number across your tabs."),
-    });
   };
 
 
@@ -346,8 +352,8 @@ function MiPerfil() {
                 </Button>
                 <Button
                   onClick={() => {
-                    void onSave().then(() => {
-                      blocker.proceed?.();
+                    void onSave().then((saved) => {
+                      if (saved) blocker.proceed?.();
                     });
                   }}
                 >
@@ -547,6 +553,7 @@ function MiPerfil() {
               <select
                 className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
                 value={form.country}
+                disabled={saving}
                 onChange={(e) => {
                   const c = countries.find((x) => x.name === e.target.value);
                   if (c) changeCurrency(c.currency, { country: e.target.value, country_code: c.code });
@@ -565,6 +572,7 @@ function MiPerfil() {
               <select
                 className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
                 value={form.currency || "EUR"}
+                disabled={saving}
                 onChange={(e) => changeCurrency(e.target.value)}
               >
                 {currencies.map((c) => (
