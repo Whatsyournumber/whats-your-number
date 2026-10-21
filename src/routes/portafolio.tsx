@@ -38,7 +38,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
 import { currencySymbol } from "@/lib/onboarding";
-import { portfolioLiquidity } from "@/lib/portfolio-liquidity";
+import { isLoanHolding, portfolioLiquidity } from "@/lib/portfolio-liquidity";
 import { cn } from "@/lib/utils";
 
 function SimTooltip({
@@ -488,7 +488,7 @@ function PortafolioContent() {
             : ("ETF" as const);
 
   const detailed = holdings
-    .filter((h) => h.note !== PATRIMONIO_ONLY_NOTE && ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit", "future", "retirement"].includes(h.kind))
+    .filter((h) => h.note !== PATRIMONIO_ONLY_NOTE && !isLoanHolding(h) && ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit", "future", "retirement"].includes(h.kind))
     .map((h) => {
       const value = holdingValue(h, prices);
       // Retorno derivado del mercado: plusvalía real (valor hoy − costo) cuando hay ticker + costo;
