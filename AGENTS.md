@@ -21,7 +21,7 @@ The sidebar distributes remaining height among each plan's unlocked groups accor
 
 Savings goals are stored per user through the existing synced user settings so Free users can edit them across devices without changing Life Planner's separate Pro goals.
 
-Create shared expenses and both participants atomically via `create_shared_expense`, with each member's share counted once and receipt items retained. Keep its public RPC an authenticated invoker wrapper around a checked private definer function so participant SELECT policies pass without exposing a definer in the API.
+Create group shared expenses and all participant transactions atomically via `create_group_shared_expense`; keep legacy two-person creation compatible. Each member has one durable transaction and one cent-exact share so spending is never multiplied by partner count. Public RPCs are authenticated invoker wrappers around checked private definers.
 
 Validate and normalize invitation email addresses with the shared Zod helper before account lookup or external sharing so both expense flows behave consistently.
 
@@ -40,3 +40,5 @@ Monthly shared-balance payments are private per-user append-only entries with am
 Monthly shared-balance summaries match accepted expense records one-to-one to visible user transactions by date, merchant when present, and currency; prefer exact share amount but allow named legacy transactions with rounded or altered amounts. Orphaned participant rows must not inflate counts or balances because their transactions cannot be inspected or edited.
 
 Keep liability form rules in `src/lib/liability-form.ts` so the UI and its rule tests share one source of truth.
+
+Currency edits in My Profile are draft-only for both profile and holdings; persist through `save_financial_profile`, also used by the header selector, so profile, holdings, goals and budgets commit together with an original-currency check. Invalidate only the active user's caches after commit.
