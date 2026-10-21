@@ -83,7 +83,9 @@ export function AssetDialog({
   fallbackHolding = null,
   forPortfolio = false,
   initialKind = null,
+  onSaveHolding,
 }: {
+  onSaveHolding?: (holding: Holding) => Promise<void>;
   /** Abre directamente el formulario de un tipo (p. ej. "debt" para un pasivo). */
   initialKind?: HoldingKind | null;
   open: boolean;
@@ -95,6 +97,8 @@ export function AssetDialog({
 }) {
   const t = useT();
   const { holdings, saveAll, saving } = useHoldings();
+  const [customSaving, setCustomSaving] = useState(false);
+  const busy = saving || customSaving;
   const persistedHolding = holdingId ? (holdings.find((h) => h.id === holdingId) ?? null) : null;
   const editingHolding = persistedHolding ?? fallbackHolding;
   const isNew = !editingHolding;
@@ -193,7 +197,12 @@ export function AssetDialog({
               : PATRIMONIO_ONLY_NOTE,
     };
     try {
-      await saveAll(persistedHolding ? holdings.map((h) => (h.id === updated.id ? updated : h)) : [...holdings, updated]);
+      if (onSaveHolding) {
+        setCustomSaving(true);
+        await onSaveHolding(updated);
+      } else {
+        await saveAll(persistedHolding ? holdings.map((h) => (h.id === updated.id ? updated : h)) : [...holdings, updated]);
+      }
       toast.success(
         draft.kind === "debt"
           ? editingHolding
@@ -206,6 +215,8 @@ export function AssetDialog({
       forceClose();
     } catch {
       toast.error(t("No pudimos guardar. Inténtalo de nuevo.", "We couldn't save. Please try again."));
+    } finally {
+      setCustomSaving(false);
     }
   };
 
@@ -511,8 +522,8 @@ export function AssetDialog({
                     {t("Eliminar", "Delete")}
                   </Button>
                 ) : null}
-                <Button type="button" size="sm" onClick={() => void save()} disabled={saving}>
-                  {saving ? t("Guardando", "Saving") : t("Guardar", "Save")}
+                <Button type="button" size="sm" onClick={() => void save()} disabled={busy}>
+                  {busy ? t("Guardando", "Saving") : t("Guardar", "Save")}
                 </Button>
               </div>
             </div>
