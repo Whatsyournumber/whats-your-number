@@ -1372,6 +1372,8 @@ function PortafolioContent() {
     ["stock", t("Acción", "Stock"), t("Empresas individuales", "Individual companies")],
     ["crypto", t("Cripto", "Crypto"), t("Activos digitales", "Digital assets")],
     ["cash", t("Efectivo", "Cash"), t("Cuentas y efectivo", "Accounts and cash")],
+    ["bank", t("Cuenta bancaria", "Bank account"), t("Depósitos a la vista", "Demand deposits")],
+    ["money_market", t("Mercado monetario", "Money market"), t("Liquidez a corto plazo", "Short-term liquidity")],
     ["property", t("REITs", "REITs"), t("Inversión inmobiliaria", "Real estate funds")],
     ["bond", t("Renta fija", "Fixed income"), t("Bonos e instrumentos", "Bonds and instruments")],
     ["structured", t("Nota estructurada", "Structured note"), t("Productos estructurados", "Structured products")],
@@ -1398,6 +1400,7 @@ function PortafolioContent() {
   );
 
   // Formulario dentro de una ventana emergente (popup).
+  const cashLike = (kind: HoldingKind) => ["cash", "bank", "money_market"].includes(kind);
   const assetEditor = (isNew: boolean) =>
     draft ? (
       <div className="space-y-3">
@@ -1509,7 +1512,7 @@ function PortafolioContent() {
           )}
           <div className="space-y-1">
             <Label className="text-[11px] text-muted-foreground">
-              {draft.kind === "cash"
+              {cashLike(draft.kind)
                 ? t("Saldo actual", "Current balance")
                 : draft.kind === "crypto"
                   ? t("Precio promedio", "Average price")
@@ -1523,7 +1526,7 @@ function PortafolioContent() {
               </p>
             ) : null}
           </div>
-          {(!isNew || draft.kind !== "cash") && (
+          {(!isNew || !cashLike(draft.kind)) && (
             <div className="space-y-1">
               <Label className="text-[11px] text-muted-foreground">
                 {["etf", "stock"].includes(draft.kind) ? t("Precio de entrada", "Entry price") : t("Valor actual", "Current value")}
@@ -1531,19 +1534,19 @@ function PortafolioContent() {
               <Input className="h-9" inputMode="decimal" value={draft.manual_value} onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })} />
             </div>
           )}
-          {(!isNew || draft.kind !== "cash") && (
+          {(!isNew || !cashLike(draft.kind)) && (
             <div className="space-y-1">
               <Label className="text-[11px] text-muted-foreground">{t("Aporte mensual", "Monthly contribution")}</Label>
               <Input className="h-9" inputMode="decimal" value={draft.monthly_contribution} onChange={(e) => setDraft({ ...draft, monthly_contribution: e.target.value })} />
             </div>
           )}
-          {(!isNew || draft.kind !== "cash") && (
+          {(!isNew || !cashLike(draft.kind)) && (
             <div className="space-y-1">
               <Label className="text-[11px] text-muted-foreground">{t("Retorno esperado %", "Expected return %")}</Label>
               <Input className="h-9" inputMode="decimal" value={draft.expected_return} onChange={(e) => setDraft({ ...draft, expected_return: e.target.value })} />
             </div>
           )}
-          {(!isNew || draft.kind !== "cash") && (
+          {(!isNew || !cashLike(draft.kind)) && (
             <div className="space-y-1">
               <Label className="text-[11px] text-muted-foreground">{t("Fecha de compra", "Purchase date")}</Label>
               <Input className="h-9" type="date" value={draft.purchased_at} onChange={(e) => setDraft({ ...draft, purchased_at: e.target.value })} />
