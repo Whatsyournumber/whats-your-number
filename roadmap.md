@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Corregir el error «column reference x is ambiguous» al guardar un gasto manual compartido y verificar el guardado.
+- [x] Corregir el error «column reference x is ambiguous» al guardar un gasto manual compartido y verificar el guardado.
 - [x] Mostrar en Portafolio los 85 mil de Banco añadidos en Patrimonio, usando la misma cuenta sin duplicarla.
 - [x] Permitir editar y eliminar con confirmación todos los pasivos de Patrimonio, incluidas deudas e hipotecas del perfil.
 - [ ] Corregir la conversión de moneda al guardar/descartar Mi perfil y el conteo de la parte propia al compartir con varias personas; fallos confirmados, pendiente de aprobar el plan transaccional.
