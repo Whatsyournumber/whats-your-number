@@ -78,6 +78,13 @@
       "when": 1792618917391,
       "tag": "0010_atomic_group_shared_expenses",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1793274168669,
+      "tag": "0011_fix_shared_expense_participant_variable",
+      "breakpoints": true
     }
   ]
 }
