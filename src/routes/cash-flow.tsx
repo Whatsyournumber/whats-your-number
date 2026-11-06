@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { SavingsGoals, type SavingsGoal } from "@/components/savings-goals";
 import { motion } from "motion/react";
 import { ArrowLeftRight, ArrowRight, Coins, Lightbulb, Pencil, PiggyBank, ReceiptText, Target, TrendingUp, Wallet } from "lucide-react";
@@ -186,6 +188,36 @@ function CashFlow() {
   );
 
   const travelDays = useMemo(() => buildTravelDays(monthTx as Tx[], rules), [monthTx, rules]);
+  // Misma categorización que «Gastos del mes»: reasignaciones manuales y
+  // categoría elegida en gastos cargados a mano mandan sobre la detección.
+  const manualStatementsQ = useQuery({
+    queryKey: ["manual-statement-ids"],
+    queryFn: async () => {
+      const { data } = await supabase.from("statements").select("id").eq("storage_path", "manual");
+      return new Set((data ?? []).map((r) => r.id as string));
+    },
+    staleTime: 5 * 60_000,
+  });
+  const manualIds = manualStatementsQ.data;
+  const [txCatOverrides, setTxCatOverrides] = useState<Record<string, string>>({});
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("wyn-tx-category-overrides");
+      if (raw) setTxCatOverrides(JSON.parse(raw) as Record<string, string>);
+    } catch {
+      /* noop */
+    }
+  }, []);
+  const categoryOfTx = (tx: Tx) => {
+    if (txCatOverrides[tx.id]) return txCatOverrides[tx.id]!;
+    const isManual = !tx.statement_id || manualIds?.has(tx.statement_id);
+    if (isManual && tx.category && tx.category.trim()) {
+      const n = tx.category.trim().toLowerCase();
+      if (n === "mercado") return "Supermercado";
+      return rules.find((r) => r.name.toLowerCase() === n)?.name ?? tx.category.trim();
+    }
+    return categorizeTxWithTravel(tx, rules, travelDays);
+  };
   const matchesFixed = useMemo(() => {
     const rows = fixed.items
       .filter((item) => Number(item.amount) > 0)
@@ -216,8 +248,7 @@ function CashFlow() {
       // monto mensual y evitar duplicarlos cuando también aparecen en el EEFF.
       if (matchesFixed(tx as Tx)) continue;
       const v = Math.abs(tx.amount);
-      const custom = matchCustom(tx.merchant ?? "");
-      const cat = custom ?? categorizeTxWithTravel(tx as Tx, rules, travelDays);
+      const cat = categoryOfTx(tx as Tx);
       const bucket = bucketFor(cat);
       if (bucket === "excluded") continue;
       if (bucket === "wants") {
@@ -236,7 +267,7 @@ function CashFlow() {
       needsBy.set(key, (needsBy.get(key) ?? 0) + v);
     }
     return { wants, needs, investments, total: wants + needs, needsBy, wantsBy, investmentsBy };
-  }, [monthTx, rules, travelDays, customWants, matchesFixed, categoryBuckets]);
+  }, [monthTx, rules, travelDays, customWants, matchesFixed, categoryBuckets, manualIds, txCatOverrides]);
 
   const hasReal = hasData && monthTx.length > 0;
 
@@ -252,7 +283,9 @@ function CashFlow() {
   const retirementFundBucket = bucketFor(RETIREMENT_FUND_CATEGORY);
   const retirementFundNeeds = retirementFundBucket === "needs" ? retirementFundAmount : 0;
   const retirementFundWants = retirementFundBucket === "wants" ? retirementFundAmount : 0;
-  const retirementFundSavings = retirementFundBucket === "savings" ? retirementFundAmount : 0;
+  // Si ya hay un fondo de ahorro fijo, el aporte al retiro no se suma aparte
+  // para no duplicar el mismo ahorro mensual.
+  const retirementFundSavings = retirementFundBucket === "savings" && fixedSavingsAmount <= 0 ? retirementFundAmount : 0;
 
   // Plan de gasto del onboarding: los gastos fijos alimentan "Necesidades" y
   // las categorías variables se usan como referencia en los tooltips.
