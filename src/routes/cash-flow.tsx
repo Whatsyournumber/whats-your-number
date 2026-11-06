@@ -237,11 +237,6 @@ function CashFlow() {
     const needsBy = new Map<string, number>();
     const wantsBy = new Map<string, number>();
     const investmentsBy = new Map<string, number>();
-    const matchCustom = (name: string) => {
-      const n = name.trim().toLowerCase();
-      if (!n) return null;
-      return customWants.find((c) => c.aliases.some((a) => n === a || n.includes(a) || a.includes(n)))?.label ?? null;
-    };
     for (const tx of monthTx) {
       if (tx.amount >= 0) continue;
       // Los gastos fijos guardados se añaden por separado para conservar su
