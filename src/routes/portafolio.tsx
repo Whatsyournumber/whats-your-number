@@ -487,8 +487,12 @@ function PortafolioContent() {
             ? ("Inmueble" as const)
             : ("ETF" as const);
 
+  const isPortfolioPosition = (h: (typeof holdings)[number]) =>
+    h.note !== PATRIMONIO_ONLY_NOTE && !isLoanHolding(h) && ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit", "future", "retirement"].includes(h.kind);
+  // Posiciones guardadas sin unidades ni montos: no suman al total, pero se listan para completarlas.
+  const incompleteHoldings = holdings.filter((h) => isPortfolioPosition(h) && holdingValue(h, prices) <= 0);
   const detailed = holdings
-    .filter((h) => h.note !== PATRIMONIO_ONLY_NOTE && !isLoanHolding(h) && ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "reit", "future", "retirement"].includes(h.kind))
+    .filter(isPortfolioPosition)
     .map((h) => {
       const value = holdingValue(h, prices);
       // Retorno derivado del mercado: plusvalía real (valor hoy − costo) cuando hay ticker + costo;
@@ -765,6 +769,14 @@ function PortafolioContent() {
   };
   const saveEdit = async () => {
     if (!draft) return;
+    if (numOr(draft.quantity) <= 0 && numOr(draft.cost_basis) <= 0 && numOr(draft.manual_value) <= 0) {
+      toast.error(
+        ["etf", "stock", "crypto"].includes(draft.kind)
+          ? t("Añade las unidades o la inversión inicial para ver la posición.", "Add units or the initial investment to see the position.")
+          : t("Añade un monto para ver la posición.", "Add an amount to see the position."),
+      );
+      return;
+    }
     const base = editingHolding ?? newHolding(draft.kind, "", holdings.length);
     const updated = {
       ...base,
@@ -1559,7 +1571,7 @@ function PortafolioContent() {
         <div className="flex items-center justify-between gap-3">
           <p className="text-[11px] text-muted-foreground">
             {["etf", "stock", "crypto"].includes(draft.kind)
-              ? t("En cero, usamos el precio de mercado.", "At zero, we use the market price.")
+              ? t("Con unidades, usamos el precio de mercado.", "With units, we use the market price.")
               : ""}
           </p>
           <div className="flex shrink-0 gap-2">
@@ -2372,7 +2384,33 @@ function PortafolioContent() {
               </TabsTrigger>
             ))}
           </TabsList>
-          <TabsContent value="Todos">{rows(enriched)}</TabsContent>
+          <TabsContent value="Todos">
+            {rows(enriched)}
+            {incompleteHoldings.length ? (
+              <div className="mt-2 space-y-2">
+                {incompleteHoldings.map((h) => (
+                  <button
+                    key={h.id}
+                    type="button"
+                    onClick={() => openEdit(h.id)}
+                    className="flex w-full items-center justify-between gap-3 rounded-2xl border border-dashed border-border/70 bg-elevated/40 px-4 py-3 text-left transition hover:border-primary/50"
+                  >
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-semibold text-foreground">{h.ticker || h.label || t("Activo", "Asset")}</span>
+                      <span className="block truncate text-xs text-muted-foreground">
+                        {h.ticker && h.label && h.label !== h.ticker ? `${h.label} · ` : ""}
+                        {t("Sin unidades ni monto", "No units or amount")}
+                      </span>
+                    </span>
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-primary/40 px-3 py-1.5 text-xs font-medium text-primary">
+                      <Pencil className="h-3.5 w-3.5" />
+                      {t("Completar", "Complete")}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </TabsContent>
           {activeTypes.map((ty) => (
             <TabsContent key={ty} value={ty}>
               {rows(enriched.filter((h) => h.type === ty))}
