@@ -45,3 +45,4 @@ Liability rows reuse AssetDialog with confirmed deletion: stored debts edit/dele
 Currency edits in My Profile are draft-only for both profile and holdings; persist through `save_financial_profile`, also used by the header selector, so profile, holdings, goals and budgets commit together with an original-currency check. Invalidate only the active user's caches after commit.
 
 Portfolio liquidity uses the shared holdings through portfolioLiquidity regardless of creation-screen notes, so net-worth cash and bank balances appear without duplicated records.
+- Quoted ETF/stock positions resolve the missing one of units, initial investment and entry price in `src/lib/quoted-position.ts` (purchase-date close as price fallback), so Portafolio and Patrimonio dialogs save consistent holdings.

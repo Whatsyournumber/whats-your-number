@@ -803,22 +803,23 @@ function PortafolioContent() {
       return;
     }
     const base = editingHolding ?? newHolding(draft.kind, "", holdings.length);
-    const quoted = { quantity: numOr(draft.quantity), entryPrice: numOr(draft.manual_value) };
-    if (draftNeedsPrice && draftTicker) {
-      const found = await purchasePrice.resolve();
-      Object.assign(
-        quoted,
-        resolveQuotedPosition({ kind: draft.kind, quantity: quoted.quantity, costBasis: numOr(draft.cost_basis), entryPrice: quoted.entryPrice, purchasePrice: found?.price ?? null }),
+    // Unidades, inversión y precio de entrada: con dos calculamos el tercero (o usamos el precio de la fecha de compra).
+    const found = draftNeedsPrice && draftTicker ? await purchasePrice.resolve() : null;
+    const quoted = resolveQuotedPosition({
+      kind: draft.kind,
+      quantity: numOr(draft.quantity),
+      costBasis: numOr(draft.cost_basis),
+      entryPrice: numOr(draft.manual_value),
+      purchasePrice: found?.price ?? null,
+    });
+    if (draftNeedsPrice && draftTicker && quoted.quantity <= 0) {
+      toast.error(
+        t(
+          "No encontramos el precio de esa fecha. Añade las unidades o el precio de entrada.",
+          "We couldn't find the price for that date. Add the units or the entry price.",
+        ),
       );
-      if (quoted.quantity <= 0) {
-        toast.error(
-          t(
-            "No encontramos el precio de esa fecha. Añade las unidades o el precio de entrada.",
-            "We couldn't find the price for that date. Add the units or the entry price.",
-          ),
-        );
-        return;
-      }
+      return;
     }
     const updated = {
       ...base,
@@ -830,7 +831,7 @@ function PortafolioContent() {
       cost_basis:
         draft.kind === "crypto" && numOr(draft.quantity) > 0
           ? Math.round(numOr(draft.cost_basis) * numOr(draft.quantity) * 100) / 100
-          : numOr(draft.cost_basis),
+          : quoted.costBasis,
       manual_value: quoted.entryPrice,
       monthly_contribution: numOr(draft.monthly_contribution),
       expected_return: numOr(draft.expected_return, base.expected_return),
@@ -1567,15 +1568,15 @@ function PortafolioContent() {
                   className="h-9"
                   inputMode="decimal"
                   value={draft.quantity}
-                  placeholder={draftNeedsPrice && draftResolved && draftResolved.quantity > 0 ? `≈ ${draftResolved.quantity.toLocaleString(undefined, { maximumFractionDigits: 4 })}` : undefined}
+                  placeholder={!draft.quantity && draftResolved && draftResolved.quantity > 0 ? `≈ ${draftResolved.quantity.toLocaleString(undefined, { maximumFractionDigits: 4 })}` : undefined}
                   onChange={(e) => setDraft({ ...draft, quantity: e.target.value })}
                 />
                 {draftNeedsPrice && draftTicker ? (
                   <p className="text-[10px] leading-tight text-muted-foreground">
-                    {purchasePrice.value && draftResolved && draftResolved.quantity > 0
+                    {purchasePrice.value
                       ? t(
-                          `≈ ${draftResolved.quantity.toLocaleString(undefined, { maximumFractionDigits: 4 })} a ${purchasePrice.value.price.toLocaleString(undefined, { maximumFractionDigits: 2 })} (${purchasePrice.value.date.split("-").reverse().join("/")})`,
-                          `≈ ${draftResolved.quantity.toLocaleString(undefined, { maximumFractionDigits: 4 })} at ${purchasePrice.value.price.toLocaleString(undefined, { maximumFractionDigits: 2 })} (${purchasePrice.value.date})`,
+                          `Precio del ${purchasePrice.value.date.split("-").reverse().join("/")}: ${purchasePrice.value.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}`,
+                          `Price on ${purchasePrice.value.date}: ${purchasePrice.value.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}`,
                         )
                       : purchasePrice.isFetching
                         ? t("Buscando precio de la fecha", "Fetching price for that date")
@@ -1593,7 +1594,7 @@ function PortafolioContent() {
                   ? t("Precio promedio", "Average price")
                   : t("Inversión inicial", "Initial investment")}
             </Label>
-            <Input className="h-9" inputMode="decimal" value={draft.cost_basis} onChange={(e) => setDraft({ ...draft, cost_basis: e.target.value })} />
+            <Input className="h-9" inputMode="decimal" value={draft.cost_basis} placeholder={["etf", "stock"].includes(draft.kind) && !draft.cost_basis && draftResolved && draftResolved.costBasis > 0 ? `≈ ${draftResolved.costBasis.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : undefined} onChange={(e) => setDraft({ ...draft, cost_basis: e.target.value })} />
             {draft.kind === "crypto" && numOr(draft.quantity) > 0 && numOr(draft.cost_basis) > 0 ? (
               <p className="text-[10px] leading-tight text-muted-foreground">
                 {t("Inversión inicial", "Initial investment")}:{" "}
@@ -1606,7 +1607,7 @@ function PortafolioContent() {
               <Label className="text-[11px] text-muted-foreground">
                 {["etf", "stock"].includes(draft.kind) ? t("Precio de entrada", "Entry price") : t("Valor actual", "Current value")}
               </Label>
-              <Input className="h-9" inputMode="decimal" value={draft.manual_value} onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })} />
+              <Input className="h-9" inputMode="decimal" value={draft.manual_value} placeholder={["etf", "stock"].includes(draft.kind) && !draft.manual_value && draftResolved && draftResolved.entryPrice > 0 ? `≈ ${draftResolved.entryPrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : undefined} onChange={(e) => setDraft({ ...draft, manual_value: e.target.value })} />
             </div>
           )}
           {(!isNew || !cashLike(draft.kind)) && (
@@ -1631,7 +1632,7 @@ function PortafolioContent() {
         <div className="flex items-center justify-between gap-3">
           <p className="text-[11px] text-muted-foreground">
             {["etf", "stock"].includes(draft.kind)
-              ? t("Sin unidades, las calculamos con el monto y la fecha de compra.", "Without units, we calculate them from the amount and purchase date.")
+              ? t("Con dos datos calculamos el tercero; sin precio, usamos el de la fecha de compra.", "With two values we calculate the third; without a price, we use the purchase date one.")
               : draft.kind === "crypto"
                 ? t("Con unidades, usamos el precio de mercado.", "With units, we use the market price.")
                 : ""}
