@@ -24,6 +24,7 @@ import { useTransactions } from "@/hooks/use-transactions";
 import { holdingEntryTotal, holdingValue, useHoldings, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { useDailySeries, useMarketSeries, useQuotes, useHoldingQuotes } from "@/hooks/use-market";
 import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
+import { moneyPrice } from "@/lib/mfn";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 
@@ -1098,8 +1099,8 @@ function PatrimonioContent() {
                                </span>
                              ) : null}
                           </p>
-                           <p className="numeric text-sm font-semibold">{r.livePrice ? fmt(r.livePrice) : "—"}</p>
-                           <p className="numeric text-[11px] text-muted-foreground">{r.strike && r.strike > 0 ? fmt(r.strike) : "—"}</p>
+                           <p className="numeric text-sm font-semibold">{r.livePrice ? moneyPrice(r.livePrice, d.currency) : "—"}</p>
+                           <p className="numeric text-[11px] text-muted-foreground">{r.strike && r.strike > 0 ? moneyPrice(r.strike, d.currency) : "—"}</p>
                         </div>
                         <div>
                            <p className="text-[11px] text-muted-foreground">{t("Ganancia / pérdida", "Gain / loss")}</p>

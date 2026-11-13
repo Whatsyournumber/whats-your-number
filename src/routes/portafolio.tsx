@@ -38,6 +38,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
 import { currencySymbol } from "@/lib/onboarding";
+import { moneyPrice } from "@/lib/mfn";
 import { isLoanHolding, portfolioLiquidity } from "@/lib/portfolio-liquidity";
 import { needsPurchasePrice, resolveQuotedPosition } from "@/lib/quoted-position";
 import { cn } from "@/lib/utils";
@@ -1720,8 +1721,8 @@ function PortafolioContent() {
                     </span>
                   ) : null}
                 </p>
-                <p className="numeric text-sm font-semibold">{tk && prices[tk] ? fmt(prices[tk]) : "—"}</p>
-                <p className="numeric text-[11px] text-muted-foreground">{h.strike && h.strike > 0 ? fmt(h.strike) : "—"}</p>
+                <p className="numeric text-sm font-semibold">{tk && prices[tk] ? moneyPrice(prices[tk], d.currency) : "—"}</p>
+                <p className="numeric text-[11px] text-muted-foreground">{h.strike && h.strike > 0 ? moneyPrice(h.strike, d.currency) : "—"}</p>
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Ganancia / pérdida", "Gain / loss")}</p>

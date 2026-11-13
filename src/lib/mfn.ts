@@ -191,6 +191,20 @@ export function money(value: number, currency = "EUR", compact = false) {
 }
 
 
+/** Precio de mercado (cripto/acciones/ETF): siempre con decimales visibles. */
+export function moneyPrice(value: number, currency = "USD") {
+  const amount = (value || 0) * fxFactor;
+  const abs = Math.abs(amount);
+  return new Intl.NumberFormat(moneyLocale, {
+    style: "currency",
+    currency: currency || "USD",
+    useGrouping: true,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: abs < 10 ? 4 : 2,
+    notation: "standard",
+  }).format(amount);
+}
+
 /** Número con separador decimal según el idioma activo (ES: coma, EN: punto). */
 export function num(value: number, decimals = 1) {
   return new Intl.NumberFormat(moneyLocale, {
