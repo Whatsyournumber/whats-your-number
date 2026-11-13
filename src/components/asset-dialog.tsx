@@ -185,6 +185,23 @@ export function AssetDialog({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, initialKind]);
 
+  // El diálogo puede estar montado cerrado: al abrir «Editar» cargamos los datos ya guardados de esa posición.
+  const initializedFor = useRef<string | null>(null);
+  useEffect(() => {
+    if (!open) {
+      initializedFor.current = null;
+      return;
+    }
+    const key = editingHolding?.id ?? null;
+    if (key && initializedFor.current !== key) {
+      initializedFor.current = key;
+      const d = draftFrom(editingHolding!);
+      setDraft(d);
+      baseline.current = JSON.stringify(d);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, editingHolding?.id]);
+
   const save = async () => {
     if (!draft) return;
     const base = persistedHolding ?? newHolding(draft.kind, fallbackHolding?.label ?? "", holdings.length);
