@@ -542,26 +542,30 @@ function PortafolioContent() {
     })
     .filter((h) => h.value > 0);
 
+  // Cada cuenta de efectivo/banco va en su propia fila, así al editar sale el saldo real de esa cuenta
+  // (una fila sumada no se puede editar: el total viene de varias cuentas).
   const cashDetailed = portfolioLiquidity(holdings);
-  if (cashDetailed.length) {
-    const cash = cashDetailed.reduce((s, h) => s + holdingValue(h, prices), 0);
-    if (cash > 0)
-      detailed.push({
-        // Al editar el total de liquidez se abre la cuenta con más saldo, no una vacía.
-        holdingId: ([...cashDetailed].sort((a, b) => holdingValue(b, prices) - holdingValue(a, prices))[0]?.id ?? null) as string | null,
-        ticker: t("Efectivo", "Cash"),
-        name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"),
-        type: "Cash" as never,
-        value: cash,
-        growth: 0,
-        income: 0,
-        cost: cash,
-        priceRet: null,
-        strike: null,
-        units: null,
-        improvements: 0,
-        years: 0,
-      });
+  for (const h of cashDetailed) {
+    const value = holdingValue(h, prices);
+    if (value <= 0) continue;
+    const kindLabel =
+      h.kind === "bank" ? t("Cuenta bancaria", "Bank account") : h.kind === "money_market" ? t("Mercado monetario", "Money market") : t("Efectivo", "Cash");
+    const label = h.label?.trim() || kindLabel;
+    detailed.push({
+      holdingId: h.id as string | null,
+      ticker: label,
+      name: kindLabel !== label ? kindLabel : t("Efectivo y cuentas bancarias", "Cash and bank accounts"),
+      type: "Cash" as never,
+      value,
+      growth: 0,
+      income: 0,
+      cost: value,
+      priceRet: null,
+      strike: null,
+      units: null,
+      improvements: 0,
+      years: 0,
+    });
   }
 
   const fallback = [
