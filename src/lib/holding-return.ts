@@ -18,12 +18,14 @@ export function purchaseUnitPrice(
   const bought = new Date(boughtRaw);
   if (Number.isNaN(bought.getTime())) return null;
   const boughtSec = bought.getTime() / 1000;
+  // Fecha sin hora (YYYY-MM-DD): cuenta el cierre de ese mismo día, no el del día anterior.
+  const cutoffSec = /^\d{4}-\d{2}-\d{2}$/.test(String(boughtRaw).trim()) ? boughtSec + 86400 : boughtSec + 1;
 
   // Serie diaria: precisión del día exacto (compras recientes, p. ej. hace 2 días).
   if (daily && daily.length >= 2) {
     let best: DailyPoint | null = null;
     for (const p of daily) {
-      if (p.t <= boughtSec && (!best || p.t > best.t)) best = p;
+      if (p.t < cutoffSec && (!best || p.t > best.t)) best = p;
     }
     if (!best) best = daily[0] ?? null;
     if (best && best.price > 0) return best.price;

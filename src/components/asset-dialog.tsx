@@ -20,7 +20,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useT } from "@/hooks/use-language";
 import { defaultReturn, newHolding, useHoldings, type Holding, type HoldingKind } from "@/hooks/use-holdings";
-import { useQuotes, useSymbolSearch } from "@/hooks/use-market";
+import { usePurchasePrice, useQuotes, useSymbolSearch } from "@/hooks/use-market";
+import { needsPurchasePrice, resolveQuotedPosition } from "@/lib/quoted-position";
 import {
   LIABILITY_TYPES,
   liabilityFieldVisible,
@@ -113,6 +114,20 @@ export function AssetDialog({
   const draftTicker = (draft?.ticker ?? "").trim().toUpperCase();
   const draftQuoteQuery = useQuotes(draftTicker.length >= 1 ? [draftTicker] : []);
   const draftQuote = (draftQuoteQuery.data?.quotes ?? []).find((q) => q.symbol.toUpperCase() === draftTicker);
+  // Sin unidades: buscamos el precio del día de compra para calcularlas desde la inversión inicial.
+  const draftNeedsPrice =
+    !!draft &&
+    needsPurchasePrice({ kind: draft.kind, quantity: numOr(draft.quantity), costBasis: numOr(draft.cost_basis), entryPrice: numOr(draft.manual_value) });
+  const purchasePrice = usePurchasePrice(draftTicker, draft?.purchased_at || new Date().toISOString().slice(0, 10), draftNeedsPrice);
+  const draftResolved = draft
+    ? resolveQuotedPosition({
+        kind: draft.kind,
+        quantity: numOr(draft.quantity),
+        costBasis: numOr(draft.cost_basis),
+        entryPrice: numOr(draft.manual_value),
+        purchasePrice: purchasePrice.value?.price ?? null,
+      })
+    : null;
 
   // Detectar cambios sin guardar para confirmar antes de salir.
   const baseline = useRef<string | null>(editingHolding ? JSON.stringify(draftFrom(editingHolding)) : null);
@@ -173,18 +188,35 @@ export function AssetDialog({
   const save = async () => {
     if (!draft) return;
     const base = persistedHolding ?? newHolding(draft.kind, fallbackHolding?.label ?? "", holdings.length);
+    const quoted = { quantity: numOr(draft.quantity), entryPrice: numOr(draft.manual_value) };
+    if (draftNeedsPrice && draftTicker) {
+      const found = await purchasePrice.resolve();
+      Object.assign(
+        quoted,
+        resolveQuotedPosition({ kind: draft.kind, quantity: quoted.quantity, costBasis: numOr(draft.cost_basis), entryPrice: quoted.entryPrice, purchasePrice: found?.price ?? null }),
+      );
+      if (quoted.quantity <= 0) {
+        toast.error(
+          t(
+            "No encontramos el precio de esa fecha. Añade las unidades o el precio de entrada.",
+            "We couldn't find the price for that date. Add the units or the entry price.",
+          ),
+        );
+        return;
+      }
+    }
     const updated: Holding = {
       ...base,
       kind: draft.kind,
       label: draft.label.trim() || draft.ticker.trim().toUpperCase() || base.label || t("Posición", "Position"),
       ticker: draft.ticker.trim().toUpperCase() || null,
-      quantity: numOr(draft.quantity),
+      quantity: quoted.quantity,
       // En cripto el campo es el precio promedio: el costo total guardado es precio × unidades.
       cost_basis:
         draft.kind === "crypto" && numOr(draft.quantity) > 0
           ? Math.round(numOr(draft.cost_basis) * numOr(draft.quantity) * 100) / 100
           : numOr(draft.cost_basis),
-      manual_value: draft.kind === "debt" ? 0 : numOr(draft.manual_value),
+      manual_value: draft.kind === "debt" ? 0 : quoted.entryPrice,
       monthly_contribution: numOr(draft.monthly_contribution),
       expected_return: numOr(draft.expected_return, base.expected_return),
       linked_liability: numOr(draft.linked_liability),
@@ -439,7 +471,25 @@ export function AssetDialog({
                   </div>
                   <div className="space-y-1">
                     <Label className="text-[11px] text-muted-foreground">{t("Unidades", "Units")}</Label>
-                    <Input className="h-9" inputMode="decimal" value={draft.quantity} onChange={(e) => setDraft({ ...draft, quantity: e.target.value })} />
+                    <Input
+                      className="h-9"
+                      inputMode="decimal"
+                      value={draft.quantity}
+                      placeholder={draftNeedsPrice && draftResolved && draftResolved.quantity > 0 ? `≈ ${draftResolved.quantity.toLocaleString(undefined, { maximumFractionDigits: 4 })}` : undefined}
+                      onChange={(e) => setDraft({ ...draft, quantity: e.target.value })}
+                    />
+                    {draftNeedsPrice && draftTicker ? (
+                      <p className="text-[10px] leading-tight text-muted-foreground">
+                        {purchasePrice.value && draftResolved && draftResolved.quantity > 0
+                          ? t(
+                              `≈ ${draftResolved.quantity.toLocaleString(undefined, { maximumFractionDigits: 4 })} a ${purchasePrice.value.price.toLocaleString(undefined, { maximumFractionDigits: 2 })} (${purchasePrice.value.date.split("-").reverse().join("/")})`,
+                              `≈ ${draftResolved.quantity.toLocaleString(undefined, { maximumFractionDigits: 4 })} at ${purchasePrice.value.price.toLocaleString(undefined, { maximumFractionDigits: 2 })} (${purchasePrice.value.date})`,
+                            )
+                          : purchasePrice.isFetching
+                            ? t("Buscando precio de la fecha", "Fetching price for that date")
+                            : t("Sin precio para esa fecha", "No price for that date")}
+                      </p>
+                    ) : null}
                   </div>
                 </>
               )}
@@ -512,9 +562,11 @@ export function AssetDialog({
             </div>
             <div className="flex items-center justify-between gap-3">
               <p className="text-[11px] text-muted-foreground">
-                 {QUOTED_KINDS.includes(draft.kind)
-                  ? t("En cero, usamos el precio de mercado.", "At zero, we use the market price.")
-                  : ""}
+                 {["etf", "stock"].includes(draft.kind)
+                  ? t("Sin unidades, las calculamos con el monto y la fecha de compra.", "Without units, we calculate them from the amount and purchase date.")
+                  : draft.kind === "crypto"
+                    ? t("Con unidades, usamos el precio de mercado.", "With units, we use the market price.")
+                    : ""}
               </p>
               <div className="flex shrink-0 gap-2">
                 {persistedHolding || onDeleteHolding ? (

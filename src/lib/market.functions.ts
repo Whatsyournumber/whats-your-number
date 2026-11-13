@@ -89,3 +89,17 @@ export const getSymbolReturns = createServerFn({ method: "GET" })
     };
   });
 
+
+/** Precio de cierre de un ticker en la fecha de compra, para calcular unidades desde el monto. */
+export const getPriceOnDate = createServerFn({ method: "GET" })
+  .inputValidator((input: { symbol: string; date: string }) => {
+    const symbol = String(input?.symbol ?? "").trim().toUpperCase();
+    const date = String(input?.date ?? "").slice(0, 10);
+    if (!/^[A-Z0-9.^=:&/-]{1,20}$/.test(symbol)) throw new Error("invalid symbol");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error("invalid date");
+    return { symbol, date };
+  })
+  .handler(async ({ data }) => {
+    const { fetchPriceOnDate } = await import("./market.server");
+    return { result: await fetchPriceOnDate(data.symbol, data.date) };
+  });

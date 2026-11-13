@@ -5,7 +5,7 @@ import { useFxRates } from "@/hooks/use-fx-rates";
 import { useProfile } from "@/hooks/use-profile";
 import { convertAmount } from "@/lib/fx";
 
-import { getDailySeries, getMarketQuotes, getMarketSeries, getSymbolReturns, searchMarketSymbols } from "@/lib/market.functions";
+import { getDailySeries, getMarketQuotes, getPriceOnDate, getMarketSeries, getSymbolReturns, searchMarketSymbols } from "@/lib/market.functions";
 
 const STORE_KEY = "wyn.watchlist";
 export const DEFAULT_WATCHLIST = ["SPY", "QQQ", "VOO", "AAPL", "NVDA", "BTC-USD", "ETH-USD"];
@@ -126,4 +126,30 @@ export function useHoldingQuotes(symbols: string[]) {
     [query.data, to],
   );
   return { ...query, data };
+}
+
+/** Precio del ticker en la fecha de compra, convertido a la moneda del perfil. */
+export function usePurchasePrice(ticker: string, date: string, enabled: boolean) {
+  const { profile } = useProfile();
+  useFxRates();
+  const to = (profile.currency || "USD").toUpperCase();
+  const symbol = ticker.trim().toUpperCase();
+  const day = date.slice(0, 10);
+  const query = useQuery({
+    queryKey: ["market-price-on-date", symbol, day],
+    queryFn: () => getPriceOnDate({ data: { symbol, date: day } }),
+    enabled: enabled && symbol.length > 0 && /^\d{4}-\d{2}-\d{2}$/.test(day),
+    staleTime: 60 * 60_000,
+  });
+  const convert = (r: { price: number; currency: string; date: string } | null | undefined) =>
+    r ? { price: convertAmount(r.price, r.currency || "USD", to), date: r.date } : null;
+  const value = convert(query.data?.result);
+  /** Espera el precio si aún no ha llegado (al guardar). */
+  const resolve = async () => {
+    if (value) return value;
+    if (!symbol || !/^\d{4}-\d{2}-\d{2}$/.test(day)) return null;
+    const res = await query.refetch();
+    return convert(res.data?.result);
+  };
+  return { value, isFetching: query.isFetching, resolve };
 }

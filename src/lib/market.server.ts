@@ -102,6 +102,39 @@ export async function fetchDailySeries(symbol: string): Promise<DailyPoint[]> {
   return points;
 }
 
+/** Cierre del símbolo en una fecha (YYYY-MM-DD): el último cierre de ese día o anterior. */
+export async function fetchPriceOnDate(symbol: string, isoDate: string): Promise<{ price: number; currency: string; date: string } | null> {
+  const day = Date.parse(`${isoDate}T00:00:00Z`);
+  if (!Number.isFinite(day)) return null;
+  const end = Math.floor(day / 1000) + 86400;
+  const start = end - 86400 * 10;
+  try {
+    const res = await fetch(
+      `${BASE}/${encodeURIComponent(symbol)}?period1=${start}&period2=${end}&interval=1d`,
+      { headers: { "User-Agent": "Mozilla/5.0", Accept: "application/json" } },
+    );
+    if (!res.ok) return null;
+    const json = (await res.json()) as { chart?: { result?: ChartResult[] } };
+    const r = json.chart?.result?.[0];
+    if (!r) return null;
+    const closes = r.indicators?.quote?.[0]?.close ?? [];
+    const stamps = r.timestamp ?? [];
+    let best: { t: number; price: number } | null = null;
+    for (let i = 0; i < stamps.length; i += 1) {
+      const c = closes[i];
+      const t = stamps[i];
+      if (typeof c === "number" && c > 0 && typeof t === "number" && t < end && (!best || t > best.t)) best = { t, price: c };
+    }
+    const currency = r.meta?.currency ?? "USD";
+    if (best) return { price: best.price, currency, date: new Date(best.t * 1000).toISOString().slice(0, 10) };
+    // Fecha de hoy o futura sin cierre todavía: precio actual.
+    if (r.meta?.regularMarketPrice) return { price: r.meta.regularMarketPrice, currency, date: isoDate };
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 export type SymbolHit = { symbol: string; name: string; type: string; exchange: string };
 
 export async function searchSymbols(query: string): Promise<SymbolHit[]> {
