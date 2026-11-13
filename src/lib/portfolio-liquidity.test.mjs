@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { isLoanHolding, portfolioLiquidity } from "./portfolio-liquidity";
+import { isLiquidityKind, isLoanHolding, liquidityBalance, portfolioLiquidity } from "./portfolio-liquidity";
 
 test("los 85 mil de Banco creados en Patrimonio aparecen una sola vez en Portafolio", () => {
   const banco = { id: "banco", kind: "cash", cost_basis: 85000, note: "source:patrimonio" };
@@ -21,4 +21,11 @@ test("el préstamo del bono por 200 mil no cuenta para el total de Portafolio", 
   const bono = { id: "bono", kind: "bond", manual_value: 200000, note: null };
   expect(isLoanHolding(prestamo)).toBe(true);
   expect(isLoanHolding(bono)).toBe(false);
+});
+
+test("al editar una cuenta se muestra el saldo guardado en cualquiera de los dos campos", () => {
+  expect(liquidityBalance({ cost_basis: 150000, manual_value: 0 })).toBe(150000);
+  expect(liquidityBalance({ cost_basis: 0, manual_value: 20000 })).toBe(20000);
+  expect(isLiquidityKind("bank")).toBe(true);
+  expect(isLiquidityKind("etf")).toBe(false);
 });

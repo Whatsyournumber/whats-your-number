@@ -39,7 +39,7 @@ import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
 import { currencySymbol } from "@/lib/onboarding";
 import { moneyPrice } from "@/lib/mfn";
-import { isLoanHolding, portfolioLiquidity } from "@/lib/portfolio-liquidity";
+import { isLiquidityKind, isLoanHolding, liquidityBalance, portfolioLiquidity } from "@/lib/portfolio-liquidity";
 import { needsPurchasePrice, resolveQuotedPosition } from "@/lib/quoted-position";
 import { cn } from "@/lib/utils";
 
@@ -547,7 +547,8 @@ function PortafolioContent() {
     const cash = cashDetailed.reduce((s, h) => s + holdingValue(h, prices), 0);
     if (cash > 0)
       detailed.push({
-        holdingId: (cashDetailed[0]?.id ?? null) as string | null,
+        // Al editar el total de liquidez se abre la cuenta con más saldo, no una vacía.
+        holdingId: ([...cashDetailed].sort((a, b) => holdingValue(b, prices) - holdingValue(a, prices))[0]?.id ?? null) as string | null,
         ticker: t("Efectivo", "Cash"),
         name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"),
         type: "Cash" as never,
@@ -717,8 +718,11 @@ function PortafolioContent() {
       label: h.label ?? "",
       ticker: h.ticker ?? "",
       quantity: h.quantity ? String(h.quantity) : "",
-      cost_basis: cryptoAvg || (h.cost_basis ? String(h.cost_basis) : ""),
-      manual_value: h.manual_value ? String(h.manual_value) : "",
+      // En efectivo y cuentas el saldo puede estar en cualquiera de los dos campos: se muestra en «Saldo actual».
+      cost_basis: isLiquidityKind(h.kind)
+        ? liquidityBalance(h) > 0 ? String(liquidityBalance(h)) : ""
+        : cryptoAvg || (h.cost_basis ? String(h.cost_basis) : ""),
+      manual_value: isLiquidityKind(h.kind) ? "" : h.manual_value ? String(h.manual_value) : "",
       monthly_contribution: h.monthly_contribution ? String(h.monthly_contribution) : "",
       expected_return: h.expected_return ? String(h.expected_return) : "",
       linked_liability: h.linked_liability ? String(h.linked_liability) : "",
@@ -833,7 +837,7 @@ function PortafolioContent() {
         draft.kind === "crypto" && numOr(draft.quantity) > 0
           ? Math.round(numOr(draft.cost_basis) * numOr(draft.quantity) * 100) / 100
           : quoted.costBasis,
-      manual_value: quoted.entryPrice,
+      manual_value: isLiquidityKind(draft.kind) ? 0 : quoted.entryPrice,
       monthly_contribution: numOr(draft.monthly_contribution),
       expected_return: numOr(draft.expected_return, base.expected_return),
       linked_liability: numOr(draft.linked_liability),
@@ -1603,7 +1607,7 @@ function PortafolioContent() {
               </p>
             ) : null}
           </div>
-          {(!isNew || !cashLike(draft.kind)) && (
+          {!cashLike(draft.kind) && (
             <div className="space-y-1">
               <Label className="text-[11px] text-muted-foreground">
                 {["etf", "stock"].includes(draft.kind) ? t("Precio de entrada", "Entry price") : t("Valor actual", "Current value")}

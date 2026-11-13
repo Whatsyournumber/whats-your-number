@@ -22,6 +22,7 @@ import { useT } from "@/hooks/use-language";
 import { defaultReturn, newHolding, useHoldings, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { usePurchasePrice, useQuotes, useSymbolSearch } from "@/hooks/use-market";
 import { needsPurchasePrice, resolveQuotedPosition } from "@/lib/quoted-position";
+import { isLiquidityKind, liquidityBalance } from "@/lib/portfolio-liquidity";
 import {
   LIABILITY_TYPES,
   liabilityFieldVisible,
@@ -59,8 +60,12 @@ function draftFrom(h: Holding): Draft {
     label: h.label ?? "",
     ticker: h.ticker ?? "",
     quantity: h.quantity ? String(h.quantity) : "",
-    cost_basis: h.kind === "debt" ? String(h.manual_value || h.cost_basis || "") : cryptoCostInput(h),
-    manual_value: h.manual_value ? String(h.manual_value) : "",
+    // Deudas, efectivo y cuentas guardan el monto en cualquiera de los dos campos: se muestra en el campo de monto.
+    cost_basis:
+      h.kind === "debt" || isLiquidityKind(h.kind)
+        ? String(h.kind === "debt" ? h.manual_value || h.cost_basis || "" : liquidityBalance(h) || "")
+        : cryptoCostInput(h),
+    manual_value: isLiquidityKind(h.kind) ? "" : h.manual_value ? String(h.manual_value) : "",
     monthly_contribution: h.monthly_contribution ? String(h.monthly_contribution) : "",
     expected_return: h.expected_return ? String(h.expected_return) : "",
     linked_liability: h.linked_liability ? String(h.linked_liability) : "",
@@ -234,7 +239,7 @@ export function AssetDialog({
         draft.kind === "crypto" && numOr(draft.quantity) > 0
           ? Math.round(numOr(draft.cost_basis) * numOr(draft.quantity) * 100) / 100
           : quoted.costBasis,
-      manual_value: draft.kind === "debt" ? 0 : quoted.entryPrice,
+      manual_value: draft.kind === "debt" || isLiquidityKind(draft.kind) ? 0 : quoted.entryPrice,
       monthly_contribution: numOr(draft.monthly_contribution),
       expected_return: numOr(draft.expected_return, base.expected_return),
       linked_liability: numOr(draft.linked_liability),
@@ -515,7 +520,7 @@ export function AssetDialog({
                 <Label className="text-[11px] text-muted-foreground">
                    {draft.kind === "debt"
                      ? t("Monto", "Amount")
-                     : draft.kind === "cash"
+                     : isLiquidityKind(draft.kind)
                     ? t("Saldo actual", "Current balance")
                     : draft.kind === "crypto"
                       ? t("Precio promedio", "Average price")
@@ -531,7 +536,7 @@ export function AssetDialog({
                   </p>
                 ) : null}
               </div>
-              {(draft.kind !== "debt" || liabilityFieldVisible("entryPrice")) && (!isNew || draft.kind !== "cash") && (
+              {(draft.kind !== "debt" || liabilityFieldVisible("entryPrice")) && !isLiquidityKind(draft.kind) && (
                 <div className="space-y-1">
                   <Label className="text-[11px] text-muted-foreground">
                     {QUOTED_KINDS.includes(draft.kind) && draft.kind !== "crypto" ? t("Precio de entrada", "Entry price") : t("Valor actual", "Current value")}
